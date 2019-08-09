@@ -4,29 +4,31 @@ import java.sql.Date;
 
 public class ReviewVo {
 	private int reviewId, accountId, storeId;
-	private int tasteLev, priceLev,serviceLev, modeLev, convenientLev;
+	private int tasteLevel, priceLevel,serviceLevel, modeLevel, convenientLevel;
+	private double averageLevel;
 	private int likeCount, hateCount;
 	private String reviewContent;
 	private Date writeDate;
 	
-	
-	
-	public ReviewVo(int reviewId, int accountId, int storeId, int tasteLev, int priceLev, int serviceLev, int modeLev,
-			int convenientLev, int likeCount, int hateCount, String reviewContent, Date writeDate) {
+	public ReviewVo(int reviewId, int accountId, int storeId, int tasteLevel, int priceLevel, int serviceLevel,
+			int modeLevel, int convenientLevel, double averageLevel, int likeCount, int hateCount, String reviewContent,
+			Date writeDate) {
 		super();
 		this.reviewId = reviewId;
 		this.accountId = accountId;
 		this.storeId = storeId;
-		this.tasteLev = tasteLev;
-		this.priceLev = priceLev;
-		this.serviceLev = serviceLev;
-		this.modeLev = modeLev;
-		this.convenientLev = convenientLev;
+		this.tasteLevel = tasteLevel;
+		this.priceLevel = priceLevel;
+		this.serviceLevel = serviceLevel;
+		this.modeLevel = modeLevel;
+		this.convenientLevel = convenientLevel;
+		this.averageLevel = averageLevel;
 		this.likeCount = likeCount;
 		this.hateCount = hateCount;
 		this.reviewContent = reviewContent;
 		this.writeDate = writeDate;
 	}
+	
 	public int getReviewId() {
 		return reviewId;
 	}
@@ -45,35 +47,41 @@ public class ReviewVo {
 	public void setStoreId(int storeId) {
 		this.storeId = storeId;
 	}
-	public int getTasteLev() {
-		return tasteLev;
+	public int getTasteLevel() {
+		return tasteLevel;
 	}
-	public void setTasteLev(int tasteLev) {
-		this.tasteLev = tasteLev;
+	public void setTasteLevel(int tasteLevel) {
+		this.tasteLevel = tasteLevel;
 	}
-	public int getPriceLev() {
-		return priceLev;
+	public int getPriceLevel() {
+		return priceLevel;
 	}
-	public void setPriceLev(int priceLev) {
-		this.priceLev = priceLev;
+	public void setPriceLevel(int priceLevel) {
+		this.priceLevel = priceLevel;
 	}
-	public int getServiceLev() {
-		return serviceLev;
+	public int getServiceLevel() {
+		return serviceLevel;
 	}
-	public void setServiceLev(int serviceLev) {
-		this.serviceLev = serviceLev;
+	public void setServiceLevel(int serviceLevel) {
+		this.serviceLevel = serviceLevel;
 	}
-	public int getModeLev() {
-		return modeLev;
+	public int getModeLevel() {
+		return modeLevel;
 	}
-	public void setModeLev(int modeLev) {
-		this.modeLev = modeLev;
+	public void setModeLevel(int modeLevel) {
+		this.modeLevel = modeLevel;
 	}
-	public int getConvenientLev() {
-		return convenientLev;
+	public int getConvenientLevel() {
+		return convenientLevel;
 	}
-	public void setConvenientLev(int convenientLev) {
-		this.convenientLev = convenientLev;
+	public void setConvenientLevel(int convenientLevel) {
+		this.convenientLevel = convenientLevel;
+	}
+	public double getAverageLevel() {
+		return averageLevel;
+	}
+	public void setAverageLevel(double averageLevel) {
+		this.averageLevel = averageLevel;
 	}
 	public int getLikeCount() {
 		return likeCount;
@@ -99,28 +107,26 @@ public class ReviewVo {
 	public void setWriteDate(Date writeDate) {
 		this.writeDate = writeDate;
 	}
-	@Override
-	public String toString() {
-		return "ReviewVo [reviewId=" + reviewId + ", accountId=" + accountId + ", storeId=" + storeId + ", tasteLev="
-				+ tasteLev + ", priceLev=" + priceLev + ", serviceLev=" + serviceLev + ", modeLev=" + modeLev
-				+ ", convenientLev=" + convenientLev + ", likeCount=" + likeCount + ", hateCount=" + hateCount
-				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate + "]";
-	}
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + accountId;
-		result = prime * result + convenientLev;
+		long temp;
+		temp = Double.doubleToLongBits(averageLevel);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + convenientLevel;
 		result = prime * result + hateCount;
 		result = prime * result + likeCount;
-		result = prime * result + modeLev;
-		result = prime * result + priceLev;
+		result = prime * result + modeLevel;
+		result = prime * result + priceLevel;
 		result = prime * result + ((reviewContent == null) ? 0 : reviewContent.hashCode());
 		result = prime * result + reviewId;
-		result = prime * result + serviceLev;
+		result = prime * result + serviceLevel;
 		result = prime * result + storeId;
-		result = prime * result + tasteLev;
+		result = prime * result + tasteLevel;
 		return result;
 	}
 	@Override
@@ -134,15 +140,17 @@ public class ReviewVo {
 		ReviewVo other = (ReviewVo) obj;
 		if (accountId != other.accountId)
 			return false;
-		if (convenientLev != other.convenientLev)
+		if (Double.doubleToLongBits(averageLevel) != Double.doubleToLongBits(other.averageLevel))
+			return false;
+		if (convenientLevel != other.convenientLevel)
 			return false;
 		if (hateCount != other.hateCount)
 			return false;
 		if (likeCount != other.likeCount)
 			return false;
-		if (modeLev != other.modeLev)
+		if (modeLevel != other.modeLevel)
 			return false;
-		if (priceLev != other.priceLev)
+		if (priceLevel != other.priceLevel)
 			return false;
 		if (reviewContent == null) {
 			if (other.reviewContent != null)
@@ -151,13 +159,22 @@ public class ReviewVo {
 			return false;
 		if (reviewId != other.reviewId)
 			return false;
-		if (serviceLev != other.serviceLev)
+		if (serviceLevel != other.serviceLevel)
 			return false;
 		if (storeId != other.storeId)
 			return false;
-		if (tasteLev != other.tasteLev)
+		if (tasteLevel != other.tasteLevel)
 			return false;
 		return true;
 	}
-
+	
+	
+	@Override
+	public String toString() {
+		return "ReviewVo [reviewId=" + reviewId + ", accountId=" + accountId + ", storeId=" + storeId + ", tasteLevel="
+				+ tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", modeLevel="
+				+ modeLevel + ", convenientLevel=" + convenientLevel + ", averageLevel=" + averageLevel + ", likeCount="
+				+ likeCount + ", hateCount=" + hateCount + ", reviewContent=" + reviewContent + ", writeDate="
+				+ writeDate + "]";
+	}
 }
