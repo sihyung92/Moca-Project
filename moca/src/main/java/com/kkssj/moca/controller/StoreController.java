@@ -1,6 +1,7 @@
 package com.kkssj.moca.controller;
 
 import org.slf4j.Logger;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,8 +59,8 @@ public class StoreController {
 		
 		//받는 쪽에서 refresh하게 
 	}
+
 	
 	
 	//로그인 연습
  }
-
