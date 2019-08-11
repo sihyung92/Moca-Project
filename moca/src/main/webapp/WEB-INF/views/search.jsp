@@ -1,9 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
 <head>
-	<title>Home</title>
-	<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
 	<script type="text/javascript">
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
     window.onload = function () {
@@ -55,13 +57,14 @@
 	</script>
 </head>
 <body>
-
-<h1>메인 페이지</h1>
+<h1>검색 페이지</h1>
 <form action="search">
 	<input type="hidden" name="x" id="lng"/>
 	<input type="hidden" name="y" id="lat"/>
 	키워드는 <input type="text" name="keyword"/>
 	<button>입니당</button>
 </form>	
+	<p>뭐가나올까</p>
+	<p>${alist }</p>
 </body>
 </html>
