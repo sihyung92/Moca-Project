@@ -1,6 +1,9 @@
 package com.kkssj.moca.controller;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
+import com.kkssj.moca.model.entity.kakaoAPI.Documents;
+import com.kkssj.moca.model.entity.kakaoAPI.KakaoCafeVo;
+import com.kkssj.moca.model.entity.kakaoAPI.Meta;
+
 @Controller
 public class SearchController {
 
@@ -22,6 +29,7 @@ public class SearchController {
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String search(String keyword, String x, String y, Model model) throws MalformedURLException {
 	////검색 옵션 디폴트 값 및 파라미터 처리	
+		List<Documents> cafeInfoList= new ArrayList<>();
 		int page=1;
 		//위치정보 제공하지 않는 브라우저로 접근 시, 디폴트 위치는 비트캠프 강남 센터! :p
 		if(x.equals("") || y.equals("")) {
@@ -51,12 +59,26 @@ public class SearchController {
 		//카카오 API 동기통신 & JSON 데이터 리턴
 		RestTemplate restTemplate = new RestTemplate();
 //		HttpEntity<MultiValueMap> requestEntity =new HttpEntity(map, headers);		//POST로 인식하는 듯
-		ResponseEntity response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, x, y, query, page);	//Object 파라미터는 URL에 순서대로 인식
-		
+		ResponseEntity<KakaoCafeVo> response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, page);	//Object 파라미터는 URL에 순서대로 인식
 		//(해야할 일)3페이지까지 데이터 요청하기 추가
 		//(해야할 일)제이슨 데이터 처리 후 뷰 페이지로 전달하기
-		logger.debug(response.getBody().toString());
-		model.addAttribute("alist", response);
+		Documents[] cafeInfo = response.getBody().getDocuments();
+		Meta APIInfo = response.getBody().getMeta();
+		
+		for(Documents d : cafeInfo)
+		cafeInfoList.add(d);
+		
+		//'is_end'가 false이면, 다음페이지를 재요청
+		while(!APIInfo.isIs_end()) {
+			response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, ++page);
+			cafeInfo = response.getBody().getDocuments();
+			APIInfo = response.getBody().getMeta();
+			for(Documents d : cafeInfo)
+				cafeInfoList.add(d);
+		}
+		
+		logger.debug(cafeInfoList.toString());
+		model.addAttribute("alist", cafeInfoList);
 
 		return "search";
 	}
