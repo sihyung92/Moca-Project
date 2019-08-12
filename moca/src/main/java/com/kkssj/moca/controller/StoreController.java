@@ -1,7 +1,9 @@
 package com.kkssj.moca.controller;
 
 
- import org.slf4j.Logger;
+ import javax.inject.Inject;
+
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,30 +13,35 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
- @Controller
+import com.kkssj.moca.service.StoreService;
+
+@Controller
 public class StoreController {
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
+	@Inject
+	StoreService storeService;
+	
+	
  	//처음 상세페이지로 접속
-	@PostMapping("/store")
-	public String getStoreId(Model model) {
-		logger.info("");
+//	@PostMapping("/store")
 
-		String storeId = "";
- 		return "redirect:store/{"+storeId+"}"; 
-	}
 
  	//리다이렉트로 상세페이지로
-	@GetMapping("/store/{storeId}")
+	@GetMapping("/stores/{storeId}")
 	public String getStore(@PathVariable("storeId") int storeId, Model model) {
 		logger.info("Welcome storeDetail!");
 		
-		model.addAttribute("storeVo", "");
-		model.addAttribute("reviewVoList", "");
+		//계정 정보를 받아오고
+		int accountId =1;
+		
+		
+		model.addAttribute("reviewVoList", storeService.getReviewList(accountId, storeId));
 
  		return "store_detail";
 	}
-	
+
+
 	//리뷰 입력
 	@PostMapping("/review")
 	public String addReview() {
@@ -58,5 +65,24 @@ public class StoreController {
 		//json으로 삭제 
 		
 		//받는 쪽에서 refresh하게 
+	}
+	
+	//좋아요싫어요 추가
+	@PostMapping("/likeHate")
+	public void addLikeHate() {
+		
+		
+	}
+	
+	//좋아요싫어요 수정
+	@PutMapping("/likeHate")
+	public void editLikeHate() {
+		
+	}
+	
+	//좋아요 싫어요 삭제
+	@DeleteMapping("/likeHate")
+	public void deleteLikeHate() {
+		
 	}
  }

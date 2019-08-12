@@ -42,7 +42,13 @@
 <h1>
 	Hello world!  
 </h1>
+<form method="post" action="store">
+    <input type="number" name="store_Id"/>
+    <button type="submit">상세</button>
+</form>
+
 <table class="table">
+	
 	<div class="row">
 		<div class="col-md-4">
 			<div class="reviewer-info">
@@ -60,6 +66,21 @@
 		</div>
 		
 	</div>
+	<c:forEach items="${reviewVoList }" var="reviewVo">
+		<div class="row">
+			<div class="col-md-4">
+				<div class="reviewer-info">
+				  	<label for="nick-name">$(reviewVo. )</label>
+				</div>
+			</div>
+			<div class="col-md-8">
+				<div class="review-info">
+				  	<label for="nick-name">$(닉네임 )</label>
+				</div>
+			</div>
+			
+		</div>
+	</c:forEach>
 </table>
 
 

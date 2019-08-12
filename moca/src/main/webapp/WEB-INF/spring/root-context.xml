@@ -4,8 +4,8 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	
-	<!-- Root Context: defines shared resources visible to all other web components -->
-	
+	<!-- Root Context: defines shared resources visible to all other web components 
+	-->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" 
 	p:driverClassName="com.mysql.jdbc.Driver"
 	p:url="jdbc:mysql://qwerty930704.iptime.org:3306/mocadb" 
