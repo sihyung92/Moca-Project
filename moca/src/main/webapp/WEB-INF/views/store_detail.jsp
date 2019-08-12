@@ -1,6 +1,7 @@
-﻿<%@ page language="java" contentType="text/html; charset=utf-8"
+<%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +12,7 @@
 <!-- jqm 사용시
  <link rel="stylesheet" type="text/css" href="resources/css/jquery.mobile-1.4.5.css" />
  -->
-<style type="text/css">
+ <style type="text/css">
 	.carousel-inner img{
 		margin: 0px auto;
 	}
@@ -28,45 +29,41 @@
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+
+		
 		var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 	    mapOption = {
-	        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+	        //center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+	        center: new kakao.maps.LatLng(${storeVo.xLocation}, ${storeVo.yLocation}), // 지도의 중심좌표
 	        level: 3 // 지도의 확대 레벨
 	    };  
-
 	// 지도를 생성합니다    
 	var map = new kakao.maps.Map(mapContainer, mapOption); 
-
 	// 주소-좌표 변환 객체를 생성합니다
 	var geocoder = new kakao.maps.services.Geocoder();
-
 	// 주소로 좌표를 검색합니다
-	geocoder.addressSearch('제주특별자치도 제주시 첨단로 242', function(result, status) {
-
+	geocoder.addressSearch('${storeVo.address}', function(result, status) {
 	    // 정상적으로 검색이 완료됐으면 
 	     if (status === kakao.maps.services.Status.OK) {
-
 	        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
 	        // 결과값으로 받은 위치를 마커로 표시합니다
 	        var marker = new kakao.maps.Marker({
 	            map: map,
 	            position: coords
 	        });
-
 	        // 인포윈도우로 장소에 대한 설명을 표시합니다
 	        var infowindow = new kakao.maps.InfoWindow({
-	            content: '<div style="width:150px;text-align:center;padding:6px 0;">카페이름</div>'
+	            content: '<div style="width:100%;text-align:center;padding:6px 0;">${storeVo.name}</div>'
 	        });
 	        infowindow.open(map, marker);
-
 	        // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
 	        map.setCenter(coords);
 	    } 
 	});
-
 	//차트
 	var ctx = document.getElementById('myChart').getContext('2d');
+	//맛,서비스,분위기,가격,편의성 레벨 변수로 저장
+	var labelVal = [${storeVo.tasteLevel}, ${storeVo.serviceLevel}, ${storeVo.moodLevel}, ${storeVo.priceLevel}, ${storeVo.convenienceLevel}];
 	var myRadarChart = new Chart(ctx, {
 	    type: 'radar',
 	    data: {
@@ -77,7 +74,7 @@
             	borderColor: 'rgb(255, 99, 132)',
             	pointRadius: 0,
             	lineTension: 0.1,
-		        data: [5, 10, 8, 3, 7]
+		        data: labelVal
 		    }]
 		},
 		options:{
@@ -94,37 +91,43 @@
 		}
 	});
 
+	
 	$('#myModal').on('shown.bs.modal', function () {
 		  $('#myInput').focus()
 	});
 
-	
-	
+	$('#updateStore').click(function(){
+		updateStore();
 	});
+	
+});
+
+	var updateStore = function(){
 
 
-		////////////리뷰//////////////////
-		//리뷰 받아오기
+		var params=$('#StoreInfoModal form').serialize();
+		/*
+		$.post(${storeVo.store_Id},params,function(){
+			console.log("카페상세정보 수정성공");
+		});
+		*/
+		var data={store_Id:12};
+		//카페 상세정보 수정
+		//put -> 수정
 		$.ajax({
-			type:"GET",
-			url:"reviews/1",
-			datatype: "json",
+			type:'put',
+			url:${storeVo.store_Id},
+			//contentType:"application/json; charset=UTF-8",
+			//datatype: "json",
+			data: params,
 			error : function(errorMsg){
-				console.log("리뷰 받아오기 실패",errorMsg);
+				console.log("카페상세정보 수정실패",errorMsg);
 			},
-			success: function(reviewsJson){
-				console.log("리뷰 받아오기 성공", reviewJson);
-
-				//리뷰 데이터 띄우기
-				displayReviews(reviewsJson);
+			success: function(data){
+				console.log("카페상세정보 수정성공");
 			}
-		})		   
-	});
-
-	//리뷰 데이터 띄우기
-	function displayReviews(json){
-		
-	}
+		});
+	};
 </script>
 </head>
 <body>
@@ -137,10 +140,17 @@
   <div class="row">
   	<div class="col-md-8 col-md-offset-2">
   		<div class="jumbotron text-center">
-  			<!-- 태그 -->
- 			 <p><button type="button" class="btn btn-default btn-sm">#뿌릴태그</button><button type="button" class="btn btn-default btn-sm">#뿌릴태그</button></p>
-  			<!-- 로고 & 카페이름-->
-  			 <h1><img src="<c:url value="/resources/imgs/logo.png"/>" alt="logo" class="img-circle" style="width:100px;">&nbsp;STARBUCKS</h1>
+  		
+  		<!-- 태그 -->
+  		<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
+  			<p>  		
+  		<c:forEach items="${tags}" var="tag">
+  				<button type="button" class="btn btn-default btn-sm">#${tag}</button>
+  		</c:forEach>
+  			</p>
+  		<!-- 로고 & 카페이름-->
+  		<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
+  			<h1><img src="<c:url value="/resources/imgs/logo.png"/>" alt="logo" class="img-circle" style="width:100px;">&nbsp;${storeVo.name}</h1>
 		</div>
   	</div>
   </div>
@@ -187,22 +197,34 @@
   	</div>
   </div>
   <div class="row">
+  <br>
   	<div class="col-md-8 col-md-offset-2">
   		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingOne">
       <h4 class="panel-title">
         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-          	상세정보
+          &#9432; 상세정보 
         </a>
       </h4>
     </div>
     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
-        	와이파이 주차장<br>
-        	영업시간 : <br>
-        	홈페이지 : <br>
-        	<button>#아메리카노가 맛있는</button><button>#호지티 라떼</button>
+        	와이파이 : 
+        	<c:if test="${storeVo.wifi eq 0}">없음</c:if>
+        	<c:if test="${storeVo.wifi eq 1}">있음</c:if>
+        	<br>
+        	주차장 : 
+        	<c:if test="${storeVo.parkingLot eq 0}">없음</c:if>
+        	<c:if test="${storeVo.parkingLot eq 1}">있음</c:if>
+        	<br>
+        	휴무일 : ${storeVo.dayOff}<br>
+        	영업시간 : ${fn:substring(storeVo.openTime,0,5)} - ${fn:substring(storeVo.endTime,0,5)}<br>
+        	홈페이지 : <a href="${storeVo.url}">${storeVo.url}</a><br>
+        	<hr>
+        	<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#StoreInfoModal">
+			  정보제공
+			</button>
       </div>
     </div>
   </div>
@@ -253,6 +275,7 @@
   		<div class="review-footer">
   			<a href="#">더보기</a>
   		</div>
+  		
   	</div>
   </div>
 </div>
@@ -327,6 +350,72 @@
       </div>
     </div>
   </div>
-</div>	
+</div>
+<!-- 리뷰작성 모달 끝-->
+<!-- store 정보 수정 모달 시작  -->
+<div class="modal fade" id="StoreInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h3 class="modal-title" id="exampleModalLabel">${storeVo.name}</h3>
+      </div>
+      <div class="modal-body" data-role="content">
+        <form class="form-horizontal">
+		  <div class="form-group reviewer-info" style="display: none;">
+		  	<label for="nick-name">와이파이</label>
+		  	<label for="nick-name">주차장</label>
+		  	<label for="nick-name">휴무일</label>
+		  	<label for="nick-name">영업시간</label>
+		  	<label for="nick-name">홈페이지</label>
+		  </div>
+		  <div class="form-group" >
+		    <label for="wifi" class="col-sm-2 control-label">와이파이</label>
+		    <div class="col-sm-10">
+		    <input type="radio" name="wifi" id="wifiOption1" value="1"> 있음
+		    <input type="radio" name="wifi" id="wifiOption2" value="0"> 없음
+		    <input type="radio" name="wifi" id="wifiOption3" value="-1" checked> 모름
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="parkingLot" class="col-sm-2 control-label">주차장</label>
+		    <div class="col-sm-10">
+		    <input type="radio" name="parkingLot" id="parkingLotOption1" value="1"> 있음
+		    <input type="radio" name="parkingLot" id="parkingLotOption2" value="0"> 없음
+		    <input type="radio" name="parkingLot" id="parkingLotOption3" value="-1" checked> 모름
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="dayOff" class="col-sm-2 control-label">휴무일</label>
+		    <div class="col-sm-10">
+		    <input type="text" id="dayOff" name="dayOff">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="openTime" class="col-sm-2 control-label">영업시간</label>
+		    <div class="col-sm-10">
+		    <!-- 
+		     <input type="text" id="openTime" name="openTime"> - <input type="text" id="endTime" name="endTime">
+		     -->
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="url" class="col-sm-2 control-label">홈페이지</label>
+		    <div class="col-sm-10">
+		    <input type="url" id="url" name="url">
+		    </div>
+		  </div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" id="updateStore">입력</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- store 정보 수정 모달 끝 -->
 </body>
 </html>

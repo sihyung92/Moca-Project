@@ -8,8 +8,11 @@
 	<link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.min.css">
 	<script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 	<script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
+<!-- 
 	<script type="text/javascript" src="resources/js/jquery.mobile-1.4.5.js"></script>
+ -->
 	<script type="text/javascript">
+	
 		$(function(){
 
 
@@ -42,6 +45,11 @@
 <h1>
 	Hello world!  
 </h1>
+<!-- 목록 예시 -->
+<form method="post" action="store">
+	<input type="number" name="kakaoId"/>
+	<button type="submit">상세</button>
+</form>
 <table class="table">
 	<div class="row">
 		<div class="col-md-4">

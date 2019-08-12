@@ -3,7 +3,16 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="store">
-  <select id="selectStoreAll">
-  	SEELCT SYSDATE FROM DUAL
+  <select id="selectOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	SELECT * FROM STORE WHERE STORE_ID=#{val}
   </select>
+  <select id="selectCnt" parameterType="Integer" resultType="Integer">
+  	SELECT COUNT(*) FROM STORE WHERE KAKAOID=#{val}
+  </select>
+  <select id="selectKakaoId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	SELECT * FROM STORE WHERE KAKAOID=#{val}
+  </select>
+  <insert id="insertOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
+  	INSERT INTO STORE(name,store_id,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{store_Id},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
+  </insert>
 </mapper>

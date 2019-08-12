@@ -6,7 +6,7 @@
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 	p:driverClassName="com.mysql.jdbc.Driver"
 	p:url="jdbc:mysql://qwerty930704.iptime.org:3306/mocadb" 
 	p:username="moca" 
