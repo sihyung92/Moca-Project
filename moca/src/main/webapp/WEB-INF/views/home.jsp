@@ -55,7 +55,6 @@
 	</script>
 </head>
 <body>
-
 <h1>메인 페이지</h1>
 <form action="search">
 	<input type="hidden" name="x" id="lng"/>
