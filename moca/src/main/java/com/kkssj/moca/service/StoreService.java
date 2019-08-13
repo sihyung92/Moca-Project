@@ -16,5 +16,12 @@ public interface StoreService {
 
 	void addStore(StoreVo storeVo);
 
+	int addLikeHate(int review_id, int accountId, int isLike);
+
+	int editLikeHate(int review_id, int accountId, int isLike);
+
+	int deleteLikeHate(int review_id, int accountId);
+
+
 	
 }

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 
@@ -31,6 +32,10 @@
 		var likeHateCount;
 		var reviewId;
 		var clickedLikeHateButton;
+		var likeBtn;
+		var hateBtn;
+		var likeCount;
+		var hateCount;
 
 		$(document).ready(function() {
 			var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
@@ -76,62 +81,169 @@
 			likeHateButton.click(function() {
 				clickedLikeHateButton = $(this);
 				btnGroup = clickedLikeHateButton.parent();
-				likeHateCount = btnGroup.children('.like-hate-count').val();
 				reviewId = btnGroup.children('.review-id').val();
-
-				console.log("likeHateCount=", likeHateCount, ", reviewId=" + reviewId)
+				likeBtn = btnGroup.children('.like-btn');
+				hateBtn = btnGroup.children('.hate-btn');
+				likeCount = btnGroup.children('.like-count');
+				hateCount = btnGroup.children('.hate-count');
+				
+				
 				//이전 상태 판단
 				if (clickedLikeHateButton.hasClass('like-btn')) {
-					if (likeHateCount == "1") {
-						//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소 + 
+					//좋아요 버튼을 눌렀을때 
+					if (likeBtn.hasClass('clicked')) {
+						//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
 						console.log('이전에 좋아요 누른 상태 > 좋아요를 누를때')
+						
+						//ajax 통신 - delete 방식으로 삭제
+						$.ajax({
+							type :'DELETE',
+							url : '/moca/likeHates/'+reviewId,
+							success : function(){
+								console.log('ajax 통신 성공 - 좋아요 취소')
+								likeBtn.removeClass('clicked')
+								likeCount.val(Number(likeCount.val()) -1);
+							},
+							error : function(){
+								console.log('ajax 통신 실패')
+								alert("좋아요 취소 실패")
+							}
+							
+						})
+						
+						
+						
 
 
-
-					} else if (likeHateCount == "-1") {
-						//이전에 좋아요 누른 상태 > 싫어요를 누를때 = > 좋아요 취소 + 싫어요
-						console.log('이전에 좋아요 누른 상태 > 싫어요를 누를때 ')
+					} else if (hateBtn.hasClass('clicked')) {
+						//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
+						console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
+						
+						//ajax 통신 - put 방식으로 수정
+						$.ajax({
+							type :'PUT',
+							url : '/moca/likeHates/'+reviewId,
+							data : {"isLike" : 1},
+							success : function(){
+								console.log('ajax 통신 성공 - 싫어요 취소 + 좋아요')
+								//ajax 통신 성공시
+								hateBtn.removeClass('clicked')
+								hateCount.val(Number(hateCount.val()) -1);
+								likeBtn.addClass('clicked')
+								likeCount.val(Number(likeCount.val()) +1);
+								
+							},
+							error : function(){
+								console.log('ajax 통신 실패')
+								alert("싫어요 취소, 좋아요 실패")
+							}
+							
+						})
+					
+						
+					}else {
+						//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
+						console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
+						
+						//ajax 통싱 - post방식으로 추가
+						$.ajax({
+							type :'POST',
+							url : '/moca/likeHates/'+reviewId,
+							data : {"isLike" : 1},
+							success : function(){
+								console.log('ajax 통신 성공 - 좋아요')
+								//ajax 통신 성공시
+								likeBtn.addClass('clicked')
+								likeCount.val(Number(likeCount.val()) +1);
+							},
+							error : function(){
+								console.log('ajax 통신 실패')
+								alert("좋아요 실패")
+							}
+						})
+						
+						
+						
 					}
 
 
 				} else if (clickedLikeHateButton.hasClass('hate-btn')) {
-					if (likeHateCount == "1") {
-						//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
-						console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
+					//싫어요 버튼을 눌렀을때 
+					if (likeBtn.hasClass('clicked')) {
+						//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
+						console.log('이전에 좋아요 누른 상태 > 싫어요 누를때 ')
+						
+						//ajax 통신 - put 방식으로 수정
+						$.ajax({
+							type :'PUT',
+							url : '/moca/likeHates/'+reviewId,
+							data : {"isLike" : -1},
+							success : function(){
+								console.log('ajax 통신 성공 - 좋아요 취소 + 싫어요')
+								//ajax 통신 성공시
+								likeBtn.removeClass('clicked')
+								likeCount.val(Number(likeCount.val())-1);
+								hateBtn.addClass('clicked')
+								hateCount.val(Number(hateCount.val())+1);
+								
+							},
+							error : function(){
+								console.log('ajax 통신 실패')
+								alert("싫어요 취소, 좋아요 실패")
+							}
+							
+						})
+					
+						
 
-					} else if (likeHateCount == "-1") {
+					} else if (hateBtn.hasClass('clicked')) {
 						//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
 						console.log('이전에 싫어요 누른 상태 > 싫어요를 누를때 ')
+						
+						//ajax 통신 - delete 방식으로 삭제
+						$.ajax({
+							type :'DELETE',
+							url : '/moca/likeHates/'+reviewId,
+							success : function(){
+								console.log('ajax 통신 성공 - 싫어요 취소')
+								//ajax 통신하고 성공시 
+								hateBtn.removeClass('clicked')
+								hateCount.val(Number(hateCount.val()) -1);
+							},
+							error : function(){
+								console.log('ajax 통신 실패')
+								alert("싫어요 취소 실패")
+							}
+							
+						})
+						
+						
+						
+						
+					}else{
+						//이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 => 싫어요
+						console.log('이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 ')
+						
+						//ajax 통싱 - post방식으로 추가
+						$.ajax({
+							type :'POST',
+							url : '/moca/likeHates/'+reviewId,
+							data : {"isLike" : -1},
+							success : function(){
+								console.log('ajax 통신 성공 - 싫어요')
+								hateBtn.addClass('clicked')
+								hateCount.val(Number(hateCount.val()) +1);
+							},
+							error : function(){
+								console.log('ajax 통신 실패')
+								alert("싫어요 실패")
+							}
+							
+						})
 					}
-
-
-
-
-				} else {
-					//이전에 아무것도 누르지 않은 상태 > 좋아요를 누를때 
-					console.log('이전에 아무것도 누르지 않은 상태 > 좋아요를 누를때  ')
-
-					//이전에 아무것도 누르지 않은 상태 > 싫어요를 누를때
-					console.log('이전에 아무것도 누르지 않은 상태 > 싫어요를 누를때 ')
 				}
+				console.log(clickedLikeHateButton);
 
-
-
-
-
-
-
-
-				var count = $(this).next().val();
-				$(this).next().val(Number(count) + 1);
-				console.log(Number(count) + 1);
-
-
-
-				//carousel option
-				$('.carousel').carousel({
-					interval: 2000
-				})
 			})
 
 		});
@@ -272,11 +384,17 @@
 									<label for="review-content">리뷰 내용 : ${reviewVo.reviewContent }</label>
 									<div class="form-group like-hate">
 										<div class="btn-group" data-toggle="buttons">
-											<input type="number" class="like-hate-count" value=${reviewVo.isLike }>
-											<input type="number" class="review-id" value=${reviewVo.review_id }>
-											<button type="button" class="btn btn-primary like-btn">좋아요</button>
+											<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+											<c:choose>
+												<c:when test="${reviewVo.isLike==1 }"><button type="button" class="btn btn-primary like-btn clicked">좋아요</button></c:when>
+												<c:otherwise><button type="button" class="btn btn-primary like-btn ">좋아요</button></c:otherwise>
+											</c:choose>
 											<input type="number" class="like-count" value=${reviewVo.likeCount }>
-											<button type="button" class="btn btn-primary hate-btn">싫어요</button>
+											<c:choose>
+												<c:when test="${reviewVo.isLike==-1 }"><button type="button" class="btn btn-primary hate-btn clicked">싫어요</button></c:when>
+												<c:otherwise><button type="button" class="btn btn-primary hate-btn">싫어요</button></c:otherwise>
+											</c:choose>
+											
 											<input type="number" class="hate-count" value=${reviewVo.hateCount }>
 										</div>
 									</div>

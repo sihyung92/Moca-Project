@@ -25,15 +25,103 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public List<ReviewVo> selectAll(int accountId, int storeId) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("account_id", accountId);
-		map.put("storeId", storeId);
+		map.put("ACCOUNTID", accountId);
+		map.put("STOREID", storeId);
 		
-		List<ReviewVo> list = sqlSession.selectList("review.selectAll",map);
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i).toString());
-		}
+		return sqlSession.selectList("review.selectAll",map);
 		
-		return list;
+//		List<ReviewVo> list = sqlSession.selectList("review.selectAll",map);
+//		for (int i = 0; i < list.size(); i++) {
+//			System.out.println(list.get(i).toString());
+//			logger.debug(list.get(i).toString());
+//		}
+//		
+//		return list;
+	}
+
+
+	@Override
+	public int insertLikeHateOne(int review_id, int accountId, int isLike) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("REVIEW_ID", review_id);
+		map.put("ACCOUNT_ID", accountId);
+		map.put("ISLIKE", isLike);
+		
+		return sqlSession.insert("review.insertLikeHateOne", map);
+		
+//		int a = sqlSession.insert("review.insertLikeHateOne", map);
+//		System.out.println("insertLikeHateOne result = "+a);
+//		
+//		return a;
+	}
+
+
+	@Override
+	public int updateLikeHateOne(int review_id, int accountId, int isLike) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("REVIEW_ID", review_id);
+		map.put("ACCOUNT_ID", accountId);
+		map.put("ISLIKE", isLike);
+		
+		return sqlSession.update("review.updateLikeHateOne", map);
+		
+//		int a = sqlSession.insert("review.updateLikeHateOne", map);
+//		System.out.println("updateLikeHateOne result = "+a);
+//		
+//		return a;
+	}
+
+
+	@Override
+	public int deleteLikeHateOne(int review_id, int accountId) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("REVIEW_ID", review_id);
+		map.put("ACCOUNT_ID", accountId);
+		
+		return sqlSession.delete("review.deleteLikeHate", map);
+		
+//		int a = sqlSession.insert("review.deleteLikeHateOne", map);
+//		System.out.println("deleteLikeHate result = "+a);
+//		
+//		return a;
+	}
+
+
+	@Override
+	public int updateLikeCount(int review_id, int likeCount) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("REVIEW_ID", review_id);
+		map.put("LIKECOUNT", likeCount);
+		int result = sqlSession.update("review.updateLikeCount", map);
+		logger.debug("updateLikeCount result:"+result);
+		return result;
+	}
+
+
+	@Override
+	public int updateHateCount(int review_id, int hateCount) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("REVIEW_ID", review_id);
+		map.put("HATECOUNT", hateCount);
+		int result = sqlSession.update("review.updateHateCount", map);
+		logger.debug("updateHateCount result:"+result);
+		return result;
+	}
+
+
+	@Override
+	public int selectLikeCount(int review_id) {
+		int likeCount = sqlSession.selectOne("review.selectLikeCount", review_id);
+		logger.debug("selectLikeCount likeCount:"+likeCount);
+		return likeCount;
+	}
+
+
+	@Override
+	public int selectHateCount(int review_id) {
+		int hateCount = sqlSession.selectOne("review.selectHateCount", review_id);
+		logger.debug("selectHateCount hateCount:"+hateCount);
+		return hateCount;
 	}
 
 }
