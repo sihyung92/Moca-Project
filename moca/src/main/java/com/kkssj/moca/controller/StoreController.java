@@ -2,11 +2,15 @@ package com.kkssj.moca.controller;
 
 
 import java.sql.SQLException;
+import java.sql.Time;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +29,7 @@ import com.kkssj.moca.service.StoreService;
 
 @Controller
 public class StoreController {
-	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+	private static final Logger logger = LoggerFactory.getLogger(StoreController.class);
 	
 	@Inject
 	StoreService storeService;
@@ -48,7 +53,7 @@ public class StoreController {
 	@GetMapping("/store/{storeId}")
 	public String getStore(@PathVariable("storeId") int storeId,  Model model) throws SQLException {
 		logger.debug("storeId : "+storeId+" - getStore");
-		logger.debug(storeService.getStore(storeId).toString());
+		//logger.debug(storeService.getStore(storeId).toString());
 		
 		model.addAttribute("storeVo", storeService.getStore(storeId));
 		//model.addAttribute("reviewVoList", "");
@@ -59,11 +64,18 @@ public class StoreController {
 	@PutMapping("/store/{storeId}")
 //	@PostMapping("/store/{storeId}")
 	@ResponseBody
-	public void updateStore(@PathVariable("storeId") int storeId, @RequestBody String msg, @ModelAttribute StoreVo storeVo) throws SQLException{
-		logger.debug("storeId : "+storeId+" - updateStore");
-		logger.debug(msg);
-		logger.debug(storeVo.toString());
+//	public void updateStore(@PathVariable("storeId") int storeId, @RequestBody String msg) throws SQLException{
+	public String updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo) throws SQLException{
+//	public String updateStore(@PathVariable("storeId") int storeId, @RequestParam("openTime") String openTime, @RequestParam("endTime") String endTime, @ModelAttribute StoreVo storeVo) throws SQLException{
 		
+		logger.debug("storeId : "+storeId+" - updateStore");
+//		logger.debug(msg);
+		logger.debug(storeVo.toString());
+//		logger.debug(openTime+"");
+//		logger.debug(endTime+"");
+		
+		//wifi, parkingLot, 
+    	return "{\"key\":\"value\"}";
 	}
 	
 	//¸®ºä ÀÔ·Â

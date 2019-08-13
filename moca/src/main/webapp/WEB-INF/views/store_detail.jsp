@@ -105,28 +105,65 @@
 	var updateStore = function(){
 
 
-		var params=$('#StoreInfoModal form').serialize();
+		//var params=$('#StoreInfoModal form').serializeObject();
+		var param = {
+				"wifi":$('input[name="wifi"]:checked').val(),
+				"parkingLot":$('input[name="parkingLot"]:checked').val()
+				//"dayOff":$('input[name="dayOff"]').val(),
+				//"openTime":$('input[name="openTime"]').val(),
+				//"endTime":$('input[name="endTime"]').val(),
+				//"url":$('input[name="url"]').val()				
+		};
+		console.log(param);
+
+		//post방식 성공
 		/*
-		$.post(${storeVo.store_Id},params,function(){
+		$.post(${storeVo.store_Id},params,function(data){
 			console.log("카페상세정보 수정성공");
-		});
+			//상세정보들 value 바꿔주기
+			
+			console.log(data.key);
+		}, "json");
 		*/
-		var data={store_Id:12};
+		
+		//var data={store_Id:12};
 		//카페 상세정보 수정
 		//put -> 수정
 		$.ajax({
 			type:'put',
 			url:${storeVo.store_Id},
-			//contentType:"application/json; charset=UTF-8",
-			//datatype: "json",
-			data: params,
+			contentType:"application/json; charset=UTF-8",
+			datatype: "json",
+			data: JSON.stringify(param),
 			error : function(errorMsg){
 				console.log("카페상세정보 수정실패",errorMsg);
 			},
 			success: function(data){
 				console.log("카페상세정보 수정성공");
+				//카페 정보 바꿔주기
+				console.log(data);
 			}
 		});
+	};
+
+	jQuery.fn.serializeObject = function() {
+	    var obj = null;
+	    try {
+	        if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
+	            var arr = this.serializeArray();
+	            if (arr) {
+	                obj = {};
+	                jQuery.each(arr, function() {
+	                    obj[this.name] = this.value;
+	                });
+	            }//if ( arr ) {
+	        }
+	    } catch (e) {
+	        alert(e.message);
+	    } finally {
+	    }
+	 
+	    return obj;
 	};
 </script>
 </head>
@@ -396,9 +433,7 @@
 		  <div class="form-group" >
 		    <label for="openTime" class="col-sm-2 control-label">영업시간</label>
 		    <div class="col-sm-10">
-		    <!-- 
-		     <input type="text" id="openTime" name="openTime"> - <input type="text" id="endTime" name="endTime">
-		     -->
+		     <input type="time" id="openTime" name="openTime"> - <input type="time" id="endTime" name="endTime">
 		    </div>
 		  </div>
 		  <div class="form-group" >

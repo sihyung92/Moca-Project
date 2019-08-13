@@ -13,6 +13,6 @@
   	SELECT * FROM STORE WHERE KAKAOID=#{val}
   </select>
   <insert id="insertOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
-  	INSERT INTO STORE(name,store_id,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{store_Id},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
+  	INSERT INTO STORE(name,store_id,kakaoid,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{store_Id},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
   </insert>
 </mapper>

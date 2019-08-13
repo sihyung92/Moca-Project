@@ -9,6 +9,7 @@ public class StoreVo {
 	private double xLocation, yLocation;
 	private double tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel, averageLevel;
 	private Time openTime,endTime;
+	private String openTime2,endTime2;
 	
 	public StoreVo() {
 		

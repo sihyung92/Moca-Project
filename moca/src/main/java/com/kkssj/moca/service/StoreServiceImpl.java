@@ -23,6 +23,8 @@ public class StoreServiceImpl implements StoreService {
 	public StoreVo addStore(StoreVo storeVo) throws SQLException {
 		int cnt =  storeDao.selectCnt(storeVo.getKakaoId());
 		System.out.println(storeVo.getKakaoId()+"store_id");
+		System.out.println(storeVo.toString());
+		System.out.println(cnt);
 		if(cnt==0){
 			storeDao.insertOne(storeVo);
 		}
