@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kkssj.moca.model.StoreDao">
   <select id="selectByTag" parameterType="Map" resultType="com.kkssj.moca.model.entity.StoreVo">
-	SELECT STORE_ID, ADDRESS, CATEGORY, KAKAOID, TEL, NAME, URL, ROADADDRESS, XLOCATION, YLOCATION, REVIEWCNT, VIEWCNT, (TASTELEVEL+PRICELEVEL+SERVICELEVEL+MOODLEVEL+CONVENIENCELEVEL)/5 "averageLevel", ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) "distance" FROM STORE WHERE TAG LIKE CONCAT('%',#{keyword},'%') ORDER BY #{filter}
+	SELECT STORE_ID, ADDRESS, CATEGORY, KAKAOID, TEL, NAME, URL, ROADADDRESS, XLOCATION, YLOCATION, REVIEWCNT, VIEWCNT, (TASTELEVEL+PRICELEVEL+SERVICELEVEL+MOODLEVEL+CONVENIENCELEVEL)/5 "averageLevel", ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) "distance" FROM STORE WHERE TAG LIKE CONCAT('%',#{keyword},'%') ORDER BY ${filter}
 	<if test="filter!='distance'">
 		DESC
 	</if>

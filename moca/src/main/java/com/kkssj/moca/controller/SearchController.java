@@ -69,6 +69,10 @@ public class SearchController {
 				variables.put("y", y);
 				variables.put("filter", filter);
 				logger.debug("DAO가기 전에 filter: "+filter);
+				List<StoreVo> test = storeService.getListByTag(variables);
+				for(StoreVo t: test) {
+					logger.debug(t.getName()+" distance: "+t.getDistance());
+				}
 				model.addAttribute("alist",storeService.getListByTag(variables));			
 				model.addAttribute("keyword", "#"+keyword);
 				model.addAttribute("filter", filter);
