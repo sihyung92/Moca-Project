@@ -1,12 +1,16 @@
 package com.kkssj.moca.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.SQLException;
 
-import com.kkssj.moca.model.entity.ReviewVo;
+import com.kkssj.moca.model.entity.StoreVo;
 
-public interface StoreDao{
-
+public interface StoreDao {
+	StoreVo selectOne(int store_Id) throws SQLException;
 	
+	StoreVo selectByKakaoId(int kakaoId) throws SQLException;
+	
+	int insertOne(StoreVo storeVo) throws SQLException;
+
+	int updateOne(StoreVo storeVo) throws SQLException;
 
 }

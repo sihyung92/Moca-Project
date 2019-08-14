@@ -39,39 +39,3 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        <a id="kakao-login-btn"></a>
-		<a href="http://developers.kakao.com/logout"></a>
-		<script type='text/javascript'>
-//로그인
-  //<![CDATA[
-    // 사용할 앱의 JavaScript 키를 설정해 주세요.
-    Kakao.init('a68431f6297034c2ce9844cdf33dfb43');
-    // 카카오 로그인 버튼을 생성합니다.
-    Kakao.Auth.createLoginButton({
-      container: '#kakao-login-btn',
-      success: function(authObj) {
-        alert(JSON.stringify(authObj));
-      },
-      fail: function(err) {
-         alert(JSON.stringify(err));
-      }
-    });
-  //]]>
-</script>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>

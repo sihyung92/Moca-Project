@@ -2,6 +2,7 @@ package com.kkssj.moca.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.SQLException;
 
 import javax.inject.Inject;
 
@@ -19,22 +20,32 @@ public class StoreServiceImpl implements StoreService{
 	@Inject
 	ReviewDao reviewDao;
 	
+	@Inject
+	StoreDao storeDao;
+
+	@Override
+	public StoreVo getStore(int store_Id) throws SQLException {
+		return storeDao.selectOne(store_Id);
+	}
+
+	@Override
+	public StoreVo addStore(StoreVo storeVo) throws SQLException {
+		
+		storeDao.insertOne(storeVo);
+		storeVo = storeDao.selectByKakaoId(storeVo.getKakaoId());
+		
+		return storeVo;
+	}
+
+	@Override
+	public int editStore(StoreVo storeVo) throws SQLException {
+		return storeDao.updateOne(storeVo);
+	}
+	
 
 	@Override
 	public List<ReviewVo> getReviewList(int accountId, int storeId) {
 		return reviewDao.selectAll(accountId, storeId);
-	}
-
-	@Override
-	public void getStore(Model model, int accountId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addStore(StoreVo storeVo) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -58,6 +69,5 @@ public class StoreServiceImpl implements StoreService{
 		return reviewDao.deleteLikeHateOne(review_id, accountId);
 	}
 
-	
 
 }
