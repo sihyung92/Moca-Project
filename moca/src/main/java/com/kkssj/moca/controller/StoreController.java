@@ -43,7 +43,7 @@ public class StoreController {
 			logger.debug("스토어 ID가 없습니다");
 			
 			//category 분류 후 분류된 카테고리로 set storeVo
-			storeVo.setCategory(changeCategory(storeVo.getCategory()));
+			storeVo.setCategory(changeCategory(storeVo.getCategory(),storeVo.getName()));
 			logger.debug(storeVo.getCategory());
 			logger.debug(storeVo.toString());
 			storeVo = storeService.addStore(storeVo);
@@ -121,14 +121,31 @@ public class StoreController {
 		//받는 쪽에서 refresh하게 
 	}
 	
-	public String changeCategory(String category){
-		//split
+	public String changeCategory(String category,String name){
+		//포함되면 해당 카테고리로 변환
+		//프랜차이즈(카테고리), 애견(카테고리), 스터디(이름), 고양이(카테고리), 만화+놀숲(이름), 보드(카테고리), 룸카페(이름)
+		String[] categoryCheck = {"커피전문점","애견","고양이","보드"};
+		String[] nameCheck = {"스터디","만화","놀숲","룸카페"};
 		
-		//커피전문점일때, 테마카페일때
+		for(int i=0; i<categoryCheck.length; i++) {
+			if(category.contains(categoryCheck[i])) {
+				if(categoryCheck[i].equals("커피전문점")) {
+					category = "프랜차이즈";
+				}else {
+					category = categoryCheck[i];
+				}
+			}
+		}
 		
-		//배열에 갖고 있는지 확인
-		String[] type = {};
-		//있으면 해당 카테고리로 전환
+		for(int i=0; i<nameCheck.length; i++) {
+			if(name.contains(nameCheck[i])) {
+				if(nameCheck[i].equals("놀숲")) {
+					category = "만화";
+				}else {
+					category = nameCheck[i];
+				}
+			}
+		}
 		
 		return category;
 	}

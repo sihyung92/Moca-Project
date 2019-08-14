@@ -64,7 +64,7 @@
  -->
 <form method="post" action="store">
 	<input type="number" name="kakaoId" value="414395112"/>
-	<input type="number" name="store_Id"/>
+	<input type="number" name="store_Id" value="0"/>
 	<input type="text" name="category" value="음식점 > 카페 > 커피전문점 > 스타벅스"/>
 	<input type="text" name="name" value="스타벅스 제주성산DT점"/>
 	<input type="tel" name="tel" value="064-782-3273"/>
