@@ -13,9 +13,16 @@
  <link rel="stylesheet" type="text/css" href="resources/css/jquery.mobile-1.4.5.css" />
  -->
  <style type="text/css">
-	.carousel-inner img{
-		margin: 0px auto;
-	}
+<!--크기 넘어가면 이미지 일부 안보이게 -->
+.carousel-inner img {
+	margin: 0px auto;
+}
+.carousel .carousel-inner img {
+	width: 100%;
+  	height: 20rem;
+  	object-fit: cover;
+  	overflow: hidden;
+}
 </style>
 <script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
@@ -29,7 +36,9 @@
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
-
+		//가져올때부터 수정 모달에 값 세팅
+		$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
+		$('input:radio[name=parkingLot]:input[value=' + ${storeVo.parkingLot} + ']').attr("checked", true);
 		
 		var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 	    mapOption = {
@@ -97,6 +106,7 @@
 	});
 
 	$('#updateStore').click(function(){
+		$(this).attr('data-dismiss',"modal");
 		updateStore();
 	});
 	
@@ -104,31 +114,22 @@
 
 	var updateStore = function(){
 
-
+		var checkTel = $('input[name="tel2"]').val();
+		if(checkTel!=""){checkTel=$('input[name="tel1"]').val()+"-"+$('input[name="tel2"]').val()+"-"+$('input[name="tel3"]').val()};
+		
 		//var params=$('#StoreInfoModal form').serializeObject();
 		var param = {
 				"wifi":$('input[name="wifi"]:checked').val(),
-				"parkingLot":$('input[name="parkingLot"]:checked').val()
-				//"dayOff":$('input[name="dayOff"]').val(),
-				//"openTime":$('input[name="openTime"]').val(),
-				//"endTime":$('input[name="endTime"]').val(),
-				//"url":$('input[name="url"]').val()				
+				"parkingLot":$('input[name="parkingLot"]:checked').val(),
+				"dayOff":$('input[name="dayOff"]').val(),
+				"openTime2":$('input[name="openTime"]').val(),
+				"endTime2":$('input[name="endTime"]').val(),
+				"tel":checkTel,
+				"url":$('input[name="url"]').val()				
 		};
 		console.log(param);
-
-		//post방식 성공
-		/*
-		$.post(${storeVo.store_Id},params,function(data){
-			console.log("카페상세정보 수정성공");
-			//상세정보들 value 바꿔주기
-			
-			console.log(data.key);
-		}, "json");
-		*/
 		
-		//var data={store_Id:12};
 		//카페 상세정보 수정
-		//put -> 수정
 		$.ajax({
 			type:'put',
 			url:${storeVo.store_Id},
@@ -141,29 +142,30 @@
 			success: function(data){
 				console.log("카페상세정보 수정성공");
 				//카페 정보 바꿔주기
-				console.log(data);
+				if(param.wifi=='0'){
+					$('#wifiInfo').html('없음');
+				}else if(param.wifi=='1'){
+					$('#wifiInfo').html('있음');
+				}else if(param.wifi=='-1'){
+					$('#wifiInfo').html('');
+				}
+				
+				if(param.parkingLot=='0'){
+					$('#parkingLotInfo').html('없음');
+				}else if(param.parkingLot=='1'){
+					$('#parkingLotInfo').html('있음');
+				}else if(param.parkingLot=='-1'){
+					$('#parkingLotInfo').html('');
+				}
+
+				$('#dayOffInfo').html(param.dayOff);
+				var dash = ' - ';
+				if(param.endTime2==''){dash='';};
+				$('#TimeInfo').html(param.openTime2+dash+param.endTime2);
+				$('#telInfo').html(param.tel);
+				$('#urlInfo').html(param.url);
 			}
 		});
-	};
-
-	jQuery.fn.serializeObject = function() {
-	    var obj = null;
-	    try {
-	        if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
-	            var arr = this.serializeArray();
-	            if (arr) {
-	                obj = {};
-	                jQuery.each(arr, function() {
-	                    obj[this.name] = this.value;
-	                });
-	            }//if ( arr ) {
-	        }
-	    } catch (e) {
-	        alert(e.message);
-	    } finally {
-	    }
-	 
-	    return obj;
 	};
 </script>
 </head>
@@ -180,54 +182,77 @@
   		
   		<!-- 태그 -->
   		<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
-  			<p>  		
+  			<p>
   		<c:forEach items="${tags}" var="tag">
+  				<c:if test="${tag ne ''}">
   				<button type="button" class="btn btn-default btn-sm">#${tag}</button>
+  				</c:if>
   		</c:forEach>
   			</p>
   		<!-- 로고 & 카페이름-->
   		<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
-  			<h1><img src="<c:url value="/resources/imgs/logo.png"/>" alt="logo" class="img-circle" style="width:100px;">&nbsp;${storeVo.name}</h1>
+  			<h1>
+  			<c:if test="${empty storeVo.logoImg}">
+	  			<img src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">  				  				
+  			</c:if>
+  			<c:if test="${not empty storeVo.logoImg}">
+	  			<img src="<c:url value="${storeVo.logoImg }"/>" alt="logo" class="img-circle" style="width:100px;">  				
+  			</c:if>
+  			&nbsp;${storeVo.name}</h1>
 		</div>
   	</div>
   </div>
   <div class="row">
   	<div class="col-md-4 col-md-offset-2">
-  		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-  <!-- Indicators -->
-  <ol class="carousel-indicators">
-    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-  </ol>
+  <!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->
+  	<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+	  <!-- Indicators -->
+	  <ol class="carousel-indicators">
+	  <c:set var="reviewImgs" value="${fn:split(storeVo.reviewImg,',')}" />
+	  	<c:forEach items="${reviewImgs}" var="reviewImg" varStatus="status">
+	  		<c:if test="${status.index eq 0}">
+		  		<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+	  		</c:if>
+	  		<c:if test="${status.index ne 0}">
+	  			<li data-target="#carousel-example-generic" data-slide-to="${status.index }"></li>
+	  		</c:if>
+	  	</c:forEach>
+	  </ol>
 
   <!-- Wrapper for slides -->
-  <!-- 갖고있는 이미지의 개수만큼 -->
-  <div class="carousel-inner" role="listbox">
-    <div class="item active">
-      <img src="<c:url value="/resources/imgs/logo.png"/>" alt="...">
-      <div class="carousel-caption">
-        ...
-      </div>
-    </div>
-    <div class="item">
-      <img src="<c:url value="/resources/imgs/logo.png"/>" alt="...">
-      <div class="carousel-caption">
-        ...
-      </div>
-    </div>
-  </div>
-
-  <!-- Controls -->
-  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
-</div>
+		<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+			<div class="carousel-inner" role="listbox">
+				<c:if test="${not empty storeVo.reviewImg}">
+					<c:forEach items="${reviewImgs}" var="reviewImg" varStatus="status">
+							<c:if test="${status.index eq 0}">
+								<div class="item active">
+							</c:if>
+							<c:if test="${status.index ne 0}">
+								<div class="item">
+							</c:if>
+							<img src="<c:url value="${reviewImg }"/>" alt="..." class="d-block w-100">
+							<div class="carousel-caption">...</div>
+						</div>
+					</c:forEach>
+				</c:if>
+				<c:if test="${empty storeVo.reviewImg}">
+						<img src="<c:url value="/resources/imgs/reviewDefault.png"/>" alt="..." class="d-block w-100">
+				</c:if>
+			</div>
+	
+			<!-- Controls -->
+			<a class="left carousel-control" href="#carousel-example-generic"
+				role="button" data-slide="prev"> <span
+				class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a> <a class="right carousel-control"
+				href="#carousel-example-generic" role="button" data-slide="next">
+				<span class="glyphicon glyphicon-chevron-right"
+				aria-hidden="true"></span> <span class="sr-only">Next</span>
+			</a>
+		</div>
+  	</div>
+	<!-- 갖고있는 이미지의 개수만큼  캐러셀 끝-->
   	</div>
   	<div class="col-md-4">
   		<canvas id="myChart"></canvas>
@@ -248,16 +273,33 @@
     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
       <div class="panel-body">
         	와이파이 : 
+        	<span id="wifiInfo">
         	<c:if test="${storeVo.wifi eq 0}">없음</c:if>
         	<c:if test="${storeVo.wifi eq 1}">있음</c:if>
+        	</span>
         	<br>
         	주차장 : 
+        	<span id="parkingLotInfo">
         	<c:if test="${storeVo.parkingLot eq 0}">없음</c:if>
         	<c:if test="${storeVo.parkingLot eq 1}">있음</c:if>
+        	</span>
         	<br>
-        	휴무일 : ${storeVo.dayOff}<br>
-        	영업시간 : ${fn:substring(storeVo.openTime,0,5)} - ${fn:substring(storeVo.endTime,0,5)}<br>
-        	홈페이지 : <a href="${storeVo.url}">${storeVo.url}</a><br>
+        	휴무일 : <span id="dayOffInfo">${storeVo.dayOff}</span><br>
+        	영업시간 :        	
+        	<span id="TimeInfo">
+        	${fn:substring(storeVo.openTime,11,16)} <c:if test="${not empty storeVo.endTime}"><c:out value="-"></c:out></c:if> ${fn:substring(storeVo.endTime,11,16)}
+        	</span>
+        	<br>
+        	전화번호 : 
+        	<span id="telInfo">
+        	${storeVo.tel}
+        	</span>
+        	<br>
+        	홈페이지 : 
+        	<span id="urlInfo">
+        	<a href="${storeVo.url}">${storeVo.url}</a>
+        	</span>
+        	<br>
         	<hr>
         	<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#StoreInfoModal">
 			  정보제공
@@ -401,13 +443,6 @@
       </div>
       <div class="modal-body" data-role="content">
         <form class="form-horizontal">
-		  <div class="form-group reviewer-info" style="display: none;">
-		  	<label for="nick-name">와이파이</label>
-		  	<label for="nick-name">주차장</label>
-		  	<label for="nick-name">휴무일</label>
-		  	<label for="nick-name">영업시간</label>
-		  	<label for="nick-name">홈페이지</label>
-		  </div>
 		  <div class="form-group" >
 		    <label for="wifi" class="col-sm-2 control-label">와이파이</label>
 		    <div class="col-sm-10">
@@ -427,19 +462,29 @@
 		  <div class="form-group" >
 		    <label for="dayOff" class="col-sm-2 control-label">휴무일</label>
 		    <div class="col-sm-10">
-		    <input type="text" id="dayOff" name="dayOff">
+		    <input type="text" id="dayOff" name="dayOff" value="${storeVo.dayOff}">
 		    </div>
 		  </div>
 		  <div class="form-group" >
 		    <label for="openTime" class="col-sm-2 control-label">영업시간</label>
 		    <div class="col-sm-10">
-		     <input type="time" id="openTime" name="openTime"> - <input type="time" id="endTime" name="endTime">
+		     <input type="time" id="openTime" name="openTime" value="${fn:substring(storeVo.openTime,11,16)}"> - <input type="time" id="endTime" name="endTime" value="${fn:substring(storeVo.endTime,11,16)}">
+		    </div>
+		  </div>
+		  <div class="form-group" >
+		    <label for="tel" class="col-sm-2 control-label">전화번호</label>
+		    <div class="col-sm-10">
+		     <input type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:substring(storeVo.tel,0,3)}" />
+		     -
+             <input type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,4,8)}" />
+             -
+             <input type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,9,13)}" />
 		    </div>
 		  </div>
 		  <div class="form-group" >
 		    <label for="url" class="col-sm-2 control-label">홈페이지</label>
 		    <div class="col-sm-10">
-		    <input type="url" id="url" name="url">
+		    <input type="url" id="url" name="url" pattern="https?://.+" value="${storeVo.url }">
 		    </div>
 		  </div>
 		</form>

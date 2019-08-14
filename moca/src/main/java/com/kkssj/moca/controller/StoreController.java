@@ -2,15 +2,13 @@ package com.kkssj.moca.controller;
 
 
 import java.sql.SQLException;
-import java.sql.Time;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,9 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.kkssj.moca.model.entity.StoreVo;
 import com.kkssj.moca.service.StoreService;
@@ -38,13 +33,22 @@ public class StoreController {
 	@PostMapping("/store")
 	public String addStore(@ModelAttribute StoreVo storeVo, Model model) throws SQLException {
 		logger.info("getStoreId");
-
-		//category
-		storeVo.setCategory(changeCategory(storeVo.getCategory()));
 		
-		//vo 객체로 전달된 값으로 데이터가 있는 지 검색한 후 없으면 insert, 있으면 vo리턴
-		storeVo = storeService.addStore(storeVo);
-		logger.debug(storeVo.toString());
+		//여기서 스토어ID가 있으면(0이 아니면) -> insert 안하고, 스토어ID가 없으면 insert 해야함
+		logger.debug("storeId : "+storeVo.getStore_Id());
+		
+		//없으면 insert
+		//거짓 insert가 쓸때없이 많이 일어났을 때 ALTER TABLE STORE AUTO_INCREMENT=변경할값;으로 seq 초기화 
+		if(storeVo.getStore_Id()==0) {
+			logger.debug("스토어 ID가 없습니다");
+			
+			//category 분류 후 분류된 카테고리로 set storeVo
+			storeVo.setCategory(changeCategory(storeVo.getCategory()));
+			logger.debug(storeVo.getCategory());
+			logger.debug(storeVo.toString());
+			storeVo = storeService.addStore(storeVo);
+			logger.debug(storeVo.toString());
+		}
 		
  		return "redirect:store/"+storeVo.getStore_Id();
 	}
@@ -53,29 +57,43 @@ public class StoreController {
 	@GetMapping("/store/{storeId}")
 	public String getStore(@PathVariable("storeId") int storeId,  Model model) throws SQLException {
 		logger.debug("storeId : "+storeId+" - getStore");
-		//logger.debug(storeService.getStore(storeId).toString());
+
+		StoreVo storeVo = storeService.getStore(storeId);
+		logger.debug(storeVo.toString());
+
+		//이때 storeVo에 store_id 값이 없으면 해당페이지 없다는 view 리턴
+		if(storeVo.getStore_Id()==0) {
+			//return "에러페이지";
+		}
 		
-		model.addAttribute("storeVo", storeService.getStore(storeId));
-		//model.addAttribute("reviewVoList", "");
+		model.addAttribute("storeVo", storeVo);
 		
  		return "store_detail";
 	}
 	
 	@PutMapping("/store/{storeId}")
-//	@PostMapping("/store/{storeId}")
-	@ResponseBody
-//	public void updateStore(@PathVariable("storeId") int storeId, @RequestBody String msg) throws SQLException{
-	public String updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo) throws SQLException{
-//	public String updateStore(@PathVariable("storeId") int storeId, @RequestParam("openTime") String openTime, @RequestParam("endTime") String endTime, @ModelAttribute StoreVo storeVo) throws SQLException{
+	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo) throws SQLException{
 		
+		//회원만 가능하게 로그인 기능 구현되면 붙여넣을 것
+		
+		storeVo.setStore_Id(storeId);
 		logger.debug("storeId : "+storeId+" - updateStore");
-//		logger.debug(msg);
 		logger.debug(storeVo.toString());
-//		logger.debug(openTime+"");
-//		logger.debug(endTime+"");
 		
-		//wifi, parkingLot, 
-    	return "{\"key\":\"value\"}";
+		int isSuccess = storeService.editStore(storeVo);
+		ResponseEntity entity=null;
+		
+		if(isSuccess>0) {
+			//성공
+			entity=ResponseEntity
+					.status(HttpStatus.OK).body(null);
+		}else {
+			//실패
+			entity=ResponseEntity
+					.status(HttpStatus.BAD_REQUEST).body(null);
+		}
+		
+		return entity;
 	}
 	
 	//리뷰 입력
@@ -104,6 +122,13 @@ public class StoreController {
 	}
 	
 	public String changeCategory(String category){
+		//split
+		
+		//커피전문점일때, 테마카페일때
+		
+		//배열에 갖고 있는지 확인
+		String[] type = {};
+		//있으면 해당 카테고리로 전환
 		
 		return category;
 	}

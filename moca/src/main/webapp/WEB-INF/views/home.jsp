@@ -46,8 +46,33 @@
 	Hello world!  
 </h1>
 <!-- 목록 예시 -->
+<!-- 
+{
+      "address_name": "제주특별자치도 서귀포시 성산읍 고성리 238",
+      "category_group_code": "CE7",
+      "category_group_name": "카페",
+      "category_name": "음식점 > 카페 > 커피전문점 > 스타벅스",
+      "distance": "",
+      "id": "414395112",
+      "phone": "064-782-3273",
+      "place_name": "스타벅스 제주성산DT점",
+      "place_url": "http://place.map.kakao.com/414395112",
+      "road_address_name": "제주특별자치도 서귀포시 성산읍 일출로 80",
+      "x": "126.920676533644",
+      "y": "33.4496930061935"
+    },
+ -->
 <form method="post" action="store">
-	<input type="number" name="kakaoId"/>
+	<input type="number" name="kakaoId" value="414395112"/>
+	<input type="number" name="store_Id"/>
+	<input type="text" name="category" value="음식점 > 카페 > 커피전문점 > 스타벅스"/>
+	<input type="text" name="name" value="스타벅스 제주성산DT점"/>
+	<input type="tel" name="tel" value="064-782-3273"/>
+	<input type="text" name="address" value="제주특별자치도 서귀포시 성산읍 고성리 238"/>
+	<input type="text" name="roadAddress" value="제주특별자치도 서귀포시 성산읍 일출로 80"/>
+	<input type="text" name="xLocation" value="126.920676533644"/>
+	<input type="text" name="yLocation" value="33.4496930061935"/>
+	<input type="text" name="distance" value="50"/>
 	<button type="submit">상세</button>
 </form>
 <table class="table">

@@ -6,13 +6,13 @@
   <select id="selectOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT * FROM STORE WHERE STORE_ID=#{val}
   </select>
-  <select id="selectCnt" parameterType="Integer" resultType="Integer">
-  	SELECT COUNT(*) FROM STORE WHERE KAKAOID=#{val}
-  </select>
-  <select id="selectKakaoId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
+  <select id="selectByKakaoId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT * FROM STORE WHERE KAKAOID=#{val}
   </select>
   <insert id="insertOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
-  	INSERT INTO STORE(name,store_id,kakaoid,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{store_Id},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
+  	INSERT INTO STORE(name,kakaoid,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
   </insert>
+  <update id="updateOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
+  	UPDATE STORE SET wifi=#{wifi}, parkingLot=#{parkingLot}, dayOff=#{dayOff}, openTime=#{openTime}, endTime=#{endTime}, tel=#{tel}, url=#{url} WHERE store_id=#{store_Id}
+  </update>
 </mapper>

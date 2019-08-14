@@ -1,6 +1,7 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -25,13 +26,13 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
-	public StoreVo selectKakaoId(int kakaoId) throws SQLException {
-		return sqlsession.selectOne("store.selectKakaoId", kakaoId);
+	public StoreVo selectByKakaoId(int kakaoId) throws SQLException {
+		return sqlsession.selectOne("store.selectByKakaoId", kakaoId);
 	}
 
 	@Override
-	public int selectCnt(int kakaoId) throws SQLException {
-		return sqlsession.selectOne("store.selectCnt", kakaoId);
+	public int updateOne(StoreVo storeVo) throws SQLException {
+		return sqlsession.update("store.updateOne", storeVo);
 	}
 
 }

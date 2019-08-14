@@ -1,23 +1,28 @@
 package com.kkssj.moca.model.entity;
 
-import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class StoreVo {
 	private int store_Id, kakaoId, reviewCnt, wifi, parkingLot, viewCnt;
-	private String name, category, url, tag, dayOff;
+	private String name, category, url, tag, dayOff, tel;
 	private String address,roadAddress;
-	private double xLocation, yLocation;
+	private String xLocation, yLocation, distance;
+	private String logoImg, reviewImg;
 	private double tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel, averageLevel;
-	private Time openTime,endTime;
+	private Date openTime,endTime;
 	private String openTime2,endTime2;
 	
 	public StoreVo() {
 		
 	}
 	
-	public StoreVo(int store_Id, int kakaoId, String name,String category,String address,String roadAddress,double xLocation,
-			 double yLocation, String url, String tag, int reviewCnt, int viewCnt,Time openTime, Time endTime,
-			 int wifi, int parkingLot, String dayOff, double tasteLevel, double priceLevel, double serviceLevel, double moodLevel, double convenienceLevel)
+	public StoreVo(int store_Id, int kakaoId, String name,String category,String address,String roadAddress,String xLocation,
+			 String yLocation, String url, String tag, int reviewCnt, int viewCnt,Date openTime, Date endTime,
+			 int wifi, int parkingLot, String dayOff, String tel, double tasteLevel, double priceLevel, double serviceLevel, double moodLevel, double convenienceLevel,
+			 String logoImg, String reviewImg)
 	{
 		super();
 		this.store_Id = store_Id;
@@ -31,6 +36,7 @@ public class StoreVo {
 		this.url = url;
 		this.tag = tag;
 		this.dayOff = dayOff;
+		this.tel = tel;
 		this.address = address;
 		this.roadAddress = roadAddress;
 		this.xLocation = xLocation;
@@ -42,14 +48,25 @@ public class StoreVo {
 		this.convenienceLevel = convenienceLevel;
 		this.openTime = openTime;
 		this.endTime = endTime;
+		this.setLogoImg(logoImg);
+		this.setReviewImg(reviewImg);
 	}
-
+	
+	
 	public int getStore_Id() {
 		return store_Id;
 	}
 
 	public void setStore_Id(int store_Id) {
 		this.store_Id = store_Id;
+	}
+
+	public int getKakaoId() {
+		return kakaoId;
+	}
+
+	public void setKakaoId(int kakaoId) {
+		this.kakaoId = kakaoId;
 	}
 
 	public int getReviewCnt() {
@@ -116,6 +133,22 @@ public class StoreVo {
 		this.tag = tag;
 	}
 
+	public String getDayOff() {
+		return dayOff;
+	}
+
+	public void setDayOff(String dayOff) {
+		this.dayOff = dayOff;
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
 	public String getAddress() {
 		return address;
 	}
@@ -132,20 +165,28 @@ public class StoreVo {
 		this.roadAddress = roadAddress;
 	}
 
-	public double getxLocation() {
+	public String getxLocation() {
 		return xLocation;
 	}
 
-	public void setxLocation(double xLocation) {
+	public void setxLocation(String xLocation) {
 		this.xLocation = xLocation;
 	}
 
-	public double getyLocation() {
+	public String getyLocation() {
 		return yLocation;
 	}
 
-	public void setyLocation(double yLocation) {
+	public void setyLocation(String yLocation) {
 		this.yLocation = yLocation;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
 	}
 
 	public double getTasteLevel() {
@@ -176,8 +217,8 @@ public class StoreVo {
 		return moodLevel;
 	}
 
-	public void setMoodLevel(double modeLevel) {
-		this.moodLevel = modeLevel;
+	public void setMoodLevel(double moodLevel) {
+		this.moodLevel = moodLevel;
 	}
 
 	public double getConvenienceLevel() {
@@ -196,36 +237,56 @@ public class StoreVo {
 		this.averageLevel = averageLevel;
 	}
 
-	public Time getOpenTime() {
+	public Date getOpenTime() {
 		return openTime;
 	}
 
-	public void setOpenTime(Time openTime) {
+	public void setOpenTime(Date openTime) {
 		this.openTime = openTime;
 	}
 
-	public Time getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Time endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	
-	public int getKakaoId() {
-		return kakaoId;
+
+	public void setOpenTime2(String openTime2) {
+		DateFormat fommatter = new SimpleDateFormat("HH:mm");
+		try {
+			this.openTime = (Date) fommatter.parse(openTime2);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		this.openTime2 = openTime2;
 	}
 
-	public void setKakaoId(int kakaoId) {
-		this.kakaoId = kakaoId;
+	public void setEndTime2(String endTime2) {
+		DateFormat fommatter = new SimpleDateFormat("HH:mm");
+		try {
+			this.endTime = (Date) fommatter.parse(endTime2);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		this.endTime2 = endTime2;
 	}
 	
-	public String getDayOff() {
-		return dayOff;
+	public String getLogoImg() {
+		return logoImg;
 	}
 
-	public void setDayOff(String dayOff) {
-		this.dayOff = dayOff;
+	public void setLogoImg(String logoImg) {
+		this.logoImg = logoImg;
+	}
+
+	public String getReviewImg() {
+		return reviewImg;
+	}
+
+	public void setReviewImg(String reviewImg) {
+		this.reviewImg = reviewImg;
 	}
 
 	@Override
@@ -237,9 +298,10 @@ public class StoreVo {
 		temp = Double.doubleToLongBits(averageLevel);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((category == null) ? 0 : category.hashCode());
-		result = prime * result + ((dayOff == null) ? 0 : dayOff.hashCode());
 		temp = Double.doubleToLongBits(convenienceLevel);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((dayOff == null) ? 0 : dayOff.hashCode());
+		result = prime * result + ((distance == null) ? 0 : distance.hashCode());
 		result = prime * result + kakaoId;
 		temp = Double.doubleToLongBits(moodLevel);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
@@ -255,13 +317,12 @@ public class StoreVo {
 		result = prime * result + ((tag == null) ? 0 : tag.hashCode());
 		temp = Double.doubleToLongBits(tasteLevel);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((tel == null) ? 0 : tel.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		result = prime * result + viewCnt;
 		result = prime * result + wifi;
-		temp = Double.doubleToLongBits(xLocation);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(yLocation);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((xLocation == null) ? 0 : xLocation.hashCode());
+		result = prime * result + ((yLocation == null) ? 0 : yLocation.hashCode());
 		return result;
 	}
 
@@ -286,12 +347,17 @@ public class StoreVo {
 				return false;
 		} else if (!category.equals(other.category))
 			return false;
+		if (Double.doubleToLongBits(convenienceLevel) != Double.doubleToLongBits(other.convenienceLevel))
+			return false;
 		if (dayOff == null) {
 			if (other.dayOff != null)
 				return false;
 		} else if (!dayOff.equals(other.dayOff))
 			return false;
-		if (Double.doubleToLongBits(convenienceLevel) != Double.doubleToLongBits(other.convenienceLevel))
+		if (distance == null) {
+			if (other.distance != null)
+				return false;
+		} else if (!distance.equals(other.distance))
 			return false;
 		if (kakaoId != other.kakaoId)
 			return false;
@@ -324,6 +390,11 @@ public class StoreVo {
 			return false;
 		if (Double.doubleToLongBits(tasteLevel) != Double.doubleToLongBits(other.tasteLevel))
 			return false;
+		if (tel == null) {
+			if (other.tel != null)
+				return false;
+		} else if (!tel.equals(other.tel))
+			return false;
 		if (url == null) {
 			if (other.url != null)
 				return false;
@@ -333,9 +404,15 @@ public class StoreVo {
 			return false;
 		if (wifi != other.wifi)
 			return false;
-		if (Double.doubleToLongBits(xLocation) != Double.doubleToLongBits(other.xLocation))
+		if (xLocation == null) {
+			if (other.xLocation != null)
+				return false;
+		} else if (!xLocation.equals(other.xLocation))
 			return false;
-		if (Double.doubleToLongBits(yLocation) != Double.doubleToLongBits(other.yLocation))
+		if (yLocation == null) {
+			if (other.yLocation != null)
+				return false;
+		} else if (!yLocation.equals(other.yLocation))
 			return false;
 		return true;
 	}
@@ -344,12 +421,13 @@ public class StoreVo {
 	public String toString() {
 		return "StoreVo [store_Id=" + store_Id + ", kakaoId=" + kakaoId + ", reviewCnt=" + reviewCnt + ", wifi=" + wifi
 				+ ", parkingLot=" + parkingLot + ", viewCnt=" + viewCnt + ", name=" + name + ", category=" + category
-				+ ", url=" + url + ", tag=" + tag + ", dayOff=" + dayOff + ", address=" + address + ", roadAddress="
-				+ roadAddress + ", xLocation=" + xLocation + ", yLocation=" + yLocation + ", tasteLevel=" + tasteLevel
-				+ ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", moodLevel=" + moodLevel
-				+ ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel + ", openTime=" + openTime
-				+ ", endTime=" + endTime + "]";
+				+ ", url=" + url + ", tag=" + tag + ", dayOff=" + dayOff + ", tel=" + tel + ", address=" + address
+				+ ", roadAddress=" + roadAddress + ", xLocation=" + xLocation + ", yLocation=" + yLocation
+				+ ", distance=" + distance + ", logoImg=" + logoImg + ", reviewImg=" + reviewImg + ", tasteLevel="
+				+ tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", moodLevel="
+				+ moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel
+				+ ", openTime=" + openTime + ", endTime=" + endTime + ", openTime2=" + openTime2 + ", endTime2="
+				+ endTime2 + "]";
 	}
-	
 	
 }
