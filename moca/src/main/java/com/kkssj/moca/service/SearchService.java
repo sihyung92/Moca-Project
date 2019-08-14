@@ -7,6 +7,6 @@ import com.kkssj.moca.model.entity.StoreVo;
 
 public interface SearchService {
 
-	List<StoreVo> tagSearch(Map<String, String> variables);
-	
+	List<StoreVo> getListByTag(Map<String, String> variables);
+	StoreVo checkByKakaoId(int kakaoId);
 }

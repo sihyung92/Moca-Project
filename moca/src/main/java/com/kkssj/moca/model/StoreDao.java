@@ -7,6 +7,7 @@ import com.kkssj.moca.model.entity.StoreVo;
 
 public interface StoreDao {
 
-	List<StoreVo> selectByTag(Map<String, String> variables);
+	List<StoreVo> selectListByTag(Map<String, String> variables);
+	StoreVo selectByKakaoId(int kakaoId);
 
 }

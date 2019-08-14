@@ -6,4 +6,7 @@
   <select id="selectByTag" parameterType="Map" resultType="com.kkssj.moca.model.entity.StoreVo">
 	SELECT *, st_distance_sphere(point(xLocation, yLocation), point(#{x}, #{y})) "distance" FROM STORE WHERE TAG LIKE CONCAT('%',#{keyword},'%') ORDER BY DISTANCE DESC
   </select>
+  <select id="com.kkssj.moca.model.StoreDao.selectByKakaoId" parameterType="INTEGER" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	SELECT store_id, tag, reviewCnt, viewCnt, (tasteLevel+priceLevel+serviceLevel+moodLevel+convenienceLevel)/5 "averageLevel" FROM STORE WHERE KAKAOID=#{id}
+  </select>
 </mapper>

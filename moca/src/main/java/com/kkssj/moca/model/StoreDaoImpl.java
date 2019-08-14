@@ -22,8 +22,13 @@ public class StoreDaoImpl implements StoreDao {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
 	@Override
-	public List<StoreVo> selectByTag(Map<String, String> variables) {
+	public List<StoreVo> selectListByTag(Map<String, String> variables) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectByTag", variables);
+	}
+
+	@Override
+	public StoreVo selectByKakaoId(int kakaoId) {
+		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectByKakaoId", kakaoId);
 	}
 
 }

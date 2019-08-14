@@ -3,6 +3,11 @@
 <html>
 <head>
 	<title>Home</title>
+	<style type="text/css">
+	#header{
+		background-color:pink;
+	}
+	</style>
 	<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
 	<script type="text/javascript">
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
@@ -56,11 +61,16 @@
 </head>
 <body>
 <h1>메인 페이지</h1>
-<form action="search">
-	<input type="hidden" name="x" id="lng"/>
-	<input type="hidden" name="y" id="lat"/>
-	키워드는 <input type="text" name="keyword"/>
-	<button>입니당</button>
-</form>	
+<div id="header">
+	<br/>
+	<form action="search">
+		<input type="hidden" name="x" id="lng"/>
+		<input type="hidden" name="y" id="lat"/>
+		키워드는 <input type="text" name="keyword"/>
+		<button>입니당</button>
+	</form>	
+	<br/>
+</div>
+----------------------------------------------------------------------------------------------------------여기까지 header 아아아아----------------------------------------------------------------------------------------------------------
 </body>
 </html>

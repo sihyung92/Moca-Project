@@ -16,9 +16,14 @@ public class SearchServiceImpl implements SearchService {
 	StoreDao storeDao;
 	
 	@Override
-	public List<StoreVo> tagSearch(Map<String, String> variables) {		
+	public List<StoreVo> getListByTag(Map<String, String> variables) {		
 		//(할일)정렬해주기
-		return storeDao.selectByTag(variables);
+		return storeDao.selectListByTag(variables);
+	}
+
+	@Override
+	public StoreVo checkByKakaoId(int kakaoId) {		
+		return storeDao.selectByKakaoId(kakaoId);
 	}
 
 }
