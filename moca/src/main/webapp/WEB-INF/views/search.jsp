@@ -23,6 +23,18 @@
 	.center{
 		color : black;
 	}
+	.seoul{
+		border : 1px solid black;
+	}
+	.gyeonggi{
+		border : 1px solid black;
+	}
+	.S_Region{
+		display : none;
+	}
+	.G_Region{
+		display : none;
+	}
 	
 </style>
 <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
@@ -49,7 +61,13 @@
             form.submit();
             //post 방식으로 detail페이지 연결-, vo객체랑 같이.
         });
-             
+//지역 필터 클릭 이벤트
+		$('.seoul').click(function(){
+			$('.S_Region').show();
+		})
+		$('.gyeonggi').click(function(){
+			$('.G_Region').show();
+		});
 //GeoLocation API에서 현재 위치의 위도&경도 얻기
         if (navigator.geolocation) // 브라우저에서 웹 지오로케이션 지원여부 판단
         {
@@ -184,9 +202,25 @@
 		<button>입니당</button>
 		<br/>
 		<input type="radio" name="filter"><span>평점순</span>
-		<input type="radio" name="filer"><span>리뷰순</span>
+		<input type="radio" name="filter"><span>리뷰순</span>
 		<input type="radio" name="filter"><span>조회순</span>
 		<input type="radio" name="filter" checked="checked"><span>거리순</span>
+		<br/>
+		<span class="seoul">
+			서울
+			<div class="S_Region">
+				<input type="radio" name="region" value="강남구"><span>강남구</span>
+				<input type="radio" name="region" value="서초구"><span>서초구</span>
+			</div>
+		</span>
+		<span class="gyeonggi">
+			경기
+			<div class="G_Region">
+				<input type="radio" name="region" value="군포시"><span>군포시</span>
+				<input type="radio" name="region" value="안양시"><span>안양시</span>
+				<input type="radio" name="region" value="남양주시"><span>남양주시</span>
+			</div>
+		</span>
 	</form>	
 </div>
 <br/><br/>

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -35,12 +36,17 @@ public class SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public String search(String keyword, String x, String y, String filter, Model model) throws MalformedURLException {
+	public String search(String keyword, String x, String y, String filter, String region, Model model) throws MalformedURLException {
 	////검색 옵션 디폴트 값 및 파라미터 처리	
 		List<StoreVo> cafeInfoList= new ArrayList<StoreVo>();
 		int page=1;
 		//위치정보 제공하지 않는 브라우저로 접근 시, 디폴트 위치는 비트캠프 강남 센터! :p
-		if(x.equals("") || y.equals("")) {
+		//region을 찍었을 때는, 해당 region의 x,y좌표로 검색! x는 경도, y는 위도
+		if(region!=null&&!region.equals("")) {
+			Properties regionLatLng = storeService.getByRegion(region);
+			y = (String) regionLatLng.get("xLocation");
+			x = (String) regionLatLng.get("yLocation");
+		}else if(x.equals("") || y.equals("")) {
 			y = "37.4995011";
 			x = "127.0291403";
 		}
@@ -64,6 +70,9 @@ public class SearchController {
 				variables.put("keyword", keyword);
 				variables.put("x", x);
 				variables.put("y", y);
+				if(region!=null&&!region.equals("")) {
+					variables.put("region",region);
+				}
 				model.addAttribute("alist",storeService.getListByTag(variables));				
 				return "search";
 			}			
@@ -117,6 +126,8 @@ public class SearchController {
 				d.setViewCnt(temp.getViewCnt());
 				d.setAverageLevel(temp.getAverageLevel());
 				logger.debug(d.getKakaoId()+"의 평점: "+d.getAverageLevel());
+			}else {
+				d.setStore_Id(0);
 			}
 		}
 		
