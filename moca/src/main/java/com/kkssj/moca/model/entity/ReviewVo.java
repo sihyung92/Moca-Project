@@ -18,6 +18,9 @@ public class ReviewVo {
 	private String nickName;
 	private int followCount, reviewCount;
 	
+	//내가 쓴 댓글인지 (table엔 없음)
+	private int isMine;
+	
 	public ReviewVo() {
 	}
 	

@@ -113,6 +113,9 @@
 						$.ajax({
 							type: 'DELETE',
 							url: '/moca/likeHates/' + reviewId,
+							data: {
+								"isLike": 1
+							},
 							success: function() {
 								console.log('ajax 통신 성공 - 좋아요 취소')
 								likeBtn.removeClass('clicked')
@@ -224,6 +227,9 @@
 						$.ajax({
 							type: 'DELETE',
 							url: '/moca/likeHates/' + reviewId,
+							data: {
+								"isLike": -1
+							},
 							success: function() {
 								console.log('ajax 통신 성공 - 싫어요 취소')
 								//ajax 통신하고 성공시 

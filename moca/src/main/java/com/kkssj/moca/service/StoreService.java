@@ -31,5 +31,7 @@ public interface StoreService {
 	int editLikeHate(int review_id, int accountId, int isLike);
 
 	//좋아요 싫어요 제거
-	int deleteLikeHate(int review_id, int accountId);
+	int deleteLikeHate(int review_id, int accountId, int isLike);
+
+	int syncReviewLikeHate(int reviewId);
 }

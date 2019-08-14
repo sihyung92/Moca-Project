@@ -8,11 +8,11 @@ public interface ReviewDao {
 
 	List<ReviewVo> selectAll(int accountId, int storeId);
 
-	int insertLikeHateOne(int review_id, int accountId, int isLike);
+	int insertLikeHate(int review_id, int accountId, int isLike);
 	
-	int updateLikeHateOne(int review_id, int accountId, int isLike);
+	int updateLikeHate(int review_id, int accountId, int isLike);
 
-	int deleteLikeHateOne(int review_id, int accountId);
+	int deleteLikeHate(int review_id, int accountId);
 
 	int updateLikeCount(int review_id, int likeCount);
 	

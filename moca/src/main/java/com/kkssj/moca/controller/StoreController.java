@@ -35,7 +35,7 @@ public class StoreController {
 	StoreService storeService;
 
  	//처음 상세페이지로 접속, vo 객체로 받기
-	@PostMapping("/store")
+	@PostMapping("/stores")
 	public String addStore(@ModelAttribute StoreVo storeVo, Model model) throws SQLException {
 		logger.info("getStoreId");
 		
@@ -55,11 +55,11 @@ public class StoreController {
 			logger.debug(storeVo.toString());
 		}
 		
- 		return "redirect:store/"+storeVo.getStore_Id();
+ 		return "redirect:stores/"+storeVo.getStore_Id();
 	}
 
  	//리다이렉트로 상세페이지로
-	@GetMapping("/store/{storeId}")
+	@GetMapping("/stores/{storeId}")
 	public String getStore(@PathVariable("storeId") int storeId,  Model model) throws SQLException {
 		logger.debug("storeId : "+storeId+" - getStore");
 
@@ -126,14 +126,15 @@ public class StoreController {
 	
 	//좋아요 싫어요 삭제
 	@DeleteMapping("/likeHates/{review_id}")
-	public ResponseEntity  deleteLikeHate(@PathVariable("review_id") int review_id) {		
+	public ResponseEntity  deleteLikeHate(@PathVariable("review_id") int review_id, @RequestParam int isLike) {		
 		//계정 정보를 받아오고
 		int accountId =1;	
 		
 		logger.debug("accountId :" + accountId);
 		logger.debug("review_id :" + review_id);
+		logger.debug("isLike :" + isLike);
 		
-		if(storeService.deleteLikeHate(review_id, accountId) ==1) {
+		if(storeService.deleteLikeHate(review_id, accountId, isLike) ==1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -144,7 +145,7 @@ public class StoreController {
 
 
 
-	@PutMapping("/store/{storeId}")
+	@PutMapping("/stores/{storeId}")
 	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo) throws SQLException{
 		
 		//회원만 가능하게 로그인 기능 구현되면 붙여넣을 것
@@ -170,14 +171,14 @@ public class StoreController {
 	}
 
 	//리뷰 입력
-	@PostMapping("/review")
+	@PostMapping("/reviews")
 	public String addReview() {
 		
 		return ""; 
 	}
 	
 	//리뷰 수정
-	@PutMapping("/review")
+	@PutMapping("/reviews")
 	public void editReview() {
 		
 		//json으로 수정 내용 전송
@@ -186,12 +187,18 @@ public class StoreController {
 	}
 	
 	//리뷰 삭제
-	@DeleteMapping("/review")
+	@DeleteMapping("/reviews")
 	public void deleteReview() {
 		
 		//json으로 삭제 
 		
 		//받는 쪽에서 refresh하게 
+	}
+	
+	//리뷰 좋아요수 동기화
+	@GetMapping("/reviewsLikeHate/{reviewId}")
+	public void syncReviewLikeHate(@PathVariable("reviewId") int reviewId) {
+		int result = storeService.syncReviewLikeHate(reviewId);
 	}
 	
 	public String changeCategory(String category,String name){

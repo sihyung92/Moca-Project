@@ -50,23 +50,37 @@ public class StoreServiceImpl implements StoreService{
 
 	@Override
 	public int addLikeHate(int review_id, int accountId, int isLike) {
-		if(reviewDao.insertLikeHateOne(review_id, accountId, isLike ) ==1) {
-			return reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+isLike) ;
+		reviewDao.insertLikeHate(review_id, accountId, isLike );
+		if(isLike ==1) {
+			return reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+1) ;
+		}else { 
+			return reviewDao.updateHateCount(review_id, reviewDao.selectHateCount(review_id)+1) ;
 		}
-		return -1;
 	}
+	@Override
+	public int deleteLikeHate(int review_id, int accountId, int isLike) {
+		reviewDao.deleteLikeHate(review_id, accountId);
+		if(isLike ==1) {
+			return reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)-1) ;
+		}else { 
+			return reviewDao.updateHateCount(review_id, reviewDao.selectHateCount(review_id)-1) ;
+		}
 
+	}
 	@Override
 	public int editLikeHate(int review_id, int accountId, int isLike) {
-		if(reviewDao.updateLikeHateOne(review_id, accountId, isLike) ==1) {
-			return reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+isLike) ;
-		}
-		return -1;
+		reviewDao.updateLikeHate(review_id, accountId, isLike);
+		reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+isLike) ;
+		reviewDao.updateHateCount(review_id, reviewDao.selectHateCount(review_id)-isLike) ;
+		return 1;
 	}
 
+	
+
 	@Override
-	public int deleteLikeHate(int review_id, int accountId) {
-		return reviewDao.deleteLikeHateOne(review_id, accountId);
+	public int syncReviewLikeHate(int reviewId) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

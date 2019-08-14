@@ -28,20 +28,20 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNTID", accountId);
 		map.put("STOREID", storeId);
 		
-		return sqlSession.selectList("review.selectAll",map);
+//		return sqlSession.selectList("review.selectAll",map);
 		
-//		List<ReviewVo> list = sqlSession.selectList("review.selectAll",map);
-//		for (int i = 0; i < list.size(); i++) {
-//			System.out.println(list.get(i).toString());
+		List<ReviewVo> list = sqlSession.selectList("review.selectAll",map);
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i).getReview_id() + "," +list.get(i).getIsLike());
 //			logger.debug(list.get(i).toString());
-//		}
-//		
-//		return list;
+		}
+		
+		return list;
 	}
 
 
 	@Override
-	public int insertLikeHateOne(int review_id, int accountId, int isLike) {
+	public int insertLikeHate(int review_id, int accountId, int isLike) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
@@ -57,7 +57,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 
 	@Override
-	public int updateLikeHateOne(int review_id, int accountId, int isLike) {
+	public int updateLikeHate(int review_id, int accountId, int isLike) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
@@ -73,7 +73,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 
 	@Override
-	public int deleteLikeHateOne(int review_id, int accountId) {
+	public int deleteLikeHate(int review_id, int accountId) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
