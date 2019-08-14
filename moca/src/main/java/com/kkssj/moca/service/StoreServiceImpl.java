@@ -40,22 +40,17 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int addLikeHate(int review_id, int accountId, int isLike) {
 		if(reviewDao.insertLikeHateOne(review_id, accountId, isLike ) ==1) {
-			if(isLike ==1) {
-				if(reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+1)==1) {
-					return 1;
-				}
-			}else if(isLike==-1) {
-				if(reviewDao.updateHateCount(review_id, reviewDao.selectHateCount(review_id)-1)==1) {
-					return 1;
-				}
-			}
+			return reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+isLike) ;
 		}
 		return -1;
 	}
 
 	@Override
 	public int editLikeHate(int review_id, int accountId, int isLike) {
-		return reviewDao.updateLikeHateOne(review_id, accountId, isLike);
+		if(reviewDao.updateLikeHateOne(review_id, accountId, isLike) ==1) {
+			return reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+isLike) ;
+		}
+		return -1;
 	}
 
 	@Override

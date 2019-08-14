@@ -11,16 +11,17 @@
 	ON(r.REVIEW_ID = l.REVIEW_ID AND r.ACCOUNTID = l.ACCOUNT_ID)
 	JOIN ACCOUNT a ON a.ACCOUNT_ID = r.ACCOUNTID
 	WHERE r.STOREID = #{STOREID}
+	ORDER BY r.REVIEW_ID
   </select>
    
-  <insert id="insertLikeHateOne"  parameterType="map">
+  <insert id="insertLikeHate"  parameterType="map">
   	INSERT INTO LIKEHATE(review_id, account_id, isLike) VALUES(#{REVIEW_ID}, #{ACCOUNT_ID}, #{ISLIKE})
   </insert>
   
-  <update id="updateLikeHateOne" parameterType="map">
+  <update id="updateLikeHate" parameterType="map">
   	UPDATE LIKEHATE SET isLike=#{ISLIKE } WHERE review_id = #{REVIEW_ID} AND account_id = #{ACCOUNT_ID}
   </update>
-  <delete id="deleteLikeHateOne" parameterType="map">
+  <delete id="deleteLikeHate" parameterType="map">
   	DELETE FROM LIKEHATE WHERE review_id = #{REVIEW_ID} AND account_id = #{ACCOUNT_ID}
   </delete>
   
@@ -30,11 +31,11 @@
   <update id="updateHateCount" parameterType="map">
   	UPDATE REVIEW SET hateCount = #{HATECOUNT} WHERE review_id = #{REVIEW_ID}
   </update>
-  <select id="selectLikeCount" parameterType="Integer">
-  	SELECT likeCount FROM REVIEW WHERE review_id = #{val}
+  <select id="selectLikeCount" parameterType="Integer" resultType="Integer">
+  	SELECT likeCount FROM REVIEW WHERE review_id = #{id}
   </select>
-  <select id="selectHateCount" parameterType="Integer">
-  	SELECT hateCount FROM REVIEW WHERE review_id = #{val}
+  <select id="selectHateCount" parameterType="Integer" resultType="Integer">
+  	SELECT hateCount FROM REVIEW WHERE review_id = #{id}
   </select>
   
 </mapper>

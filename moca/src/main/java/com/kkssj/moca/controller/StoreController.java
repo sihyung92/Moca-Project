@@ -67,6 +67,8 @@ public class StoreController {
 	}
 	
 	//좋아요싫어요 수정
+	//서버에 server.xml에 Connector 태그에 parseBodyMethods
+	//<Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443" parseBodyMethods="POST,PUT,DELETE"/> 추가
 	@PutMapping("/likeHates/{review_id}")
 	public ResponseEntity editLikeHate(@PathVariable("review_id") int review_id, @RequestParam int isLike) {
 		

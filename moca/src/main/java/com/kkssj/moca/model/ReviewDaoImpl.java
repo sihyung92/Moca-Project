@@ -47,7 +47,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
 		
-		return sqlSession.insert("review.insertLikeHateOne", map);
+		return sqlSession.insert("review.insertLikeHate", map);
 		
 //		int a = sqlSession.insert("review.insertLikeHateOne", map);
 //		System.out.println("insertLikeHateOne result = "+a);
@@ -63,7 +63,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
 		
-		return sqlSession.update("review.updateLikeHateOne", map);
+		return sqlSession.update("review.updateLikeHate", map);
 		
 //		int a = sqlSession.insert("review.updateLikeHateOne", map);
 //		System.out.println("updateLikeHateOne result = "+a);
