@@ -67,6 +67,7 @@
 		<input type="hidden" name="x" id="lng"/>
 		<input type="hidden" name="y" id="lat"/>
 		키워드는 <input type="text" name="keyword"/>
+		<input type="hidden" name="filter" value="distance"/>
 		<button>입니당</button>
 	</form>	
 	<br/>

@@ -1,5 +1,6 @@
 package com.kkssj.moca.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +38,7 @@ public class SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public String search(String keyword, String x, String y, String filter, Model model) throws MalformedURLException {
+	public String search(String keyword, String x, String y, String filter, Model model) throws MalformedURLException {		
 	////검색 옵션 디폴트 값 및 파라미터 처리	
 		List<StoreVo> cafeInfoList= new ArrayList<StoreVo>();
 		int page=1;
@@ -64,7 +67,11 @@ public class SearchController {
 				variables.put("keyword", keyword);
 				variables.put("x", x);
 				variables.put("y", y);
-				model.addAttribute("alist",storeService.getListByTag(variables));				
+				variables.put("filter", filter);
+				logger.debug("DAO가기 전에 filter: "+filter);
+				model.addAttribute("alist",storeService.getListByTag(variables));			
+				model.addAttribute("keyword", "#"+keyword);
+				model.addAttribute("filter", filter);
 				return "search";
 			}			
 		}
@@ -99,13 +106,9 @@ public class SearchController {
 			response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, ++page);
 			cafeInfo = response.getBody().getDocuments();
 			APIInfo = response.getBody().getMeta();
-			for(StoreVo d : cafeInfo)
+			for(StoreVo d : cafeInfo) 
 				cafeInfoList.add(d);
-		}
-		
-		logger.debug(response.toString());
-		logger.debug("cafeInfoList: " + cafeInfoList.toString());
-		model.addAttribute("alist", cafeInfoList);
+		}		
 		
 		//카카오 결과 데이터 mocaDB에서 열람
 		StoreVo temp=null;
@@ -117,15 +120,21 @@ public class SearchController {
 				d.setViewCnt(temp.getViewCnt());
 				d.setAverageLevel(temp.getAverageLevel());
 				logger.debug(d.getKakaoId()+"의 평점: "+d.getAverageLevel());
+			}else{
+				d.setStore_Id(0);
 			}
 		}
 		
+		model.addAttribute("alist", cafeInfoList);
+		model.addAttribute("keyword", query);
+		model.addAttribute("filter", filter);
 		return "search";
 	}
 	
 	
 	@RequestMapping(value="store", method=RequestMethod.POST)
-	public String detail(@ModelAttribute("bean") StoreVo bean) {		
+	public String detail(@ModelAttribute("bean") StoreVo bean) {			
+		logger.debug(bean.getAddress());		
 		return"detail";
 	}
 	

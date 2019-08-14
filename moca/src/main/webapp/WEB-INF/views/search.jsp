@@ -27,33 +27,19 @@
 </style>
 <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e63ece9668927d2e8027037f0aeb06b5"></script>
-<%
- List<StoreVo> alist=(List<StoreVo>)request.getAttribute("alist");
-%>
 <script type="text/javascript">
 	var lat,lng;
 		
     window.onload = function () {  
-//카페 정보 배열 생성
-    	 var alist = new Array();
-		 <c:forEach items="${alist}" var="bean" varStatus="status">
-		//	alist.push({'address':'${bean.address}','category':'${bean.category}', 'kakaoId':'${bean.kakaoId}', 'tel':'${bean.tel}', 'name':'${bean.name}', 'url':'${bean.url}', 'roadAddress':'${bean.roadAddress}', 'xLocation':'${bean.xLocation}', 'yLocation':'${bean.yLocation}'});
-			alist.push('<input type="hidden" name="address" value="${bean.address}"><input type="hidden" name="category" value="${bean.category}"><input type="hidden" name="kakaoId" value="${bean.kakaoId}"><input type="hidden" name="tel" value="${bean.tel}"><input type="hidden" name="name" value="${bean.name}"><input type="hidden" name="url" value="${bean.url}"><input type="hidden" name="xLocation" value="${bean.xLocation}"><input type="hidden" name="yLocation" value="${bean.yLocation}"><input type="hidden" name="roadAddress" value="${bean.roadAddress}"><input type="hidden" name="store_Id" value="${bean.store_Id}">');			
-		</c:forEach>
-//카페 리스트 클릭 이벤트
+//카페 리스트 클릭 이벤트 / POST방식으로 Detail페이지 이동
         $('.links').click(function(){
-            var idx=$(this).attr('id');
-            var form=$('<form action="store" method="post"></form>');
-            form.append(alist[idx]);
-            $(this).append(form);
-            form.submit();
-            //post 방식으로 detail페이지 연결-, vo객체랑 같이.
+           	$(this).children().first().submit();
         });
              
 //GeoLocation API에서 현재 위치의 위도&경도 얻기
         if (navigator.geolocation) // 브라우저에서 웹 지오로케이션 지원여부 판단
         {
-            alert("GeoLocation API 를 지원하는 브라우저");
+           	//alert("GeoLocation API 를 지원하는 브라우저");
             // PositionOptions 객체 설정용
             var options = { timeout: 2000, maximumAge: 3000 };
             options.enableHighAccuracy = true;
@@ -139,6 +125,7 @@
         lng = position.coords.longitude;	//경도
 		$('#lat').val(lat);
 		$('#lng').val(lng);
+		alert("lat: "+$('#lat').val()+", lng: "+$('#lng').val());
     };
 
     //위도, 경도 얻기 Error Callback
@@ -169,6 +156,7 @@
 	<form action="search">
 		<input type="hidden" name="x" id="lng"/>
 		<input type="hidden" name="y" id="lat"/>
+		<input type="hidden" name="filter" value="distance"/>
 		키워드는 <input type="text" name="keyword"/>
 		<button>입니당</button>
 	</form>	
@@ -177,17 +165,19 @@
 --------------------------------------------------------------------------------------------------------여기까지 header 아아아아--------------------------------------------------------------------------------------------------------
 <br/><br/>
 <div id="search">
+
 	<form action="search">
 		<input type="hidden" name="x" id="lng"/>
 		<input type="hidden" name="y" id="lat"/>
-		키워드는 <input type="text" name="keyword"/>
-		<button>입니당</button>
+		키워드는 <input type="text" name="keyword" value="${keyword}"/> 입니당
 		<br/>
-		<input type="radio" name="filter"><span>평점순</span>
-		<input type="radio" name="filer"><span>리뷰순</span>
-		<input type="radio" name="filter"><span>조회순</span>
-		<input type="radio" name="filter" checked="checked"><span>거리순</span>
-	</form>	
+		<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
+		<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
+		<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
+		<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}">checked="checked"</c:if>><span>거리순</span>
+		<button>검색</button>
+		${filter }
+	</form>
 </div>
 <br/><br/>
 <div id="map" style="width:500px;height:400px;"></div>
@@ -197,9 +187,19 @@
 	${err }
 	<c:forEach items="${alist}" var="bean" varStatus="status">
 		<div class="links" id="${status.index}">
-			<p><strong>${status.index+1} : ${bean.name }</strong></p>
-			<p>${bean.distance }m ${bean.roadAddress }</p>
-			<p>Tel: ${bean.tel }</p>			
+			<form action="store" method="post">
+				<input type="hidden" name="store_Id" value="${bean.store_Id}">
+				<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
+				<input type="hidden" name="name" value="${bean.name}"><span><strong>${bean.name }</strong></span><br/>
+				<span><strong>평점:${bean.averageLevel} 리뷰수:${bean.reviewCnt} 조회수:${bean.viewCnt}</strong></span><br/>
+				<input type="hidden" name="roadAddress" value="${bean.roadAddress}"><span>${bean.distance }m ${bean.roadAddress }</span><br/>
+				<input type="hidden" name="address" value="${bean.address}">
+				<input type="hidden" name="tel" value="${bean.tel}"><span>Tel: ${bean.tel }</span>
+				<input type="hidden" name="category" value="${bean.category}">				
+				<input type="hidden" name="url" value="${bean.url}">
+				<input type="hidden" name="xLocation" value="${bean.xLocation}">
+				<input type="hidden" name="yLocation" value="${bean.yLocation}">	
+			</form>	
 		</div>	
 	</c:forEach>	
 </div>	

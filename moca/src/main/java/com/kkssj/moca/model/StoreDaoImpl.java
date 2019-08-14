@@ -23,6 +23,9 @@ public class StoreDaoImpl implements StoreDao {
 	
 	@Override
 	public List<StoreVo> selectListByTag(Map<String, String> variables) {
+		logger.debug("DAO에서 filter: "+variables.get("filter"));
+		logger.debug("DAO에서 x: "+variables.get("x"));
+		logger.debug("DAO에서 y: "+variables.get("y"));
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectByTag", variables);
 	}
 
