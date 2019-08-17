@@ -5,7 +5,7 @@
 <mapper namespace="review">
   <select id="selectAll" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
 	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
-	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
 	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNTID}),0)  "isLike",
 	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
 	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
@@ -35,6 +35,27 @@
   </select>
   <select id="selectHateCount" parameterType="Integer" resultType="Integer">
   	SELECT hateCount FROM REVIEW WHERE review_id = #{id}
+  </select>
+  
+  <select id="selectLikeHateLike" parameterType="Integer" resultType="Integer">
+  	SELECT count(*) FROM (SELECT * FROM LIKEHATE WHERE isLike=1 AND review_id = #{id} ) l GROUP BY isLike;
+  </select>
+  <select id="selectLikeHateHate" parameterType="Integer" resultType="Integer">
+ 	SELECT count(*) FROM (SELECT * FROM LIKEHATE WHERE isLike=-1 AND review_id = #{id} ) l GROUP BY isLike;
+  </select>
+  
+  <insert id="insertReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	INSERT INTO REVIEW(ACCOUNTID, STOREID, REVIEWCONTENT, WRITEDATE, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LIKECOUNT,HATECOUNT) 
+  	VALUES(#{accountId}, #{storeId}, #{reviewContent}, NOW(), #{tasteLevel}, #{priceLevel}, #{serviceLevel}, #{moodLevel}, #{convenienceLevel}, #{averageLevel}, 0, 0)
+  </insert>
+  <select id="selectAddedOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
+  	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
+	WHERE  a.ACCOUNT_ID = #{id}
+	ORDER BY r.WRITEDATE DESC
+	LIMIT 1;
   </select>
   
 </mapper>

@@ -22,6 +22,14 @@ public interface ReviewDao {
 
 	int selectHateCount(int review_id);
 
+	int selectLikeHateLike(int reviewId);
+
+	int selectLikeHateHate(int reviewId);
+
+	int insertReview(ReviewVo reviewVo);
+
+	ReviewVo selectAddedOne(int accountId);
+
 	
 	
 

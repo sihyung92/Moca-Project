@@ -33,5 +33,9 @@ public interface StoreService {
 	//좋아요 싫어요 제거
 	int deleteLikeHate(int review_id, int accountId, int isLike);
 
+	//review의 좋아요 싫어요 카운트를 likehate 테이블의 값과 동기화
 	int syncReviewLikeHate(int reviewId);
+
+	
+	ReviewVo addReview(ReviewVo reviewVo);
 }

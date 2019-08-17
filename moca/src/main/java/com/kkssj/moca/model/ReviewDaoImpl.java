@@ -50,7 +50,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.insert("review.insertLikeHate", map);
 		
 //		int a = sqlSession.insert("review.insertLikeHateOne", map);
-//		System.out.println("insertLikeHateOne result = "+a);
+//		System.out.println("result = "+a);
 //		
 //		return a;
 	}
@@ -66,7 +66,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.update("review.updateLikeHate", map);
 		
 //		int a = sqlSession.insert("review.updateLikeHateOne", map);
-//		System.out.println("updateLikeHateOne result = "+a);
+//		System.out.println("result = "+a);
 //		
 //		return a;
 	}
@@ -81,7 +81,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.delete("review.deleteLikeHate", map);
 		
 //		int a = sqlSession.insert("review.deleteLikeHateOne", map);
-//		System.out.println("deleteLikeHate result = "+a);
+//		System.out.println("result = "+a);
 //		
 //		return a;
 	}
@@ -93,7 +93,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("LIKECOUNT", likeCount);
 		int result = sqlSession.update("review.updateLikeCount", map);
-		logger.debug("updateLikeCount result:"+result);
+		logger.debug("result:"+result);
 		return result;
 	}
 
@@ -104,7 +104,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("HATECOUNT", hateCount);
 		int result = sqlSession.update("review.updateHateCount", map);
-		logger.debug("updateHateCount result:"+result);
+		logger.debug("result:"+result);
 		return result;
 	}
 
@@ -112,7 +112,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public int selectLikeCount(int review_id) {
 		int likeCount = sqlSession.selectOne("review.selectLikeCount", review_id);
-		logger.debug("selectLikeCount likeCount:"+likeCount);
+		logger.debug("likeCount:"+likeCount);
 		return likeCount;
 	}
 
@@ -120,8 +120,39 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public int selectHateCount(int review_id) {
 		int hateCount = sqlSession.selectOne("review.selectHateCount", review_id);
-		logger.debug("selectHateCount hateCount:"+hateCount);
+		logger.debug("hateCount:"+hateCount);
 		return hateCount;
+	}
+
+
+	@Override
+	public int selectLikeHateLike(int reviewId) {
+		int likeHateLike = sqlSession.selectOne("review.selectLikeHateLike", reviewId);
+		logger.debug("likeHateLike:"+likeHateLike);
+		return likeHateLike;
+	}
+
+
+	@Override
+	public int selectLikeHateHate(int reviewId) {
+		int likeHateHate = sqlSession.selectOne("review.selectLikeHateHate", reviewId);
+		logger.debug("likeHateLike:"+likeHateHate);
+		return likeHateHate;
+	}
+
+
+	@Override
+	public int insertReview(ReviewVo reviewVo) {
+		logger.debug(reviewVo.toString());
+		int result = sqlSession.insert("review.insertReview", reviewVo);
+		logger.debug("result:"+result);
+		return result;
+	}
+
+
+	@Override
+	public ReviewVo selectAddedOne(int accountId) {
+		return sqlSession.selectOne("review.selectAddedOne", accountId);
 	}
 
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kkssj.moca.model.entity.ReviewVo;
 
@@ -172,9 +173,21 @@ public class StoreController {
 
 	//리뷰 입력
 	@PostMapping("/reviews")
-	public String addReview() {
+	@ResponseBody
+	public ResponseEntity addReview(ReviewVo reviewVo) {
 		
-		return ""; 
+		//사용자 개정 등록(세션에서 왔다고 가정)
+		reviewVo.setAccountId(1);
+		
+		reviewVo = storeService.addReview(reviewVo);
+		
+		
+		if(reviewVo != null) {
+			logger.debug(reviewVo.toString());
+			return new ResponseEntity<>(reviewVo,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	//리뷰 수정
@@ -195,10 +208,13 @@ public class StoreController {
 		//받는 쪽에서 refresh하게 
 	}
 	
-	//리뷰 좋아요수 동기화
+	//리뷰 좋아요수 동기화(나중에 put 방식으로 변경)
 	@GetMapping("/reviewsLikeHate/{reviewId}")
-	public void syncReviewLikeHate(@PathVariable("reviewId") int reviewId) {
+	public String syncReviewLikeHate(@PathVariable("reviewId") int reviewId) {
+		logger.debug("reviewId = "+reviewId);
 		int result = storeService.syncReviewLikeHate(reviewId);
+		
+		return "redirect:stores/"+1;
 	}
 	
 	public String changeCategory(String category,String name){

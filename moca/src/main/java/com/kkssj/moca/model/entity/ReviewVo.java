@@ -5,9 +5,9 @@ import java.sql.Date;
 public class ReviewVo {
 	//REVIEW table
 	private int review_id, accountId, storeId;
-	private String reviewContent;
+	private String reviewContent, pictureUrls;
 	private Date writeDate;
-	private int tasteLevel, priceLevel,serviceLevel, modeLevel, convenienceLevel;
+	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
 	private double averageLevel;
 	private int likeCount, hateCount;
 	
@@ -26,19 +26,20 @@ public class ReviewVo {
 	
 	
 
-	public ReviewVo(int review_id, int accountId, int storeId, String reviewContent, Date writeDate, int tasteLevel,
-			int priceLevel, int serviceLevel, int modeLevel, int convenienceLevel, double averageLevel, int likeCount,
-			int hateCount, int isLike, String nickName, int followCount, int reviewCount) {
+	public ReviewVo(int review_id, int accountId, int storeId, String reviewContent, String pictureUrls, Date writeDate,
+			int tasteLevel, int priceLevel, int serviceLevel, int moodLevel, int convenienceLevel, double averageLevel,
+			int likeCount, int hateCount, int isLike, String nickName, int followCount, int reviewCount, int isMine) {
 		super();
 		this.review_id = review_id;
 		this.accountId = accountId;
 		this.storeId = storeId;
 		this.reviewContent = reviewContent;
+		this.pictureUrls = pictureUrls;
 		this.writeDate = writeDate;
 		this.tasteLevel = tasteLevel;
 		this.priceLevel = priceLevel;
 		this.serviceLevel = serviceLevel;
-		this.modeLevel = modeLevel;
+		this.moodLevel = moodLevel;
 		this.convenienceLevel = convenienceLevel;
 		this.averageLevel = averageLevel;
 		this.likeCount = likeCount;
@@ -47,6 +48,7 @@ public class ReviewVo {
 		this.nickName = nickName;
 		this.followCount = followCount;
 		this.reviewCount = reviewCount;
+		this.isMine = isMine;
 	}
 
 
@@ -83,6 +85,14 @@ public class ReviewVo {
 		this.reviewContent = reviewContent;
 	}
 
+	public String getPictureUrls() {
+		return pictureUrls;
+	}
+
+	public void setPictureUrls(String pictureUrls) {
+		this.pictureUrls = pictureUrls;
+	}
+
 	public Date getWriteDate() {
 		return writeDate;
 	}
@@ -115,12 +125,12 @@ public class ReviewVo {
 		this.serviceLevel = serviceLevel;
 	}
 
-	public int getModeLevel() {
-		return modeLevel;
+	public int getMoodLevel() {
+		return moodLevel;
 	}
 
-	public void setModeLevel(int modeLevel) {
-		this.modeLevel = modeLevel;
+	public void setMoodLevel(int moodLevel) {
+		this.moodLevel = moodLevel;
 	}
 
 	public int getConvenienceLevel() {
@@ -187,16 +197,28 @@ public class ReviewVo {
 		this.reviewCount = reviewCount;
 	}
 
+	public int getIsMine() {
+		return isMine;
+	}
+
+	public void setIsMine(int isMine) {
+		this.isMine = isMine;
+	}
 
 
 	@Override
 	public String toString() {
 		return "ReviewVo [review_id=" + review_id + ", accountId=" + accountId + ", storeId=" + storeId
-				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate + ", tasteLevel=" + tasteLevel
-				+ ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", modeLevel=" + modeLevel
-				+ ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel + ", likeCount="
-				+ likeCount + ", hateCount=" + hateCount + ", isLike=" + isLike + ", nickName=" + nickName
-				+ ", followCount=" + followCount + ", reviewCount=" + reviewCount + "]";
+				+ ", reviewContent=" + reviewContent + ", pictureUrls=" + pictureUrls + ", writeDate=" + writeDate
+				+ ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel
+				+ ", moodLevel=" + moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel="
+				+ averageLevel + ", likeCount=" + likeCount + ", hateCount=" + hateCount + ", isLike=" + isLike
+				+ ", nickName=" + nickName + ", followCount=" + followCount + ", reviewCount=" + reviewCount
+				+ ", isMine=" + isMine + "]";
 	}
 
+	//5가지 level을 가지고 소숫점 1자리까지 평점 계산
+	public void calAverageLevel() {
+		this.averageLevel = Math.round(((this.tasteLevel + this.priceLevel + this.serviceLevel + this.moodLevel + this.convenienceLevel)/5.0)*10)/10.0;
+	}
 }

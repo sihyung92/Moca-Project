@@ -43,7 +43,20 @@
 		var likeCount;
 		var hateCount;
 
+		var reviewModal;
+		var reviewForm;
+		var reviewModalBtn;
+		var saveReviewBtn;
+		
+
 		$(document).ready(function() {
+			//변수 바인딩
+			reviewModal = $('#reviewModal');
+			reviewForm = $('#reviewModal form');
+			saveReviewBtn = $('#reviewModal .modal-footer button').eq(1);
+			
+
+			
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
 			$('input:radio[name=parkingLot]:input[value=' + ${storeVo.parkingLot} + ']').attr("checked", true);
@@ -164,7 +177,7 @@
 						//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
 						console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
 
-						//ajax 통싱 - post방식으로 추가
+						//ajax 통신 - post방식으로 추가
 						$.ajax({
 							type: 'POST',
 							url: '/moca/likeHates/' + reviewId,
@@ -305,14 +318,76 @@
 				}
 			});
 
-			$('#myModal').on('shown.bs.modal', function() {
-				$('#myInput').focus()
-			});
 
 			$('#updateStore').click(function() {
 				$(this).attr('data-dismiss', "modal");
 				updateStore();
 			});
+
+
+			$(saveReviewBtn).click(function() {
+				console.log("saveReviewBtn clicked")
+
+				console.log($(reviewForm).serializeArray());
+
+				
+
+				//ajax 통싱 - post방식으로 추가
+				$.ajax({
+					type: 'POST',
+					url: '/moca/reviews',
+					data: $(reviewForm).serializeArray(),
+					success: function(reviewVo) {
+						console.log('ajax 통신 성공')
+						
+						
+						//리뷰 추가(최상단에)
+						console.log(reviewVo);
+						
+						//var newReview = $('#reviewTemplate');
+						var newReview = $('#reviewTemplate').clone(true);
+						
+						var reviewerInfo = newReview.find('.reviewer-info')
+						var reviewInfo = newReview.find('.review-info')
+						var carouselSlide = reviewInfo.children('.carousel') // 나중에 사진 추가할때 사용
+						
+						console.log(reviewVo.nickName, (new Date(reviewVo.writeDate)).toLocaleDateString());
+						reviewerInfo.children('label').eq(0).text("10"+1) 	//닉네임
+						reviewerInfo.children('label').eq(0).text("2"+reviewVo.followCount)	//팔로워 수
+						reviewerInfo.children('label').eq(0).text("3"+reviewVo.reviewCount)	
+						
+						//id에 review_id 추가
+						carouselSlide.attr('id', 'carousel-example-generic' + reviewVo.review_id);
+						
+						/// label 옆에 input 같은거 추가할 필요가 있음
+						reviewInfo.children('label').eq(0).text("작성일 : "+(new Date(reviewVo.writeDate)).toLocaleDateString())
+						reviewInfo.children('label').eq(1).text("리뷰내용 : "+reviewVo.reviewContent)
+						
+						var likehateFormGroup = reviewInfo.children('.like-hate')
+						
+						//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
+						likehateFormGroup.find('input').eq(0).val(reviewVo.review_id)
+						likehateFormGroup.find('input').eq(1).val(0)
+						likehateFormGroup.find('input').eq(2).val(0)
+						
+						var reviewLevel = newReview.children(".review-level")
+						reviewLevel.children('label').eq(0).text("맛 : "+reviewVo.tasteLevel)
+						reviewLevel.children('label').eq(1).text("가격 : " + reviewVo.priceLevel)
+						reviewLevel.children('label').eq(2).text("서비스 : "+reviewVo.serviceLevel)
+						reviewLevel.children('label').eq(3).text("분위기 : "+reviewVo.moodLevel)
+						reviewLevel.children('label').eq(4).text("편의성 : "+reviewVo.convenienceLevel)
+						reviewLevel.children('label').eq(4).text("평균 : " + reviewVo.averageLevel)
+
+						$('.review-content').prepend(newReview)
+						
+					},
+					error: function(error) {
+						console.log('ajax 통신 실패', error)
+						
+					}
+				})
+
+			})
 
 		});
 
@@ -545,7 +620,7 @@
 				<div class="review-header">
 					<h1>리뷰들</h1>
 					<!-- Button trigger modal -->
-					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+					<button type="button" class="btn btn-primary" data-toggle="modal" id="reviewModalBtn" data-target="#reviewModal">
 						리뷰 작성
 					</button>
 				</div>
@@ -563,7 +638,6 @@
 							<div class="review-info col-md-8">
 
 								<div id="carousel-example-generic${reviewVo.review_id}" class="carousel slide" data-ride="carousel">
-
 
 									<!-- Wrapper for slides -->
 									<div class="carousel-inner" role="listbox">
@@ -613,12 +687,12 @@
 								<label for="taste_level">맛 : ${reviewVo.tasteLevel } 점</label><br>
 								<label for="price_level">가격 : ${reviewVo.priceLevel } 점</label><br>
 								<label for="service_level">서비스 : ${reviewVo.serviceLevel } 점</label><br>
-								<label for="mode_level">분위기 : ${reviewVo.modeLevel } 점</label><br>
+								<label for="mood_level">분위기 : ${reviewVo.moodLevel } 점</label><br>
 								<label for="convenient_level">편의성 : ${reviewVo.convenienceLevel } 점</label><br>
 								<label for="average_level">평균 : ${reviewVo.averageLevel } 점</label>
 							</div>
+							<br><br><br>
 						</div>
-						<br><br><br>
 					</c:forEach>
 
 				</div>
@@ -633,58 +707,174 @@
 	<div id="footer">
 		<jsp:include page="../../resources/template/footer.jsp" flush="true"></jsp:include>
 	</div>
+	
+	<!-- clone할 review element -->
+	<div class="row"  id="reviewTemplate">
+		<div class="reviewer-info col-md-2">
+			<label for="nick-name"></label><br>
+			<label for="follow-count"></label><br>
+			<label for="review-count"></label>
+		</div>
+
+
+		<div class="review-info col-md-8">
+
+			<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+
+
+				<!-- Wrapper for slides -->
+				<div class="carousel-inner" role="listbox">
+					<div class="item active">
+						<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store1">
+					</div>
+					<div class="item">
+						<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store2">
+					</div>
+					<div class="item">
+						<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store3">
+					</div>
+				</div>
+
+				<!-- Controls -->
+				<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+				</a>
+				<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				</a>
+			</div>
+
+			<label for="write-date"></label><br>
+			<label for="review-content"></label>
+			<div class="form-group like-hate">
+				<div class="btn-group" data-toggle="buttons">
+					<input type="number" class="review-id" style="display: none;">
+					<button type="button" class="btn btn-primary like-btn ">좋아요</button>
+					<input type="number" class="like-count" value=0 >
+					<button type="button" class="btn btn-primary hate-btn">싫어요</button>
+					<input type="number" class="hate-count" value=0>
+				</div>
+			</div>
+		</div>
+
+		<div class="review-level col-md-2">
+			<label for="taste_level"></label><br>
+			<label for="price_level"></label><br>
+			<label for="service_level"></label><br>
+			<label for="mood_level"></label><br>
+			<label for="convenient_level"></label><br>
+			<label for="average_level"></label>
+		</div>
+		<br><br><br>
+	</div>
+	
+	
 	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">$(상호 명)에 대한 리뷰</h5>
+					<h5 class="modal-title" id="reviewModalLabel">
+						${storeVo.name}에 대한 리뷰</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body" data-role="content">
-					<form>
-						<div class="form-group reviewer-info" style="display: none;">
-							<label for="nick-name">$(닉네임 )</label>
-							<label for="nick-name">$(팔로워 수 )</label>
-							<label for="nick-name">$(리뷰 수 )</label>
-							<label for="nick-name">$(좋아요 수 )</label>
-							<label for="nick-name">$(싫어요) 수 )</label>
+					<form id="reviewForm">
+						<input name="storeId" value=${storeVo.store_Id}>
+						<div class="form-group">
+							<label for="picture-file">사진 선택</label>
+							<input type="file" name="pictureUrls" id="picture-file" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
 						</div>
 						<div class="form-group">
-							<label for="review-content">내용</label>
-							<textarea class="form-control" id="review-content" placeholder="리뷰내용을 입력해 주세요"></textarea>
+							<label for="review-content">후기</label>
+							<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
 						</div>
 						<div class="form-group">
 							<label for="taste-level">맛</label>
-							<input type="range" min="0" max="5" id="taste-level">
+							<select id="taste-level" name="tasteLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
 						<div class="form-group">
 							<label for="price-level">가격</label>
-							<input type="range" min="0" max="5" id="price-level">
+							<select id="price-level" name="priceLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
 						<div class="form-group">
-							<label for="mode-level">분위기</label>
-							<input type="range" min="0" max="5" id="mode-level">
+							<label for="mood-level">분위기</label>
+							<select id="mood-level" name="moodLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
 						<div class="form-group">
 							<label for="service-level">서비스</label>
-							<input type="range" min="0" max="5" id="service-level">
+							<select id="service-level" name="serviceLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
 						<div class="form-group">
-							<label for="convinient-level">편의성</label>
-							<input type="range" min="0" max="5" id="convinient-level">
+							<label for="convenience-level">편의성</label>
+							<select id="convenience-level" name="convenienceLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
-						<div class="form-group">
-							<label for="picture-file">사진 선택</label>
-							<input type="file" id="picture-file" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
-						</div>
+
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary">저장</button>
+					<button type="button" class="btn btn-primary">수정</button>
 				</div>
 			</div>
 		</div>

@@ -78,9 +78,23 @@ public class StoreServiceImpl implements StoreService{
 	
 
 	@Override
-	public int syncReviewLikeHate(int reviewId) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int syncReviewLikeHate(int review_id) {
+		reviewDao.updateLikeCount(review_id, reviewDao.selectLikeHateLike(review_id));
+		reviewDao.updateHateCount(review_id, reviewDao.selectLikeHateHate(review_id));
+		return 1;
+	}
+
+	@Override
+	public ReviewVo addReview(ReviewVo reviewVo) {
+		//평균 점수 계산
+		reviewVo.calAverageLevel();
+		
+		//정상적으로 입력되었을때
+		if(reviewDao.insertReview(reviewVo) ==1) {
+			// 방금 입력한 Vo를 가져온다. 
+			return reviewDao.selectAddedOne(reviewVo.getAccountId());
+		}
+		return null;
 	}
 
 
