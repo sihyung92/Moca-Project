@@ -38,4 +38,6 @@ public interface StoreService {
 
 	
 	ReviewVo addReview(ReviewVo reviewVo);
+
+	int editReview(ReviewVo reviewVo);
 }

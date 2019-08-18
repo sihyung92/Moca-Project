@@ -30,6 +30,8 @@ public interface ReviewDao {
 
 	ReviewVo selectAddedOne(int accountId);
 
+	int updateReview(ReviewVo reviewVo);
+
 	
 	
 

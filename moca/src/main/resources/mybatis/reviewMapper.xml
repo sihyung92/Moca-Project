@@ -57,5 +57,10 @@
 	ORDER BY r.WRITEDATE DESC
 	LIMIT 1;
   </select>
+  <update id="updateReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	UPDATE REVIEW SET REVIEWCONTENT=#{reviewContent}, TASTELEVEL=#{tasteLevel}, PRICELEVEL=#{priceLevel}, 
+  	SERVICELEVEL=#{serviceLevel}, MOODLEVEL= #{moodLevel}, CONVENIENCELEVEL=#{convenienceLevel}, AVERAGELEVEL=#{averageLevel} 
+	WHERE STOREID=#{storeId} AND REVIEW_ID = #{review_id} AND ACCOUNTID=#{accountId}; 
+  </update>
   
 </mapper>

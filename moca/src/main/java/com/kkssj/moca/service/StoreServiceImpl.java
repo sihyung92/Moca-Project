@@ -97,5 +97,16 @@ public class StoreServiceImpl implements StoreService{
 		return null;
 	}
 
+	@Override
+	public int editReview(ReviewVo reviewVo) {
+		
+		//평균 점수 다시 계산
+		reviewVo.calAverageLevel();
+		
+		//업데이트 된 행의 수를 반환
+		return reviewDao.updateReview(reviewVo);
+		
+	}
+
 
 }

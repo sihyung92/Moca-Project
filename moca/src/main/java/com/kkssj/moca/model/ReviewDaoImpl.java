@@ -155,4 +155,10 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectOne("review.selectAddedOne", accountId);
 	}
 
+
+	@Override
+	public int updateReview(ReviewVo reviewVo) {
+		return sqlSession.update("review.updateReview", reviewVo);
+	}
+
 }

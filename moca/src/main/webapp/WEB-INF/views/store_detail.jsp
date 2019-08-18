@@ -47,16 +47,22 @@
 		var reviewForm;
 		var reviewModalBtn;
 		var saveReviewBtn;
+		var editReviewBtn;
 
+		var editReviewRow
 		var editBtn;
 		var deleteBtn;
+		var clickedEditBtn;
+
+		var reviewFormObj;
 		
 
 		$(document).ready(function() {
 			//변수 바인딩
 			reviewModal = $('#reviewModal');
 			reviewForm = $('#reviewModal form');
-			saveReviewBtn = $('#reviewModal .modal-footer button').eq(1);
+			saveReviewBtn = $('#saveReviewBtn');
+			editReviewBtn = $('#editReviewBtn');
 			
 			editBtn = $('.btn-edit')
 			deleteBtn = $('.btn-delete')
@@ -402,7 +408,64 @@
 
 
 			editBtn.click(function(){
-				console.log(this,"editBtn clicked");
+				$('#reviewModal').modal("show");		//리뷰 모달창 show
+				clickedEditBtn=this;
+				editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
+
+
+				//리뷰 아이디
+				reviewModal.find('#review_id').val( editReviewRow.find('.review-id').eq(0).val() );
+							
+				///사진(나중에 정해지면)
+	
+				//리뷰 내용
+				reviewModal.find('#review-content').text( editReviewRow.find('.reviewInfo-review-content').text() )
+
+				//평점
+				reviewModal.find('#taste-level').val( editReviewRow.find('.taste-level').text() )
+				reviewModal.find('#price-level').val( editReviewRow.find('.price-level').text() )
+				reviewModal.find('#service-level').val( editReviewRow.find('.service-level').text() )
+				reviewModal.find('#mood-level').val( editReviewRow.find('.mood-level').text() )
+				reviewModal.find('#convenience-level').val( editReviewRow.find('.convenience-level').text())
+				reviewModal.find('#average-level').val( editReviewRow.find('.average-level').text() )
+
+				
+				
+			})
+			
+			editReviewBtn.click(function(){
+				console.log("editReviewBtn clicked")
+
+				reviewFormObj = $(reviewForm).serializeObject();
+				console.log(reviewFormObj.review_id,reviewFormObj);
+
+				//ajax 통싱 - post방식으로 추가
+				$.ajax({
+					type: 'PUT',
+					url: '/moca/reviews/'+reviewFormObj.review_id,
+					data: reviewFormObj,
+					success: function(reviewVo) {
+						console.log('ajax 통신 성공')
+						//리뷰 내용
+						editReviewRow.find('.reviewInfo-review-content').text(reviewFormObj.reviewContent);
+		
+						//평점
+						editReviewRow.find('.taste-level').text(reviewFormObj.tasteLevel);
+						editReviewRow.find('.price-level').text(reviewFormObj.priceLevel);
+						editReviewRow.find('.service-level').text(reviewFormObj.serviceLevel);
+						editReviewRow.find('.mood-level').text(reviewFormObj.moodLevel);
+						editReviewRow.find('.convenience-level').text(reviewFormObj.convenienceLevel);
+						editReviewRow.find('.average-level').text(reviewVo.averageLevel);
+						
+						$('#reviewModal').modal("hide");		//모달창 닫기
+						
+						
+					},
+					error: function(error) {
+						console.log('ajax 통신 실패', error)
+						
+					}
+				})
 			})
 
 			deleteBtn.click(function(){
@@ -485,6 +548,26 @@
 					$('#urlInfo').html(param.url);
 				}
 			});
+		};
+
+		jQuery.fn.serializeObject = function() {
+		    var obj = null;
+		    try {
+		        if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
+		            var arr = this.serializeArray();
+		            if (arr) {
+		                obj = {};
+		                jQuery.each(arr, function() {
+		                    obj[this.name] = this.value;
+		                });
+		            }//if ( arr ) {
+		        }
+		    } catch (e) {
+		        alert(e.message);
+		    } finally {
+		    }
+		 
+		    return obj;
 		};
 
 	</script>
@@ -770,28 +853,26 @@
 	</div>
 	
 	<!-- clone할 review element -->
-	<div class="row"  id="reviewTemplate">
+	<div class="row"  id="reviewTemplate" style="display : none;">
 		<div class="editDeleteGroup btn-group" role="group">
-			<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+			<input type="number" style="display: none;" class="review-id" value=${reviewVo.review_id } >
 			<button type="button" class="btn-edit btn btn-default">수정</button>
 			<button type="button" class="btn-delete btn btn-default">삭제</button>
 		</div>
-	<div class="reviewer-info col-md-2">
-		<div class="nickName-div">
-			<label>별명</label>	
-			<p class="reviewer-nickName">${reviewVo.nickName} </p>
+		<div class="reviewer-info col-md-2">
+			<div class="nickName-div">
+				<label>별명</label>	
+				<p class="reviewer-nickName">${reviewVo.nickName} </p>
+			</div>
+			<div class="follows-div">
+				<label>팔로워 수</label>
+				<p class="reviewer-followers">${reviewVo.followCount}</p>
+			</div>
+			<div class="reviews-div">
+				<label>리뷰 수</label>
+				<p class="reviewer-reviews">${reviewVo.reviewCount}</p>
+			</div>
 		</div>
-		<div class="follows-div">
-			<label>팔로워 수</label>
-			<p class="reviewer-followers">${reviewVo.followCount}</p>
-		</div>
-		<div class="reviews-div">
-			<label>리뷰 수</label>
-			<p class="reviewer-reviews">${reviewVo.reviewCount}</p>
-		</div>
-	</div>
-
-
 		<div class="review-info col-md-8">
 
 			<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
@@ -883,7 +964,8 @@
 				</div>
 				<div class="modal-body" data-role="content">
 					<form id="reviewForm">
-						<input name="storeId" value=${storeVo.store_Id}>
+						<input name="storeId" value=${storeVo.store_Id} style="display:none;" >
+						<input name="review_id" id="review_id">
 						<div class="form-group">
 							<label for="picture-file">사진 선택</label>
 							<input type="file" name="pictureUrls" id="picture-file" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
@@ -921,10 +1003,10 @@
 								<option>9</option>
 								<option>10</option>
 							</select>
-						</div>
+						</div>	
 						<div class="form-group">
-							<label for="mood-level">분위기</label>
-							<select id="mood-level" name="moodLevel" class="form-control">
+							<label for="service-level">서비스</label>
+							<select id="service-level" name="serviceLevel" class="form-control">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
@@ -938,8 +1020,8 @@
 							</select>
 						</div>
 						<div class="form-group">
-							<label for="service-level">서비스</label>
-							<select id="service-level" name="serviceLevel" class="form-control">
+							<label for="mood-level">분위기</label>
+							<select id="mood-level" name="moodLevel" class="form-control">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
@@ -972,8 +1054,8 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-					<button type="button" class="btn btn-primary">저장</button>
-					<button type="button" class="btn btn-primary">수정</button>
+					<button type="button" class="btn btn-primary" id="saveReviewBtn">작성</button>
+					<button type="button" class="btn btn-primary" id="editReviewBtn">수정</button>
 				</div>
 			</div>
 		</div>
