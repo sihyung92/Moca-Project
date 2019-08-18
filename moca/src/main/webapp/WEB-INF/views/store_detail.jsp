@@ -47,6 +47,9 @@
 		var reviewForm;
 		var reviewModalBtn;
 		var saveReviewBtn;
+
+		var editBtn;
+		var deleteBtn;
 		
 
 		$(document).ready(function() {
@@ -55,6 +58,8 @@
 			reviewForm = $('#reviewModal form');
 			saveReviewBtn = $('#reviewModal .modal-footer button').eq(1);
 			
+			editBtn = $('.btn-edit')
+			deleteBtn = $('.btn-delete')
 
 			
 			//가져올때부터 수정 모달에 값 세팅
@@ -349,19 +354,20 @@
 						
 						var reviewerInfo = newReview.find('.reviewer-info')
 						var reviewInfo = newReview.find('.review-info')
+						var reviewLevel = newReview.children(".review-level")
+						
 						var carouselSlide = reviewInfo.children('.carousel') // 나중에 사진 추가할때 사용
 						
-						console.log(reviewVo.nickName, (new Date(reviewVo.writeDate)).toLocaleDateString());
-						reviewerInfo.children('label').eq(0).text("10"+1) 	//닉네임
-						reviewerInfo.children('label').eq(0).text("2"+reviewVo.followCount)	//팔로워 수
-						reviewerInfo.children('label').eq(0).text("3"+reviewVo.reviewCount)	
+						reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
+						reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
+						reviewerInfo.find('.reviewer-reviewse').text(reviewVo.reviewCount) 	//리뷰수
 						
 						//id에 review_id 추가
 						carouselSlide.attr('id', 'carousel-example-generic' + reviewVo.review_id);
 						
 						/// label 옆에 input 같은거 추가할 필요가 있음
-						reviewInfo.children('label').eq(0).text("작성일 : "+(new Date(reviewVo.writeDate)).toLocaleDateString())
-						reviewInfo.children('label').eq(1).text("리뷰내용 : "+reviewVo.reviewContent)
+						reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
+						reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
 						
 						var likehateFormGroup = reviewInfo.children('.like-hate')
 						
@@ -370,15 +376,20 @@
 						likehateFormGroup.find('input').eq(1).val(0)
 						likehateFormGroup.find('input').eq(2).val(0)
 						
-						var reviewLevel = newReview.children(".review-level")
-						reviewLevel.children('label').eq(0).text("맛 : "+reviewVo.tasteLevel)
-						reviewLevel.children('label').eq(1).text("가격 : " + reviewVo.priceLevel)
-						reviewLevel.children('label').eq(2).text("서비스 : "+reviewVo.serviceLevel)
-						reviewLevel.children('label').eq(3).text("분위기 : "+reviewVo.moodLevel)
-						reviewLevel.children('label').eq(4).text("편의성 : "+reviewVo.convenienceLevel)
-						reviewLevel.children('label').eq(4).text("평균 : " + reviewVo.averageLevel)
+						
+						reviewLevel.find('.taste-level').text(reviewVo.tasteLevel)
+						reviewLevel.find('.price-level').text(reviewVo.priceLevel)
+						reviewLevel.find('.service-level').text(reviewVo.serviceLevel)
+						reviewLevel.find('.mood-level').text(reviewVo.moodLevel)
+						reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
+						reviewLevel.find('.average-level').text(reviewVo.averageLevel)
 
-						$('.review-content').prepend(newReview)
+						$('.review-content').prepend(newReview);	//리뷰에 추가
+						$('#reviewModal').modal("hide");		//모달창 닫기
+
+
+						//수정 삭제 버튼 바인딩 해줄것 
+						
 						
 					},
 					error: function(error) {
@@ -387,6 +398,15 @@
 					}
 				})
 
+			})
+
+
+			editBtn.click(function(){
+				console.log(this,"editBtn clicked");
+			})
+
+			deleteBtn.click(function(){
+				console.log(this,"editBtn clicked");
 			})
 
 		});
@@ -623,15 +643,32 @@
 					<button type="button" class="btn btn-primary" data-toggle="modal" id="reviewModalBtn" data-target="#reviewModal">
 						리뷰 작성
 					</button>
+					<br><br>
 				</div>
 				<div class="review-content">
 					<!-- js로 리뷰 수만큼 추가 할 것  -->
 					<c:forEach items="${reviewVoList }" var="reviewVo">
 						<div class="row">
+							<!-- isMine 에 따라 표시(일단 다 표시)
+							-->
+							<div class="editDeleteGroup btn-group" role="group">
+								<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+								<button type="button" class="btn-edit btn btn-default">수정</button>
+								<button type="button" class="btn-delete btn btn-default">삭제</button>
+							</div>
 							<div class="reviewer-info col-md-2">
-								<label for="nick-name">별명 : ${reviewVo.nickName} </label><br>
-								<label for="follow-count">팔로워 : ${reviewVo.followCount}</label><br>
-								<label for="review-count">리뷰 수 : ${reviewVo.reviewCount}</label>
+								<div class="nickName-div">
+									<label>별명</label>	
+									<p class="reviewer-nickName">${reviewVo.nickName} </p>
+								</div>
+								<div class="follows-div">
+									<label>팔로워 수</label>
+									<p class="reviewer-followers">${reviewVo.followCount}</p>
+								</div>
+								<div class="reviews-div">
+									<label>리뷰 수</label>
+									<p class="reviewer-reviews">${reviewVo.reviewCount}</p>
+								</div>
 							</div>
 
 
@@ -663,8 +700,14 @@
 									</a>
 								</div>
 
-								<label for="write-date">작성일 : ${reviewVo.writeDate }</label><br>
-								<label for="review-content">리뷰 내용 : ${reviewVo.reviewContent }</label>
+								<div class="write-date-div">
+									<label>작성일</label>
+									<p class="reviewInfo-write-date">${reviewVo.writeDate }</p>
+								</div>
+								<div class="review-content-div">
+									<label>리뷰 내용</label>
+									<p class="reviewInfo-review-content">${reviewVo.reviewContent }</p>
+								</div>
 								<div class="form-group like-hate">
 									<div class="btn-group" data-toggle="buttons">
 										<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
@@ -684,12 +727,30 @@
 							</div>
 
 							<div class="review-level col-md-2">
-								<label for="taste_level">맛 : ${reviewVo.tasteLevel } 점</label><br>
-								<label for="price_level">가격 : ${reviewVo.priceLevel } 점</label><br>
-								<label for="service_level">서비스 : ${reviewVo.serviceLevel } 점</label><br>
-								<label for="mood_level">분위기 : ${reviewVo.moodLevel } 점</label><br>
-								<label for="convenient_level">편의성 : ${reviewVo.convenienceLevel } 점</label><br>
-								<label for="average_level">평균 : ${reviewVo.averageLevel } 점</label>
+								<div class="taste-level-div">
+									<label>맛</label>
+									<p class="taste-level">${reviewVo.tasteLevel }</p>점
+								</div><br>
+								<div class="price-level-div">
+									<label>가격</label>
+									<p class="price-level">${reviewVo.priceLevel }</p>점
+								</div><br>
+								<div class="service-level-div">
+									<label>서비스</label>
+									<p class="service-level">${reviewVo.serviceLevel }</p>점
+								</div><br>
+								<div class="taste-level-div">
+									<label>분위기</label>
+									<p class="mood-level">${reviewVo.moodLevel }</p>점
+								</div><br>
+								<div class="taste-level-div">
+									<label>편의성</label>
+									<p class="convenience-level">${reviewVo.convenienceLevel }</p>점
+								</div>
+								<div class="taste-level-div">
+									<label for="average_level">평균</label>
+									<p class="average-level">${reviewVo.averageLevel }</p>점
+								</div>								
 							</div>
 							<br><br><br>
 						</div>
@@ -710,11 +771,25 @@
 	
 	<!-- clone할 review element -->
 	<div class="row"  id="reviewTemplate">
-		<div class="reviewer-info col-md-2">
-			<label for="nick-name"></label><br>
-			<label for="follow-count"></label><br>
-			<label for="review-count"></label>
+		<div class="editDeleteGroup btn-group" role="group">
+			<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+			<button type="button" class="btn-edit btn btn-default">수정</button>
+			<button type="button" class="btn-delete btn btn-default">삭제</button>
 		</div>
+	<div class="reviewer-info col-md-2">
+		<div class="nickName-div">
+			<label>별명</label>	
+			<p class="reviewer-nickName">${reviewVo.nickName} </p>
+		</div>
+		<div class="follows-div">
+			<label>팔로워 수</label>
+			<p class="reviewer-followers">${reviewVo.followCount}</p>
+		</div>
+		<div class="reviews-div">
+			<label>리뷰 수</label>
+			<p class="reviewer-reviews">${reviewVo.reviewCount}</p>
+		</div>
+	</div>
 
 
 		<div class="review-info col-md-8">
@@ -746,8 +821,14 @@
 				</a>
 			</div>
 
-			<label for="write-date"></label><br>
-			<label for="review-content"></label>
+			<div class="write-date-div">
+				<label>작성일</label>
+				<p class="reviewInfo-write-date">${reviewVo.writeDate }</p>
+			</div>
+			<div class="review-content-div">
+				<label>리뷰 내용</label>
+				<p class="reviewInfo-review-content">${reviewVo.reviewContent }</p>
+			</div>
 			<div class="form-group like-hate">
 				<div class="btn-group" data-toggle="buttons">
 					<input type="number" class="review-id" style="display: none;">
@@ -760,12 +841,30 @@
 		</div>
 
 		<div class="review-level col-md-2">
-			<label for="taste_level"></label><br>
-			<label for="price_level"></label><br>
-			<label for="service_level"></label><br>
-			<label for="mood_level"></label><br>
-			<label for="convenient_level"></label><br>
-			<label for="average_level"></label>
+			<div class="taste-level-div">
+				<label>맛</label>
+				<p class="taste-level">${reviewVo.tasteLevel }</p>점
+			</div><br>
+			<div class="price-level-div">
+				<label>가격</label>
+				<p class="price-level">${reviewVo.priceLevel }</p>점
+			</div><br>
+			<div class="service-level-div">
+				<label>서비스</label>
+				<p class="service-level">${reviewVo.serviceLevel }</p>점
+			</div><br>
+			<div class="taste-level-div">
+				<label>분위기</label>
+				<p class="mood-level">${reviewVo.moodLevel }</p>점
+			</div><br>
+			<div class="taste-level-div">
+				<label>편의성</label>
+				<p class="convenience-level">${reviewVo.convenienceLevel }</p>점
+			</div>
+			<div class="taste-level-div">
+				<label for="average_level">평균</label>
+				<p class="average-level">${reviewVo.averageLevel }</p>점
+			</div>								
 		</div>
 		<br><br><br>
 	</div>
