@@ -92,9 +92,9 @@ public class StoreController {
 		//계정 정보를 받아오고
 		int accountId =1;
 		
-		logger.debug("accountId :" + accountId);
-		logger.debug("review_id :" + review_id);
-		logger.debug("isLike :" + isLike);
+//		logger.debug("accountId :" + accountId);
+//		logger.debug("review_id :" + review_id);
+//		logger.debug("isLike :" + isLike);
 		
 		
 		if(storeService.addLikeHate(review_id, accountId, isLike) ==1) {
@@ -115,9 +115,9 @@ public class StoreController {
 		//계정 정보를 받아오고
 		int accountId =1;
 		
-		logger.debug("accountId :" + accountId);
-		logger.debug("review_id :" + review_id);
-		logger.debug("isLike :" + isLike);
+//		logger.debug("accountId :" + accountId);
+//		logger.debug("review_id :" + review_id);
+//		logger.debug("isLike :" + isLike);
 		
 		if(storeService.editLikeHate(review_id, accountId, isLike) ==1) {
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -132,9 +132,9 @@ public class StoreController {
 		//계정 정보를 받아오고
 		int accountId =1;	
 		
-		logger.debug("accountId :" + accountId);
-		logger.debug("review_id :" + review_id);
-		logger.debug("isLike :" + isLike);
+//		logger.debug("accountId :" + accountId);
+//		logger.debug("review_id :" + review_id);
+//		logger.debug("isLike :" + isLike);
 		
 		if(storeService.deleteLikeHate(review_id, accountId, isLike) ==1) {
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -224,9 +224,11 @@ public class StoreController {
 	@GetMapping("/reviewsLikeHate/{reviewId}")
 	public String syncReviewLikeHate(@PathVariable("reviewId") int reviewId) {
 		logger.debug("reviewId = "+reviewId);
-		int result = storeService.syncReviewLikeHate(reviewId);
 		
-		return "redirect:stores/"+1;
+		int result = storeService.syncReviewLikeHate();
+		
+		//일단 페이지 띄워야 하니까 
+		return "redirect:../stores/"+1;
 	}
 	
 	public String changeCategory(String category,String name){

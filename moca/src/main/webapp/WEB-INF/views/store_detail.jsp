@@ -27,45 +27,19 @@
 		}
 
 	</style>
-	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> <script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> <!-- jqm 사용시 <script type="text/javascript" src="resources/js/jquery.mobile-1.4.5.js"></script>
-	-->
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
+	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 
+	<!-- jqm 사용시 <script type="text/javascript" src="resources/js/jquery.mobile-1.4.5.js"></script>	-->
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js"/>"> </script> 
+	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<script type="text/javascript">
-		var likeHateButton;
-		var btnGroup;
-		var likeHateCount;
-		var reviewId;
-		var clickedLikeHateButton;
-		var likeBtn;
-		var hateBtn;
-		var likeCount;
-		var hateCount;
-
-		var reviewModal;
-		var reviewForm;
-		var reviewModalBtn;
-		var saveReviewBtn;
-		var editReviewBtn;
-
-		var editReviewRow
-		var editBtn;
-		var deleteBtn;
-		var clickedEditBtn;
-
-		var reviewFormObj;
-		
-
 		$(document).ready(function() {
 			//변수 바인딩
-			reviewModal = $('#reviewModal');
-			reviewForm = $('#reviewModal form');
-			saveReviewBtn = $('#saveReviewBtn');
-			editReviewBtn = $('#editReviewBtn');
+			bindReviewVariable();
 			
-			editBtn = $('.btn-edit')
-			deleteBtn = $('.btn-delete')
 
 			
 			//가져올때부터 수정 모달에 값 세팅
@@ -114,9 +88,10 @@
 			});
 
 
-			likeHateButton = $('.like-hate>.btn-group>button')
-
+			
+			//좋아요 또는 싫어요 버튼 클릭시
 			likeHateButton.click(function() {
+				//클릭한 버튼의 리뷰에 해당하는 정보를 변수 바인딩
 				clickedLikeHateButton = $(this);
 				btnGroup = clickedLikeHateButton.parent();
 				reviewId = btnGroup.children('.review-id').val();
@@ -125,177 +100,47 @@
 				likeCount = btnGroup.children('.like-count');
 				hateCount = btnGroup.children('.hate-count');
 
+				var isLike;
 
 				//이전 상태 판단
 				if (clickedLikeHateButton.hasClass('like-btn')) {
+					isLike=1;
 					//좋아요 버튼을 눌렀을때 
 					if (likeBtn.hasClass('clicked')) {
 						//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
 						console.log('이전에 좋아요 누른 상태 > 좋아요를 누를때')
-
-						//ajax 통신 - delete 방식으로 삭제
-						$.ajax({
-							type: 'DELETE',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": 1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 좋아요 취소')
-								likeBtn.removeClass('clicked')
-								likeCount.val(Number(likeCount.val()) - 1);
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("좋아요 취소 실패")
-							}
-
-						})
-
-
-
-
-
+						cancelLikeHate(reviewId, isLike);
 					} else if (hateBtn.hasClass('clicked')) {
 						//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
 						console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
-
-						//ajax 통신 - put 방식으로 수정
-						$.ajax({
-							type: 'PUT',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": 1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 싫어요 취소 + 좋아요')
-								//ajax 통신 성공시
-								hateBtn.removeClass('clicked')
-								hateCount.val(Number(hateCount.val()) - 1);
-								likeBtn.addClass('clicked')
-								likeCount.val(Number(likeCount.val()) + 1);
-
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("싫어요 취소, 좋아요 실패")
-							}
-
-						})
-
-
+						changeLikeHate(reviewId, isLike);
 					} else {
 						//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
 						console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
-
-						//ajax 통신 - post방식으로 추가
-						$.ajax({
-							type: 'POST',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": 1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 좋아요')
-								//ajax 통신 성공시
-								likeBtn.addClass('clicked')
-								likeCount.val(Number(likeCount.val()) + 1);
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("좋아요 실패")
-							}
-						})
-
-
-
+						addLikeHate(reviewId,isLike);
 					}
 
 
 				} else if (clickedLikeHateButton.hasClass('hate-btn')) {
+					isLike=-1;
+					
 					//싫어요 버튼을 눌렀을때 
 					if (likeBtn.hasClass('clicked')) {
 						//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
 						console.log('이전에 좋아요 누른 상태 > 싫어요 누를때 ')
-
-						//ajax 통신 - put 방식으로 수정
-						$.ajax({
-							type: 'PUT',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": -1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 좋아요 취소 + 싫어요')
-								//ajax 통신 성공시
-								likeBtn.removeClass('clicked')
-								likeCount.val(Number(likeCount.val()) - 1);
-								hateBtn.addClass('clicked')
-								hateCount.val(Number(hateCount.val()) + 1);
-
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("싫어요 취소, 좋아요 실패")
-							}
-
-						})
-
-
+						changeLikeHate(reviewId, isLike);
 
 					} else if (hateBtn.hasClass('clicked')) {
 						//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
 						console.log('이전에 싫어요 누른 상태 > 싫어요를 누를때 ')
-
-						//ajax 통신 - delete 방식으로 삭제
-						$.ajax({
-							type: 'DELETE',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": -1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 싫어요 취소')
-								//ajax 통신하고 성공시 
-								hateBtn.removeClass('clicked')
-								hateCount.val(Number(hateCount.val()) - 1);
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("싫어요 취소 실패")
-							}
-
-						})
-
-
-
+						cancelLikeHate(reviewId, isLike);
 
 					} else {
 						//이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 => 싫어요
 						console.log('이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 ')
-
-						//ajax 통싱 - post방식으로 추가
-						$.ajax({
-							type: 'POST',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": -1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 싫어요')
-								hateBtn.addClass('clicked')
-								hateCount.val(Number(hateCount.val()) + 1);
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("싫어요 실패")
-							}
-
-						})
+						addLikeHate(reviewId, isLike);
 					}
 				}
-				console.log(clickedLikeHateButton);
-
 			})
 
 
@@ -335,144 +180,30 @@
 				updateStore();
 			});
 
-
+			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				console.log("saveReviewBtn clicked")
-
-				console.log($(reviewForm).serializeArray());
-
-				
-
-				//ajax 통싱 - post방식으로 추가
-				$.ajax({
-					type: 'POST',
-					url: '/moca/reviews',
-					data: $(reviewForm).serializeArray(),
-					success: function(reviewVo) {
-						console.log('ajax 통신 성공')
-						
-						
-						//리뷰 추가(최상단에)
-						console.log(reviewVo);
-						
-						//var newReview = $('#reviewTemplate');
-						var newReview = $('#reviewTemplate').clone(true);
-						
-						var reviewerInfo = newReview.find('.reviewer-info')
-						var reviewInfo = newReview.find('.review-info')
-						var reviewLevel = newReview.children(".review-level")
-						
-						var carouselSlide = reviewInfo.children('.carousel') // 나중에 사진 추가할때 사용
-						
-						reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
-						reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
-						reviewerInfo.find('.reviewer-reviewse').text(reviewVo.reviewCount) 	//리뷰수
-						
-						//id에 review_id 추가
-						carouselSlide.attr('id', 'carousel-example-generic' + reviewVo.review_id);
-						
-						/// label 옆에 input 같은거 추가할 필요가 있음
-						reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
-						reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
-						
-						var likehateFormGroup = reviewInfo.children('.like-hate')
-						
-						//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
-						likehateFormGroup.find('input').eq(0).val(reviewVo.review_id)
-						likehateFormGroup.find('input').eq(1).val(0)
-						likehateFormGroup.find('input').eq(2).val(0)
-						
-						
-						reviewLevel.find('.taste-level').text(reviewVo.tasteLevel)
-						reviewLevel.find('.price-level').text(reviewVo.priceLevel)
-						reviewLevel.find('.service-level').text(reviewVo.serviceLevel)
-						reviewLevel.find('.mood-level').text(reviewVo.moodLevel)
-						reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
-						reviewLevel.find('.average-level').text(reviewVo.averageLevel)
-
-						$('.review-content').prepend(newReview);	//리뷰에 추가
-						$('#reviewModal').modal("hide");		//모달창 닫기
-
-
-						//수정 삭제 버튼 바인딩 해줄것 
-						
-						
-					},
-					error: function(error) {
-						console.log('ajax 통신 실패', error)
-						
-					}
-				})
-
+				saveReview();
 			})
 
-
+			//수정 버튼 클릭시
 			editBtn.click(function(){
-				$('#reviewModal').modal("show");		//리뷰 모달창 show
-				clickedEditBtn=this;
-				editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
-
-
-				//리뷰 아이디
-				reviewModal.find('#review_id').val( editReviewRow.find('.review-id').eq(0).val() );
-							
-				///사진(나중에 정해지면)
-	
-				//리뷰 내용
-				reviewModal.find('#review-content').text( editReviewRow.find('.reviewInfo-review-content').text() )
-
-				//평점
-				reviewModal.find('#taste-level').val( editReviewRow.find('.taste-level').text() )
-				reviewModal.find('#price-level').val( editReviewRow.find('.price-level').text() )
-				reviewModal.find('#service-level').val( editReviewRow.find('.service-level').text() )
-				reviewModal.find('#mood-level').val( editReviewRow.find('.mood-level').text() )
-				reviewModal.find('#convenience-level').val( editReviewRow.find('.convenience-level').text())
-				reviewModal.find('#average-level').val( editReviewRow.find('.average-level').text() )
-
-				
-				
+				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
+				reviewData2ReviewModal(this);				
 			})
 			
+			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
-				console.log("editReviewBtn clicked")
-
-				reviewFormObj = $(reviewForm).serializeObject();
-				console.log(reviewFormObj.review_id,reviewFormObj);
-
-				//ajax 통싱 - post방식으로 추가
-				$.ajax({
-					type: 'PUT',
-					url: '/moca/reviews/'+reviewFormObj.review_id,
-					data: reviewFormObj,
-					success: function(reviewVo) {
-						console.log('ajax 통신 성공')
-						//리뷰 내용
-						editReviewRow.find('.reviewInfo-review-content').text(reviewFormObj.reviewContent);
-		
-						//평점
-						editReviewRow.find('.taste-level').text(reviewFormObj.tasteLevel);
-						editReviewRow.find('.price-level').text(reviewFormObj.priceLevel);
-						editReviewRow.find('.service-level').text(reviewFormObj.serviceLevel);
-						editReviewRow.find('.mood-level').text(reviewFormObj.moodLevel);
-						editReviewRow.find('.convenience-level').text(reviewFormObj.convenienceLevel);
-						editReviewRow.find('.average-level').text(reviewVo.averageLevel);
-						
-						$('#reviewModal').modal("hide");		//모달창 닫기
-						
-						
-					},
-					error: function(error) {
-						console.log('ajax 통신 실패', error)
-						
-					}
-				})
+				editReview();
 			})
 
+			//삭제 버튼 클릭시
 			deleteBtn.click(function(){
 				console.log(this,"editBtn clicked");
 			})
 
 		});
+
+
 
 
 
@@ -550,25 +281,7 @@
 			});
 		};
 
-		jQuery.fn.serializeObject = function() {
-		    var obj = null;
-		    try {
-		        if (this[0].tagName && this[0].tagName.toUpperCase() == "FORM") {
-		            var arr = this.serializeArray();
-		            if (arr) {
-		                obj = {};
-		                jQuery.each(arr, function() {
-		                    obj[this.name] = this.value;
-		                });
-		            }//if ( arr ) {
-		        }
-		    } catch (e) {
-		        alert(e.message);
-		    } finally {
-		    }
-		 
-		    return obj;
-		};
+		
 
 	</script>
 </head>
@@ -965,7 +678,7 @@
 				<div class="modal-body" data-role="content">
 					<form id="reviewForm">
 						<input name="storeId" value=${storeVo.store_Id} style="display:none;" >
-						<input name="review_id" id="review_id">
+						<input name="review_id" id="review_id" value="0" style="display:none;" >
 						<div class="form-group">
 							<label for="picture-file">사진 선택</label>
 							<input type="file" name="pictureUrls" id="picture-file" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->

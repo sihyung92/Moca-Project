@@ -28,15 +28,13 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNTID", accountId);
 		map.put("STOREID", storeId);
 		
-//		return sqlSession.selectList("review.selectAll",map);
-		
-		List<ReviewVo> list = sqlSession.selectList("review.selectAll",map);
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i).getReview_id() + "," +list.get(i).getIsLike());
-//			logger.debug(list.get(i).toString());
-		}
-		
-		return list;
+		return sqlSession.selectList("review.selectAll",map);
+	}
+	
+	//review전체를 가져오는 메서드
+	@Override
+	public List<ReviewVo> selectAllReview() {
+		return sqlSession.selectList("review.selectAllReview");
 	}
 
 
@@ -92,9 +90,8 @@ public class ReviewDaoImpl implements ReviewDao {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("LIKECOUNT", likeCount);
-		int result = sqlSession.update("review.updateLikeCount", map);
-		logger.debug("result:"+result);
-		return result;
+		logger.debug("REVIEW_ID:"+review_id+ ", LIKECOUNT:"+likeCount);		
+		return sqlSession.update("review.updateLikeCount", map);
 	}
 
 
@@ -103,9 +100,8 @@ public class ReviewDaoImpl implements ReviewDao {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("HATECOUNT", hateCount);
-		int result = sqlSession.update("review.updateHateCount", map);
-		logger.debug("result:"+result);
-		return result;
+		logger.debug("REVIEW_ID:"+review_id+ ", HATECOUNT:"+hateCount);		
+		return sqlSession.update("review.updateHateCount", map);
 	}
 
 
@@ -127,17 +123,24 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	@Override
 	public int selectLikeHateLike(int reviewId) {
-		int likeHateLike = sqlSession.selectOne("review.selectLikeHateLike", reviewId);
-		logger.debug("likeHateLike:"+likeHateLike);
-		return likeHateLike;
+		try {
+			return sqlSession.selectOne("review.selectLikeHateLike", reviewId);
+		}catch (NullPointerException e) {
+			//좋아요가 없는 경우
+			return 0;
+		}
+		
 	}
 
 
 	@Override
 	public int selectLikeHateHate(int reviewId) {
-		int likeHateHate = sqlSession.selectOne("review.selectLikeHateHate", reviewId);
-		logger.debug("likeHateLike:"+likeHateHate);
-		return likeHateHate;
+		try {
+			return sqlSession.selectOne("review.selectLikeHateHate", reviewId);
+		}catch (NullPointerException e) {
+			//싫어요가 없는 경우
+			return 0;
+		}
 	}
 
 
@@ -160,5 +163,8 @@ public class ReviewDaoImpl implements ReviewDao {
 	public int updateReview(ReviewVo reviewVo) {
 		return sqlSession.update("review.updateReview", reviewVo);
 	}
+
+
+	
 
 }

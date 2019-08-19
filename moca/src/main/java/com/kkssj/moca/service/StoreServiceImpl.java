@@ -78,9 +78,16 @@ public class StoreServiceImpl implements StoreService{
 	
 
 	@Override
-	public int syncReviewLikeHate(int review_id) {
-		reviewDao.updateLikeCount(review_id, reviewDao.selectLikeHateLike(review_id));
-		reviewDao.updateHateCount(review_id, reviewDao.selectLikeHateHate(review_id));
+	public int syncReviewLikeHate() {
+		List<ReviewVo> list = reviewDao.selectAllReview();
+		int review_id;
+		for (int i = 0; i < list.size(); i++) {
+			review_id = list.get(i).getReview_id();
+			reviewDao.updateLikeCount(review_id, reviewDao.selectLikeHateLike(review_id));
+			reviewDao.updateHateCount(review_id, reviewDao.selectLikeHateHate(review_id));
+		}
+		
+		
 		return 1;
 	}
 

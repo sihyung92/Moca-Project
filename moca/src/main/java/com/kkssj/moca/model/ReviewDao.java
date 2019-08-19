@@ -32,6 +32,8 @@ public interface ReviewDao {
 
 	int updateReview(ReviewVo reviewVo);
 
+	List<ReviewVo> selectAllReview();
+
 	
 	
 

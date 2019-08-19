@@ -12,6 +12,15 @@
 	WHERE r.STOREID = #{STOREID}
 	ORDER BY r.REVIEW_ID; 
   </select>
+  
+  <select id="selectAllReview" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id),0)  "isLike",
+	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
+	ORDER BY r.REVIEW_ID; 
+  </select>
    
   <insert id="insertLikeHate"  parameterType="map">
   	INSERT INTO LIKEHATE(review_id, account_id, isLike) VALUES(#{REVIEW_ID}, #{ACCOUNT_ID}, #{ISLIKE})
