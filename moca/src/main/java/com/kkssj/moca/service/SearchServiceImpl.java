@@ -2,6 +2,7 @@ package com.kkssj.moca.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -24,6 +25,11 @@ public class SearchServiceImpl implements SearchService {
 	@Override
 	public StoreVo checkByKakaoId(int kakaoId) {		
 		return storeDao.selectByKakaoId(kakaoId);
+	}
+
+	@Override
+	public Properties getByRegion(String region) {
+		return storeDao.selectByRegion(region);
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -40,28 +41,34 @@ public class SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public String search(String keyword, String x, String y, String filter, Model model) throws MalformedURLException {		
-	////°Ë»ö ¿É¼Ç µğÆúÆ® °ª ¹× ÆÄ¶ó¹ÌÅÍ Ã³¸®	
+	public String search(String keyword, String x, String y, String filter, String region, Model model) throws MalformedURLException {
+
+	////ê²€ìƒ‰ ì˜µì…˜ ë””í´íŠ¸ ê°’ ë° íŒŒë¼ë¯¸í„° ì²˜ë¦¬	
 		int page=1;
-		//À§Ä¡Á¤º¸ Á¦°øÇÏÁö ¾Ê´Â ºê¶ó¿ìÀú·Î Á¢±Ù ½Ã, µğÆúÆ® À§Ä¡´Â ºñÆ®Ä·ÇÁ °­³² ¼¾ÅÍ! :p (ÀÌºÎºĞ ºä ÆäÀÌÁö·Î ÀÌµ¿ÇÏ±â)
-		if(x.equals("") || y.equals("")) {
+		//ìœ„ì¹˜ì •ë³´ ì œê³µí•˜ì§€ ì•ŠëŠ” ë¸Œë¼ìš°ì €ë¡œ ì ‘ê·¼ ì‹œ, ë””í´íŠ¸ ìœ„ì¹˜ëŠ” ë¹„íŠ¸ìº í”„ ê°•ë‚¨ ì„¼í„°! :p
+		//regionì„ ì°ì—ˆì„ ë•ŒëŠ”, í•´ë‹¹ regionì˜ x,yì¢Œí‘œë¡œ ê²€ìƒ‰! xëŠ” ê²½ë„, yëŠ” ìœ„ë„
+		if(region!=null&&!region.equals("")) {
+			Properties regionLatLng = storeService.getByRegion(region);
+			y = (String) regionLatLng.get("xLocation");
+			x = (String) regionLatLng.get("yLocation");
+		}else if(x.equals("") || y.equals("")) {
 			y = "37.4995011";
 			x = "127.0291403";
 		}
 		keyword = keyword.trim();
-		//°Ë»ö¾î°¡ ¾øÀ» ¶§
+		//ê²€ìƒ‰ì–´ê°€ ì—†ì„ ë•Œ
 		if(keyword.equals("") || keyword.equals("#")) {
-			model.addAttribute("err", "°Ë»ö¾î¸¦ ´Ù½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä(#°Ë»ö¾î ¿¹½Ã Ãß°¡)1");
+			model.addAttribute("err", "ê²€ìƒ‰ì–´ë¥¼ ë‹¤ì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”(#ê²€ìƒ‰ì–´ ì˜ˆì‹œ ì¶”ê°€)1");
 			return "search";
 		}
-////ÅÂ±× °Ë»ö
-		//ÅÂ±× °Ë»öÀÎÁö Å°¿öµå °Ë»öÀÎÁö È®ÀÎ
+////íƒœê·¸ ê²€ìƒ‰
+		//íƒœê·¸ ê²€ìƒ‰ì¸ì§€ í‚¤ì›Œë“œ ê²€ìƒ‰ì¸ì§€ í™•ì¸
 		if(keyword.contains("#")){
-			//#ÅÂ±×°¡ ¿©·¯°³
+			//#íƒœê·¸ê°€ ì—¬ëŸ¬ê°œ
 			if(keyword.indexOf('#')!=keyword.lastIndexOf('#')) {
-			model.addAttribute("err", "°Ë»ö¾î¸¦ ´Ù½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä(#°Ë»ö¾î ¿¹½Ã Ãß°¡)2");
+			model.addAttribute("err", "ê²€ìƒ‰ì–´ë¥¼ ë‹¤ì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”(#ê²€ìƒ‰ì–´ ì˜ˆì‹œ ì¶”ê°€)2");
 			return "search";
-			//#ÅÂ±×°¡ ÇÑ °³ÀÌ°í, ³»¿ëÀÌ ÀÖÀ» ¶§
+			//#íƒœê·¸ê°€ í•œ ê°œì´ê³ , ë‚´ìš©ì´ ìˆì„ ë•Œ
 			}else if(!keyword.substring(keyword.indexOf("#")+1).equals("")){				
 				keyword=keyword.substring(keyword.indexOf("#")+1).trim();
 				Map<String, String> variables = new HashMap<String, String>();
@@ -69,11 +76,9 @@ public class SearchController {
 				variables.put("x", x);
 				variables.put("y", y);
 				variables.put("filter", filter);
-//				logger.debug("DAO°¡±â Àü¿¡ filter: "+filter);
-//				List<StoreVo> test = storeService.getListByTag(variables);
-//				for(StoreVo t: test) {
-//					logger.debug(t.getName()+" distance: "+t.getDistance());
-//				}
+        if(region!=null&&!region.equals("")) {
+					variables.put("region",region);
+				}
 				model.addAttribute("alist",storeService.getListByTag(variables));			
 				model.addAttribute("keyword", "#"+keyword);
 				model.addAttribute("filter", filter);
@@ -82,81 +87,90 @@ public class SearchController {
 		}
 			
 
-		//(ÇØ¾ßÇÒ ÀÏ) Á¤·Ä ±âÁØ Ã³¸®
+		//(í•´ì•¼í•  ì¼) ì •ë ¬ ê¸°ì¤€ ì²˜ë¦¬
 
-////Å°¿öµå °Ë»ö: #ÅÂ±×µÚ¿¡ ³»¿ëÀÌ ¾ø°Å³ª, Å°¿öµå °Ë»ö
-		//Å°¿öµå ÃßÃâ
+////í‚¤ì›Œë“œ ê²€ìƒ‰: #íƒœê·¸ë’¤ì— ë‚´ìš©ì´ ì—†ê±°ë‚˜, í‚¤ì›Œë“œ ê²€ìƒ‰
+		//í‚¤ì›Œë“œ ì¶”ì¶œ
 		String query=keyword.replace("#", "").trim();
 		
-		//Ä«Ä«¿À URL
+		//ì¹´ì¹´ì˜¤ URL
 		String url="https://dapi.kakao.com/v2/local/search/keyword.json?category_group_code=CE7&sort=distance&x={x}&y={y}&query={query}&page={page}";
 		
-		//HttpEntity¿¡ header Á¤º¸ ½Æ±â
-		HttpHeaders headers = new HttpHeaders();		//MultiValueMap<String, String> »ó¼ÓÁß-
+		//HttpEntityì— header ì •ë³´ ì‹£ê¸°
+		HttpHeaders headers = new HttpHeaders();		//MultiValueMap<String, String> ìƒì†ì¤‘-
 		headers.add("Authorization", "KakaoAK 1e233a4652123a4998f1e91bf40b38ba");
 		HttpEntity entity = new HttpEntity(headers);
 		
-		//Ä«Ä«¿À API µ¿±âÅë½Å & JSON µ¥ÀÌÅÍ ¸®ÅÏ
+		//ì¹´ì¹´ì˜¤ API ë™ê¸°í†µì‹  & JSON ë°ì´í„° ë¦¬í„´
 		RestTemplate restTemplate = new RestTemplate();
-//		HttpEntity<MultiValueMap> requestEntity =new HttpEntity(map, headers);		//POST·Î ÀÎ½ÄÇÏ´Â µí
-		ResponseEntity<KakaoCafeVo> response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, page);	//Object ÆÄ¶ó¹ÌÅÍ´Â URL¿¡ ¼ø¼­´ë·Î ÀÎ½Ä
+//		HttpEntity<MultiValueMap> requestEntity =new HttpEntity(map, headers);		//POSTë¡œ ì¸ì‹í•˜ëŠ” ë“¯
+		ResponseEntity<KakaoCafeVo> response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, page);	//Object íŒŒë¼ë¯¸í„°ëŠ” URLì— ìˆœì„œëŒ€ë¡œ ì¸ì‹
 		
 		List<StoreVo> cafeInfoList= new ArrayList<StoreVo>();
 		StoreVo[] cafeInfo = response.getBody().getDocuments();
 		Meta APIInfo = response.getBody().getMeta();
-		for(StoreVo d : cafeInfo)
-		cafeInfoList.add(d);
-		
-		//'is_end'°¡ falseÀÌ¸é, ´ÙÀ½ÆäÀÌÁö¸¦ Àç¿äÃ»
+		for(StoreVo d : cafeInfo) {
+			//ì§€ì—­ í•„í„°ê°€ ì ìš©ì¤‘ì´ê³ , ê²€ìƒ‰í•´ì„œ ë‚˜ì˜¨ ìœ„ì¹˜ê°€ ì§€ì—­í•„í„°ì™€ ë§ì§€ ì•Šë‹¤ë©´(ê±°ë¦¬ìƒ ë” ê°€ê¹ì§€ë§Œ í•´ë‹¹ ì§€ì—­ì´ ì•„ë‹ˆë¼ë©´)
+			if(region!=null&&!region.equals("")&&!d.getAddress().contains(region))
+				continue;
+			cafeInfoList.add(d);
+		}
+		//'is_end'ê°€ falseì´ë©´, ë‹¤ìŒí˜ì´ì§€ë¥¼ ì¬ìš”ì²­
 		while(!APIInfo.isIs_end()) {
 			response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, ++page);
 			cafeInfo = response.getBody().getDocuments();
 			APIInfo = response.getBody().getMeta();
-			for(StoreVo d : cafeInfo) 
+      
+			for(StoreVo d : cafeInfo) {
+				//ì§€ì—­ í•„í„°ê°€ ì ìš©ì¤‘ì´ê³ , ê²€ìƒ‰í•´ì„œ ë‚˜ì˜¨ ìœ„ì¹˜ê°€ ì§€ì—­í•„í„°ì™€ ë§ì§€ ì•Šë‹¤ë©´(ê±°ë¦¬ìƒ ë” ê°€ê¹ì§€ë§Œ í•´ë‹¹ ì§€ì—­ì´ ì•„ë‹ˆë¼ë©´)
+				if(region!=null&&!region.equals("")&&!d.getAddress().contains(region))
+					continue;
 				cafeInfoList.add(d);
-		}		
+			}
+		}
+
 		
-//Ä«Ä«¿À °á°ú mocaDBÈ®ÀÎ ¹× ÈÄÃ³¸®(µ¥ÀÌÅÍ Ãß°¡, ÇÊÅÍ)
-		
-		//Ä«Ä«¿ÀAPI °á°ú mocaDB¿¡¼­ È®ÀÎ
-		List<StoreVo> cafesInMoca= new ArrayList<StoreVo>();		//mocaDB¿¡ ÀÖ´Â µ¥ÀÌÅÍÀÇ ÇÊÅÍ Ã³¸®¸¦ À§ÇÑ List
+//ì¹´ì¹´ì˜¤ ê²°ê³¼ mocaDBí™•ì¸ ë° í›„ì²˜ë¦¬(ë°ì´í„° ì¶”ê°€, í•„í„°)		
+
+		//ì¹´ì¹´ì˜¤API ê²°ê³¼ mocaDBì—ì„œ í™•ì¸
+		List<StoreVo> cafesInMoca= new ArrayList<StoreVo>();		//mocaDBì— ìˆëŠ” ë°ì´í„°ì˜ í•„í„° ì²˜ë¦¬ë¥¼ ìœ„í•œ List
 		for(int i=0; i<cafeInfoList.size(); i++) {
 			StoreVo currentVo = cafeInfoList.get(i);
 			StoreVo temp=storeService.checkByKakaoId(currentVo.getKakaoId());
-			//ÇÊ¿äÇÑ °ª Ãß°¡ ÀúÀå(Store_Id, Tag, ReviewCnt, ViewCnt, AverageLevel)
+			//í•„ìš”í•œ ê°’ ì¶”ê°€ ì €ì¥(Store_Id, Tag, ReviewCnt, ViewCnt, AverageLevel)
 			if(temp!=null) {				
 				currentVo.setStore_Id(temp.getStore_Id());
 				currentVo.setTag(temp.getTag());
 				currentVo.setReviewCnt(temp.getReviewCnt());
 				currentVo.setViewCnt(temp.getViewCnt());
 				currentVo.setAverageLevel(temp.getAverageLevel());
-				//À¯Àú°¡ ¼±ÅÃÇÑ Á¤·Ä ÇÊÅÍ°¡ °Å¸®¼øÀÌ ¾Æ´Ñ °æ¿ì¿¡¸¸ »õ·Î¿î List¿¡ StoreVo°´Ã¼ ÃßÃâ(Ä«Ä«¿À Á¤·Ä µğÆúÆ®=°Å¸®¼ø)
+				//ìœ ì €ê°€ ì„ íƒí•œ ì •ë ¬ í•„í„°ê°€ ê±°ë¦¬ìˆœì´ ì•„ë‹Œ ê²½ìš°ì—ë§Œ ìƒˆë¡œìš´ Listì— StoreVoê°ì²´ ì¶”ì¶œ(ì¹´ì¹´ì˜¤ ì •ë ¬ ë””í´íŠ¸=ê±°ë¦¬ìˆœ)
 				if(!filter.equals("distance")) {
 					cafesInMoca.add(currentVo);		
 				}
 			}
 		}		
 			
-		//Ä«Ä«¿ÀAPI °á°ú List¿¡¼­ Á¤·ÄÇØ¾ßÇÏ´Â °´Ã¼ Á¦°Å
-		cafeInfoList.removeAll(cafesInMoca);	//À¯Àú°¡ ¼±ÅÃÇÑ Á¤·Ä ÇÊÅÍ°¡ °Å¸®¼øÀÎ °æ¿ì ¿µÇâ¹ŞÁö ¾ÊÀ½
+		//ì¹´ì¹´ì˜¤API ê²°ê³¼ Listì—ì„œ ì •ë ¬í•´ì•¼í•˜ëŠ” ê°ì²´ ì œê±°
+		cafeInfoList.removeAll(cafesInMoca);	//ìœ ì €ê°€ ì„ íƒí•œ ì •ë ¬ í•„í„°ê°€ ê±°ë¦¬ìˆœì¸ ê²½ìš° ì˜í–¥ë°›ì§€ ì•ŠìŒ
 		
-		//ÇÊÅÍ ¿À¸§Â÷¼ø Ã³¸®(À¯Àú°¡ ¼±ÅÃÇÑ ÇÊÅÍ°¡ °Å¸®¼øÀÎ °æ¿ì Ãß°¡ Á¤·Ä ¾øÀÌ ±×´ë·Î List ¸®ÅÏ)
+		//í•„í„° ì˜¤ë¦„ì°¨ìˆœ ì²˜ë¦¬(ìœ ì €ê°€ ì„ íƒí•œ í•„í„°ê°€ ê±°ë¦¬ìˆœì¸ ê²½ìš° ì¶”ê°€ ì •ë ¬ ì—†ì´ ê·¸ëŒ€ë¡œ List ë¦¬í„´)
 		if(!filter.equals("distance")) {
 			Collections.sort(cafesInMoca, new Comparator<StoreVo>() {
 				
 				@Override
 				public int compare(StoreVo o1, StoreVo o2) {
-					//Á¤·Ä ±âÁØ: ÆòÁ¡¼ø
+					//ì •ë ¬ ê¸°ì¤€: í‰ì ìˆœ
 					if(filter.equals("averageLevel")) {	
 						if(o1.getAverageLevel()>o2.getAverageLevel()) return 1;
 						else if(o1.getAverageLevel()<o2.getAverageLevel()) return -1;
 						else return 0;
-					//Á¤·Ä ±âÁØ: ¸®ºä¼ö¼ø
+					//ì •ë ¬ ê¸°ì¤€: ë¦¬ë·°ìˆ˜ìˆœ
 					}else if(filter.equals("reviewCnt")) {
 						if(o1.getReviewCnt()>o2.getReviewCnt()) return 1;
 						else if(o1.getReviewCnt()>o2.getReviewCnt()) return -1;
 						else return 0;
-					//Á¤·Ä ±âÁØ: Á¶È¸¼ö¼ø
+					//ì •ë ¬ ê¸°ì¤€: ì¡°íšŒìˆ˜ìˆœ
 					}else if(filter.equals("viewCnt")){
 						if(o1.getViewCnt()>o2.getViewCnt()) return 1;
 						else if(o1.getViewCnt()<o2.getViewCnt()) return -1;
@@ -166,10 +180,10 @@ public class SearchController {
 				}});
 		}
 		
-		//¿À¸§Â÷¼ø Ã³¸®µÈ mocaDBµ¥ÀÌÅÍ ³»¸²Â÷¼øÀ¸·Î Ä«Ä«¿ÀAPI °á°ú List¿Í º´ÇÕ
+		//ì˜¤ë¦„ì°¨ìˆœ ì²˜ë¦¬ëœ mocaDBë°ì´í„° ë‚´ë¦¼ì°¨ìˆœìœ¼ë¡œ ì¹´ì¹´ì˜¤API ê²°ê³¼ Listì™€ ë³‘í•©
 		for(StoreVo d : cafesInMoca) cafeInfoList.add(0, d);
 		
-		//¸ğµ¨ Àü´Ş
+		//ëª¨ë¸ ì „ë‹¬
 		model.addAttribute("alist", cafeInfoList);
 		model.addAttribute("keyword", query);
 		model.addAttribute("filter", filter);		

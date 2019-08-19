@@ -43,7 +43,7 @@ public class Meta {
 
 	@Override
 	public String toString() {
-		return "Meta [is_end=" + is_end + ", pageable_count=" + pageable_count + ", same_name=" + same_name
+		return "Meta [is_end=" + is_end + ", pageable_count=" + pageable_count + ", same_name=" + same_name.toString()
 				+ ", total_count=" + total_count + "]";
 	}
 	

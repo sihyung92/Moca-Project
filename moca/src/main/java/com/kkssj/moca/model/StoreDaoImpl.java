@@ -2,6 +2,7 @@ package com.kkssj.moca.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,11 @@ public class StoreDaoImpl implements StoreDao {
 	@Override
 	public StoreVo selectByKakaoId(int kakaoId) {
 		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectByKakaoId", kakaoId);
+	}
+
+	@Override
+	public Properties selectByRegion(String region) {
+		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectByRegion", region);
 	}
 
 }

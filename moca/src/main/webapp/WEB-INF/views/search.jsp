@@ -23,6 +23,18 @@
 	.center{
 		color : black;
 	}
+	.seoul{
+		border : 1px solid black;
+	}
+	.gyeonggi{
+		border : 1px solid black;
+	}
+	.S_Region{
+		display : none;
+	}
+	.G_Region{
+		display : none;
+	}
 	
 </style>
 <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
@@ -35,7 +47,13 @@
         $('.links').click(function(){
            	$(this).children().first().submit();
         });
-             
+//지역 필터 클릭 이벤트
+		$('.seoul').click(function(){
+			$('.S_Region').toggle();
+		})
+		$('.gyeonggi').click(function(){
+			$('.G_Region').toggle();
+		});
 //GeoLocation API에서 현재 위치의 위도&경도 얻기
         if (navigator.geolocation) // 브라우저에서 웹 지오로케이션 지원여부 판단
         {
@@ -165,7 +183,6 @@
 --------------------------------------------------------------------------------------------------------여기까지 header 아아아아--------------------------------------------------------------------------------------------------------
 <br/><br/>
 <div id="search">
-
 	<form action="search">
 		<input type="hidden" name="x" id="lng"/>
 		<input type="hidden" name="y" id="lat"/>
@@ -177,9 +194,44 @@
 		<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}">checked="checked"</c:if>><span>거리순</span>
 		<button>검색</button>
 		${filter }
-	</form>
+
+		<span class="seoul">서울</span>
+		<div class="S_Region">
+			<input type="radio" name="region" value="강남구"><span>강남</span>
+			<input type="radio" name="region" value="강동구"><span>강동</span>
+			<input type="radio" name="region" value="강북구"><span>강북</span>
+			<input type="radio" name="region" value="강서구"><span>강북</span>
+			<input type="radio" name="region" value="관악구"><span>관악</span>
+			<input type="radio" name="region" value="광진구"><span>광진</span>
+			<input type="radio" name="region" value="구로구"><span>구로</span>
+			<input type="radio" name="region" value="금천구"><span>금천</span>
+			<input type="radio" name="region" value="노원구"><span>노원</span>
+			<input type="radio" name="region" value="도봉구"><span>도봉</span>
+			<input type="radio" name="region" value="동대문구"><span>동대문</span>
+			<input type="radio" name="region" value="마포구"><span>마포</span>
+			<input type="radio" name="region" value="서대문구"><span>서대문</span>
+			<input type="radio" name="region" value="서초구"><span>서초</span>
+			<input type="radio" name="region" value="성동구"><span>성동</span>
+			<input type="radio" name="region" value="성북구"><span>성북</span>
+			<input type="radio" name="region" value="송파구"><span>송파</span>
+			<input type="radio" name="region" value="양천구"><span>양천</span>
+			<input type="radio" name="region" value="영등포구"><span>영등포</span>
+			<input type="radio" name="region" value="용산구"><span>용산</span>
+			<input type="radio" name="region" value="은평구"><span>은평</span>
+			<input type="radio" name="region" value="종로구"><span>종로</span>
+			<input type="radio" name="region" value="중구"><span>중구</span>
+			<input type="radio" name="region" value="중랑"><span>중랑</span>
+		</div>
+		<span class="gyeonggi">경기</span>
+		<div class="G_Region">
+			<input type="radio" name="region" value="군포시"><span>군포시</span>
+			<input type="radio" name="region" value="안양시"><span>안양시</span>
+			<input type="radio" name="region" value="남양주시"><span>남양주시</span>
+		</div>
+	</form>	
 </div>
 <br/><br/>
+
 <div id="map" style="width:500px;height:400px;"></div>
 <h3>뭐가나올까?_?(결과 리턴-)</h3>
 <hr/>
