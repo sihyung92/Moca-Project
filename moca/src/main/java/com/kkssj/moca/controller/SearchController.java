@@ -100,16 +100,23 @@ public class SearchController {
 		
 		StoreVo[] cafeInfo = response.getBody().getDocuments();
 		Meta APIInfo = response.getBody().getMeta();
-		for(StoreVo d : cafeInfo)
-		cafeInfoList.add(d);
-		
+		for(StoreVo d : cafeInfo) {
+			//지역 필터가 적용중이고, 검색해서 나온 위치가 지역필터와 맞지 않다면(거리상 더 가깝지만 해당 지역이 아니라면)
+			if(region!=null&&!region.equals("")&&!d.getAddress().contains(region))
+				continue;
+			cafeInfoList.add(d);
+		}
 		//'is_end'가 false이면, 다음페이지를 재요청
 		while(!APIInfo.isIs_end()) {
 			response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, ++page);
 			cafeInfo = response.getBody().getDocuments();
 			APIInfo = response.getBody().getMeta();
-			for(StoreVo d : cafeInfo)
+			for(StoreVo d : cafeInfo) {
+				//지역 필터가 적용중이고, 검색해서 나온 위치가 지역필터와 맞지 않다면(거리상 더 가깝지만 해당 지역이 아니라면)
+				if(region!=null&&!region.equals("")&&!d.getAddress().contains(region))
+					continue;
 				cafeInfoList.add(d);
+			}
 		}
 		
 		logger.debug(response.toString());
