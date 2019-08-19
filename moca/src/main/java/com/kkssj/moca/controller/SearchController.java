@@ -3,6 +3,8 @@ package com.kkssj.moca.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,9 +42,8 @@ public class SearchController {
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public String search(String keyword, String x, String y, String filter, Model model) throws MalformedURLException {		
 	////검색 옵션 디폴트 값 및 파라미터 처리	
-		List<StoreVo> cafeInfoList= new ArrayList<StoreVo>();
 		int page=1;
-		//위치정보 제공하지 않는 브라우저로 접근 시, 디폴트 위치는 비트캠프 강남 센터! :p
+		//위치정보 제공하지 않는 브라우저로 접근 시, 디폴트 위치는 비트캠프 강남 센터! :p (이부분 뷰 페이지로 이동하기)
 		if(x.equals("") || y.equals("")) {
 			y = "37.4995011";
 			x = "127.0291403";
@@ -68,11 +69,11 @@ public class SearchController {
 				variables.put("x", x);
 				variables.put("y", y);
 				variables.put("filter", filter);
-				logger.debug("DAO가기 전에 filter: "+filter);
-				List<StoreVo> test = storeService.getListByTag(variables);
-				for(StoreVo t: test) {
-					logger.debug(t.getName()+" distance: "+t.getDistance());
-				}
+//				logger.debug("DAO가기 전에 filter: "+filter);
+//				List<StoreVo> test = storeService.getListByTag(variables);
+//				for(StoreVo t: test) {
+//					logger.debug(t.getName()+" distance: "+t.getDistance());
+//				}
 				model.addAttribute("alist",storeService.getListByTag(variables));			
 				model.addAttribute("keyword", "#"+keyword);
 				model.addAttribute("filter", filter);
@@ -100,6 +101,7 @@ public class SearchController {
 //		HttpEntity<MultiValueMap> requestEntity =new HttpEntity(map, headers);		//POST로 인식하는 듯
 		ResponseEntity<KakaoCafeVo> response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, page);	//Object 파라미터는 URL에 순서대로 인식
 		
+		List<StoreVo> cafeInfoList= new ArrayList<StoreVo>();
 		StoreVo[] cafeInfo = response.getBody().getDocuments();
 		Meta APIInfo = response.getBody().getMeta();
 		for(StoreVo d : cafeInfo)
@@ -114,24 +116,64 @@ public class SearchController {
 				cafeInfoList.add(d);
 		}		
 		
-		//카카오 결과 데이터 mocaDB에서 열람
-		StoreVo temp=null;
-		for(StoreVo d: cafeInfoList) {
-			if((temp=storeService.checkByKakaoId(d.getKakaoId()))!=null) {
-				d.setStore_Id(temp.getStore_Id());
-				d.setTag(temp.getTag());
-				d.setReviewCnt(temp.getReviewCnt());
-				d.setViewCnt(temp.getViewCnt());
-				d.setAverageLevel(temp.getAverageLevel());
-				logger.debug(d.getKakaoId()+"의 평점: "+d.getAverageLevel());
-			}else{
-				d.setStore_Id(0);
+//카카오 결과 mocaDB확인 및 후처리(데이터 추가, 필터)
+		
+		//카카오API 결과 mocaDB에서 확인
+		List<StoreVo> cafesInMoca= new ArrayList<StoreVo>();		//mocaDB에 있는 데이터의 필터 처리를 위한 List
+		for(int i=0; i<cafeInfoList.size(); i++) {
+			StoreVo currentVo = cafeInfoList.get(i);
+			StoreVo temp=storeService.checkByKakaoId(currentVo.getKakaoId());
+			//필요한 값 추가 저장(Store_Id, Tag, ReviewCnt, ViewCnt, AverageLevel)
+			if(temp!=null) {				
+				currentVo.setStore_Id(temp.getStore_Id());
+				currentVo.setTag(temp.getTag());
+				currentVo.setReviewCnt(temp.getReviewCnt());
+				currentVo.setViewCnt(temp.getViewCnt());
+				currentVo.setAverageLevel(temp.getAverageLevel());
+				//유저가 선택한 정렬 필터가 거리순이 아닌 경우에만 새로운 List에 StoreVo객체 추출(카카오 정렬 디폴트=거리순)
+				if(!filter.equals("distance")) {
+					cafesInMoca.add(currentVo);		
+				}
 			}
+		}		
+			
+		//카카오API 결과 List에서 정렬해야하는 객체 제거
+		cafeInfoList.removeAll(cafesInMoca);	//유저가 선택한 정렬 필터가 거리순인 경우 영향받지 않음
+		
+		//필터 오름차순 처리(유저가 선택한 필터가 거리순인 경우 추가 정렬 없이 그대로 List 리턴)
+		if(!filter.equals("distance")) {
+			Collections.sort(cafesInMoca, new Comparator<StoreVo>() {
+				
+				@Override
+				public int compare(StoreVo o1, StoreVo o2) {
+					//정렬 기준: 평점순
+					if(filter.equals("averageLevel")) {	
+						if(o1.getAverageLevel()>o2.getAverageLevel()) return 1;
+						else if(o1.getAverageLevel()<o2.getAverageLevel()) return -1;
+						else return 0;
+					//정렬 기준: 리뷰수순
+					}else if(filter.equals("reviewCnt")) {
+						if(o1.getReviewCnt()>o2.getReviewCnt()) return 1;
+						else if(o1.getReviewCnt()>o2.getReviewCnt()) return -1;
+						else return 0;
+					//정렬 기준: 조회수순
+					}else if(filter.equals("viewCnt")){
+						if(o1.getViewCnt()>o2.getViewCnt()) return 1;
+						else if(o1.getViewCnt()<o2.getViewCnt()) return -1;
+						else return 0;
+					}	
+					return 0;
+				}});
 		}
 		
+		//오름차순 처리된 mocaDB데이터 내림차순으로 카카오API 결과 List와 병합
+		for(StoreVo d : cafesInMoca) cafeInfoList.add(0, d);
+		
+		//모델 전달
 		model.addAttribute("alist", cafeInfoList);
 		model.addAttribute("keyword", query);
-		model.addAttribute("filter", filter);
+		model.addAttribute("filter", filter);		
+		
 		return "search";
 	}
 	
@@ -139,7 +181,7 @@ public class SearchController {
 	@RequestMapping(value="store", method=RequestMethod.POST)
 	public String detail(@ModelAttribute("bean") StoreVo bean) {			
 		logger.debug(bean.getAddress());		
-		return"detail";
+		return "detail";
 	}
 	
 }

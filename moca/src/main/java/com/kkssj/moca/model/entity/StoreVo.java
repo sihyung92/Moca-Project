@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class StoreVo {
+public class StoreVo{
 	private int store_Id, kakaoId, reviewCnt, wifi, parkingLot, viewCnt;
 	private String name, category, url, tag, dayOff, tel;
 	private String address,roadAddress;
