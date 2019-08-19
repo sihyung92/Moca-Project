@@ -98,6 +98,14 @@ public class StoreServiceImpl implements StoreService{
 		
 		//정상적으로 입력되었을때
 		if(reviewDao.insertReview(reviewVo) ==1) {
+			//상점에 대한 평점 동기화
+			List<ReviewVo> list = reviewDao.selectStoreAllReview(reviewVo.getStoreId());
+			StoreVo storeVo = new StoreVo();
+			storeVo.setStore_Id(reviewVo.getStoreId());
+			storeVo.calAllLevel(list);
+			storeDao.updateLevel(storeVo);
+			
+			
 			// 방금 입력한 Vo를 가져온다. 
 			return reviewDao.selectAddedOne(reviewVo.getAccountId());
 		}

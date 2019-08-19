@@ -15,4 +15,10 @@
   <update id="updateOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
   	UPDATE STORE SET wifi=#{wifi}, parkingLot=#{parkingLot}, dayOff=#{dayOff}, openTime=#{openTime}, endTime=#{endTime}, tel=#{tel}, url=#{url} WHERE store_id=#{store_Id}
   </update>
+   <update id="updateLevel" parameterType="com.kkssj.moca.model.entity.StoreVo">
+  	UPDATE STORE SET tasteLevel=#{tasteLevel}, priceLevel=#{priceLevel}, serviceLevel=#{serviceLevel}, 
+  	moodLevel=#{moodLevel}, convenienceLevel=#{convenienceLevel}, averageLevel=#{averageLevel}
+  	WHERE store_id=#{store_Id}
+  </update>
+  
 </mapper>

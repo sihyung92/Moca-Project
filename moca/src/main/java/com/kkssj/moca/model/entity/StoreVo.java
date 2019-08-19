@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class StoreVo {
 	private int store_Id, kakaoId, reviewCnt, wifi, parkingLot, viewCnt;
@@ -428,6 +429,33 @@ public class StoreVo {
 				+ moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel
 				+ ", openTime=" + openTime + ", endTime=" + endTime + ", openTime2=" + openTime2 + ", endTime2="
 				+ endTime2 + "]";
+	}
+
+	public void calAllLevel(List<ReviewVo> list) {
+		this.tasteLevel = 0;
+		this.priceLevel = 0;
+		this.serviceLevel = 0;
+		this.moodLevel = 0;
+		this.convenienceLevel = 0;
+		
+		for (int i = 0; i < list.size(); i++) {
+			ReviewVo reviewVo = list.get(i);
+			this.tasteLevel += reviewVo.getTasteLevel();
+			this.priceLevel += reviewVo.getPriceLevel();
+			this.serviceLevel += reviewVo.getServiceLevel();
+			this.moodLevel += reviewVo.getMoodLevel();
+			this.convenienceLevel += reviewVo.getConvenienceLevel();
+		}
+		
+		this.averageLevel = this.tasteLevel+this.priceLevel+this.serviceLevel+this.moodLevel+this.convenienceLevel;
+		
+		this.tasteLevel = Math.round((this.tasteLevel*1.0/list.size())*10)/(10.0);
+		this.priceLevel = Math.round((this.priceLevel*1.0/list.size())*10)/(10.0);
+		this.serviceLevel = Math.round((this.serviceLevel*1.0/list.size())*10)/(10.0);
+		this.moodLevel = Math.round((this.moodLevel*1.0/list.size())*10)/(10.0);
+		this.convenienceLevel = Math.round((this.convenienceLevel*1.0/list.size())*10)/(10.0);
+		this.averageLevel = Math.round((this.averageLevel*1.0/(list.size()*5))*10)/(10.0);
+		
 	}
 	
 }

@@ -13,4 +13,6 @@ public interface StoreDao {
 
 	int updateOne(StoreVo storeVo) throws SQLException;
 
+	int updateLevel(StoreVo storeVo);
+
 }

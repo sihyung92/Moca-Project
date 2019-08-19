@@ -33,4 +33,10 @@ public class StoreDaoImpl implements StoreDao {
 	public int updateOne(StoreVo storeVo) throws SQLException {
 		return sqlsession.update("store.updateOne", storeVo);
 	}
+
+	@Override
+	public int updateLevel(StoreVo storeVo) {
+		return sqlsession.update("store.updateLevel", storeVo);
+		
+	}
 }

@@ -14,6 +14,12 @@
   </select>
   
   <select id="selectAllReview" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	SELECT TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL
+	FROM REVIEW
+	WHERE STOREID = #{STOREID}
+  </select>
+  
+  <select id="selectStoreAllReview" resultType="com.kkssj.moca.model.entity.ReviewVo">
  	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
 	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
 	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id),0)  "isLike",

@@ -34,6 +34,8 @@ public interface ReviewDao {
 
 	List<ReviewVo> selectAllReview();
 
+	List<ReviewVo> selectStoreAllReview(int storeId);
+
 	
 	
 

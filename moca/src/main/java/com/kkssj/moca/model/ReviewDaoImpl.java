@@ -164,6 +164,12 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.update("review.updateReview", reviewVo);
 	}
 
+	@Override
+	public List<ReviewVo> selectStoreAllReview(int STOREID) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("review.selectStoreAllReview", STOREID);
+	}
+
 
 	
 
