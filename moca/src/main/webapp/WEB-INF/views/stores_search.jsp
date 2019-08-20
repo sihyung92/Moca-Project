@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" import="java.util.List, com.kkssj.moca.model.entity.StoreVo"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -61,15 +62,12 @@
         $('.lat').val(lat);
 		$('.lng').val(lng); 		
     	//접속 브라우저의 웹 지오로케이션 지원 여부 판단  
-        if (navigator.geolocation){             		       
+        if (navigator.geolocation){          	       
             var options = { timeout: 2000, maximumAge: 3000, enableHighAccuracy: true};	//highAccuracy true: 모바일 기기는 GPS로 위치 정보 확인             
             navigator.geolocation.getCurrentPosition(sucCall, errCall, options);		//현재 위치 정보 얻기
         }else {
         	//브라우저가 지오로케이션 지원하지 않을 때
-        	$('#header form').after("<span><small><strong>현재 위치 정보를 지원하지 않는 브라우저 입니다.</strong><br/>(강남역을 기준으로 검색됩니다.)</small></span>");          
-        }
-        if($('.lat').val()!=37.4995011 || $('.lng').val()!=127.0291403){
-        	$('#header form').after("<span><small><strong>위치 정보 디폴트!</strong><br/>(강남역을 기준으로 검색됩니다.)</small></span>");          
+        	$('#warning_geo strong').html("현재 위치 정보를 지원하지 않는 브라우저 입니다.");          
         }
 
 //카카오맵 API연결
@@ -133,10 +131,10 @@
     function errCall(error) {
         switch (error.code) {
             case error.PERMISSION_DENIED:
-            	$('#warning_geo strong').html("현재 위치 정보에 대한 접근이 거부되었습니다.");     
+            	$('#warning_geo strong').html("위치 정보 접근 거부 🙄 ...............정....정확한 검색을 위해 허....허용..을..");     
                 break;
             case error.POSITION_UNAVAILABLE:
-            	$('#warning_geo strong').html("위치 확인이 불가능합니다.");
+            	$('#warning_geo strong').html("위치 확인이 불가능합니다. 🙄  🙄 ");
             	break;
             default:	//error.UNKNOWN_ERROR, error.TIMEOUT, default
             	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
@@ -158,17 +156,12 @@
 	</form>
 	<br/>
 </div>
---------------------------------------------------------------------------------------------------------여기까지 header 아아아아--------------------------------------------------------------------------------------------------------
-<br/><br/>
 <div id="content">
-	<div id="search">
-		<span id="warning_geo">
-			<small>
-				<strong>현재 위치 정보를 허용해주세요.</strong>
-				<br/>
-				(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다.)
-			</small>
-		</span>
+	<div id="warning_geo">
+		<strong>정확한 검색을 위해 위치 정보 접근을 허용해주세요:)</strong><br/>
+		<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
+	</div>
+	<div id="search">		
 		<form action="stores">
 			<input type="hidden" name="x" class="lng"/>
 			<input type="hidden" name="y" class="lat">
@@ -217,18 +210,22 @@
 			<button>검색</button>	
 		</form>	
 	</div>
-	<span id="warning_wrongKeyword">${wrongKeyword }</span>
-	<span id="warning_noResult"><c:if test="${alist[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
-	<hr/>
+	<div id="warning_box">
+		<span id="warning_wrongKeyword"><strong>${wrongKeyword }</strong></span><br/>
+		<span id="warning_keywordEx"><small>${keywordEx }</small></span>
+		<span id="warning_noResult"><c:if test="${alist[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
+	</div>
 	<div id="result_stores">		
 		<c:forEach items="${alist}" var="bean" varStatus="status">
+			<c:if test="${bean.distance ge 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance/1000}" pattern="#.0km"></fmt:formatNumber></c:if>
+			<c:if test="${bean.distance lt 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance}" pattern="#m"></fmt:formatNumber></c:if>
 			<div class="links">
 				<form action="stores" method="post">
 					<input type="hidden" name="store_Id" value="${bean.store_Id}">
 					<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
 					<input type="hidden" name="name" value="${bean.name}"><span><strong>${bean.name }</strong></span><br/>
 					<span><strong>평점:${bean.averageLevel} 리뷰수:${bean.reviewCnt} 조회수:${bean.viewCnt}</strong></span><br/>
-					<input type="hidden" name="roadAddress" value="${bean.roadAddress}"><span>${bean.distance }m ${bean.roadAddress }</span><br/>
+					<input type="hidden" name="roadAddress" value="${bean.roadAddress}"><span>${distance} ${bean.roadAddress }</span><br/>
 					<input type="hidden" name="address" value="${bean.address}">
 					<input type="hidden" name="tel" value="${bean.tel}"><span>Tel: ${bean.tel }</span>
 					<input type="hidden" name="category" value="${bean.category}">				

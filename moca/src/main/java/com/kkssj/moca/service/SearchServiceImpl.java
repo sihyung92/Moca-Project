@@ -66,7 +66,7 @@ public class SearchServiceImpl implements SearchService {
 		}
 		
 //카카오 API 접속 정보 세팅
-		//URL
+		//URL 
 		String url="https://dapi.kakao.com/v2/local/search/keyword.json?category_group_code=CE7&sort=distance&x={x}&y={y}&query={query}&page={page}";
 		//HttpEntity에 header 정보 싣기
 		HttpHeaders headers = new HttpHeaders();		//MultiValueMap<String, String> 상속중-
