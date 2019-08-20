@@ -41,14 +41,8 @@
 	         text-overflow: ellipsis;
 	         float:left;
 	      }
-      
-	      .more-review-content-btn{display:none;white-space:nowrap;float:right;}
-	      
-	      @media screen and (max-width: 533px){
-	         .review-data .more-review-content.hidden{
-	            width:75%;
-	         }
-	      }
+	    .more-review-content-btn{display:none;white-space:nowrap;float:right;}
+	     
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 
@@ -59,13 +53,10 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js"/>"> </script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js"/>"></script>
+	<!-- mocaStore -->
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
-
-		//리뷰 개수 더보기
-		var quotient; //몫
-		var remainder; //나머지
-		var callNum=1; //호출 넘버
 
 
 		$(document).ready(function() {
@@ -75,7 +66,6 @@
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
 			$('input:radio[name=parkingLot]:input[value=' + ${storeVo.parkingLot} + ']').attr("checked", true);
-
 			
 			var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 				mapOption = {
@@ -171,39 +161,7 @@
 
 			//리뷰 3개씩 끊어서 가져오기
 			$('.reviewCnt').hide();
-			quotient = $('.reviewCnt').length/3;
-			remainder = $('.reviewCnt').length%3;
 			reviewCnt(quotient,remainder,callNum);
-
-			//리뷰 내용 더보기
-			/*
-			var reviewData = $('.review-data .more-review-content');
-	         reviewData.each( function() {
-	            console.log("outerHeight"+$( this ).outerHeight());
-	            var btnMoreReview = $(this).siblings('.more-review-content-btn');
-	            if( $(this).outerHeight() > 21 ){
-		           var temp = $(this).text();
-		           $(this).before('<span style="height:3em; display:block; overflow:hidden; text-overflow: ellipsis;" class="reviewTemp">'+temp+'<br></span>');
-		           console.log(temp);
-	               $(this).addClass('hidden');
-	               btnMoreReview.show();
-	               btnMoreReview.on("click",function(){
-	                  $(this).siblings('.more-review-content').toggleClass('hidden').promise().done(function(){
-		                  console.log($(this).hasClass("hidden"));
-		                  if($(this).hasClass("hidden") === false){
-		                  	$(this).next().text("접기");
-		                  	$(this).parent().find('.reviewTemp').hide();
-			              }else{
-			            	 $(this).next().text("더보기");
-			            	 $(this).parent().find('.reviewTemp').show();
-				          }
-	                  });
-	               });
-	            }else{
-	            	btnMoreReview.hide();
-		        }
-	         } );
-	         */
 	         
 			//리뷰 내용 더보기 style 변화
 			callReviewDataMore();
@@ -238,16 +196,16 @@
 				}
 			});
 
-
+			//storeInfo 참여하기 버튼 클릭시
 			$('#updateStore').click(function() {
 				$(this).attr('data-dismiss', "modal");
-				updateStore();
+				updateStore(${storeVo.store_Id});
 			});
 
 			//리뷰 더보기 버튼을 눌렀을 때
 			$('#moreReview').click(function(){
 					callNum += 1;
-					console.log("더보기"+quotient+":"+remainder+":"+callNum);
+					//console.log("더보기"+quotient+":"+remainder+":"+callNum);
 					reviewCnt(quotient,remainder,callNum);
 					callReviewDataMore();
 			});
@@ -268,7 +226,7 @@
 				editReview();
 			})
 			
-			//삭제 버튼 클릭시
+			//리뷰 삭제 버튼 클릭시
 			deleteBtn.click(function(){
 				var reviewId = $(this).parent().find('.review-id').val();
 				var reviewTodelete = $(this).parent().parent();
@@ -281,126 +239,6 @@
 			})
 
 		});
-
-		var updateStore = function() {
-
-			var checkTel = $('input[name="tel2"]').val();
-			if (checkTel != "") {
-				checkTel = $('input[name="tel1"]').val() + "-" + $('input[name="tel2"]').val() + "-" + $('input[name="tel3"]').val()
-			};
-
-			//var params=$('#StoreInfoModal form').serializeObject();
-			var param = {
-				"wifi":$('input[name="wifi"]:checked').val(),
-				"parkingLot":$('input[name="parkingLot"]:checked').val(),
-				"dayOff":$('input[name="dayOff"]').val(),
-				"openTime2":$('input[name="openTime"]').val(),
-				"endTime2":$('input[name="endTime"]').val(),
-				"tel":checkTel,
-				"url":$('input[name="url"]').val()
-			};
-			console.log(param);
-
-			//카페 상세정보 수정
-			$.ajax({
-				type: 'put',
-				url: ${
-					storeVo.store_Id
-				},
-				contentType: "application/json; charset=UTF-8",
-				datatype: "json",
-				data: JSON.stringify(param),
-				error: function(errorMsg) {
-					console.log("카페상세정보 수정실패", errorMsg);
-				},
-				success: function(data) {
-					console.log("카페상세정보 수정성공");
-					//카페 정보 바꿔주기
-					if (param.wifi == '0') {
-						$('#wifiInfo').html('없음');
-					} else if (param.wifi == '1') {
-						$('#wifiInfo').html('있음');
-					} else if (param.wifi == '-1') {
-						$('#wifiInfo').html('');
-					}
-
-					if (param.parkingLot == '0') {
-						$('#parkingLotInfo').html('없음');
-					} else if (param.parkingLot == '1') {
-						$('#parkingLotInfo').html('있음');
-					} else if (param.parkingLot == '-1') {
-						$('#parkingLotInfo').html('');
-					}
-
-					$('#dayOffInfo').html(param.dayOff);
-					var dash = ' - ';
-					if (param.endTime2 == '') {
-						dash = '';
-					};
-					$('#TimeInfo').html(param.openTime2 + dash + param.endTime2);
-					$('#telInfo').html(param.tel);
-					$('#urlInfo').html(param.url);
-				}
-			});
-		};
-
-		//리뷰 개수 더보기
-		var reviewCnt = function(q,r,n){
-			//먼저 3개만 보여주고 나머지는 더보기 버튼으로 클릭시 +3개씩 보여주기
-			console.log(q+":"+r+":"+n);
-			console.log(3*n+":"+q*3);
-			if(3*n<=q*3){
-				for(var i=(n-1)*3; i<3*n; i++){ //몫*3 or 나머지
-					$('.reviewCnt').eq(i).show();
-				}
-				if(3*n==q*3){
-					$('#moreReview').hide();
-				}
-			}else{
-				if(n!=1){
-					for(var i=(n-1)*3; i<((n-1)*3)+r; i++){ //몫*3
-						$('.reviewCnt').eq(i).show();
-					}
-					$('#moreReview').hide();
-				}else{
-					for(var i=0; i<r; i++){ //나머지
-						$('.reviewCnt').eq(i).show();
-					}
-					$('#moreReview').hide();
-				}
-			}
-		};
-
-		//리뷰 내용 더보기
-		var callReviewDataMore = function(){
-			var reviewData = $('.review-data .more-review-content');
-	        reviewData.each( function() {
-	           console.log("outerHeight"+$( this ).outerHeight());
-	           var btnMoreReview = $(this).siblings('.more-review-content-btn');
-	           if( $(this).outerHeight() > 41 ){
-	           	$(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
-	              $(this).addClass('moreData');
-	              btnMoreReview.show();
-	              btnMoreReview.on("click",function(){
-	           	   console.log("outerHeight"+$( this ).outerHeight());
-	                 $(this).siblings('.more-review-content').toggleClass('moreData').promise().done(function(){
-		                  console.log($(this).hasClass("moreData"));
-		                  if($(this).hasClass("moreData") === false){
-		                  	$(this).next().text("접기");
-		                  	$(this).css({ 'height': '100%', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
-			              }else{
-			            	 $(this).next().text("더보기");
-			            	 $(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
-				          }
-	                 });
-	              });
-	           }else{
-	           	btnMoreReview.hide();
-		        }
-	        });
-		};
-
-		
 
 	</script>
 </head>
@@ -564,12 +402,13 @@
 					<!-- js로 리뷰 수만큼 추가 할 것  -->
 					<c:forEach items="${reviewVoList }" var="reviewVo">
 						<div class="row reviewCnt">
-
-							<div class="editDeleteGroup btn-group" role="group">
-								<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
-								<button type="button" class="btn-edit btn btn-default">수정</button>
-								<button type="button" class="btn-delete btn btn-default">삭제</button>
-							</div>
+							<c:if test="${reviewVo.editable eq 1}">
+								<div class="editDeleteGroup btn-group" role="group">
+									<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+									<button type="button" class="btn-edit btn btn-default">수정</button>
+									<button type="button" class="btn-delete btn btn-default">삭제</button>
+								</div>
+							</c:if>
 							<div class="reviewer-info col-md-2">
 								<div class="nickName-div">
 									<label>별명</label>	
@@ -620,7 +459,7 @@
 									</div>
 									<div class="review-content-div">
 										<label>리뷰 내용</label>
-										<span class="reviewInfo-review-content">${reviewVo.reviewContent }</span>
+										<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
 									</div>
 									<span class="more-review-content-btn">더보기</span>
 								</div>

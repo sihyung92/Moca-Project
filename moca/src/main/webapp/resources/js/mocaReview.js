@@ -22,6 +22,11 @@ var clickedEditBtn;
 
 var reviewFormObj;
 
+//리뷰 개수 더보기
+var quotient; //몫
+var remainder; //나머지
+var callNum=1; //호출 넘버
+
 
 ////////////////////////////
 //함수부
@@ -37,6 +42,10 @@ var bindReviewVariable = function(){
 	deleteBtn = $('.btn-delete')
 
 	likeHateButton = $('.like-hate>.btn-group>button')
+	
+	//리뷰 더보기
+	quotient = $('.reviewCnt').length/3;
+	remainder = $('.reviewCnt').length%3;
 }
 
 
@@ -188,6 +197,68 @@ var deleteReview = function(review_id) {
 	})
 }
 
+//리뷰 개수 더보기
+var reviewCnt = function(q,r,n){
+	//먼저 3개만 보여주고 나머지는 더보기 버튼으로 클릭시 +3개씩 보여주기
+	console.log(q+":"+r+":"+n);
+	console.log(3*n+":"+q*3);
+	if(3*n<=q*3){
+		for(var i=(n-1)*3; i<3*n; i++){ //몫*3 or 나머지
+			$('.reviewCnt').eq(i).show();
+		}
+		if(3*n==q*3){
+			$('#moreReview').hide();
+		}
+	}else{
+		if(n!=1){
+			for(var i=(n-1)*3; i<((n-1)*3)+r; i++){ //몫*3
+				$('.reviewCnt').eq(i).show();
+			}
+			$('#moreReview').hide();
+		}else{
+			for(var i=0; i<r; i++){ //나머지
+				$('.reviewCnt').eq(i).show();
+			}
+			$('#moreReview').hide();
+		}
+	}
+};
+
+//리뷰 내용 더보기
+var callReviewDataMore = function(){
+	var reviewData = $('.more-review-content');
+    reviewData.each( function() {
+       //console.log("outerHeight"+$( this ).outerHeight());
+       //console.log($(this).parent().siblings('.more-review-content-btn'));
+       
+       var btnMoreReview = $(this).parent().siblings('.more-review-content-btn');
+
+       if( $(this).outerHeight() > 41 ){
+           
+       	$(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
+          $(this).addClass('moreData');
+          btnMoreReview.show();
+          btnMoreReview.on("click",function(){
+       	   console.log("outerHeight"+$( this ).outerHeight());
+             $(this).siblings('.review-content-div').find('.more-review-content').toggleClass('moreData').promise().done(function(){
+                  console.log($(this).hasClass("moreData"));
+                  if($(this).hasClass("moreData") === false){
+                	  btnMoreReview.text("접기");
+                  	$(this).css({ 'height': '100%', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
+	              }else{
+	            	  btnMoreReview.text("더보기");
+	            	 $(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
+		          }
+             });
+          });
+          
+       }else{
+           
+       	btnMoreReview.hide();
+       	
+       }
+    });
+};
 
 //좋아요 또는 싫어요 추가
 var addLikeHate = function(reviewId, isLike){

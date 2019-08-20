@@ -4,24 +4,23 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="review">
   <select id="selectAll" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
-  <!-- 
-	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, r.TASTELEVEL, 
-	r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, r.LIKECOUNT, r.HATECOUNT, ifnull(l.ISLIKE,0) as 'ISLIKE',
+	SELECT r.REVIEW_ID, r.ACCOUNTID, (r.ACCOUNTID=${ACCOUNTID}) 'editable', r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNTID}),0)  "isLike",
 	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
-	FROM REVIEW r LEFT JOIN (SELECT * FROM LIKEHATE  WHERE ACCOUNT_ID = #{ACCOUNTID}) l
-	ON(r.REVIEW_ID = l.REVIEW_ID AND r.ACCOUNTID = l.ACCOUNT_ID)
-	JOIN ACCOUNT a ON a.ACCOUNT_ID = r.ACCOUNTID
-	WHERE r.STOREID = #{STOREID}
-	ORDER BY r.REVIEW_ID
-   -->
-	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, r.TASTELEVEL, 
-	r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, r.LIKECOUNT, r.HATECOUNT, ifnull(l.ISLIKE,0) as 'ISLIKE',
-	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
-	FROM REVIEW r LEFT JOIN (SELECT * FROM LIKEHATE  WHERE ACCOUNT_ID = #{ACCOUNTID}) l
-	ON(r.REVIEW_ID = l.REVIEW_ID AND r.ACCOUNTID = l.ACCOUNT_ID)
-	JOIN ACCOUNT a ON a.ACCOUNT_ID = r.ACCOUNTID
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
 	WHERE r.STOREID = #{STOREID}
 	ORDER BY FIELD(r.ACCOUNTID,#{ACCOUNTID}) DESC, r.LIKECOUNT DESC;
+  </select>
+  
+  <select id="selectAllReviewId" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	SELECT review_id FROM REVIEW
+  </select>
+  
+  <select id="selectAllReviewLevel" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	SELECT TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL
+	FROM REVIEW
+	WHERE STOREID = #{STOREID}
   </select>
   
   <delete id="deleteReview" parameterType="Integer">
@@ -51,5 +50,31 @@
   <select id="selectHateCount" parameterType="Integer" resultType="Integer">
   	SELECT hateCount FROM REVIEW WHERE review_id = #{id}
   </select>
+  
+  <select id="selectLikeHateLike" parameterType="Integer" resultType="Integer">
+  	SELECT count(*) FROM (SELECT * FROM LIKEHATE WHERE isLike=1 AND review_id = #{id} ) l GROUP BY isLike;
+  </select>
+  <select id="selectLikeHateHate" parameterType="Integer" resultType="Integer">
+ 	SELECT count(*) FROM (SELECT * FROM LIKEHATE WHERE isLike=-1 AND review_id = #{id} ) l GROUP BY isLike;
+  </select>
+  
+  <insert id="insertReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	INSERT INTO REVIEW(ACCOUNTID, STOREID, REVIEWCONTENT, WRITEDATE, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LIKECOUNT,HATECOUNT) 
+  	VALUES(#{accountId}, #{storeId}, #{reviewContent}, NOW(), #{tasteLevel}, #{priceLevel}, #{serviceLevel}, #{moodLevel}, #{convenienceLevel}, #{averageLevel}, 0, 0)
+  </insert>
+  <select id="selectAddedOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
+  	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
+	WHERE  a.ACCOUNT_ID = #{id}
+	ORDER BY r.WRITEDATE DESC
+	LIMIT 1;
+  </select>
+  <update id="updateReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	UPDATE REVIEW SET REVIEWCONTENT=#{reviewContent}, TASTELEVEL=#{tasteLevel}, PRICELEVEL=#{priceLevel}, 
+  	SERVICELEVEL=#{serviceLevel}, MOODLEVEL= #{moodLevel}, CONVENIENCELEVEL=#{convenienceLevel}, AVERAGELEVEL=#{averageLevel} 
+	WHERE STOREID=#{storeId} AND REVIEW_ID = #{review_id} AND ACCOUNTID=#{accountId}; 
+  </update>
   
 </mapper>

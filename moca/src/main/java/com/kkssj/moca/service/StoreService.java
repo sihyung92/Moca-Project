@@ -16,13 +16,13 @@ public interface StoreService {
 	//store
 	
 	//상세정보 가져오기
-	StoreVo getStore(int store_Id) throws SQLException;
+	StoreVo getStore(int store_Id);
 
 	//store가 있는지 확인하고 add
-	StoreVo addStore(StoreVo storeVo) throws SQLException;
+	StoreVo addStore(StoreVo storeVo);
 	
 	//store 상세정보 update
-	int editStore(int accountId, StoreVo storeVo) throws SQLException;
+	int editStore(int accountId, StoreVo storeVo);
 	
 	
 	///////////////////////
@@ -38,7 +38,7 @@ public interface StoreService {
 	int editReview(ReviewVo reviewVo);
 	
 	//리뷰 제거
-	int deleteReview(int review_id) throws SQLException;
+	int deleteReview(int review_id);
 	
 	
 	///////////////////////

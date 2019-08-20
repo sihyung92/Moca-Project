@@ -31,26 +31,41 @@ public class StoreServiceImpl implements StoreService{
 	//Store
 
 	@Override
-	public StoreVo getStore(int store_Id) throws SQLException {
-		return storeDao.selectOne(store_Id);
+	public StoreVo getStore(int store_Id){
+		try {
+			return storeDao.selectOne(store_Id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	@Override
-	public StoreVo addStore(StoreVo storeVo) throws SQLException {
+	public StoreVo addStore(StoreVo storeVo){
 		
-		storeDao.insertOne(storeVo);
-		storeVo = storeDao.selectByKakaoId(storeVo.getKakaoId());
+		try {
+			storeDao.insertOne(storeVo);
+			storeVo = storeDao.selectByKakaoId(storeVo.getKakaoId());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		
 		return storeVo;
 	}
 	@Override
-	public int editStore(int accountId, StoreVo storeVo) throws SQLException {
+	public int editStore(int accountId, StoreVo storeVo){
 		
-		int result = storeDao.updateOne(storeVo);
-		System.out.println("result : "+result);
-		if(result>0) {
-			int history = storeDao.insertStoreInfoHistory(accountId, storeVo);
-			System.out.println("history : "+history);
+		int result = -1;
+		try {
+			result = storeDao.updateOne(storeVo);
+			System.out.println("result : "+result);
+			if(result>0) {
+				int history = storeDao.insertStoreInfoHistory(accountId, storeVo);
+				System.out.println("history : "+history);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		
 		return result;
 	}
 	
@@ -74,7 +89,11 @@ public class StoreServiceImpl implements StoreService{
 			storeVo.setStore_Id(reviewVo.getStoreId());
 			storeVo.calAllLevel(list);
 			logger.debug(storeVo.toString());
-			storeDao.updateLevel(storeVo);
+			try {
+				storeDao.updateLevel(storeVo);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			
 			
 			// 방금 입력한 Vo를 가져온다. 
@@ -94,8 +113,13 @@ public class StoreServiceImpl implements StoreService{
 	}
 	//리뷰 삭제
 	@Override
-	public int deleteReview(int review_id) throws SQLException {
-		return reviewDao.deleteReview(review_id);
+	public int deleteReview(int review_id){
+		try {
+			return reviewDao.deleteReview(review_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	

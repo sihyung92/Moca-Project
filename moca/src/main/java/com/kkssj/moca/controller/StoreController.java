@@ -40,7 +40,7 @@ public class StoreController {
 
  	//처음 상세페이지로 접속, vo 객체로 받기
 	@PostMapping("/stores")
-	public String addStore(@ModelAttribute StoreVo storeVo, Model model) throws SQLException {
+	public String addStore(@ModelAttribute StoreVo storeVo, Model model){
 		logger.info("getStoreId");
 
 		// 여기서 스토어ID가 있으면(0이 아니면) -> insert 안하고, 스토어ID가 없으면 insert 해야함
@@ -65,7 +65,7 @@ public class StoreController {
 
 	// 리다이렉트로 상세페이지로
 	@GetMapping("/stores/{storeId}")
-	public String getStore(@PathVariable("storeId") int storeId, Model model) throws SQLException {
+	public String getStore(@PathVariable("storeId") int storeId, Model model){
 		logger.debug("storeId : " + storeId + " - getStore");
 
 		StoreVo storeVo = storeService.getStore(storeId);
@@ -87,7 +87,7 @@ public class StoreController {
 	}
 	
 	@PutMapping("/stores/{storeId}")
-	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo) throws SQLException{
+	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo){
 		
 		//회원만 가능하게 로그인 기능 구현되면 붙여넣을 것
 
@@ -155,7 +155,7 @@ public class StoreController {
 		
 		// 리뷰 삭제
 		@DeleteMapping("/reviews/{review_id}")
-		public ResponseEntity deleteReview(@PathVariable("review_id") int review_id) throws SQLException {
+		public ResponseEntity deleteReview(@PathVariable("review_id") int review_id){
 			// 사용자 확인
 			int accountId = 1;
 			

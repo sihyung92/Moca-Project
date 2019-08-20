@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="review">
   <select id="selectAll" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
-	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+	SELECT r.REVIEW_ID, r.ACCOUNTID, (r.ACCOUNTID=${ACCOUNTID}) 'editable', r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
 	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
 	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNTID}),0)  "isLike",
 	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
