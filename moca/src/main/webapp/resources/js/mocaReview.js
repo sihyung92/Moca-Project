@@ -1,4 +1,3 @@
-
 //변수 선언부
 var likeHateButton;
 var btnGroup;
@@ -113,7 +112,8 @@ var saveReview = function(){
 	})
 }
 
-//리뷰 데이터를 리뷰 모달로 이동 ( 수정 때 사용)
+
+//리뷰 데이터를 리뷰 모달로 이동 (수정 때 사용)
 var reviewData2ReviewModal = function(clickedEditBtn){
 	$('#reviewModal').modal("show");		//리뷰 모달창 show
 
@@ -172,6 +172,22 @@ var editReview = function(){
 
 }
 
+//리뷰 삭제
+var deleteReview = function(review_id) {
+	console.log(review_id);
+	$.ajax({
+		type: 'DELETE',
+		url: '/moca/reviews/'+review_id,
+		success: function() {
+			console.log('ajax 통신 성공')
+		},
+		error: function() {
+			console.log('ajax 통신 실패')
+			alert("취소 실패")
+		}
+	})
+}
+
 
 //좋아요 또는 싫어요 추가
 var addLikeHate = function(reviewId, isLike){
@@ -193,7 +209,6 @@ var addLikeHate = function(reviewId, isLike){
 				hateBtn.addClass('clicked')
 				hateCount.val(Number(hateCount.val()) + 1);
 			}
-			
 		},
 		error: function() {
 			console.log('ajax 통신 실패')
@@ -267,9 +282,6 @@ var cancelLikeHate = function(reviewId, isLike){
 
 }
 	
-
-	
-
 
 
 

@@ -26,12 +26,14 @@ public class StoreServiceImpl implements StoreService{
 	
 	@Inject
 	StoreDao storeDao;
+	
+	//////////////////////////////
+	//Store
 
 	@Override
 	public StoreVo getStore(int store_Id) throws SQLException {
 		return storeDao.selectOne(store_Id);
 	}
-
 	@Override
 	public StoreVo addStore(StoreVo storeVo) throws SQLException {
 		
@@ -40,18 +42,65 @@ public class StoreServiceImpl implements StoreService{
 		
 		return storeVo;
 	}
-
 	@Override
-	public int editStore(StoreVo storeVo) throws SQLException {
-		return storeDao.updateOne(storeVo);
+	public int editStore(int accountId, StoreVo storeVo) throws SQLException {
+		
+		int result = storeDao.updateOne(storeVo);
+		System.out.println("result : "+result);
+		if(result>0) {
+			int history = storeDao.insertStoreInfoHistory(accountId, storeVo);
+			System.out.println("history : "+history);
+		}
+		return result;
 	}
 	
-
+	////////////////////////////////
+	//review
+	
 	@Override
 	public List<ReviewVo> getReviewList(int accountId, int storeId) {
 		return reviewDao.selectAll(accountId, storeId);
 	}
+	@Override
+	public ReviewVo addReview(ReviewVo reviewVo) {
+		//평균 점수 계산
+		reviewVo.calAverageLevel();
+		
+		//정상적으로 입력되었을때
+		if(reviewDao.insertReview(reviewVo) ==1) {
+			//상점에 대한 평점 동기화
+			List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStoreId());
+			StoreVo storeVo = new StoreVo();
+			storeVo.setStore_Id(reviewVo.getStoreId());
+			storeVo.calAllLevel(list);
+			logger.debug(storeVo.toString());
+			storeDao.updateLevel(storeVo);
+			
+			
+			// 방금 입력한 Vo를 가져온다. 
+			return reviewDao.selectAddedOne(reviewVo.getAccountId());
+		}
+		return null;
+	}
 
+	@Override
+	public int editReview(ReviewVo reviewVo) {
+		
+		//평균 점수 다시 계산
+		reviewVo.calAverageLevel();
+		
+		//업데이트 된 행의 수를 반환
+		return reviewDao.updateReview(reviewVo);
+	}
+	//리뷰 삭제
+	@Override
+	public int deleteReview(int review_id) throws SQLException {
+		return reviewDao.deleteReview(review_id);
+	}
+	
+	
+	///////////////////////////////
+	//likeHate
 	@Override
 	public int addLikeHate(int review_id, int accountId, int isLike) {
 		reviewDao.insertLikeHate(review_id, accountId, isLike );
@@ -78,9 +127,6 @@ public class StoreServiceImpl implements StoreService{
 		reviewDao.updateHateCount(review_id, reviewDao.selectHateCount(review_id)-isLike) ;
 		return 1;
 	}
-
-	
-
 	@Override
 	public int syncReviewLikeHate() {
 		List<ReviewVo> list = reviewDao.selectAllReviewId();
@@ -96,37 +142,8 @@ public class StoreServiceImpl implements StoreService{
 		return 1;
 	}
 
-	@Override
-	public ReviewVo addReview(ReviewVo reviewVo) {
-		//평균 점수 계산
-		reviewVo.calAverageLevel();
-		
-		//정상적으로 입력되었을때
-		if(reviewDao.insertReview(reviewVo) ==1) {
-			//상점에 대한 평점 동기화
-			List<ReviewVo> list = reviewDao.selectStoreAllReview(reviewVo.getStoreId());
-			StoreVo storeVo = new StoreVo();
-			storeVo.setStore_Id(reviewVo.getStoreId());
-			storeVo.calAllLevel(list);
-			storeDao.updateLevel(storeVo);
-			
-			
-			// 방금 입력한 Vo를 가져온다. 
-			return reviewDao.selectAddedOne(reviewVo.getAccountId());
-		}
-		return null;
-	}
 
-	@Override
-	public int editReview(ReviewVo reviewVo) {
-		
-		//평균 점수 다시 계산
-		reviewVo.calAverageLevel();
-		
-		//업데이트 된 행의 수를 반환
-		return reviewDao.updateReview(reviewVo);
-		
-	}
+	
 
 
 }

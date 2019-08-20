@@ -1,5 +1,6 @@
 package com.kkssj.moca.model;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.kkssj.moca.model.entity.ReviewVo;
@@ -34,10 +35,9 @@ public interface ReviewDao {
 
 	List<ReviewVo> selectAllReviewId();
 
-	List<ReviewVo> selectStoreAllReview(int storeId);
-
+	List<ReviewVo> selectAllReviewLevel(int storeId);
 	
-	
+	int deleteReview(int review_id) throws SQLException;
 
 	
 }

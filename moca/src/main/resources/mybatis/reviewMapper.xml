@@ -10,21 +10,22 @@
 	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
 	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
 	WHERE r.STOREID = #{STOREID}
-	ORDER BY r.REVIEW_ID; 
+	ORDER BY FIELD(r.ACCOUNTID,#{ACCOUNTID}) DESC, r.LIKECOUNT DESC;
   </select>
   
   <select id="selectAllReviewId" resultType="com.kkssj.moca.model.entity.ReviewVo">
  	SELECT review_id FROM REVIEW
   </select>
   
-  <select id="selectStoreAllReview" resultType="com.kkssj.moca.model.entity.ReviewVo">
- 	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
-	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
-	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id),0)  "isLike",
-	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
-	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
-	ORDER BY r.REVIEW_ID; 
+  <select id="selectAllReviewLevel" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	SELECT TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL
+	FROM REVIEW
+	WHERE STOREID = #{STOREID}
   </select>
+  
+  <delete id="deleteReview" parameterType="Integer">
+  	DELETE FROM REVIEW WHERE review_id=#{REVIEW_ID}
+  </delete>
    
   <insert id="insertLikeHate"  parameterType="map">
   	INSERT INTO LIKEHATE(review_id, account_id, isLike) VALUES(#{REVIEW_ID}, #{ACCOUNT_ID}, #{ISLIKE})

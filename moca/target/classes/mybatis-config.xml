@@ -5,5 +5,6 @@
 <configuration>
   <mappers>
     <mapper resource="mybatis/storeMapper.xml"/>
+    <mapper resource="mybatis/reviewMapper.xml"/>
   </mappers>
 </configuration>

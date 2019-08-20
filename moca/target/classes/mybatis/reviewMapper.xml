@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="review">
+  <select id="selectAll" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
+  <!-- 
+	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, r.TASTELEVEL, 
+	r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, r.LIKECOUNT, r.HATECOUNT, ifnull(l.ISLIKE,0) as 'ISLIKE',
+	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r LEFT JOIN (SELECT * FROM LIKEHATE  WHERE ACCOUNT_ID = #{ACCOUNTID}) l
+	ON(r.REVIEW_ID = l.REVIEW_ID AND r.ACCOUNTID = l.ACCOUNT_ID)
+	JOIN ACCOUNT a ON a.ACCOUNT_ID = r.ACCOUNTID
+	WHERE r.STOREID = #{STOREID}
+	ORDER BY r.REVIEW_ID
+   -->
+	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, r.TASTELEVEL, 
+	r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, r.LIKECOUNT, r.HATECOUNT, ifnull(l.ISLIKE,0) as 'ISLIKE',
+	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r LEFT JOIN (SELECT * FROM LIKEHATE  WHERE ACCOUNT_ID = #{ACCOUNTID}) l
+	ON(r.REVIEW_ID = l.REVIEW_ID AND r.ACCOUNTID = l.ACCOUNT_ID)
+	JOIN ACCOUNT a ON a.ACCOUNT_ID = r.ACCOUNTID
+	WHERE r.STOREID = #{STOREID}
+	ORDER BY FIELD(r.ACCOUNTID,#{ACCOUNTID}) DESC, r.LIKECOUNT DESC;
+  </select>
+  
+  <delete id="deleteReview" parameterType="Integer">
+  	DELETE FROM REVIEW WHERE review_id=#{REVIEW_ID}
+  </delete>
+   
+  <insert id="insertLikeHate"  parameterType="map">
+  	INSERT INTO LIKEHATE(review_id, account_id, isLike) VALUES(#{REVIEW_ID}, #{ACCOUNT_ID}, #{ISLIKE})
+  </insert>
+  
+  <update id="updateLikeHate" parameterType="map">
+  	UPDATE LIKEHATE SET isLike=#{ISLIKE } WHERE review_id = #{REVIEW_ID} AND account_id = #{ACCOUNT_ID}
+  </update>
+  <delete id="deleteLikeHate" parameterType="map">
+  	DELETE FROM LIKEHATE WHERE review_id = #{REVIEW_ID} AND account_id = #{ACCOUNT_ID}
+  </delete>
+  
+  <update id="updateLikeCount" parameterType="map">
+  	UPDATE REVIEW SET likeCount = #{LIKECOUNT} WHERE review_id = #{REVIEW_ID}
+  </update>
+  <update id="updateHateCount" parameterType="map">
+  	UPDATE REVIEW SET hateCount = #{HATECOUNT} WHERE review_id = #{REVIEW_ID}
+  </update>
+  <select id="selectLikeCount" parameterType="Integer" resultType="Integer">
+  	SELECT likeCount FROM REVIEW WHERE review_id = #{id}
+  </select>
+  <select id="selectHateCount" parameterType="Integer" resultType="Integer">
+  	SELECT hateCount FROM REVIEW WHERE review_id = #{id}
+  </select>
+  
+</mapper>

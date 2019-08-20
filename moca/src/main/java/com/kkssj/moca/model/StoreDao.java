@@ -12,6 +12,8 @@ public interface StoreDao {
 	int insertOne(StoreVo storeVo) throws SQLException;
 
 	int updateOne(StoreVo storeVo) throws SQLException;
+	
+	int insertStoreInfoHistory(int accountId, StoreVo storeVo) throws SQLException;
 
 	int updateLevel(StoreVo storeVo);
 

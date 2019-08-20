@@ -12,6 +12,9 @@ import java.sql.SQLException;
 
 public interface StoreService {
 	
+	///////////////////////
+	//store
+	
 	//상세정보 가져오기
 	StoreVo getStore(int store_Id) throws SQLException;
 
@@ -19,10 +22,27 @@ public interface StoreService {
 	StoreVo addStore(StoreVo storeVo) throws SQLException;
 	
 	//store 상세정보 update
-	int editStore(StoreVo storeVo) throws SQLException;
+	int editStore(int accountId, StoreVo storeVo) throws SQLException;
+	
+	
+	///////////////////////
+	//review
 	
 	//리뷰 리스트 가져오기
 	List<ReviewVo> getReviewList(int accountId, int storeId);
+	
+	//리뷰 추가
+	ReviewVo addReview(ReviewVo reviewVo);
+
+	//리뷰 수정
+	int editReview(ReviewVo reviewVo);
+	
+	//리뷰 제거
+	int deleteReview(int review_id) throws SQLException;
+	
+	
+	///////////////////////
+	//likeHate
 
 	//좋아요 싫어요 추가하기
 	int addLikeHate(int review_id, int accountId, int isLike);
@@ -35,10 +55,5 @@ public interface StoreService {
 
 	//review의 좋아요 싫어요 카운트를 likehate 테이블의 값과 동기화
 	int syncReviewLikeHate();
-	
-	ReviewVo addReview(ReviewVo reviewVo);
 
-	int editReview(ReviewVo reviewVo);
-
-	
 }

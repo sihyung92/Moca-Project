@@ -22,9 +22,9 @@ public class StoreVo {
 	
 	public StoreVo(int store_Id, int kakaoId, String name,String category,String address,String roadAddress,String xLocation,
 			 String yLocation, String url, String tag, int reviewCnt, int viewCnt,Date openTime, Date endTime,
-			 int wifi, int parkingLot, String dayOff, String tel, double tasteLevel, double priceLevel, double serviceLevel, double moodLevel, double convenienceLevel,
-			 String logoImg, String reviewImg)
-	{
+			 int wifi, int parkingLot, String dayOff, String tel, 
+			 double tasteLevel, double priceLevel, double serviceLevel, double moodLevel, double convenienceLevel, double averageLevel,
+			 String logoImg, String reviewImg){
 		super();
 		this.store_Id = store_Id;
 		this.kakaoId = kakaoId;
@@ -47,6 +47,7 @@ public class StoreVo {
 		this.serviceLevel = serviceLevel;
 		this.moodLevel = moodLevel;
 		this.convenienceLevel = convenienceLevel;
+		this.averageLevel = averageLevel;
 		this.openTime = openTime;
 		this.endTime = endTime;
 		this.setLogoImg(logoImg);
@@ -440,6 +441,7 @@ public class StoreVo {
 		
 		for (int i = 0; i < list.size(); i++) {
 			ReviewVo reviewVo = list.get(i);
+			System.out.println(reviewVo.toString());
 			this.tasteLevel += reviewVo.getTasteLevel();
 			this.priceLevel += reviewVo.getPriceLevel();
 			this.serviceLevel += reviewVo.getServiceLevel();
@@ -456,6 +458,33 @@ public class StoreVo {
 		this.convenienceLevel = Math.round((this.convenienceLevel*1.0/list.size())*10)/(10.0);
 		this.averageLevel = Math.round((this.averageLevel*1.0/(list.size()*5))*10)/(10.0);
 		
+	}
+	
+	
+	public boolean infoEqual(Object obj) {
+		StoreVo other = (StoreVo) obj;
+		if (dayOff == null) {
+			if (other.dayOff != null)
+				return false;
+		} else if (!dayOff.equals(other.dayOff))
+			return false;
+
+		if (parkingLot != other.parkingLot)
+			return false;
+
+		if (tel == null) {
+			if (other.tel != null)
+				return false;
+		} else if (!tel.equals(other.tel))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		if (wifi != other.wifi)
+			return false;
+		return true;
 	}
 	
 }
