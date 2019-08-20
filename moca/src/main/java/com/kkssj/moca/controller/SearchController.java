@@ -24,13 +24,13 @@ public class SearchController {
 	SearchService searchService;	
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	@RequestMapping(value = "/stores", method = RequestMethod.GET)
 	public String search(String keyword, String x, String y, String filter, String region, Model model) throws MalformedURLException {
 	//0. 검색어 처리	
 		keyword = keyword.trim();		
 		if(keyword.equals("") || keyword.equals("#")) {					//검색어가 없으면, 에러메시지와 함께 뷰페이지 리턴
 			model.addAttribute("err", "검색어를 다시 입력해주세요(#검색어 예시 추가)1");
-			return "search";
+			return "stores_search";
 		}
 		
 	//1. 태그 검색(#검색)		
@@ -38,7 +38,7 @@ public class SearchController {
 			//여러개의 태그(#)-> 에러메시지와 함께 뷰페이지로 리턴
 			if(keyword.indexOf('#')!=keyword.lastIndexOf('#')) {
 			model.addAttribute("err", "검색어를 다시 입력해주세요(#검색어 예시 추가)2");
-			return "search";			
+			return "stores_search";			
 			//한 개의 태그(#)
 			}else if(!keyword.substring(keyword.indexOf("#")+1).equals("")){		//태그 앞에만 내용이 있으면 키워드 검색으로 처리
 				keyword=keyword.substring(keyword.indexOf("#")+1).trim();
@@ -51,7 +51,7 @@ public class SearchController {
 				model.addAttribute("alist",searchService.getListByTag(variables));			
 				model.addAttribute("keyword", "#"+keyword);
 				model.addAttribute("filter", filter);
-				return "search";
+				return "stores_search";
 			}			
 		}
 
@@ -67,14 +67,14 @@ public class SearchController {
 		model.addAttribute("alist", alist);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("filter", filter);			
-		return "search";
+		return "stores_search";
 	}
 	
 	
-	@RequestMapping(value="store", method=RequestMethod.POST)
+	@RequestMapping(value="/stores", method=RequestMethod.POST)
 	public String detail(@ModelAttribute("bean") StoreVo bean) {			
 		logger.debug(bean.getAddress());		
-		return "detail";
+		return "stores_detail";
 	}
 }
 
