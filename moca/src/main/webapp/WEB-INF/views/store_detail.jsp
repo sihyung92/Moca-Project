@@ -118,6 +118,8 @@
 				}
 			});
 
+			
+
 
 			//좋아요 또는 싫어요 버튼 클릭시
 			likeHateButton.click(function() {
@@ -260,12 +262,24 @@
 			//수정 버튼 클릭시
 			editBtn.click(function(){
 				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
-				reviewData2ReviewModal(this);				
+				reviewData2ReviewModal(this);
+				reviewModal.find('#saveReviewBtn').css('display','none')
+				reviewModal.find('#editReviewBtn').css('display','')
+				$('#reviewModal').modal("show");		//리뷰 모달창 show
+							
 			})
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
 				editReview();
+			})
+			
+			reviewModalBtn.click(function(){
+				//모달에 있는 데이터 없애고 
+				clearReviewModalData();
+				reviewModal.find('#saveReviewBtn').css('display','')
+				reviewModal.find('#editReviewBtn').css('display','none')
+				$('#reviewModal').modal("show");		//리뷰 모달창 show
 			})
 			
 			//삭제 버튼 클릭시
@@ -555,7 +569,7 @@
 				<div class="review-header">
 					<h1>리뷰들</h1>
 					<!-- Button trigger modal -->
-					<button type="button" class="btn btn-primary" data-toggle="modal" id="reviewModalBtn" data-target="#reviewModal">
+					<button type="button" class="btn btn-primary" data-toggle="modal" id="reviewModalBtn">
 						리뷰 작성
 					</button>
 					<br><br>

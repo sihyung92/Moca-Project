@@ -44,11 +44,8 @@
   <update id="updateHateCount" parameterType="map">
   	UPDATE REVIEW SET hateCount = #{HATECOUNT} WHERE review_id = #{REVIEW_ID}
   </update>
-  <select id="selectLikeCount" parameterType="Integer" resultType="Integer">
-  	SELECT likeCount FROM REVIEW WHERE review_id = #{id}
-  </select>
-  <select id="selectHateCount" parameterType="Integer" resultType="Integer">
-  	SELECT hateCount FROM REVIEW WHERE review_id = #{id}
+  <select id="selectLikeHateCount" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
+  	SELECT likeCount, hateCount FROM REVIEW WHERE review_id = #{id}
   </select>
   
   <select id="selectLikeHateLike" parameterType="Integer" resultType="Integer">

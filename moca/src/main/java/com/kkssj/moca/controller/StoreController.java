@@ -179,7 +179,6 @@ public class StoreController {
 		//계정 정보를 받아오고
 		int accountId =1;
 		
-		
 		if(storeService.addLikeHate(review_id, accountId, isLike) ==1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {

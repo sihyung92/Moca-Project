@@ -7,35 +7,33 @@ import com.kkssj.moca.model.entity.ReviewVo;
 
 public interface ReviewDao {
 
-	List<ReviewVo> selectAll(int accountId, int storeId);
+	List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException;
 
-	int insertLikeHate(int review_id, int accountId, int isLike);
+	int insertLikeHate(int review_id, int accountId, int isLike) throws SQLException;
 	
-	int updateLikeHate(int review_id, int accountId, int isLike);
+	int updateLikeHate(int review_id, int accountId, int isLike) throws SQLException;
 
-	int deleteLikeHate(int review_id, int accountId);
+	int deleteLikeHate(int review_id, int accountId) throws SQLException;
 
-	int updateLikeCount(int review_id, int likeCount);
+	int updateLikeCount(int review_id, int likeCount) throws SQLException;
 	
-	int updateHateCount(int review_id, int hateCount);
+	int updateHateCount(int review_id, int hateCount) throws SQLException;
 	
-	int selectLikeCount(int review_id);
+	ReviewVo selectLikeHateCount(int review_id) throws SQLException;
 
-	int selectHateCount(int review_id);
+	int selectLikeHateLike(int reviewId) throws SQLException;
 
-	int selectLikeHateLike(int reviewId);
+	int selectLikeHateHate(int reviewId) throws SQLException;
 
-	int selectLikeHateHate(int reviewId);
+	int insertReview(ReviewVo reviewVo) throws SQLException;
 
-	int insertReview(ReviewVo reviewVo);
+	ReviewVo selectAddedOne(int accountId) throws SQLException;
 
-	ReviewVo selectAddedOne(int accountId);
+	int updateReview(ReviewVo reviewVo) throws SQLException;
 
-	int updateReview(ReviewVo reviewVo);
+	List<ReviewVo> selectAllReviewId() throws SQLException;
 
-	List<ReviewVo> selectAllReviewId();
-
-	List<ReviewVo> selectAllReviewLevel(int storeId);
+	List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException;
 	
 	int deleteReview(int review_id) throws SQLException;
 

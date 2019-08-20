@@ -25,7 +25,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//store 디테일 페이지에서 해당 카페의 review를 가져옴
 	@Override
-	public List<ReviewVo> selectAll(int accountId, int storeId) {
+	public List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("ACCOUNTID", accountId);
 		map.put("STOREID", storeId);
@@ -35,7 +35,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	
 	//리뷰 추가
 	@Override
-	public int insertReview(ReviewVo reviewVo) {
+	public int insertReview(ReviewVo reviewVo) throws SQLException {
 		logger.debug(reviewVo.toString());
 		int result = sqlSession.insert("review.insertReview", reviewVo);
 		logger.debug("result:"+result);
@@ -44,13 +44,13 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//방금 추가한 리뷰를 가져옴(추가 이후 생성되는 정보를 가져오기 위해)
 	@Override
-	public ReviewVo selectAddedOne(int accountId) {
+	public ReviewVo selectAddedOne(int accountId) throws SQLException {
 		return sqlSession.selectOne("review.selectAddedOne", accountId);
 	}
 
 	//리뷰 수정
 	@Override
-	public int updateReview(ReviewVo reviewVo) {
+	public int updateReview(ReviewVo reviewVo) throws SQLException{
 		return sqlSession.update("review.updateReview", reviewVo);
 	}
 	
@@ -62,7 +62,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//likeHate 테이블에 row 추가
 	@Override
-	public int insertLikeHate(int review_id, int accountId, int isLike) {
+	public int insertLikeHate(int review_id, int accountId, int isLike) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
@@ -73,7 +73,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//likeHate 테이블에 row 수정
 	@Override
-	public int updateLikeHate(int review_id, int accountId, int isLike) {
+	public int updateLikeHate(int review_id, int accountId, int isLike) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
@@ -85,7 +85,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//likeHate 테이블에 row 삭제
 	@Override
-	public int deleteLikeHate(int review_id, int accountId) {
+	public int deleteLikeHate(int review_id, int accountId) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
@@ -95,7 +95,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//review 테이블에 likeCount값 수정
 	@Override
-	public int updateLikeCount(int review_id, int likeCount) {
+	public int updateLikeCount(int review_id, int likeCount) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("LIKECOUNT", likeCount);
@@ -105,7 +105,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//review 테이블에 hateCount값 수정
 	@Override
-	public int updateHateCount(int review_id, int hateCount) {
+	public int updateHateCount(int review_id, int hateCount) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("HATECOUNT", hateCount);
@@ -113,26 +113,18 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.update("review.updateHateCount", map);
 	}
 
-	//review 테이블에 likeCount값 조회
+	//review 테이블에 likeCount, hateCount값 조회
 	@Override
-	public int selectLikeCount(int review_id) {
-		int likeCount = sqlSession.selectOne("review.selectLikeCount", review_id);
-		logger.debug("likeCount:"+likeCount);
-		return likeCount;
-	}
-
-	//review 테이블에 hateCount값 조회
-	@Override
-	public int selectHateCount(int review_id) {
-		int hateCount = sqlSession.selectOne("review.selectHateCount", review_id);
-		logger.debug("hateCount:"+hateCount);
-		return hateCount;
+	public ReviewVo selectLikeHateCount(int review_id) throws SQLException{
+		ReviewVo reviewVo = sqlSession.selectOne("review.selectLikeHateCount", review_id);
+		logger.debug("likeCount:"+reviewVo.getLikeCount());
+		return reviewVo;
 	}
 
 
 	//likeHate 테이블에 isLike=1인 개수 조회
 	@Override
-	public int selectLikeHateLike(int reviewId) {
+	public int selectLikeHateLike(int reviewId) throws SQLException{
 		try {
 			return sqlSession.selectOne("review.selectLikeHateLike", reviewId);
 		}catch (NullPointerException e) {
@@ -156,13 +148,13 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//review 테이블에있는 review_id값 조회
 	@Override
-	public List<ReviewVo> selectAllReviewId() {
+	public List<ReviewVo> selectAllReviewId() throws SQLException{
 		return sqlSession.selectList("review.selectAllReviewId");
 	}
 	
 	//해당 store에 있는 review의 점수(맛, 가격 등) 조회
 	@Override
-	public List<ReviewVo> selectAllReviewLevel(int storeId) {
+	public List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException{
 		return sqlSession.selectList("review.selectAllReviewLevel", storeId);
 	}
 

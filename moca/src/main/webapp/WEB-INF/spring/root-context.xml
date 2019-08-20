@@ -9,7 +9,7 @@
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 	p:driverClassName="com.mysql.jdbc.Driver"
-	p:url="jdbc:mysql://qwerty930704.iptime.org:3306/mocadb?characterEncoding=utf8" 
+	p:url="jdbc:mysql://teamoca.iptime.org:3306/mocadb?characterEncoding=utf8" 
 	p:username="moca" 
 	p:password="kkssc"
 	/>

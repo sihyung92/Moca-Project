@@ -28,6 +28,7 @@ var reviewFormObj;
 
 //변수 바인딩
 var bindReviewVariable = function(){
+	reviewModalBtn = $('#reviewModalBtn');
 	reviewModal = $('#reviewModal');
 	reviewForm = $('#reviewModal form');
 	saveReviewBtn = $('#saveReviewBtn');
@@ -115,7 +116,7 @@ var saveReview = function(){
 
 //리뷰 데이터를 리뷰 모달로 이동 (수정 때 사용)
 var reviewData2ReviewModal = function(clickedEditBtn){
-	$('#reviewModal').modal("show");		//리뷰 모달창 show
+	
 
 	editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
 
@@ -170,6 +171,23 @@ var editReview = function(){
 		}
 	})
 
+}
+
+var clearReviewModalData = function(){
+				
+	///사진(나중에 정해지면)
+
+	//리뷰 내용
+	reviewModal.find('#review-content').text('');
+
+	//평점
+	reviewModal.find('#taste-level').val('1')
+	reviewModal.find('#price-level').val('1')
+	reviewModal.find('#service-level').val('1')
+	reviewModal.find('#mood-level').val('1')
+	reviewModal.find('#convenience-level').val('1')
+	reviewModal.find('#average-level').val('1')
+	
 }
 
 //리뷰 삭제

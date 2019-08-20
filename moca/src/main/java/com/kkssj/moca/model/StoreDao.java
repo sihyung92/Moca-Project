@@ -15,6 +15,6 @@ public interface StoreDao {
 	
 	int insertStoreInfoHistory(int accountId, StoreVo storeVo) throws SQLException;
 
-	int updateLevel(StoreVo storeVo);
+	int updateLevel(StoreVo storeVo) throws SQLException;
 
 }
