@@ -33,8 +33,8 @@ public class ReviewDaoImpl implements ReviewDao {
 	
 	//review전체를 가져오는 메서드
 	@Override
-	public List<ReviewVo> selectAllReview() {
-		return sqlSession.selectList("review.selectAllReview");
+	public List<ReviewVo> selectAllReviewId() {
+		return sqlSession.selectList("review.selectAllReviewId");
 	}
 
 

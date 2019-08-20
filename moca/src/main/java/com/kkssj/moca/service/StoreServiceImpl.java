@@ -6,16 +6,20 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.kkssj.moca.model.ReviewDao;
+import com.kkssj.moca.model.ReviewDaoImpl;
 import com.kkssj.moca.model.StoreDao;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
 @Service
 public class StoreServiceImpl implements StoreService{
+	private static final Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
 
 	@Inject
 	ReviewDao reviewDao;
@@ -79,10 +83,11 @@ public class StoreServiceImpl implements StoreService{
 
 	@Override
 	public int syncReviewLikeHate() {
-		List<ReviewVo> list = reviewDao.selectAllReview();
+		List<ReviewVo> list = reviewDao.selectAllReviewId();
 		int review_id;
 		for (int i = 0; i < list.size(); i++) {
 			review_id = list.get(i).getReview_id();
+//			logger.debug("review_id="+review_id+", likeCount="+reviewDao.selectLikeHateLike(review_id)+", hateCount="+reviewDao.selectLikeHateHate(review_id));
 			reviewDao.updateLikeCount(review_id, reviewDao.selectLikeHateLike(review_id));
 			reviewDao.updateHateCount(review_id, reviewDao.selectLikeHateHate(review_id));
 		}

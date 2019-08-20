@@ -13,10 +13,8 @@
 	ORDER BY r.REVIEW_ID; 
   </select>
   
-  <select id="selectAllReview" resultType="com.kkssj.moca.model.entity.ReviewVo">
- 	SELECT TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL
-	FROM REVIEW
-	WHERE STOREID = #{STOREID}
+  <select id="selectAllReviewId" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	SELECT review_id FROM REVIEW
   </select>
   
   <select id="selectStoreAllReview" resultType="com.kkssj.moca.model.entity.ReviewVo">

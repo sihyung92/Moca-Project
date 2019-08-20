@@ -455,15 +455,15 @@
 							<div class="reviewer-info col-md-2">
 								<div class="nickName-div">
 									<label>별명</label>	
-									<p class="reviewer-nickName">${reviewVo.nickName} </p>
+									<span class="reviewer-nickName">${reviewVo.nickName} </span>
 								</div>
 								<div class="follows-div">
 									<label>팔로워 수</label>
-									<p class="reviewer-followers">${reviewVo.followCount}</p>
+									<span class="reviewer-followers">${reviewVo.followCount}</span>
 								</div>
 								<div class="reviews-div">
 									<label>리뷰 수</label>
-									<p class="reviewer-reviews">${reviewVo.reviewCount}</p>
+									<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
 								</div>
 							</div>
 
@@ -498,11 +498,11 @@
 
 								<div class="write-date-div">
 									<label>작성일</label>
-									<p class="reviewInfo-write-date">${reviewVo.writeDate }</p>
+									<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
 								</div>
 								<div class="review-content-div">
 									<label>리뷰 내용</label>
-									<p class="reviewInfo-review-content">${reviewVo.reviewContent }</p>
+									<span class="reviewInfo-review-content">${reviewVo.reviewContent }</span>
 								</div>
 								<div class="form-group like-hate">
 									<div class="btn-group" data-toggle="buttons">
@@ -525,27 +525,27 @@
 							<div class="review-level col-md-2">
 								<div class="taste-level-div">
 									<label>맛</label>
-									<p class="taste-level">${reviewVo.tasteLevel }</p>점
+									<span class="taste-level">${reviewVo.tasteLevel }</span>점
 								</div><br>
 								<div class="price-level-div">
 									<label>가격</label>
-									<p class="price-level">${reviewVo.priceLevel }</p>점
+									<span class="price-level">${reviewVo.priceLevel }</span>점
 								</div><br>
 								<div class="service-level-div">
 									<label>서비스</label>
-									<p class="service-level">${reviewVo.serviceLevel }</p>점
+									<span class="service-level">${reviewVo.serviceLevel }</span>점
 								</div><br>
 								<div class="taste-level-div">
 									<label>분위기</label>
-									<p class="mood-level">${reviewVo.moodLevel }</p>점
+									<span class="mood-level">${reviewVo.moodLevel }</span>점
 								</div><br>
 								<div class="taste-level-div">
 									<label>편의성</label>
-									<p class="convenience-level">${reviewVo.convenienceLevel }</p>점
+									<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
 								</div>
 								<div class="taste-level-div">
 									<label for="average_level">평균</label>
-									<p class="average-level">${reviewVo.averageLevel }</p>점
+									<span class="average-level">${reviewVo.averageLevel }</span>점
 								</div>								
 							</div>
 							<br><br><br>
@@ -575,15 +575,15 @@
 		<div class="reviewer-info col-md-2">
 			<div class="nickName-div">
 				<label>별명</label>	
-				<p class="reviewer-nickName">${reviewVo.nickName} </p>
+				<span class="reviewer-nickName">${reviewVo.nickName} </span>
 			</div>
 			<div class="follows-div">
 				<label>팔로워 수</label>
-				<p class="reviewer-followers">${reviewVo.followCount}</p>
+				<span class="reviewer-followers">${reviewVo.followCount}</span>
 			</div>
 			<div class="reviews-div">
 				<label>리뷰 수</label>
-				<p class="reviewer-reviews">${reviewVo.reviewCount}</p>
+				<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
 			</div>
 		</div>
 		<div class="review-info col-md-8">
@@ -617,11 +617,11 @@
 
 			<div class="write-date-div">
 				<label>작성일</label>
-				<p class="reviewInfo-write-date">${reviewVo.writeDate }</p>
+				<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
 			</div>
 			<div class="review-content-div">
 				<label>리뷰 내용</label>
-				<p class="reviewInfo-review-content">${reviewVo.reviewContent }</p>
+				<span class="reviewInfo-review-content">${reviewVo.reviewContent }</span>
 			</div>
 			<div class="form-group like-hate">
 				<div class="btn-group" data-toggle="buttons">
@@ -637,27 +637,27 @@
 		<div class="review-level col-md-2">
 			<div class="taste-level-div">
 				<label>맛</label>
-				<p class="taste-level">${reviewVo.tasteLevel }</p>점
+				<span class="taste-level">${reviewVo.tasteLevel }</span>점
 			</div><br>
 			<div class="price-level-div">
 				<label>가격</label>
-				<p class="price-level">${reviewVo.priceLevel }</p>점
+				<span class="price-level">${reviewVo.priceLevel }</span>점
 			</div><br>
 			<div class="service-level-div">
 				<label>서비스</label>
-				<p class="service-level">${reviewVo.serviceLevel }</p>점
+				<span class="service-level">${reviewVo.serviceLevel }</span>점
 			</div><br>
 			<div class="taste-level-div">
 				<label>분위기</label>
-				<p class="mood-level">${reviewVo.moodLevel }</p>점
+				<span class="mood-level">${reviewVo.moodLevel }</span>점
 			</div><br>
 			<div class="taste-level-div">
 				<label>편의성</label>
-				<p class="convenience-level">${reviewVo.convenienceLevel }</p>점
+				<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
 			</div>
 			<div class="taste-level-div">
 				<label for="average_level">평균</label>
-				<p class="average-level">${reviewVo.averageLevel }</p>점
+				<span class="average-level">${reviewVo.averageLevel }</span >점
 			</div>								
 		</div>
 		<br><br><br>

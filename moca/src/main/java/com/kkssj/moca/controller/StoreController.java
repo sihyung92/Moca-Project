@@ -221,9 +221,8 @@ public class StoreController {
 	}
 	
 	//리뷰 좋아요수 동기화(나중에 put 방식으로 변경)
-	@GetMapping("/reviewsLikeHate/{reviewId}")
-	public String syncReviewLikeHate(@PathVariable("reviewId") int reviewId) {
-		logger.debug("reviewId = "+reviewId);
+	@GetMapping("/reviewsLikeHate")
+	public String syncReviewLikeHate() {
 		
 		int result = storeService.syncReviewLikeHate();
 		

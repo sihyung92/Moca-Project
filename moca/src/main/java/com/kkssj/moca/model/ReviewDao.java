@@ -32,7 +32,7 @@ public interface ReviewDao {
 
 	int updateReview(ReviewVo reviewVo);
 
-	List<ReviewVo> selectAllReview();
+	List<ReviewVo> selectAllReviewId();
 
 	List<ReviewVo> selectStoreAllReview(int storeId);
 
