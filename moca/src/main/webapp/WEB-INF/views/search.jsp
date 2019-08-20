@@ -40,8 +40,7 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e63ece9668927d2e8027037f0aeb06b5"></script>
 <script type="text/javascript">
-	var lat,lng;
-		
+	var lat,lng;		
     window.onload = function () {  
 //카페 리스트 클릭 이벤트 / POST방식으로 Detail페이지 이동
         $('.links').click(function(){
@@ -57,14 +56,19 @@
 //GeoLocation API에서 현재 위치의 위도&경도 얻기
         if (navigator.geolocation) // 브라우저에서 웹 지오로케이션 지원여부 판단
         {
-           	//alert("GeoLocation API 를 지원하는 브라우저");
+           	alert("GeoLocation API 를 지원하는 브라우저");
             // PositionOptions 객체 설정용
             var options = { timeout: 2000, maximumAge: 3000 };
             options.enableHighAccuracy = true;
             // 현재 위치정보 딱 한번 얻기
             navigator.geolocation.getCurrentPosition(sucCall, errCall, options);
+            alert("메소드 실행");
         }
         else {
+        	lat = 37.4995011;			 //위도
+            lng = 127.0291403;			//경도
+            $('.lat').val(lat);
+    		$('.lng').val(lng);
             alert("GeoLocation API 를 지원하지 않는 브라우저 입니다.");
         }
         
@@ -141,13 +145,17 @@
         // 위도, 경도 얻기
         lat = position.coords.latitude;	    //위도
         lng = position.coords.longitude;	//경도
-		$('#lat').val(lat);
-		$('#lng').val(lng);
-		alert("lat: "+$('#lat').val()+", lng: "+$('#lng').val());
+		$('.lat').val(lat);
+		$('.lng').val(lng);
+		alert("lat: "+$('.lat').val()+", lng: "+$('.lng').val());
     };
 
     //위도, 경도 얻기 Error Callback
     function errCall(error) {
+    	lat = 37.4995011;			 //위도
+        lng = 127.0291403;			//경도
+        $('.lat').val(lat);
+		$('.lng').val(lng);
         switch (error.code) {
             case 1:
                 alert("허용거부됨");
@@ -172,8 +180,8 @@
 <div id="header">
 	<br/>
 	<form action="search">
-		<input type="hidden" name="x" id="lng"/>
-		<input type="hidden" name="y" id="lat"/>
+		<input type="hidden" name="x" class="lng"/>
+		<input type="hidden" name="y" class="lat"/>
 		<input type="hidden" name="filter" value="distance"/>
 		키워드는 <input type="text" name="keyword"/>
 		<button>입니당</button>
@@ -184,8 +192,8 @@
 <br/><br/>
 <div id="search">
 	<form action="search">
-		<input type="hidden" name="x" id="lng"/>
-		<input type="hidden" name="y" id="lat"/>
+		<input type="hidden" name="x" class="lng"/>
+		<input type="hidden" name="y" class="lat">
 		키워드는 <input type="text" name="keyword" value="${keyword}"/> 입니당
 		<br/>
 		<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>

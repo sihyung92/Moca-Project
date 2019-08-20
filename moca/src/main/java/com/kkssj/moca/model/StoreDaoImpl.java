@@ -18,15 +18,11 @@ import com.kkssj.moca.model.entity.StoreVo;
 @Repository
 public class StoreDaoImpl implements StoreDao {
 	@Inject
-	SqlSession sqlSession;
-	
+	SqlSession sqlSession;	
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
 	@Override
 	public List<StoreVo> selectListByTag(Map<String, String> variables) {
-		logger.debug("DAO에서 filter: "+variables.get("filter"));
-		logger.debug("DAO에서 x: "+variables.get("x"));
-		logger.debug("DAO에서 y: "+variables.get("y"));
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectByTag", variables);
 	}
 

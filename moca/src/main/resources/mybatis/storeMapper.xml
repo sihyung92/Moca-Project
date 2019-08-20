@@ -15,7 +15,7 @@
     </if>    
   </select>
 
-  <select id="com.kkssj.moca.model.StoreDao.selectByKakaoId" parameterType="INTEGER" resultType="com.kkssj.moca.model.entity.StoreVo">
+  <select id="selectByKakaoId" parameterType="INTEGER" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT STORE_ID, TAG, REVIEWCNT, VIEWCNT, (TASTELEVEL+PRICELEVEL+SERVICELEVEL+MOODLEVEL+CONVENIENCELEVEL)/5 "averageLevel" FROM STORE WHERE KAKAOID=#{id}
   </select>
   

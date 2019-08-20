@@ -11,6 +11,7 @@
 	<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
 	<script type="text/javascript">
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
+	var lat, lng;
     window.onload = function () {
         // DOM 객체 얻기
         span = document.getElementById("display");
@@ -25,6 +26,11 @@
             navigator.geolocation.getCurrentPosition(sucCall, errCall, options);
         }
         else {
+        	//위치정보 제공하지 않는 브라우저로 접근 시, 디폴트 위치는 비트캠프 강남 센터! :p
+        	lat = 37.4995011;			 //위도
+            lng = 127.0291403;			//경도
+            $('.lat').val(lat);
+    		$('.lng').val(lng);
             alert("GeoLocation API 를 지원하지 않는 브라우저 입니다.");
         }
     };
@@ -32,14 +38,19 @@
     //Success Callback
     var sucCall = function (position) {
         // 위도, 경도 얻기
-        var lat = position.coords.latitude;	    //위도
-        var lng = position.coords.longitude;	//경도
-		$('#lat').val(lat);
-		$('#lng').val(lng);
+        lat = position.coords.latitude;	    //위도
+        lng = position.coords.longitude;	//경도
+		$('.lat').val(lat);
+		$('.lng').val(lng);
+		alert("lat: "+$('.lat').val()+", lng: "+$('.lng').val());
     };
 
     // Error Callback
     function errCall(error) {
+    	lat = 37.4995011;			 //위도
+        lng = 127.0291403;			//경도
+        $('.lat').val(lat);
+		$('.lng').val(lng);
         switch (error.code) {
             case 1:
                 alert("허용거부됨");
@@ -64,10 +75,10 @@
 <div id="header">
 	<br/>
 	<form action="search">
-		<input type="hidden" name="x" id="lng"/>
-		<input type="hidden" name="y" id="lat"/>
-		키워드는 <input type="text" name="keyword"/>
+		<input type="hidden" name="x" class="lng"/>
+		<input type="hidden" name="y" class="lat"/>		
 		<input type="hidden" name="filter" value="distance"/>
+		키워드는 <input type="text" name="keyword"/>
 		<button>입니당</button>
 	</form>	
 	<br/>
