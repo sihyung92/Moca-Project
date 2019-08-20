@@ -1,5 +1,6 @@
 package com.kkssj.moca.model;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 
 	@Override
-	public int insertLikeHateOne(int review_id, int accountId, int isLike) {
+	public int insertLikeHate(int review_id, int accountId, int isLike) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
@@ -57,7 +58,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 
 	@Override
-	public int updateLikeHateOne(int review_id, int accountId, int isLike) {
+	public int updateLikeHate(int review_id, int accountId, int isLike) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
@@ -73,7 +74,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 
 	@Override
-	public int deleteLikeHateOne(int review_id, int accountId) {
+	public int deleteLikeHate(int review_id, int accountId) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
@@ -122,6 +123,12 @@ public class ReviewDaoImpl implements ReviewDao {
 		int hateCount = sqlSession.selectOne("review.selectHateCount", review_id);
 		logger.debug("selectHateCount hateCount:"+hateCount);
 		return hateCount;
+	}
+
+
+	@Override
+	public int deleteReview(int review_id) throws SQLException {
+		return sqlSession.delete("review.deleteReview",review_id);
 	}
 
 }

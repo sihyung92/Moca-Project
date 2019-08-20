@@ -38,8 +38,15 @@ public class StoreServiceImpl implements StoreService{
 	}
 
 	@Override
-	public int editStore(StoreVo storeVo) throws SQLException {
-		return storeDao.updateOne(storeVo);
+	public int editStore(int accountId, StoreVo storeVo) throws SQLException {
+		
+		int result = storeDao.updateOne(storeVo);
+		System.out.println("result : "+result);
+		if(result>0) {
+			int history = storeDao.insertStoreInfoHistory(accountId, storeVo);
+			System.out.println("history : "+history);
+		}
+		return result;
 	}
 	
 
@@ -50,7 +57,7 @@ public class StoreServiceImpl implements StoreService{
 
 	@Override
 	public int addLikeHate(int review_id, int accountId, int isLike) {
-		if(reviewDao.insertLikeHateOne(review_id, accountId, isLike ) ==1) {
+		if(reviewDao.insertLikeHate(review_id, accountId, isLike ) ==1) {
 			return reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+isLike) ;
 		}
 		return -1;
@@ -58,7 +65,7 @@ public class StoreServiceImpl implements StoreService{
 
 	@Override
 	public int editLikeHate(int review_id, int accountId, int isLike) {
-		if(reviewDao.updateLikeHateOne(review_id, accountId, isLike) ==1) {
+		if(reviewDao.updateLikeHate(review_id, accountId, isLike) ==1) {
 			return reviewDao.updateLikeCount(review_id, reviewDao.selectLikeCount(review_id)+isLike) ;
 		}
 		return -1;
@@ -66,7 +73,13 @@ public class StoreServiceImpl implements StoreService{
 
 	@Override
 	public int deleteLikeHate(int review_id, int accountId) {
-		return reviewDao.deleteLikeHateOne(review_id, accountId);
+		return reviewDao.deleteLikeHate(review_id, accountId);
+	}
+
+	//∏Æ∫‰ ªË¡¶
+	@Override
+	public int deleteReview(int review_id) throws SQLException {
+		return reviewDao.deleteReview(review_id);
 	}
 
 

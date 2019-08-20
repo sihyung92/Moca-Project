@@ -25,29 +25,53 @@
 			object-fit: cover;
 			overflow: hidden;
 		}
-
+		
+		/* br태그 대신 margin */
+		.reviewCnt{
+			margin-bottom: 2em;
+		}
+		
+		/* 리뷰 내용 더보기 */
+		.review-data{overflow:hidden;}
+     	.review-data .more-review-content.hidden{
+	         white-space:nowrap;
+	         word-wrap:normal;
+	         width:90%;
+	         overflow:hidden;
+	         text-overflow: ellipsis;
+	         float:left;
+	      }
+      
+	      .more-review-content-btn{display:none;white-space:nowrap;float:right;}
+	      
+	      @media screen and (max-width: 533px){
+	         .review-data .more-review-content.hidden{
+	            width:75%;
+	         }
+	      }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> <script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> <!-- jqm 사용시 <script type="text/javascript" src="resources/js/jquery.mobile-1.4.5.js"></script>
 	-->
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<!-- mocaReview -->
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js"/>"> </script>
 	<script type="text/javascript">
-		var likeHateButton;
-		var btnGroup;
-		var likeHateCount;
-		var reviewId;
-		var clickedLikeHateButton;
-		var likeBtn;
-		var hateBtn;
-		var likeCount;
-		var hateCount;
+		//리뷰 개수 더보기
+		var quotient; //몫
+		var remainder; //나머지
+		var callNum=1; //호출 넘버
 
 		$(document).ready(function() {
+			//변수 바인딩
+			bindReviewVariable();
+			
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
 			$('input:radio[name=parkingLot]:input[value=' + ${storeVo.parkingLot} + ']').attr("checked", true);
 
+			
 			var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 				mapOption = {
 					center: new kakao.maps.LatLng(${
@@ -90,9 +114,9 @@
 			});
 
 
-			likeHateButton = $('.like-hate>.btn-group>button')
-
+			//좋아요 또는 싫어요 버튼 클릭시
 			likeHateButton.click(function() {
+				//클릭한 버튼의 리뷰에 해당하는 정보를 변수 바인딩
 				clickedLikeHateButton = $(this);
 				btnGroup = clickedLikeHateButton.parent();
 				reviewId = btnGroup.children('.review-id').val();
@@ -100,175 +124,83 @@
 				hateBtn = btnGroup.children('.hate-btn');
 				likeCount = btnGroup.children('.like-count');
 				hateCount = btnGroup.children('.hate-count');
-
-
+				var isLike;
 				//이전 상태 판단
 				if (clickedLikeHateButton.hasClass('like-btn')) {
+					isLike=1;
 					//좋아요 버튼을 눌렀을때 
 					if (likeBtn.hasClass('clicked')) {
 						//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
 						console.log('이전에 좋아요 누른 상태 > 좋아요를 누를때')
-
-						//ajax 통신 - delete 방식으로 삭제
-						$.ajax({
-							type: 'DELETE',
-							url: '/moca/likeHates/' + reviewId,
-							success: function() {
-								console.log('ajax 통신 성공 - 좋아요 취소')
-								likeBtn.removeClass('clicked')
-								likeCount.val(Number(likeCount.val()) - 1);
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("좋아요 취소 실패")
-							}
-
-						})
-
-
-
-
-
+						cancelLikeHate(reviewId, isLike);
 					} else if (hateBtn.hasClass('clicked')) {
 						//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
 						console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
-
-						//ajax 통신 - put 방식으로 수정
-						$.ajax({
-							type: 'PUT',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": 1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 싫어요 취소 + 좋아요')
-								//ajax 통신 성공시
-								hateBtn.removeClass('clicked')
-								hateCount.val(Number(hateCount.val()) - 1);
-								likeBtn.addClass('clicked')
-								likeCount.val(Number(likeCount.val()) + 1);
-
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("싫어요 취소, 좋아요 실패")
-							}
-
-						})
-
-
+						changeLikeHate(reviewId, isLike);
 					} else {
 						//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
 						console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
-
-						//ajax 통싱 - post방식으로 추가
-						$.ajax({
-							type: 'POST',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": 1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 좋아요')
-								//ajax 통신 성공시
-								likeBtn.addClass('clicked')
-								likeCount.val(Number(likeCount.val()) + 1);
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("좋아요 실패")
-							}
-						})
-
-
-
+						addLikeHate(reviewId,isLike);
 					}
-
-
 				} else if (clickedLikeHateButton.hasClass('hate-btn')) {
+					isLike=-1;
+					
 					//싫어요 버튼을 눌렀을때 
 					if (likeBtn.hasClass('clicked')) {
 						//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
 						console.log('이전에 좋아요 누른 상태 > 싫어요 누를때 ')
-
-						//ajax 통신 - put 방식으로 수정
-						$.ajax({
-							type: 'PUT',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": -1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 좋아요 취소 + 싫어요')
-								//ajax 통신 성공시
-								likeBtn.removeClass('clicked')
-								likeCount.val(Number(likeCount.val()) - 1);
-								hateBtn.addClass('clicked')
-								hateCount.val(Number(hateCount.val()) + 1);
-
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("싫어요 취소, 좋아요 실패")
-							}
-
-						})
-
-
-
+						changeLikeHate(reviewId, isLike);
 					} else if (hateBtn.hasClass('clicked')) {
 						//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
 						console.log('이전에 싫어요 누른 상태 > 싫어요를 누를때 ')
-
-						//ajax 통신 - delete 방식으로 삭제
-						$.ajax({
-							type: 'DELETE',
-							url: '/moca/likeHates/' + reviewId,
-							success: function() {
-								console.log('ajax 통신 성공 - 싫어요 취소')
-								//ajax 통신하고 성공시 
-								hateBtn.removeClass('clicked')
-								hateCount.val(Number(hateCount.val()) - 1);
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("싫어요 취소 실패")
-							}
-
-						})
-
-
-
-
+						cancelLikeHate(reviewId, isLike);
 					} else {
 						//이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 => 싫어요
 						console.log('이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 ')
-
-						//ajax 통싱 - post방식으로 추가
-						$.ajax({
-							type: 'POST',
-							url: '/moca/likeHates/' + reviewId,
-							data: {
-								"isLike": -1
-							},
-							success: function() {
-								console.log('ajax 통신 성공 - 싫어요')
-								hateBtn.addClass('clicked')
-								hateCount.val(Number(hateCount.val()) + 1);
-							},
-							error: function() {
-								console.log('ajax 통신 실패')
-								alert("싫어요 실패")
-							}
-
-						})
+						addLikeHate(reviewId, isLike);
 					}
 				}
-				console.log(clickedLikeHateButton);
-
 			})
 
+			//리뷰 3개씩 끊어서 가져오기
+			$('.reviewCnt').hide();
+			quotient = $('.reviewCnt').length/3;
+			remainder = $('.reviewCnt').length%3;
+			reviewCnt(quotient,remainder,callNum);
 
+			//리뷰 내용 더보기
+			/*
+			var reviewData = $('.review-data .more-review-content');
+	         reviewData.each( function() {
+	            console.log("outerHeight"+$( this ).outerHeight());
+	            var btnMoreReview = $(this).siblings('.more-review-content-btn');
+	            if( $(this).outerHeight() > 21 ){
+		           var temp = $(this).text();
+		           $(this).before('<span style="height:3em; display:block; overflow:hidden; text-overflow: ellipsis;" class="reviewTemp">'+temp+'<br></span>');
+		           console.log(temp);
+	               $(this).addClass('hidden');
+	               btnMoreReview.show();
+	               btnMoreReview.on("click",function(){
+	                  $(this).siblings('.more-review-content').toggleClass('hidden').promise().done(function(){
+		                  console.log($(this).hasClass("hidden"));
+		                  if($(this).hasClass("hidden") === false){
+		                  	$(this).next().text("접기");
+		                  	$(this).parent().find('.reviewTemp').hide();
+			              }else{
+			            	 $(this).next().text("더보기");
+			            	 $(this).parent().find('.reviewTemp').show();
+				          }
+	                  });
+	               });
+	            }else{
+	            	btnMoreReview.hide();
+		        }
+	         } );
+	         */
+	         
+			//리뷰 내용 더보기 style 변화
+			callReviewDataMore();
+			
 			//차트
 			var ctx = document.getElementById('myChart').getContext('2d');
 			var labelVal = [${storeVo.tasteLevel}, ${storeVo.serviceLevel}, ${storeVo.moodLevel}, ${storeVo.priceLevel}, ${storeVo.convenienceLevel}];
@@ -308,21 +240,43 @@
 				updateStore();
 			});
 
-		});
+			//리뷰 더보기 버튼을 눌렀을 때
+			$('#moreReview').click(function(){
+					callNum += 1;
+					console.log("더보기"+quotient+":"+remainder+":"+callNum);
+					reviewCnt(quotient,remainder,callNum);
+					callReviewDataMore();
+			});
 
-
-
-		function deleteReview() {
-			$.ajax({
-				url: 'review',
-				type: 'delete',
-				data: '1', //일단 좋아요를 제거한다고 가정
-				success: function() {
-
-				}
-
+			//리뷰 저장 버튼 클릭시
+			$(saveReviewBtn).click(function() {
+				saveReview();
 			})
-		}
+			
+			//수정 버튼 클릭시
+			editBtn.click(function(){
+				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
+				reviewData2ReviewModal(this);				
+			})
+			
+			//리뷰 수정 버튼 클릭시
+			editReviewBtn.click(function(){
+				editReview();
+			})
+			
+			//삭제 버튼 클릭시
+			deleteBtn.click(function(){
+				var reviewId = $(this).parent().find('.review-id').val();
+				var reviewTodelete = $(this).parent().parent();
+				console.log(reviewTodelete);
+				$('#confirm').modal({ backdrop: 'static', keyboard: false })
+		        .one('click', '#delete', function() {
+		        	reviewTodelete.remove();
+					deleteReview(reviewId);
+		        });
+			})
+
+		});
 
 		var updateStore = function() {
 
@@ -333,13 +287,13 @@
 
 			//var params=$('#StoreInfoModal form').serializeObject();
 			var param = {
-				"wifi": $('input[name="wifi"]:checked').val(),
-				"parkingLot": $('input[name="parkingLot"]:checked').val(),
-				"dayOff": $('input[name="dayOff"]').val(),
-				"openTime2": $('input[name="openTime"]').val(),
-				"endTime2": $('input[name="endTime"]').val(),
-				"tel": checkTel,
-				"url": $('input[name="url"]').val()
+				"wifi":$('input[name="wifi"]:checked').val(),
+				"parkingLot":$('input[name="parkingLot"]:checked').val(),
+				"dayOff":$('input[name="dayOff"]').val(),
+				"openTime2":$('input[name="openTime"]').val(),
+				"endTime2":$('input[name="endTime"]').val(),
+				"tel":checkTel,
+				"url":$('input[name="url"]').val()
 			};
 			console.log(param);
 
@@ -385,6 +339,63 @@
 				}
 			});
 		};
+
+		//리뷰 개수 더보기
+		var reviewCnt = function(q,r,n){
+			//먼저 3개만 보여주고 나머지는 더보기 버튼으로 클릭시 +3개씩 보여주기
+			console.log(q+":"+r+":"+n);
+			console.log(3*n+":"+q*3);
+			if(3*n<=q*3){
+				for(var i=(n-1)*3; i<3*n; i++){ //몫*3 or 나머지
+					$('.reviewCnt').eq(i).show();
+				}
+				if(3*n==q*3){
+					$('#moreReview').hide();
+				}
+			}else{
+				if(n!=1){
+					for(var i=(n-1)*3; i<((n-1)*3)+r; i++){ //몫*3
+						$('.reviewCnt').eq(i).show();
+					}
+					$('#moreReview').hide();
+				}else{
+					for(var i=0; i<r; i++){ //나머지
+						$('.reviewCnt').eq(i).show();
+					}
+					$('#moreReview').hide();
+				}
+			}
+		};
+
+		//리뷰 내용 더보기
+		var callReviewDataMore = function(){
+			var reviewData = $('.review-data .more-review-content');
+	        reviewData.each( function() {
+	           console.log("outerHeight"+$( this ).outerHeight());
+	           var btnMoreReview = $(this).siblings('.more-review-content-btn');
+	           if( $(this).outerHeight() > 41 ){
+	           	$(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
+	              $(this).addClass('moreData');
+	              btnMoreReview.show();
+	              btnMoreReview.on("click",function(){
+	           	   console.log("outerHeight"+$( this ).outerHeight());
+	                 $(this).siblings('.more-review-content').toggleClass('moreData').promise().done(function(){
+		                  console.log($(this).hasClass("moreData"));
+		                  if($(this).hasClass("moreData") === false){
+		                  	$(this).next().text("접기");
+		                  	$(this).css({ 'height': '100%', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
+			              }else{
+			            	 $(this).next().text("더보기");
+			            	 $(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
+				          }
+	                 });
+	              });
+	           }else{
+	           	btnMoreReview.hide();
+		        }
+	        });
+		};
+		
 
 	</script>
 </head>
@@ -546,7 +557,12 @@
 				<div class="review-content">
 					<!-- js로 리뷰 수만큼 추가 할 것  -->
 					<c:forEach items="${reviewVoList }" var="reviewVo">
-						<div class="row">
+						<div class="row reviewCnt">
+							<div class="editDeleteGroup btn-group" role="group">
+								<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+								<button type="button" class="btn-edit btn btn-default">수정</button>
+								<button type="button" class="btn-delete btn btn-default">삭제</button>
+							</div>
 							<div class="reviewer-info col-md-2">
 								<label for="nick-name">별명 : ${reviewVo.nickName} </label><br>
 								<label for="follow-count">팔로워 : ${reviewVo.followCount}</label><br>
@@ -582,9 +598,12 @@
 										<span class="sr-only">Next</span>
 									</a>
 								</div>
-
-								<label for="write-date">작성일 : ${reviewVo.writeDate }</label><br>
-								<label for="review-content">리뷰 내용 : ${reviewVo.reviewContent }</label>
+								<!-- 리뷰 내용 더보기를 위한 div 묶음 -->
+								<div class="review-data">
+									<label for="write-date">작성일 : ${reviewVo.writeDate }</label><br>
+									<span class="review-content more-review-content">리뷰 내용 : ${reviewVo.reviewContent }<br></span>
+									<span class="more-review-content-btn">더보기</span>
+								</div>
 								<div class="form-group like-hate">
 									<div class="btn-group" data-toggle="buttons">
 										<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
@@ -612,12 +631,11 @@
 								<label for="average_level">평균 : ${reviewVo.averageLevel } 점</label>
 							</div>
 						</div>
-						<br><br><br>
 					</c:forEach>
 
 				</div>
 				<div class="review-footer">
-					<a href="#">더보기</a>
+					<button id="moreReview">더보기</button>
 				</div>
 
 			</div>
@@ -627,58 +645,210 @@
 	<div id="footer">
 		<jsp:include page="../../resources/template/footer.jsp" flush="true"></jsp:include>
 	</div>
+	
+	<!-- clone할 review element -->
+	<div class="row"  id="reviewTemplate" style="display : none;">
+		<div class="editDeleteGroup btn-group" role="group">
+			<input type="number" style="display: none;" class="review-id" value=${reviewVo.review_id } >
+			<button type="button" class="btn-edit btn btn-default">수정</button>
+			<button type="button" class="btn-delete btn btn-default">삭제</button>
+		</div>
+		<div class="reviewer-info col-md-2">
+			<div class="nickName-div">
+				<label>별명</label>	
+				<p class="reviewer-nickName">${reviewVo.nickName} </p>
+			</div>
+			<div class="follows-div">
+				<label>팔로워 수</label>
+				<p class="reviewer-followers">${reviewVo.followCount}</p>
+			</div>
+			<div class="reviews-div">
+				<label>리뷰 수</label>
+				<p class="reviewer-reviews">${reviewVo.reviewCount}</p>
+			</div>
+		</div>
+		<div class="review-info col-md-8">
+
+			<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+
+
+				<!-- Wrapper for slides -->
+				<div class="carousel-inner" role="listbox">
+					<div class="item active">
+						<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store1">
+					</div>
+					<div class="item">
+						<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store2">
+					</div>
+					<div class="item">
+						<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store3">
+					</div>
+				</div>
+
+				<!-- Controls -->
+				<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+					<span class="sr-only">Previous</span>
+				</a>
+				<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				</a>
+			</div>
+
+			<div class="write-date-div">
+				<label>작성일</label>
+				<p class="reviewInfo-write-date">${reviewVo.writeDate }</p>
+			</div>
+			<div class="review-content-div">
+				<label>리뷰 내용</label>
+				<p class="reviewInfo-review-content">${reviewVo.reviewContent }</p>
+			</div>
+			<div class="form-group like-hate">
+				<div class="btn-group" data-toggle="buttons">
+					<input type="number" class="review-id" style="display: none;">
+					<button type="button" class="btn btn-primary like-btn ">좋아요</button>
+					<input type="number" class="like-count" value=0 >
+					<button type="button" class="btn btn-primary hate-btn">싫어요</button>
+					<input type="number" class="hate-count" value=0>
+				</div>
+			</div>
+		</div>
+
+		<div class="review-level col-md-2">
+			<div class="taste-level-div">
+				<label>맛</label>
+				<p class="taste-level">${reviewVo.tasteLevel }</p>점
+			</div><br>
+			<div class="price-level-div">
+				<label>가격</label>
+				<p class="price-level">${reviewVo.priceLevel }</p>점
+			</div><br>
+			<div class="service-level-div">
+				<label>서비스</label>
+				<p class="service-level">${reviewVo.serviceLevel }</p>점
+			</div><br>
+			<div class="taste-level-div">
+				<label>분위기</label>
+				<p class="mood-level">${reviewVo.moodLevel }</p>점
+			</div><br>
+			<div class="taste-level-div">
+				<label>편의성</label>
+				<p class="convenience-level">${reviewVo.convenienceLevel }</p>점
+			</div>
+			<div class="taste-level-div">
+				<label for="average_level">평균</label>
+				<p class="average-level">${reviewVo.averageLevel }</p>점
+			</div>								
+		</div>
+		<br><br><br>
+	</div>
+	
 	<!-- Modal -->
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">$(상호 명)에 대한 리뷰</h5>
+					<h5 class="modal-title" id="reviewModalLabel">
+						${storeVo.name}에 대한 리뷰</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body" data-role="content">
-					<form>
-						<div class="form-group reviewer-info" style="display: none;">
-							<label for="nick-name">$(닉네임 )</label>
-							<label for="nick-name">$(팔로워 수 )</label>
-							<label for="nick-name">$(리뷰 수 )</label>
-							<label for="nick-name">$(좋아요 수 )</label>
-							<label for="nick-name">$(싫어요) 수 )</label>
+					<form id="reviewForm">
+						<input name="storeId" value=${storeVo.store_Id} style="display:none;" >
+						<input name="review_id" id="review_id" value="0" style="display:none;" >
+						<div class="form-group">
+							<label for="picture-file">사진 선택</label>
+							<input type="file" name="pictureUrls" id="picture-file" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
 						</div>
 						<div class="form-group">
-							<label for="review-content">내용</label>
-							<textarea class="form-control" id="review-content" placeholder="리뷰내용을 입력해 주세요"></textarea>
+							<label for="review-content">후기</label>
+							<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
 						</div>
 						<div class="form-group">
 							<label for="taste-level">맛</label>
-							<input type="range" min="0" max="5" id="taste-level">
+							<select id="taste-level" name="tasteLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
 						<div class="form-group">
 							<label for="price-level">가격</label>
-							<input type="range" min="0" max="5" id="price-level">
-						</div>
-						<div class="form-group">
-							<label for="mode-level">분위기</label>
-							<input type="range" min="0" max="5" id="mode-level">
-						</div>
+							<select id="price-level" name="priceLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
+						</div>	
 						<div class="form-group">
 							<label for="service-level">서비스</label>
-							<input type="range" min="0" max="5" id="service-level">
+							<select id="service-level" name="serviceLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
 						<div class="form-group">
-							<label for="convinient-level">편의성</label>
-							<input type="range" min="0" max="5" id="convinient-level">
+							<label for="mood-level">분위기</label>
+							<select id="mood-level" name="moodLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
 						<div class="form-group">
-							<label for="picture-file">사진 선택</label>
-							<input type="file" id="picture-file" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
+							<label for="convenience-level">편의성</label>
+							<select id="convenience-level" name="convenienceLevel" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
 						</div>
+
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-primary" id="saveReviewBtn">작성</button>
+					<button type="button" class="btn btn-primary" id="editReviewBtn">수정</button>
 				</div>
 			</div>
 		</div>
@@ -751,6 +921,20 @@
 		</div>
 	</div>
 	<!-- store 정보 수정 모달 끝 -->
+	
+	<!-- 삭제 확인 모달 -->
+	<div id="confirm" class="modal fade" aria-hidden="true" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+		<div class="modal-body">정말 삭제하시겠습니까?</div>
+		<div class="modal-footer">
+			<button type="button" data-dismiss="modal" class="btn btn-danger"
+				id="delete">삭제</button>
+			<button type="button" data-dismiss="modal" class="btn">취소</button>
+		</div>
+		</div>
+		</div>
+	</div>
 </body>
 
 </html>

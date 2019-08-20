@@ -19,7 +19,7 @@ public interface StoreService {
 	StoreVo addStore(StoreVo storeVo) throws SQLException;
 	
 	//store 상세정보 update
-	int editStore(StoreVo storeVo) throws SQLException;
+	int editStore(int accountId, StoreVo storeVo) throws SQLException;
 	
 	//리뷰 리스트 가져오기
 	List<ReviewVo> getReviewList(int accountId, int storeId);
@@ -32,4 +32,8 @@ public interface StoreService {
 
 	//좋아요 싫어요 제거
 	int deleteLikeHate(int review_id, int accountId);
+	
+	//리뷰 제거
+	int deleteReview(int review_id) throws SQLException;
+
 }

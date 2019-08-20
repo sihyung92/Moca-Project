@@ -430,4 +430,37 @@ public class StoreVo {
 				+ endTime2 + "]";
 	}
 	
+	
+	public boolean infoEqual(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		StoreVo other = (StoreVo) obj;
+		if (dayOff == null) {
+			if (other.dayOff != null)
+				return false;
+		} else if (!dayOff.equals(other.dayOff))
+			return false;
+
+		if (parkingLot != other.parkingLot)
+			return false;
+
+		if (tel == null) {
+			if (other.tel != null)
+				return false;
+		} else if (!tel.equals(other.tel))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		if (wifi != other.wifi)
+			return false;
+		return true;
+	}
+	
 }
