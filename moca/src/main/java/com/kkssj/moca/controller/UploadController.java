@@ -50,19 +50,25 @@ public class UploadController {
     //서버에 파일 업로드
     @ResponseBody
     @RequestMapping(value ="/uploadAjax", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-    public ResponseEntity<String> uploadAjax(MultipartFile file, HttpSession session) throws Exception{
-//    	MultipartFile file = files[0];
-        logger.info("originalName: " + file.getOriginalFilename());
-        logger.info("size : " +  file.getSize());
-        logger.info("contentType : " + file.getContentType());
-        logger.info("uploadPath : "+uploadPath);
-        AccountVo vo = (AccountVo)session.getAttribute("login");
+    public ResponseEntity<String> uploadAjax(@RequestParam("file") MultipartFile[] files, HttpSession session) throws Exception{
+    	AccountVo vo = (AccountVo)session.getAttribute("login");
         vo = new AccountVo();
         vo.setNickname("songhae");
         String userid = vo.getNickname();
-        return new ResponseEntity<>(
-                UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes(), userid),
-                HttpStatus.CREATED);
+    	
+    	MultipartFile file;
+    	for (int i = 0; i < files.length; i++) {
+    		file = files[i];
+    		logger.info("originalName: " + file.getOriginalFilename());
+            logger.info("size : " +  file.getSize());
+            logger.info("contentType : " + file.getContentType());
+            logger.info("uploadPath : "+uploadPath);
+            
+            UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes(), userid);
+		}
+        
+        
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
     
     //파일 표시
