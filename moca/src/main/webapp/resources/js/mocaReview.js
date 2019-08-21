@@ -9,11 +9,13 @@ var hateBtn;
 var likeCount;
 var hateCount;
 
+
 var reviewModal;
 var reviewForm;
 var reviewModalBtn;
 var saveReviewBtn;
 var editReviewBtn;
+var imgFiles;
 
 var editReviewRow
 var editBtn;
@@ -33,6 +35,7 @@ var bindReviewVariable = function(){
 	reviewForm = $('#reviewModal form');
 	saveReviewBtn = $('#saveReviewBtn');
 	editReviewBtn = $('#editReviewBtn');
+	imgFiles = $('#imgFiles');
 	
 	editBtn = $('.btn-edit')
 	deleteBtn = $('.btn-delete')
@@ -116,7 +119,7 @@ var saveReview = function(){
 
 //리뷰 데이터를 리뷰 모달로 이동 (수정 때 사용)
 var reviewData2ReviewModal = function(clickedEditBtn){
-	
+	clearReviewModalData();
 
 	editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
 
@@ -140,6 +143,7 @@ var reviewData2ReviewModal = function(clickedEditBtn){
 
 //리뷰 수정
 var editReview = function(){
+	
 	reviewFormObj = $(reviewForm).serializeObject();
 	console.log(reviewFormObj.review_id,reviewFormObj);
 
@@ -176,6 +180,7 @@ var editReview = function(){
 var clearReviewModalData = function(){
 				
 	///사진(나중에 정해지면)
+	imgFiles.val('');
 
 	//리뷰 내용
 	reviewModal.find('#review-content').text('');

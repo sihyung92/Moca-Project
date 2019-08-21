@@ -1,5 +1,7 @@
 package com.kkssj.moca.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -7,9 +9,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -26,8 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.appstream.model.Image;
 import com.amazonaws.util.IOUtils;
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.util.MediaUtils;
 import com.kkssj.moca.util.S3Util;
 import com.kkssj.moca.util.UploadFileUtils;
@@ -49,27 +55,40 @@ public class UploadController {
     }
     //서버에 파일 업로드
     @ResponseBody
-    @RequestMapping(value ="/uploadAjax", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-    public ResponseEntity<String> uploadAjax(@RequestParam("file") MultipartFile[] files, HttpSession session) throws Exception{
+    @PostMapping(value ="/uploadAjax", produces = "text/plain;charset=UTF-8")
+    public ResponseEntity<String> uploadAjax(@RequestParam("file") MultipartFile[] files, HttpSession session, ReviewVo reviewVo) throws Exception{
     	AccountVo vo = (AccountVo)session.getAttribute("login");
         vo = new AccountVo();
         vo.setNickname("songhae");
         String userid = vo.getNickname();
     	
+        String uploadedFileName;
+        logger.debug(reviewVo.toString());
+        
     	MultipartFile file;
     	for (int i = 0; i < files.length; i++) {
+
     		file = files[i];
+    			
     		logger.info("originalName: " + file.getOriginalFilename());
             logger.info("size : " +  file.getSize());
             logger.info("contentType : " + file.getContentType());
             logger.info("uploadPath : "+uploadPath);
             
-            UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes(), userid);
+            
+//            if((file.getSize() != 0) && file.getContentType().contains("image")) {
+//            	uploadedFileName = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes(), userid);
+//            	
+//            }
+
 		}
         
         
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    
+    
     
     //파일 표시
     @ResponseBody
@@ -140,26 +159,4 @@ public class UploadController {
                 
         return new ResponseEntity<String>("deleted", HttpStatus.OK);
     }
-    
-    
-    
-    
-    ////////////////////////////////////
-//    
-//    @PostMapping("/uploadImage")
-//    public @ResponseBody String initUpload2(@RequestParam("files") MultipartFile[] files,
-//    		
-//    		HttpServletRequest request) throws Exception{
-//    	logger.debug(files[0]+"");
-//    	
-//    	try {
-//    		//AWSCredentials credentials = new BasicAWSCredentials("xxx", "xxx");
-//    		
-//    	}catch (Exception e) {
-//			// TODO: handle exception
-//		}
-//    	
-//    	
-//    	return "";
-//    }
 }

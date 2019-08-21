@@ -818,7 +818,7 @@
 						<input name="review_id" id="review_id" value="0" style="display:none;" >
 						<div class="form-group">
 							<label for="picture-file">사진 선택</label>
-							<input type="file" name="pictureUrls" id="picture-file" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
+							<input type="file" name="pictureUrls" id="imgFiles" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
 						</div>
 						<div class="form-group">
 							<label for="review-content">후기</label>

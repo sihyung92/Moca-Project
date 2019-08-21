@@ -1,6 +1,9 @@
 package com.kkssj.moca.util;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Calendar;
@@ -8,9 +11,12 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
 public class UploadFileUtils {
     private static final Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
@@ -23,39 +29,89 @@ public class UploadFileUtils {
     	S3Util s3 = new S3Util();
         String bucketName = "moca-pictures";
             
-            
-        UUID uid = UUID.randomUUID();
-
-        String savedName = uid.toString() + "_" + originalName;
-
-        String savedPath = calcPath(uploadPath);
+        //범용고유식별자(36개의 문자로된 중복 가능성이 거의 없는)    
+        UUID uuid = UUID.randomUUID();
         
-        String imagepath = "profile/"+ uploadPath;  //이미지패스 
+        String uu_id = uuid.toString();
+        String savedName = uu_id.toString() + "_" + originalName;
+        String uploadedFileName =savedName.replace(File.separatorChar, '/');        
+        s3.fileUpload(bucketName, uploadedFileName, fileData);  //  추가 
+//      s3.fileUpload(bucketName, uploadPath+savedPath+uploadedFileName, fileData);  //  추가 
         
-        logger.debug(savedName + ", " +savedPath +", "+imagepath);
-
-//      File target = new File(uploadPath + savedPath, savedName);
-//
-//      FileCopyUtils.copy(fileData, target);
+        ///////////////////
+        //thumnail
+        savedName = uu_id.toString() + "_thumbnail_" + originalName;
+        uploadedFileName =savedName.replace(File.separatorChar, '/');   
+        s3.fileUpload(bucketName, uploadedFileName, makeThumbnail(originalName, fileData));  //  추가 
         
         
-
-        String formatName = originalName.substring(originalName.lastIndexOf(".") + 1);
-        
-        String uploadedFileName =savedName.replace(File.separatorChar, '/');
-
-    //  String uploadedFileName = null;
-
-//      if (MediaUtils.getMediaType(formatName) != null) {
-//          uploadedFileName = makeThumbnail(uploadPath, savedPath, savedName);
-//      } else {
-//          uploadedFileName = makeIcon(uploadPath, savedPath, savedName);
-//      }
-        
-           s3.fileUpload(bucketName, uploadPath+uploadedFileName, fileData);  //  추가 
+//        if (MediaUtils.getMediaType(formatName) != null) {
+//        	uploadedFileName = makeThumbnail(uploadPath, savedPath, savedName);
+//        } else {
+//        	uploadedFileName = makeIcon(uploadPath, savedPath, savedName);
+//        }
 
         return uploadedFileName;
     }
+    
+    //섬네일 생성
+    private static byte[] makeThumbnail(String fileName, byte[] fileData) throws Exception{
+    	//저장된 원본파일로 부터 BufferedImage 객체를 생성
+    	BufferedImage sourceImage = bytesToBufferedImage(fileData);
+    	logger.debug("sourceImage - " +sourceImage.getWidth()+","+ sourceImage.getHeight());
+    	
+    	//최종 이미지의 크기
+    	int destinationWidth = 200;
+    	int destinationHeight = 200;
+    	
+    	//원본 이미지의 크기
+    	int sourceWidth = sourceImage.getWidth();
+    	int sourceHeight = sourceImage.getHeight();
+    	
+    	//원본 너비를 기준으로 섬네일의 비율로 높이 계간
+    	int nWidth = sourceWidth;
+    	int nHeight = (sourceWidth * destinationHeight) / destinationWidth;
+    	
+    	//계산된 높이가 원본 보다 높다면 crop이 안됨으로 원본의 높이 기준으로 너비 계산
+    	if(nHeight > sourceHeight) {
+    		nWidth = (sourceHeight * destinationWidth) / destinationHeight;
+    		nHeight = sourceHeight;
+    	}
+    	
+    	//계산된 크기로 원본 이미지를 가운데서 crop
+    	BufferedImage cropedImage = Scalr.crop(sourceImage, (sourceWidth-nHeight)/2, (sourceHeight - nHeight)/2, nWidth, nHeight); 
+    	
+    	//crop된 이미지로 썸네일을 생성
+    	BufferedImage destinationIamge = Scalr.resize(cropedImage, destinationWidth, destinationHeight);
+    	logger.debug("destinationIamge - " +destinationIamge.getWidth()+","+ destinationIamge.getHeight());
+    	return bufferedImageToBytes(destinationIamge, fileName);
+    	
+    }
+    
+    private static byte[] bufferedImageToBytes(BufferedImage image, String fileName) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
+        	
+        	//파일 이름의 확장자 주입
+            ImageIO.write(image, fileName.substring(fileName.lastIndexOf(".")+1), out);
+            return out.toByteArray();
+        }catch (Exception e) {
+        	throw new RuntimeException(e); 
+		}
+    }
+   
+    
+    private static BufferedImage bytesToBufferedImage(byte[] imageData) {
+    	ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
+    	try {
+    		return ImageIO.read(bais);
+    	}catch (Exception e) {
+			throw new RuntimeException(e); 
+		}
+    	
+    }
+
+    
+
     
     //이미지 파일이 아닌경우에 아이콘 생성
     private static String makeIcon(String uploadPath, String path, String fileName) throws Exception {
@@ -64,21 +120,12 @@ public class UploadFileUtils {
 
         return iconName.substring(uploadPath.length()).replace(File.separatorChar, '/');
     }
-
-    // 경로 설정처리 
+    
+ // 경로 설정처리 
     private static String calcPath(String uploadPath) {
-        Calendar cal = Calendar.getInstance();
 
-        // 년도 설정
-        String yearPath = File.separator + cal.get(Calendar.YEAR);
 
-        // 월 설정
-        String monthPath = yearPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.MONTH) + 1);
-
-        // 날짜 ㄱ설정
-        String datePath = monthPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.DATE));
-
-        return datePath;
+        return "";
        
     }
 
@@ -98,20 +145,5 @@ public class UploadFileUtils {
                 dirPath.mkdir();
             }
         }
-    }
-
-    //썸네일 생성
-    private static String makeThumbnail(String uploadPath, String path, String fileName) throws Exception {
-
-        BufferedImage sourceImg = ImageIO.read(new File(uploadPath + path, fileName));
-    
-        BufferedImage destImg = Scalr.resize(sourceImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH, 600);
-        String thumbnailName = uploadPath + path + File.separator + "s_" + fileName;
-
-        File newFile = new File(thumbnailName);
-        String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
-
-        ImageIO.write(destImg, formatName.toUpperCase(), newFile);
-        return thumbnailName.substring(uploadPath.length()).replace(File.separatorChar, '/');
     }
 }

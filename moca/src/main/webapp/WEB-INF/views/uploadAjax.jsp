@@ -111,14 +111,38 @@
 	
 	
 	<br><br>
+	<div id="carousel-example-generic1" class="carousel slide" data-ride="carousel">
+
+		<!-- Wrapper for slides -->
+		<div class="carousel-inner" role="listbox">
+			<div class="item active">
+				<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store1">
+			</div>
+			<div class="item">
+				<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store2">
+			</div>
+			<div class="item">
+				<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store3">
+			</div>
+		</div>
+
+		<!-- Controls -->
+		<a class="left carousel-control" href="#carousel-example-generic1" role="button" data-slide="prev">
+			<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+			<span class="sr-only">Previous</span>
+		</a>
+		<a class="right carousel-control" href="#carousel-example-generic1" role="button" data-slide="next">
+			<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+			<span class="sr-only">Next</span>
+		</a>
+	</div>
 	<form id="reviewForm" method="post" enctype="multipart/form-data">
 		<input name="storeId" value="1" style="display:none;" >
 		<input name="review_id" id="review_id" value="0" style="display:none;" >
 		<div class="form-group">
 			<label for="picture-file">사진 선택</label>
 			<input type="file" name="file" id="picture-file" multiple="multiple"><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
-		</div>
-		<!-- 
+		</div> 
 		<div class="form-group">
 			<label for="review-content">후기</label>
 			<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
@@ -198,7 +222,7 @@
 				<option>10</option>
 			</select>
 		</div>
-		 -->
+	
 	
 	</form>
 	<div class="modal-footer">
