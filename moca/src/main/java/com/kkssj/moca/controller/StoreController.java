@@ -82,6 +82,11 @@ public class StoreController {
 		model.addAttribute("reviewVoList", storeService.getReviewList(accountId, storeId));
 
 		model.addAttribute("storeVo", storeVo);
+		
+		//storeImg의 개수에 따라 리뷰 이미지 vo 받아오기
+		model.addAttribute("StoreImgList", storeService.getStoreImgList(storeId));
+		
+		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));
 
 		return "store_detail";
 	}
@@ -90,6 +95,9 @@ public class StoreController {
 	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo){
 		
 		//회원만 가능하게 로그인 기능 구현되면 붙여넣을 것
+		//if(session.getAttribute("login")!==null) {
+			
+		//}
 
 		storeVo.setStore_Id(storeId);
 		logger.debug("storeId : " + storeId + " - updateStore");
@@ -103,7 +111,7 @@ public class StoreController {
 
 		if (isSuccess > 0) {
 			// 성공
-			return new ResponseEntity<>(HttpStatus.OK);
+			return ResponseEntity.status(HttpStatus.OK).body(storeService.getStoreInfoHistory(storeId));
 		} else {
 			// 실패
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

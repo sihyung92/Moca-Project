@@ -13,6 +13,10 @@
 	ORDER BY FIELD(r.ACCOUNTID,#{ACCOUNTID}) DESC, r.LIKECOUNT DESC;
   </select>
   
+  <select id="selectReviewImgListByStoreId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">
+  	SELECT * FROM REVIEWIMAGE WHERE storeId=#{STORE_ID} order by reviewId
+  </select>
+  
   <select id="selectAllReviewId" resultType="com.kkssj.moca.model.entity.ReviewVo">
  	SELECT review_id FROM REVIEW
   </select>

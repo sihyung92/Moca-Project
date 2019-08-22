@@ -1,7 +1,10 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
 public interface StoreDao {
@@ -16,5 +19,11 @@ public interface StoreDao {
 	int insertStoreInfoHistory(int accountId, StoreVo storeVo) throws SQLException;
 
 	int updateLevel(StoreVo storeVo) throws SQLException;
+
+	Map<String, Object> selectStoreInfoHistory(int storeId) throws SQLException;
+
+	Map<String, String> selectStoreImgList(int storeId) throws SQLException;
+
+	List<ImageVo> selectStoreReviewImgList(Map<String, Integer> map);
 
 }

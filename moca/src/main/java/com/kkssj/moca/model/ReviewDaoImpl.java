@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.kkssj.moca.controller.HomeController;
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
 @Repository
@@ -164,6 +165,12 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public List<ReviewVo> selectAllReviewLevel(int storeId) {
 		return sqlSession.selectList("review.selectAllReviewLevel", storeId);
+	}
+	
+	//리뷰 이미지 가져오기
+	@Override
+	public List<ImageVo> selectReviewImgListByStoreId(int storeId) {
+		return sqlSession.selectList("review.selectReviewImgListByStoreId", storeId);
 	}
 
 }

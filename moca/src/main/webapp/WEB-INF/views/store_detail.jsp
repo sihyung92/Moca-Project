@@ -18,7 +18,7 @@
 		.carousel-inner img {
 			margin: 0px auto;
 		}
-
+		
 		.carousel .carousel-inner img {
 			width: 100%;
 			height: 20rem;
@@ -42,7 +42,18 @@
 	         float:left;
 	      }
 	    .more-review-content-btn{display:none;white-space:nowrap;float:right;}
-	     
+	    
+	    .reviewThumbnailGroup .reviewThumbnail{
+	    	display: inline-block;
+	    }
+	    
+	    .reviewThumbnailGroup img{
+	    	width:100px;
+	    	height: 100px;
+			object-fit: cover;
+			overflow: hidden;
+	    }
+}
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 
@@ -57,9 +68,8 @@
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
-
-
 		$(document).ready(function() {
+			
 			//변수 바인딩
 			bindReviewVariable();
 			
@@ -218,8 +228,9 @@
 			//수정 버튼 클릭시
 			editBtn.click(function(){
 				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
-				reviewData2ReviewModal(this);				
+				reviewData2ReviewModal(this);	
 			})
+			
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
@@ -237,6 +248,9 @@
 					deleteReview(reviewId);
 		        });
 			})
+
+			//StoreImg 클래스 일 때 '카페에서 등록한 이미지 입니다'
+			$('.StoreImg').append('<span>카페에서 등록한 이미지 입니다</span>');
 
 		});
 
@@ -283,8 +297,7 @@
 					<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 						<!-- Indicators -->
 						<ol class="carousel-indicators">
-							<c:set var="reviewImgs" value="${fn:split(storeVo.reviewImg,',')}" />
-							<c:forEach items="${reviewImgs}" var="reviewImg" varStatus="status">
+							<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
 								<c:if test="${status.index eq 0}">
 									<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
 								</c:if>
@@ -297,20 +310,20 @@
 						<!-- Wrapper for slides -->
 						<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
 							<div class="carousel-inner" role="listbox">
-								<c:if test="${not empty storeVo.reviewImg}">
-									<c:forEach items="${reviewImgs}" var="reviewImg" varStatus="status">
+								<c:if test="${not empty StoreImgList}">
+									<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
 										<c:if test="${status.index eq 0}">
-											<div class="item active">
+											<div class="item active <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<c:if test="${status.index ne 0}">
-											<div class="item">
+											<div class="item <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
-										<img src="<c:url value="${reviewImg }" />" alt="..." class="d-block w-100">
+										<img src="<c:url value="${StoreImg.url }" />" alt="..." class="d-block w-100">
 										<div class="carousel-caption">...</div>
 							</div>
 							</c:forEach>
 							</c:if>
-							<c:if test="${empty storeVo.reviewImg}">
+							<c:if test="${empty StoreImgList}">
 								<img src="<c:url value="/resources/imgs/reviewDefault.png"/>" alt="..." class="d-block w-100">
 							</c:if>
 						</div>
@@ -373,6 +386,11 @@
 									<a href="${storeVo.url}">${storeVo.url}</a>
 								</span>
 								<br>
+								<small id="lastInfoUpdate" style="display:block; margin-top:1em; color:lightgray;">
+								<i>
+									${storeInfoHistory}
+								</i>
+								</small>
 								<hr>
 								<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#StoreInfoModal">
 									정보제공
@@ -425,34 +443,16 @@
 							</div>
 
 
-							<div class="review-info col-md-8">
-
-								<div id="carousel-example-generic${reviewVo.review_id}" class="carousel slide" data-ride="carousel">
-
-									<!-- Wrapper for slides -->
-									<div class="carousel-inner" role="listbox">
-										<div class="item active">
-											<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store1">
-										</div>
-										<div class="item">
-											<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store2">
-										</div>
-										<div class="item">
-											<img src="<c:url value="/resources/imgs/store1.jpg"/>" alt="store3">
-										</div>
+							<div class="review-info col-md-8"> 
+								<div class="row">
+									<div class="reviewThumbnailGroup">
+										<c:forEach items="${reviewVo.imageList}" var="reviewImg" varStatus="status">
+											<div class="reviewThumbnail">
+												<img src="${reviewImg.url}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
+											</div>
+										</c:forEach>
 									</div>
-
-									<!-- Controls -->
-									<a class="left carousel-control" href="#carousel-example-generic${reviewVo.review_id}" role="button" data-slide="prev">
-										<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-										<span class="sr-only">Previous</span>
-									</a>
-									<a class="right carousel-control" href="#carousel-example-generic${reviewVo.review_id}" role="button" data-slide="next">
-										<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-										<span class="sr-only">Next</span>
-									</a>
-								</div>
-								<div class="review-data">
+									<div class="review-data">
 									<div class="write-date-div">
 										<label>작성일</label>
 										<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
@@ -479,8 +479,8 @@
 										<input type="number" class="hate-count" value=${reviewVo.hateCount }>
 									</div>
 								</div>
+								</div>
 							</div>
-
 							<div class="review-level col-md-2">
 								<div class="taste-level-div">
 									<label>맛</label>
@@ -510,7 +510,6 @@
 							<br><br><br>
 						</div>
 					</c:forEach>
-
 				</div>
 				<div class="review-footer">
 					<button id="moreReview">더보기</button>

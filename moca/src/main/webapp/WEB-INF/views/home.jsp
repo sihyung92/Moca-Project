@@ -56,7 +56,7 @@
 
 
 			//////////////////////////////////////////////////////////////////////
-		/* 	$('#btn-upload').on('click',function(){
+		 	$('#btn-upload').on('click',function(){
 				console.log("btn-upload");
 				var form = new FormData(document.getElementById('uploadForm'));
 				
@@ -75,7 +75,9 @@
 					}
 					
 				})
-			}) */
+			})
+		/*
+			 */
 
 		})
 
@@ -87,15 +89,16 @@
 	<h1>
 		Hello world!
 	</h1>
-	<!-- 
 	<form id="uploadForm" enctype="multipart/form-data" method="POST">
 		<label for="file1">file1</label>
 		<input type="file" id="file1" name="file" required="required" />
 		<label for="file2">file2</label>
 		<input type="file" id="file2" name="file" required="required" />
-	</form> 
+	</form>
+	<br><br>
 	<button id='btn-upload'>파일 업로드</button>
 	<br><br>
+	<!-- 
 	
 	
 	file upload 연습1
@@ -105,9 +108,21 @@
 	<button id="btn-upload">file upload</button>
 	<br><br> -->
 
-	
-	
-	
+
+	<form method="post" action="uploadAjax" enctype="multipart/form-data">
+
+		<label>email:</label> <input type="text" name="email"> <br>
+		<br> <label>파일:</label> <input type="file" name="file1">
+
+
+
+		<br>
+		<br> <input type="submit" value="upload">
+
+	</form>
+
+
+
 	<!-- Button trigger modal -->
 	<button type="button" class="btn btn-primary" data-toggle="modal" id="reviewModalBtn" data-target="#reviewModal">
 		리뷰 작성

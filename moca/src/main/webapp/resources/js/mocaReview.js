@@ -124,16 +124,23 @@ var saveReview = function(){
 
 //리뷰 데이터를 리뷰 모달로 이동 (수정 때 사용)
 var reviewData2ReviewModal = function(clickedEditBtn){
-	$('#reviewModal').modal("show");		//리뷰 모달창 show
+	clearReviewModalData();
+	reviewModal.modal("show");		//리뷰 모달창 show
 
 	editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
-
 
 	//리뷰 아이디
 	reviewModal.find('#review_id').val( editReviewRow.find('.review-id').eq(0).val() );
 				
 	///사진(나중에 정해지면)
-
+	console.log(clickedEditBtn);
+	var reviewImg = editReviewRow.find('.reviewThumbnailGroup').clone();
+	console.log(reviewImg);
+	reviewModal.find('#picture-file').after(reviewImg);
+	$('#reviewModal').find('.reviewThumbnail').append('<span class="glyphicon glyphicon-remove thumbnailDeleteSpan" aria-hidden="true" onclick="deleteReviewImg(this)"></span>');		
+	$('.thumbnailDeleteSpan').css('position','relative').css('left','-95px').css('top','-30px').css('cursor','pointer')
+	.css('background-color','rgb(255,255,255,0.5)');
+	
 	//리뷰 내용
 	reviewModal.find('#review-content').text( editReviewRow.find('.reviewInfo-review-content').text() )
 
@@ -180,6 +187,26 @@ var editReview = function(){
 	})
 
 }
+
+//리뷰모달창 클리어
+var clearReviewModalData = function(){
+	
+	///사진(나중에 정해지면)
+	reviewModal.find('.reviewThumbnailGroup').remove();
+
+	//리뷰 내용
+	reviewModal.find('#review-content').text('');
+
+	//평점
+	reviewModal.find('#taste-level').val('1')
+	reviewModal.find('#price-level').val('1')
+	reviewModal.find('#service-level').val('1')
+	reviewModal.find('#mood-level').val('1')
+	reviewModal.find('#convenience-level').val('1')
+	reviewModal.find('#average-level').val('1')
+	
+}
+
 
 //리뷰 삭제
 var deleteReview = function(review_id) {
@@ -352,7 +379,12 @@ var cancelLikeHate = function(reviewId, isLike){
 	})
 
 }
-	
+
+//리뷰 사진 삭제 버튼 클릭시
+var deleteReviewImg = function(deleteBtn){
+	console.log(deleteBtn);
+	$(deleteBtn).parent().hide();
+}
 
 
 

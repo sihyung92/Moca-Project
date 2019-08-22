@@ -1,8 +1,13 @@
 package com.kkssj.moca.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import javax.inject.Inject;
 
@@ -14,6 +19,7 @@ import org.springframework.ui.Model;
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.ReviewDaoImpl;
 import com.kkssj.moca.model.StoreDao;
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
@@ -61,6 +67,7 @@ public class StoreServiceImpl implements StoreService{
 			if(result>0) {
 				int history = storeDao.insertStoreInfoHistory(accountId, storeVo);
 				System.out.println("history : "+history);
+				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -69,13 +76,104 @@ public class StoreServiceImpl implements StoreService{
 		return result;
 	}
 	
+	@Override
+	public String getStoreInfoHistory(int storeId) {
+		Map<String, Object> map = null;
+		try {
+			map = storeDao.selectStoreInfoHistory(storeId);
+			if(map!=null) {				
+				String updateInfoNickname = (String) map.get("nickname");
+				Timestamp renewalDate = (Timestamp) map.get("renewaldate");
+				SimpleDateFormat format= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				
+				return updateInfoNickname +"님이 " + format.format(renewalDate) +"에 마지막으로 수정하였습니다";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public List<ImageVo> getStoreImgList(int storeId) {
+		//store테이블에 있는 storeImg1,2,3 가져오기
+		List<ImageVo> result = new ArrayList<ImageVo>();
+		int limit = 0;
+		try {
+			Map<String,String> storeImgUrlList = storeDao.selectStoreImgList(storeId);
+			//가져와서 null값 혹은 빈값인 개수 세기
+			if(storeImgUrlList!=null) {
+				System.out.println(storeImgUrlList.size());
+				System.out.println(storeImgUrlList.toString());
+				limit = 10 - storeImgUrlList.size();
+			}else {
+				limit = 10;
+			}
+			//10개중에 나머지 개수만큼 가져오기 reviewImg
+			Map<String,Integer> map = new HashMap<String, Integer>();
+			map.put("LIMIT", limit);
+			map.put("STORE_ID", storeId);
+			
+			result = storeDao.selectStoreReviewImgList(map);
+			for(int i=0; i<result.size(); i++) {
+				result.get(i).setUrl(result.get(i).getUrl());
+			}
+			if(storeImgUrlList!=null) {
+				for(int i=0; i<storeImgUrlList.size(); i++) {
+					ImageVo imageVo = new ImageVo();
+					imageVo.setPath("store");				
+					imageVo.setUrl(storeImgUrlList.get("storeImg"+(i+1)));				
+					result.add(imageVo);
+				}
+			}
+			Collections.reverse(result);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	////////////////////////////////
 	//review
 	
 	@Override
 	public List<ReviewVo> getReviewList(int accountId, int storeId) {
-		return reviewDao.selectAll(accountId, storeId);
+		
+		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
+		reviewList = reviewDao.selectAll(accountId, storeId);
+		
+		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
+		try {
+			reviewImageList = reviewDao.selectReviewImgListByStoreId(storeId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("reviewImageList size : "+reviewImageList);
+		System.out.println("reviewList size : "+reviewList);
+		
+		for(int i=0; i<reviewImageList.size(); i++) {
+			reviewImageList.get(i).setUrl(reviewImageList.get(i).getUrl());
+		}
+		
+		int imageListIndex = 0;
+		for (int i = 0; i < reviewList.size(); i++) {
+			reviewList.get(i).setImageList(new ArrayList());
+			for (int j = imageListIndex; j < reviewImageList.size(); j++) {
+				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReviewId()) {
+					reviewList.get(i).getImageList().add(reviewImageList.get(j));
+					imageListIndex++;
+				}else {
+					break;
+				}
+			}
+		}
+		
+		return reviewList;
+		
 	}
+	
 	@Override
 	public ReviewVo addReview(ReviewVo reviewVo) {
 		//평균 점수 계산
