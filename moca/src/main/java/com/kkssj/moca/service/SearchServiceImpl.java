@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 
 import com.kkssj.moca.model.StoreDao;
@@ -46,61 +47,82 @@ public class SearchServiceImpl implements SearchService {
 			currentVo.setTag(tempVo.getTag());
 			currentVo.setReviewCnt(tempVo.getReviewCnt());
 			currentVo.setViewCnt(tempVo.getViewCnt());
-			currentVo.setAverageLevel(tempVo.getAverageLevel());			
+			currentVo.setTasteLevel(tempVo.getTasteLevel());
+			currentVo.setConvenienceLevel(tempVo.getConvenienceLevel());
+			currentVo.setMoodLevel(tempVo.getMoodLevel());
+			currentVo.setServiceLevel(tempVo.getServiceLevel());
+			currentVo.setPriceLevel(tempVo.getPriceLevel());
+			currentVo.setAverageLevel(tempVo.getAverageLevel());
+			currentVo.setLogoImg(tempVo.getLogoImg());			
 		}		
 		return currentVo;
 	}
 
 	@Override
-	public List<StoreVo> getListFromKakaoAPI(String keyword, String region, String x, String y){
+	public List<StoreVo> getListFromKakaoAPI(String keyword, String region, String x, String y, Model model){
 		//(카카오 검색) 키워드 검색 파라미터 세팅
 		List<StoreVo> alist = new ArrayList<StoreVo>();
 		int page=1;		
 		//키워드 추출
-		String query=keyword;		
-		//region을 찍었을 때는, 해당 region의 x,y좌표로 검색!
-		if(region!=null&&!region.equals("")) {
-			Properties regionLatLng = getByRegion(region);
-			y = (String) regionLatLng.get("xLocation");			//경도
-			x = (String) regionLatLng.get("yLocation");			//위도
+		String query=null;
+		String sort="distance";
+		if(region!=null) {
+			sort="accuracy";
+			if(keyword.contains(region)){
+				query=keyword;		//광진스타벅스
+			}else {
+				query=region+" "+keyword;
+			}			
+		}else {
+			query=keyword;
 		}
 		
 //카카오 API 접속 정보 세팅
-		//URL 
-		String url="https://dapi.kakao.com/v2/local/search/keyword.json?category_group_code=CE7&sort=distance&x={x}&y={y}&query={query}&page={page}";
+		//URL  category_group_code=CE7&		
+		String url="https://dapi.kakao.com/v2/local/search/keyword.json?category_group_code=CE7&sort={sort}&x={x}&y={y}&query={query}&page={page}";
 		//HttpEntity에 header 정보 싣기
 		HttpHeaders headers = new HttpHeaders();		//MultiValueMap<String, String> 상속중-
 		headers.add("Authorization", "KakaoAK 1e233a4652123a4998f1e91bf40b38ba");
 		HttpEntity entity = new HttpEntity(headers);		
 		//동기 통신용 RestTemplate
 		RestTemplate restTemplate = new RestTemplate();
-//				HttpEntity<MultiValueMap> requestEntity =new HttpEntity(map, headers);		//POST로 인식하는 듯
+//		HttpEntity<MultiValueMap> requestEntity =new HttpEntity(map, headers);		//POST로 인식하는 듯
 		
 //카카오 API 동기 통신 & 데이터 받기
 		//JSON 데이터 Vo객체로 파싱
-		ResponseEntity<KakaoCafeVo> response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, page);	//Object 파라미터는 URL에 순서대로 인식	
+		ResponseEntity<KakaoCafeVo> response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, sort, x, y, query, page);	//Object 파라미터는 URL에 순서대로 인식	
 		//카카오 API 검색 결과 alist에 추가
 		StoreVo[] kakaoStores = response.getBody().getDocuments();
 		Meta kakaoInfo = response.getBody().getMeta();
-		for(StoreVo s : kakaoStores) {
-			//지역 필터 적용 시, kakaoStores의 Vo객체가 선택 지역에 속하지 않을 때
-			if(region!=null&&!region.equals("")&&!s.getAddress().contains(region)) {
-				continue;
-			}
+		
+		//지역 검색 여부 판단
+		if(!kakaoInfo.getSame_name().getSelected_region().equals("")) {
+			sort="accuracy";
+			model.addAttribute("msg_changedFilter", "지역 기반 검색 시, 정확도 순으로 정렬됩니다.");
+			response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, sort, x, y, query, page);
+			kakaoStores = response.getBody().getDocuments();
+			kakaoInfo = response.getBody().getMeta();
+		}	
+		
+		for(StoreVo s : kakaoStores) {			
+//			if(region!=null&&!region.equals("")&&!s.getAddress().contains(region)) {		//지역 필터 적용 시, kakaoStores의 Vo객체가 선택 지역에 속하지 않을 때
+//				continue;
+//			}
 			alist.add(s);
 		}		
+		
 		//카카오 API 다음 페이지 요청(Meta객체의 is_end=false인 경우) & 검색 결과 alist에 추가
 		while(!kakaoInfo.isIs_end()) {
-			response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, x, y, query, ++page);
+			response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, sort, x, y, query, ++page);
 			kakaoStores = response.getBody().getDocuments();
 			kakaoInfo = response.getBody().getMeta();			
-			for(StoreVo d : kakaoStores) {
-				if(region!=null&&!region.equals("")&&!d.getAddress().contains(region)) {
-					continue;
-				}
-				alist.add(d);
+			for(StoreVo s : kakaoStores) {
+//				if(region!=null&&!region.equals("")&&!d.getAddress().contains(region)) 
+//					continue;
+//				}
+				alist.add(s);
 			}
-		}
+		}		
 		return alist;
 	}
 	

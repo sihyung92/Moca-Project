@@ -10,6 +10,7 @@ public class StoreVo{
 	private String name, category, url, tag, dayOff, tel;
 	private String address,roadAddress;
 	private String xLocation, yLocation, distance;
+	private String logoImg, reviewImg;
 	private double tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel, averageLevel;
 	private Date openTime,endTime;
 	private String openTime2,endTime2;
@@ -49,6 +50,30 @@ public class StoreVo{
 	}
 	
 	
+	public String getLogoImg() {
+		return logoImg;
+	}
+
+	public void setLogoImg(String logoImg) {
+		this.logoImg = logoImg;
+	}
+
+	public String getReviewImg() {
+		return reviewImg;
+	}
+
+	public void setReviewImg(String reviewImg) {
+		this.reviewImg = reviewImg;
+	}
+
+	public String getOpenTime2() {
+		return openTime2;
+	}
+
+	public String getEndTime2() {
+		return endTime2;
+	}
+
 	public int getStore_Id() {
 		return store_Id;
 	}
@@ -400,8 +425,12 @@ public class StoreVo{
 				+ convenienceLevel + ", averageLevel=" + averageLevel + ", openTime=" + openTime + ", endTime="
 				+ endTime + ", openTime2=" + openTime2 + ", endTime2=" + endTime2 + "]";
 	}
+	
+	
+	
+	
 
-	//ƒ´ƒ´ø¿ ¿¸øÎ setter/getter ª˝º∫
+	//Ïπ¥Ïπ¥Ïò§ Í∞ùÏ≤¥Ïö© setter/getter
 		public void setAddress_name(String address_name) {
 			address = address_name;
 		}
