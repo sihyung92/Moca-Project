@@ -25,7 +25,7 @@ public class UploadFileUtils {
     // String uploadPath 파일의 저장경로
     // String originalName 원본 파일 이름
     // byte[] fileData 파일 데이터
-    public static ImageVo uploadFile(String uploadPath, String originalName, byte[] fileData) throws Exception {  	
+    public static ImageVo uploadFile(String path, String originalName, byte[] fileData) throws Exception {  	
     	
     	//S3 서버 관련 설정  
     	S3Util s3 = new S3Util();
@@ -33,17 +33,17 @@ public class UploadFileUtils {
             
         //범용고유식별자(36개의 문자로된 중복 가능성이 거의 없는)    
         UUID uuid = UUID.randomUUID();
-        
-        String path ="";
         String uu_id = uuid.toString();
-        String savedName = uu_id.toString() + "_" + originalName;
+        
+        
+        String savedName =path+"/"+ uu_id.toString() + "_" + originalName;
         String uploadedFileName =savedName.replace(File.separatorChar, '/');        
         s3.fileUpload(bucketName, uploadedFileName, fileData);  //  추가 
 //      s3.fileUpload(bucketName, uploadPath+savedPath+uploadedFileName, fileData);  //  추가 
         
         ///////////////////
         //thumnail
-        savedName = uu_id.toString() + "_thumbnail_" + originalName;
+        savedName = path+"/"+ uu_id.toString() + "_thumbnail_" + originalName;
         uploadedFileName =savedName.replace(File.separatorChar, '/');   
         s3.fileUpload(bucketName, uploadedFileName, makeThumbnail(originalName, fileData));  //  추가 
         

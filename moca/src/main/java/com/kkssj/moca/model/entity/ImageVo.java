@@ -49,15 +49,28 @@ public class ImageVo {
 	
 	public void setUrl(String url) {
 		if(this.uu_id!=null) {
-			this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+this.uu_id+"_"+this.originName;			
+			if(this.path.equals("")) {
+				this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_"+this.originName;	
+				this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_thumbnail_"+this.originName;
+			}else {
+				this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_"+this.originName;	
+				this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_thumbnail_"+this.originName;
+			}
+				
 		}else {
 			this.url = url;
 		}
-		this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+this.uu_id+"_thumbnail_"+this.originName;	
+		
 	}
 	public void setUrl() {
-		this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+this.uu_id+"_"+this.originName;
-		this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+this.uu_id+"_thumbnail_"+this.originName;
+		if(this.path.equals("")) {
+			this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_"+this.originName;
+			this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_thumbnail_"+this.originName;
+		}else {
+			this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_"+this.originName;
+			this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_thumbnail_"+this.originName;
+		}
+		
 	}
 
 	public int getStoreId() {
@@ -100,9 +113,6 @@ public class ImageVo {
 	}
 
 	public void setFieName() {
-		if(!this.path.equals("")) {
-			this.fieName = this.path+File.separatorChar+this.uu_id+"_"+this.originName;
-		}
 		this.fieName = this.uu_id+"_"+this.originName;
 	}
 
@@ -111,11 +121,18 @@ public class ImageVo {
 	}
 
 	public void setThumbnailFileName() {
-		
-		if(!this.path.equals("")) {
-			this.thumbnailFileName = this.path+File.separatorChar+this.uu_id+"_thumbnail_"+this.originName;
-		}
 		this.thumbnailFileName = this.uu_id+"_thumbnail_"+this.originName;
+	}
+	
+	
+	
+
+	public String getThumbnailUrl() {
+		return thumbnailUrl;
+	}
+
+	public void setThumbnailUrl(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
 	}
 
 	@Override

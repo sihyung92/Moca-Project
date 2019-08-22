@@ -458,7 +458,7 @@
 									<div class="reviewThumbnailGroup">
 										<c:forEach items="${reviewVo.imageList}" var="reviewImg" varStatus="status">
 											<div class="reviewThumbnail">
-												<img src="${reviewImg.url}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
+												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
 											</div>
 										</c:forEach>
 									</div>

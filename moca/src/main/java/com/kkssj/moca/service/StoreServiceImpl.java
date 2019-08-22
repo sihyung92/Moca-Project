@@ -108,12 +108,12 @@ public class StoreServiceImpl implements StoreService{
 		List<ImageVo> result = new ArrayList<ImageVo>();
 		int limit = 0;
 		try {
-			Map<String,String> storeImgUrlList = storeDao.selectStoreImgList(storeId);
+			Map<String,String> storeImgUrlMap = storeDao.selectStoreImgList(storeId);
 			//가져와서 null값 혹은 빈값인 개수 세기
-			if(storeImgUrlList!=null) {
-				System.out.println(storeImgUrlList.size());
-				System.out.println(storeImgUrlList.toString());
-				limit = 10 - storeImgUrlList.size();
+			if(storeImgUrlMap!=null) {
+				System.out.println(storeImgUrlMap.size());
+				System.out.println(storeImgUrlMap.toString());
+				limit = 10 - storeImgUrlMap.size();
 			}else {
 				limit = 10;
 			}
@@ -124,13 +124,14 @@ public class StoreServiceImpl implements StoreService{
 			
 			result = storeDao.selectStoreReviewImgList(map);
 			for(int i=0; i<result.size(); i++) {
-				result.get(i).setUrl(result.get(i).getUrl());
+				//카트리지 기법
+				result.get(i).setUrl();
 			}
-			if(storeImgUrlList!=null) {
-				for(int i=0; i<storeImgUrlList.size(); i++) {
+			if(storeImgUrlMap!=null) {
+				for(int i=0; i<storeImgUrlMap.size(); i++) {
 					ImageVo imageVo = new ImageVo();
 					imageVo.setPath("store");				
-					imageVo.setUrl(storeImgUrlList.get("storeImg"+(i+1)));				
+					imageVo.setUrl(storeImgUrlMap.get("storeImg"+(i+1)));				
 					result.add(imageVo);
 				}
 			}
@@ -186,8 +187,7 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files) {
 		///
-		String uploadPath = "";
-		String uploadedFileName = "";
+		String uploadPath = "review";
 		
 		//평균 점수 계산
 		reviewVo.calAverageLevel();
