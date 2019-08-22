@@ -27,8 +27,8 @@
 	WHERE STOREID = #{STOREID}
   </select>
   
-  <delete id="deleteReview" parameterType="Integer">
-  	DELETE FROM REVIEW WHERE review_id=#{REVIEW_ID}
+  <delete id="deleteReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	DELETE FROM REVIEW WHERE review_id=#{review_id} AND accountId= ${accountId}
   </delete>
    
   <insert id="insertLikeHate"  parameterType="map">
@@ -48,11 +48,8 @@
   <update id="updateHateCount" parameterType="map">
   	UPDATE REVIEW SET hateCount = #{HATECOUNT} WHERE review_id = #{REVIEW_ID}
   </update>
-  <select id="selectLikeCount" parameterType="Integer" resultType="Integer">
-  	SELECT likeCount FROM REVIEW WHERE review_id = #{id}
-  </select>
-  <select id="selectHateCount" parameterType="Integer" resultType="Integer">
-  	SELECT hateCount FROM REVIEW WHERE review_id = #{id}
+  <select id="selectLikeHateCount" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
+  	SELECT likeCount, hateCount FROM REVIEW WHERE review_id = #{id}
   </select>
   
   <select id="selectLikeHateLike" parameterType="Integer" resultType="Integer">
@@ -80,5 +77,18 @@
   	SERVICELEVEL=#{serviceLevel}, MOODLEVEL= #{moodLevel}, CONVENIENCELEVEL=#{convenienceLevel}, AVERAGELEVEL=#{averageLevel} 
 	WHERE STOREID=#{storeId} AND REVIEW_ID = #{review_id} AND ACCOUNTID=#{accountId}; 
   </update>
+  
+  <insert id="insertReviewImage" parameterType="com.kkssj.moca.model.entity.ImageVo">
+  	INSERT INTO REVIEWIMAGE(UU_ID, REVIEWID, ACCOUNTID, STOREID, PATH, ORIGINNAME, VIEWS) 
+	VALUES(#{uu_id}, #{reviewId}, #{accountId}, #{storeId},#{path},#{originName}, 0)
+  </insert>
+  <delete id="deleteReviewImage" parameterType="com.kkssj.moca.model.entity.ImageVo">
+  	DELETE FROM REVIEWIMAGE WHERE UU_ID = #{UU_ID} AND ACCOUNTID = #{ACCOUNTID}
+  </delete>
+  
+  <select id="selectReviewImgListByReviewId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">
+ 	 SELECT uu_id, accountId, reviewId, storeId, path, originName, views
+ 	  FROM REVIEWIMAGE WHERE REVIEWID = #{reviewId};
+  </select>
   
 </mapper>

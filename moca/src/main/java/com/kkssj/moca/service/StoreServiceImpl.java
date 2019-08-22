@@ -216,6 +216,13 @@ public class StoreServiceImpl implements StoreService{
 		            }
 
 				}
+		    	//select로 가져와서 imgvo 넣기
+		    	ArrayList<ImageVo> ReviewImgList = (ArrayList<ImageVo>) reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
+		    	for(int i=0; i<ReviewImgList.size(); i++) {
+		    		ReviewImgList.get(i).setUrl();
+		    	}
+		    	reviewVo.setImageList(ReviewImgList);
+		    	
 				
 				//상점에 대한 평점 동기화
 				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStoreId());
