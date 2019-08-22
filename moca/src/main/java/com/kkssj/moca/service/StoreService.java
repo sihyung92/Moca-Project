@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
@@ -17,13 +18,13 @@ public interface StoreService {
 	//store
 	
 	//상세정보 가져오기
-	StoreVo getStore(int store_Id) throws SQLException;
+	StoreVo getStore(int store_Id);
 
 	//store가 있는지 확인하고 add
-	StoreVo addStore(StoreVo storeVo) throws SQLException;
+	StoreVo addStore(StoreVo storeVo);
 	
 	//store 상세정보 update
-	int editStore(int accountId, StoreVo storeVo) throws SQLException;
+	int editStore(int accountId, StoreVo storeVo);
 	
 	
 	///////////////////////
@@ -39,7 +40,7 @@ public interface StoreService {
 	int editReview(ReviewVo reviewVo);
 	
 	//리뷰 제거
-	int deleteReview(int review_id) throws SQLException;
+	int deleteReview(ReviewVo reviewVo);
 	
 	
 	///////////////////////
@@ -56,5 +57,8 @@ public interface StoreService {
 
 	//review의 좋아요 싫어요 카운트를 likehate 테이블의 값과 동기화
 	int syncReviewLikeHate();
+
+	//리뷰 이미지 삭제
+	int deleteReviewImage(ImageVo imageVo);
 
 }

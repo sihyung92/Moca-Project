@@ -14,17 +14,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.s3.internal.S3AbortableInputStream;
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.ReviewDaoImpl;
 import com.kkssj.moca.model.StoreDao;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
+import com.kkssj.moca.util.S3Util;
 import com.kkssj.moca.util.UploadFileUtils;
 
 @Service
 public class StoreServiceImpl implements StoreService{
 	private static final Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
+	
+	
 
 	@Inject
 	ReviewDao reviewDao;
@@ -170,9 +174,33 @@ public class StoreServiceImpl implements StoreService{
 	}
 	//리뷰 삭제
 	@Override
-	public int deleteReview(int review_id) throws SQLException {
+	public int deleteReview(ReviewVo reviewVo){
+		S3Util s3 = new S3Util();
 		try {
-			return reviewDao.deleteReview(review_id);
+			//DB에 있는 imageVo list 조회
+			List<ImageVo> imageVoList = reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
+			logger.debug("imageList size = " + imageVoList.size());
+			
+			//review테이블에 있는 row삭제
+			//해당 review_id에 해당하는 reviewImage테이블에 있는 row도  같이 삭제(cascade)
+			int result = reviewDao.deleteReview(reviewVo);
+			logger.debug("delete result = "+ result);
+
+	
+			//반복
+			//imageVo로 s3에 저장된 파일명 생성 > 삭제
+			for (int i = 0; i < imageVoList.size(); i++) {
+				ImageVo imageVo = imageVoList.get(i);
+				logger.debug(imageVo.toString());
+				imageVo.setFieName();
+				imageVo.setThumbnailFileName();
+				s3.fileDelete(imageVo.getFieName());
+				s3.fileDelete(imageVo.getThumbnailFileName());
+			}
+	
+			
+			//정상일 경우 return 1
+			return 1;
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -249,6 +277,17 @@ public class StoreServiceImpl implements StoreService{
 			
 			
 			return 1;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	@Override
+	public int deleteReviewImage(ImageVo imageVo) {
+		try {
+			return reviewDao.deleteReviewImage(imageVo);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

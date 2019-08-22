@@ -269,6 +269,13 @@
 							
 			})
 			
+			thumbnailDeleteSpan.click(function(){
+				thumbnailDeleteSpan = this;
+				var thumbnailGroup = $(thumbnailDeleteSpan).parent();
+				var thumbnail = thumbnailGroup.find('.thumbnail');
+				deleteThumbnail(thumbnail.attr('id'));
+			})
+			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
 				editReview();
@@ -361,8 +368,6 @@
 		//리뷰 개수 더보기
 		var reviewCnt = function(q,r,n){
 			//먼저 3개만 보여주고 나머지는 더보기 버튼으로 클릭시 +3개씩 보여주기
-			console.log(q+":"+r+":"+n);
-			console.log(3*n+":"+q*3);
 			if(3*n<=q*3){
 				for(var i=(n-1)*3; i<3*n; i++){ //몫*3 or 나머지
 					$('.reviewCnt').eq(i).show();
@@ -819,6 +824,18 @@
 						<div class="form-group">
 							<label for="picture-file">사진 선택</label>
 							<input type="file" name="file" id="picture-file" multiple="multiple"><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
+							<div id="reviewThumbnailGroup">
+								<div class="reviewThumbnail">
+									<img src="" alt="..." class="thumbnail" id="key1">
+									
+									<span class="glyphicon glyphicon-remove thumbnailDeleteSpan" aria-hidden="true"></span>
+								</div>
+								...
+								<div class="reviewThumbnail">
+									<img src="" alt="..." class="thumbnail" id="key2">
+									<span class="glyphicon glyphicon-remove thumbnailDeleteSpan" aria-hidden="true"></span>
+								</div>
+							</div>
 						</div> 
 						<div class="form-group">
 							<label for="review-content">후기</label>

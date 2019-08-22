@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
 import com.kkssj.moca.model.entity.StoreVo;
@@ -167,11 +168,15 @@ public class StoreController {
 	
 	// 리뷰 삭제
 	@DeleteMapping("/reviews/{review_id}")
-	public ResponseEntity deleteReview(@PathVariable("review_id") int review_id) throws SQLException {
+	public ResponseEntity deleteReview(@PathVariable("review_id") int review_id){
 		// 사용자 확인
 		int accountId = 1;
 		
-		int isDelete = storeService.deleteReview(review_id);
+		ReviewVo reviewVo = new ReviewVo();
+		reviewVo.setAccountId(accountId);
+		reviewVo.setReview_id(review_id);
+		
+		int isDelete = storeService.deleteReview(reviewVo);
 		
 		if(isDelete==1) {			
 			return new ResponseEntity<>(HttpStatus.OK);
@@ -241,6 +246,25 @@ public class StoreController {
 		//일단 페이지 띄워야 하니까 
 		return "redirect:../stores/"+1;
 	}
+	
+//	// 좋아요 싫어요 삭제
+//	@DeleteMapping("/reviewImage/{uu_id}")
+//	public ResponseEntity  deleteReviewImage(@PathVariable("uu_id") String uu_id) {		
+//		// 사용자 확인
+//		int accountId = 1;
+//		
+//		ImageVo imageVo = new ImageVo();
+//		imageVo.setAccountId(accountId);
+//		imageVo.setUu_id(uu_id);
+//		
+//		int isDelete = storeService.deleteReviewImage(imageVo);
+//		
+//		if(isDelete==1) {			
+//			return new ResponseEntity<>(HttpStatus.OK);
+//		}
+//		
+//		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//	}
 
 
 

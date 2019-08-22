@@ -57,8 +57,8 @@ public class ReviewDaoImpl implements ReviewDao {
 	
 
 	//리뷰 삭제
-	public int deleteReview(int review_id) throws SQLException {
-		return sqlSession.delete("review.deleteReview",review_id);
+	public int deleteReview(ReviewVo reviewVo) throws SQLException {
+		return sqlSession.delete("review.deleteReview",reviewVo);
 	}
 
 	//likeHate 테이블에 row 추가
@@ -164,6 +164,17 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException{
 		return sqlSession.selectList("review.selectAllReviewLevel", storeId);
+	}
+
+	//리뷰 이미지 제거
+	@Override
+	public int deleteReviewImage(ImageVo imageVo) throws SQLException {
+		return sqlSession.delete("review.deleteReviewImage", imageVo);
+	}
+
+	@Override
+	public List<ImageVo> selectReviewImgListByReviewId(int reviewId) throws SQLException {
+		return sqlSession.selectList("review.selectReviewImgListByReviewId", reviewId);
 	}
 
 	

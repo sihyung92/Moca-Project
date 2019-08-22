@@ -1,7 +1,9 @@
 package com.kkssj.moca.model.entity;
 
+import java.io.File;
+
 public class ImageVo {
-	private String uu_id, path, originName, url, thumbnailUrl;
+	private String uu_id, path, originName, url, thumbnailUrl, fieName, thumbnailFileName;
 	private int storeId, reviewId, views, accountId;
 	
 	public ImageVo() {
@@ -89,7 +91,32 @@ public class ImageVo {
 	public void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}
+	
+	
 
+
+	public String getFieName() {
+		return fieName;
+	}
+
+	public void setFieName() {
+		if(!this.path.equals("")) {
+			this.fieName = this.path+File.separatorChar+this.uu_id+"_"+this.originName;
+		}
+		this.fieName = this.uu_id+"_"+this.originName;
+	}
+
+	public String getThumbnailFileName() {
+		return thumbnailFileName;
+	}
+
+	public void setThumbnailFileName() {
+		
+		if(!this.path.equals("")) {
+			this.thumbnailFileName = this.path+File.separatorChar+this.uu_id+"_thumbnail_"+this.originName;
+		}
+		this.thumbnailFileName = this.uu_id+"_thumbnail_"+this.originName;
+	}
 
 	@Override
 	public String toString() {

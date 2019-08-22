@@ -21,6 +21,7 @@ var editReviewRow
 var editBtn;
 var deleteBtn;
 var clickedEditBtn;
+var thumbnailDeleteSpan;
 
 var reviewFormObj;
 
@@ -39,6 +40,7 @@ var bindReviewVariable = function(){
 	
 	editBtn = $('.btn-edit')
 	deleteBtn = $('.btn-delete')
+	thumbnailDeleteSpan = $('.thumbnailDeleteSpan');
 
 	likeHateButton = $('.like-hate>.btn-group>button')
 }
@@ -186,6 +188,24 @@ var editReview = function(){
 		}
 	})
 
+}
+
+var deleteThumbnail = function(imageId){
+	console.log("delete thumbnail, id = " + imageId);
+	
+	$.ajax({
+		type: 'DELETE',
+		url: '/moca/reviewImage/'+imageId,
+		success: function() {
+			console.log('ajax 통신 성공')
+			
+			//해당 이미지 삭제
+		},
+		error: function() {
+			console.log('ajax 통신 실패')
+			alert("취소 실패")
+		}
+	})
 }
 
 var clearReviewModalData = function(){

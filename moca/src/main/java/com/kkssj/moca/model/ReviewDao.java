@@ -36,9 +36,13 @@ public interface ReviewDao {
 
 	List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException;
 	
-	int deleteReview(int review_id) throws SQLException;
+	int deleteReview(ReviewVo reviewVo) throws SQLException;
 
 	int insertReviewImage(ImageVo imgaeVo) throws SQLException;
+
+	int deleteReviewImage(ImageVo imageVo) throws SQLException;
+
+	List<ImageVo> selectReviewImgListByReviewId(int review_id) throws SQLException;
 
 	
 }

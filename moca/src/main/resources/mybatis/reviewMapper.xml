@@ -23,8 +23,8 @@
 	WHERE STOREID = #{STOREID}
   </select>
   
-  <delete id="deleteReview" parameterType="Integer">
-  	DELETE FROM REVIEW WHERE review_id=#{REVIEW_ID}
+  <delete id="deleteReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	DELETE FROM REVIEW WHERE review_id=#{review_id} AND accountId= ${accountId}
   </delete>
    
   <insert id="insertLikeHate"  parameterType="map">
@@ -78,5 +78,13 @@
   	INSERT INTO REVIEWIMAGE(UU_ID, REVIEWID, ACCOUNTID, STOREID, PATH, ORIGINNAME, VIEWS) 
 	VALUES(#{uu_id}, #{reviewId}, #{accountId}, #{storeId},#{path},#{originName}, 0)
   </insert>
+  <delete id="deleteReviewImage" parameterType="com.kkssj.moca.model.entity.ImageVo">
+  	DELETE FROM REVIEWIMAGE WHERE UU_ID = #{UU_ID} AND ACCOUNTID = #{ACCOUNTID}
+  </delete>
+  
+  <select id="selectReviewImgListByReviewId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">
+ 	 SELECT uu_id, accountId, reviewId, storeId, path, originName, views
+ 	  FROM REVIEWIMAGE WHERE REVIEWID = #{reviewId};
+  </select>
   
 </mapper>

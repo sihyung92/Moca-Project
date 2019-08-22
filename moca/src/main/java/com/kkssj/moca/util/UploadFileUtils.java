@@ -27,7 +27,7 @@ public class UploadFileUtils {
     // byte[] fileData 파일 데이터
     public static ImageVo uploadFile(String uploadPath, String originalName, byte[] fileData) throws Exception {  	
     	
-    	//S3 서버 관련 설정   // 3/28
+    	//S3 서버 관련 설정  
     	S3Util s3 = new S3Util();
         String bucketName = "moca-pictures";
             
