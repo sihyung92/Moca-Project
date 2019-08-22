@@ -2,20 +2,25 @@ package com.kkssj.moca.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.ReviewDaoImpl;
 import com.kkssj.moca.model.StoreDao;
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
+import com.kkssj.moca.util.UploadFileUtils;
 
 @Service
 public class StoreServiceImpl implements StoreService{
@@ -26,6 +31,7 @@ public class StoreServiceImpl implements StoreService{
 	
 	@Inject
 	StoreDao storeDao;
+	
 	
 	//////////////////////////////
 	//Store
@@ -91,27 +97,57 @@ public class StoreServiceImpl implements StoreService{
 		
 	}
 	@Override
-	public ReviewVo addReview(ReviewVo reviewVo) {
+	public ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files) {
+		///
+		String uploadPath = "";
+		String uploadedFileName = "";
+		
 		//평균 점수 계산
 		reviewVo.calAverageLevel();
 		try {
 			//정상적으로 입력되었을때
 			if(reviewDao.insertReview(reviewVo) ==1) {
+				reviewVo = reviewDao.selectAddedOne(reviewVo.getAccountId());
+				
+				//S3에 파일 업로드
+				MultipartFile file;
+		    	for (int i = 0; i < files.length; i++) {
+
+		    		file = files[i];
+		    			
+		    		logger.debug("originalName: " + file.getOriginalFilename());
+		    		logger.debug("size : " +  file.getSize());
+		    		logger.debug("contentType : " + file.getContentType());
+		            
+		            
+		            if((file.getSize() != 0) && file.getContentType().contains("image")) {
+		            	ImageVo imgaeVo = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
+		            	imgaeVo.setReviewId(reviewVo.getReview_id());
+		            	imgaeVo.setStoreId(reviewVo.getStoreId());
+		            	imgaeVo.setAccountId(reviewVo.getAccountId());
+		            	reviewDao.insertReviewImage(imgaeVo);
+		            }
+
+				}
+				
 				//상점에 대한 평점 동기화
 				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStoreId());
 				StoreVo storeVo = new StoreVo();
 				storeVo.setStore_Id(reviewVo.getStoreId());
 				storeVo.calAllLevel(list);
-				logger.debug(storeVo.toString());
+				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);
 				
 				
-				// 방금 입력한 Vo를 가져온다. 
-				return reviewDao.selectAddedOne(reviewVo.getAccountId());
+				// 방금 입력한 reviewVo를 리턴  
+				return reviewVo;
 			}
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

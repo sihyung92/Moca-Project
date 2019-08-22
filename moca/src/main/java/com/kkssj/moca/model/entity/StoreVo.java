@@ -441,7 +441,6 @@ public class StoreVo {
 		
 		for (int i = 0; i < list.size(); i++) {
 			ReviewVo reviewVo = list.get(i);
-			System.out.println(reviewVo.toString());
 			this.tasteLevel += reviewVo.getTasteLevel();
 			this.priceLevel += reviewVo.getPriceLevel();
 			this.serviceLevel += reviewVo.getServiceLevel();

@@ -3,6 +3,7 @@ package com.kkssj.moca.controller;
 import java.sql.SQLException;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
 import com.kkssj.moca.model.entity.StoreVo;
@@ -114,15 +117,22 @@ public class StoreController {
 	////////////////////////
 	//review 
 	
-	//리뷰 입력
-	@PostMapping("/reviews")
-	@ResponseBody
-	public ResponseEntity addReview(ReviewVo reviewVo) {
+	//리뷰 입력, 서버에 파일 업로드
+    @ResponseBody
+    @PostMapping(value ="/reviews")
+    public ResponseEntity addReview(@RequestParam("file") MultipartFile[] files, HttpSession session, ReviewVo reviewVo) throws Exception{
+    	
+    	
+    	//사용자 개정 등록(세션에서 왔다고 가정)
+    	AccountVo accountVo = (AccountVo)session.getAttribute("login");
+    	accountVo = new AccountVo();
+    	accountVo.setNickname("songhae");
+    	accountVo.setAccount_id(1);
+        
+        reviewVo.setAccountId(accountVo.getAccount_id());
+        logger.debug(reviewVo.toString());    	
 		
-		//사용자 개정 등록(세션에서 왔다고 가정)
-		reviewVo.setAccountId(1);
-		
-		reviewVo = storeService.addReview(reviewVo);
+		reviewVo = storeService.addReview(reviewVo,files);
 		
 		
 		if(reviewVo != null) {
@@ -131,7 +141,9 @@ public class StoreController {
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-	}
+        
+    }
+    
 	
 	//리뷰 수정
 	@PutMapping("/reviews/{review_id}")

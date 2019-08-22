@@ -47,61 +47,32 @@ var bindReviewVariable = function(){
 //리뷰 저장
 var saveReview = function(){
 	console.log("saveReviewBtn clicked")
+	var form = $('#reviewForm')[0];
 
-	console.log($(reviewForm).serializeArray());
+	var reviewFormData = new FormData(form);
+//	console.log($(reviewForm).serializeArray());
 
 	
 
 	//ajax 통싱 - post방식으로 추가
 	$.ajax({
 		type: 'POST',
+		enctype : 'multipart/form-data',
 		url: '/moca/reviews',
-		data: $(reviewForm).serializeArray(),
+//		data: $(reviewForm).serializeArray(),
+		data : reviewFormData,
+		contentType : false,
+		processData : false,
+		cache : false,
+		timeout : 600000,
 		success: function(reviewVo) {
 			console.log('ajax 통신 성공')
-			
-			
-			//리뷰 추가(최상단에)
 			console.log(reviewVo);
 			
-			//var newReview = $('#reviewTemplate');
-			var newReview = $('#reviewTemplate').clone(true);
-			newReview.css('display', '');
-			newReview.removeAttr('id')
+			//리뷰 추가(최상단에)
 			
-			var reviewerInfo = newReview.find('.reviewer-info')
-			var reviewInfo = newReview.find('.review-info')
-			var reviewLevel = newReview.children(".review-level")
-			
-			var carouselSlide = reviewInfo.children('.carousel') // 나중에 사진 추가할때 사용
-			
-			reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
-			reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
-			reviewerInfo.find('.reviewer-reviewse').text(reviewVo.reviewCount) 	//리뷰수
-			
-			//id에 review_id 추가
-			carouselSlide.attr('id', 'carousel-example-generic' + reviewVo.review_id);
-			
-			/// label 옆에 input 같은거 추가할 필요가 있음
-			reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
-			reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
-			
-			var likehateFormGroup = reviewInfo.children('.like-hate')
-			
-			//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
-			likehateFormGroup.find('input').eq(0).val(reviewVo.review_id)
-			likehateFormGroup.find('input').eq(1).val(0)
-			likehateFormGroup.find('input').eq(2).val(0)
-			
-			
-			reviewLevel.find('.taste-level').text(reviewVo.tasteLevel)
-			reviewLevel.find('.price-level').text(reviewVo.priceLevel)
-			reviewLevel.find('.service-level').text(reviewVo.serviceLevel)
-			reviewLevel.find('.mood-level').text(reviewVo.moodLevel)
-			reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
-			reviewLevel.find('.average-level').text(reviewVo.averageLevel)
-
-			$('.review-content').prepend(newReview);	//리뷰에 추가
+			addReviewInReviewContent(reviewVo);
+	
 			$('#reviewModal').modal("hide");		//모달창 닫기
 
 
@@ -114,6 +85,46 @@ var saveReview = function(){
 			
 		}
 	})
+}
+
+var addReviewInReviewContent = function(reviewVo) {
+	var newReview = $('#reviewTemplate').clone(true);
+	newReview.css('display', '');
+	newReview.removeAttr('id')
+	
+	var reviewerInfo = newReview.find('.reviewer-info')
+	var reviewInfo = newReview.find('.review-info')
+	var reviewLevel = newReview.children(".review-level")
+	
+	var carouselSlide = reviewInfo.children('.carousel') // 나중에 사진 추가할때 사용
+	
+	reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
+	reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
+	reviewerInfo.find('.reviewer-reviewse').text(reviewVo.reviewCount) 	//리뷰수
+	
+	//id에 review_id 추가
+	carouselSlide.attr('id', 'carousel-example-generic' + reviewVo.review_id);
+	
+	/// label 옆에 input 같은거 추가할 필요가 있음
+	reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
+	reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
+	
+	var likehateFormGroup = reviewInfo.children('.like-hate')
+	
+	//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
+	likehateFormGroup.find('input').eq(0).val(reviewVo.review_id)
+	likehateFormGroup.find('input').eq(1).val(0)
+	likehateFormGroup.find('input').eq(2).val(0)
+	
+	
+	reviewLevel.find('.taste-level').text(reviewVo.tasteLevel)
+	reviewLevel.find('.price-level').text(reviewVo.priceLevel)
+	reviewLevel.find('.service-level').text(reviewVo.serviceLevel)
+	reviewLevel.find('.mood-level').text(reviewVo.moodLevel)
+	reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
+	reviewLevel.find('.average-level').text(reviewVo.averageLevel)
+
+	$('.review-content').prepend(newReview);	//리뷰에 추가
 }
 
 

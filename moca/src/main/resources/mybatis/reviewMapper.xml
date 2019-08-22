@@ -74,4 +74,9 @@
 	WHERE STOREID=#{storeId} AND REVIEW_ID = #{review_id} AND ACCOUNTID=#{accountId}; 
   </update>
   
+  <insert id="insertReviewImage" parameterType="com.kkssj.moca.model.entity.ImageVo">
+  	INSERT INTO REVIEWIMAGE(UU_ID, REVIEWID, ACCOUNTID, STOREID, PATH, ORIGINNAME, VIEWS) 
+	VALUES(#{uu_id}, #{reviewId}, #{accountId}, #{storeId},#{path},#{originName}, 0)
+  </insert>
+  
 </mapper>

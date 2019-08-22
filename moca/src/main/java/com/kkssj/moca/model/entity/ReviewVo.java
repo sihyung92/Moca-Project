@@ -5,7 +5,7 @@ import java.sql.Date;
 public class ReviewVo {
 	//REVIEW table
 	private int review_id, accountId, storeId;
-	private String reviewContent, pictureUrls;
+	private String reviewContent;
 	private Date writeDate;
 	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
 	private double averageLevel;
@@ -34,7 +34,6 @@ public class ReviewVo {
 		this.accountId = accountId;
 		this.storeId = storeId;
 		this.reviewContent = reviewContent;
-		this.pictureUrls = pictureUrls;
 		this.writeDate = writeDate;
 		this.tasteLevel = tasteLevel;
 		this.priceLevel = priceLevel;
@@ -83,14 +82,6 @@ public class ReviewVo {
 
 	public void setReviewContent(String reviewContent) {
 		this.reviewContent = reviewContent;
-	}
-
-	public String getPictureUrls() {
-		return pictureUrls;
-	}
-
-	public void setPictureUrls(String pictureUrls) {
-		this.pictureUrls = pictureUrls;
 	}
 
 	public Date getWriteDate() {
@@ -209,7 +200,7 @@ public class ReviewVo {
 	@Override
 	public String toString() {
 		return "ReviewVo [review_id=" + review_id + ", accountId=" + accountId + ", storeId=" + storeId
-				+ ", reviewContent=" + reviewContent + ", pictureUrls=" + pictureUrls + ", writeDate=" + writeDate
+				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate
 				+ ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel
 				+ ", moodLevel=" + moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel="
 				+ averageLevel + ", likeCount=" + likeCount + ", hateCount=" + hateCount + ", isLike=" + isLike
@@ -221,4 +212,8 @@ public class ReviewVo {
 	public void calAverageLevel() {
 		this.averageLevel = Math.round(((this.tasteLevel + this.priceLevel + this.serviceLevel + this.moodLevel + this.convenienceLevel)/5.0)*10)/10.0;
 	}
+
+
+
+
 }

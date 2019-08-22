@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.kkssj.moca.controller.HomeController;
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
 @Repository
@@ -136,13 +137,20 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//likeHate 테이블에 isLike=-1인 개수 조회
 	@Override
-	public int selectLikeHateHate(int reviewId) {
+	public int selectLikeHateHate(int reviewId) throws SQLException {
 		try {
 			return sqlSession.selectOne("review.selectLikeHateHate", reviewId);
 		}catch (NullPointerException e) {
 			//싫어요가 없는 경우
 			return 0;
 		}
+	}
+	
+	
+	//리뷰 이미지 등록
+	@Override
+	public int insertReviewImage(ImageVo imgaeVo) throws SQLException {
+		return sqlSession.insert("review.insertReviewImage", imgaeVo);
 	}
 
 
@@ -157,5 +165,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	public List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException{
 		return sqlSession.selectList("review.selectAllReviewLevel", storeId);
 	}
+
+	
 
 }

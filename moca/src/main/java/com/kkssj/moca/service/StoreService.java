@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
@@ -32,7 +33,7 @@ public interface StoreService {
 	List<ReviewVo> getReviewList(int accountId, int storeId);
 	
 	//¸®ºä Ãß°¡
-	ReviewVo addReview(ReviewVo reviewVo);
+	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);
 
 	//¸®ºä ¼öÁ¤
 	int editReview(ReviewVo reviewVo);

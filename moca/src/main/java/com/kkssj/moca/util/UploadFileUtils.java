@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
+import com.kkssj.moca.model.entity.ImageVo;
 
 public class UploadFileUtils {
     private static final Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
@@ -24,7 +25,8 @@ public class UploadFileUtils {
     // String uploadPath 파일의 저장경로
     // String originalName 원본 파일 이름
     // byte[] fileData 파일 데이터
-    public static String uploadFile(String uploadPath, String originalName, byte[] fileData, String userid) throws Exception {
+    public static ImageVo uploadFile(String uploadPath, String originalName, byte[] fileData) throws Exception {  	
+    	
     	//S3 서버 관련 설정   // 3/28
     	S3Util s3 = new S3Util();
         String bucketName = "moca-pictures";
@@ -32,6 +34,7 @@ public class UploadFileUtils {
         //범용고유식별자(36개의 문자로된 중복 가능성이 거의 없는)    
         UUID uuid = UUID.randomUUID();
         
+        String path ="";
         String uu_id = uuid.toString();
         String savedName = uu_id.toString() + "_" + originalName;
         String uploadedFileName =savedName.replace(File.separatorChar, '/');        
@@ -51,7 +54,7 @@ public class UploadFileUtils {
 //        	uploadedFileName = makeIcon(uploadPath, savedPath, savedName);
 //        }
 
-        return uploadedFileName;
+        return new ImageVo(uu_id, path , originalName);
     }
     
     //섬네일 생성

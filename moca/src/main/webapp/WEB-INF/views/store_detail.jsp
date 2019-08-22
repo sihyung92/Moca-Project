@@ -818,8 +818,8 @@
 						<input name="review_id" id="review_id" value="0" style="display:none;" >
 						<div class="form-group">
 							<label for="picture-file">사진 선택</label>
-							<input type="file" name="pictureUrls" id="imgFiles" multiple><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
-						</div>
+							<input type="file" name="file" id="picture-file" multiple="multiple"><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
+						</div> 
 						<div class="form-group">
 							<label for="review-content">후기</label>
 							<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
