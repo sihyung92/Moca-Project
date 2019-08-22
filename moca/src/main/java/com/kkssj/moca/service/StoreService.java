@@ -25,6 +25,9 @@ public interface StoreService {
 	
 	//store 상세정보 update
 	int editStore(int accountId, StoreVo storeVo);
+
+	//storeInfoHistory 가져오기
+	String getStoreInfoHistory(int storeId);
 	
 	
 	///////////////////////
@@ -57,6 +60,9 @@ public interface StoreService {
 
 	//review의 좋아요 싫어요 카운트를 likehate 테이블의 값과 동기화
 	int syncReviewLikeHate();
+	
+	//store의 대표이미지들
+	List<ImageVo> getStoreImgList(int storeId);
 
 	//리뷰 이미지 삭제
 	int deleteReviewImage(ImageVo imageVo);

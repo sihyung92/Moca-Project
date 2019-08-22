@@ -1,6 +1,7 @@
 package com.kkssj.moca.model.entity;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class ReviewVo {
 	//REVIEW table
@@ -10,6 +11,8 @@ public class ReviewVo {
 	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
 	private double averageLevel;
 	private int likeCount, hateCount;
+	private int editable;
+	private ArrayList<ImageVo> imageList;
 	
 	//LIKEHATE table
 	private int isLike;
@@ -194,6 +197,22 @@ public class ReviewVo {
 
 	public void setIsMine(int isMine) {
 		this.isMine = isMine;
+	}
+	
+	public int getEditable() {
+		return editable;
+	}
+
+	public void setEditable(int editable) {
+		this.editable = editable;
+	}
+
+	public ArrayList<ImageVo> getImageList() {
+		return imageList;
+	}
+
+	public void setImageList(ArrayList<ImageVo> imageList) {
+		this.imageList = imageList;
 	}
 
 

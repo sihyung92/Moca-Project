@@ -1,9 +1,14 @@
 package com.kkssj.moca.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -41,47 +46,100 @@ public class StoreServiceImpl implements StoreService{
 	//Store
 
 	@Override
-	public StoreVo getStore(int store_Id) {
+	public StoreVo getStore(int store_Id){
 		try {
 			return storeDao.selectOne(store_Id);
-			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
 	@Override
-	public StoreVo addStore(StoreVo storeVo) {
+	public StoreVo addStore(StoreVo storeVo){
+		
 		try {
 			storeDao.insertOne(storeVo);
 			storeVo = storeDao.selectByKakaoId(storeVo.getKakaoId());
-			
-			return storeVo;
-			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
 		
+		return storeVo;
 	}
 	@Override
-	public int editStore(int accountId, StoreVo storeVo) {
+	public int editStore(int accountId, StoreVo storeVo){
+		
+		int result = -1;
 		try {
-			int result = storeDao.updateOne(storeVo);
+			result = storeDao.updateOne(storeVo);
 			System.out.println("result : "+result);
 			if(result>0) {
 				int history = storeDao.insertStoreInfoHistory(accountId, storeVo);
 				System.out.println("history : "+history);
 			}
-			return result;
-			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return -1;
+		
+		return result;
+	}
+	
+	@Override
+	public String getStoreInfoHistory(int storeId) {
+		Map<String, Object> map = null;
+		try {
+			map = storeDao.selectStoreInfoHistory(storeId);
+			if(map!=null) {				
+				String updateInfoNickname = (String) map.get("nickname");
+				Timestamp renewalDate = (Timestamp) map.get("renewaldate");
+				SimpleDateFormat format= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				
+				return updateInfoNickname +"님이 " + format.format(renewalDate) +"에 마지막으로 수정하였습니다";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public List<ImageVo> getStoreImgList(int storeId) {
+		//store테이블에 있는 storeImg1,2,3 가져오기
+		List<ImageVo> result = new ArrayList<ImageVo>();
+		int limit = 0;
+		try {
+			Map<String,String> storeImgUrlList = storeDao.selectStoreImgList(storeId);
+			//가져와서 null값 혹은 빈값인 개수 세기
+			if(storeImgUrlList!=null) {
+				System.out.println(storeImgUrlList.size());
+				System.out.println(storeImgUrlList.toString());
+				limit = 10 - storeImgUrlList.size();
+			}else {
+				limit = 10;
+			}
+			//10개중에 나머지 개수만큼 가져오기 reviewImg
+			Map<String,Integer> map = new HashMap<String, Integer>();
+			map.put("LIMIT", limit);
+			map.put("STORE_ID", storeId);
+			
+			result = storeDao.selectStoreReviewImgList(map);
+			for(int i=0; i<result.size(); i++) {
+				result.get(i).setUrl(result.get(i).getUrl());
+			}
+			if(storeImgUrlList!=null) {
+				for(int i=0; i<storeImgUrlList.size(); i++) {
+					ImageVo imageVo = new ImageVo();
+					imageVo.setPath("store");				
+					imageVo.setUrl(storeImgUrlList.get("storeImg"+(i+1)));				
+					result.add(imageVo);
+				}
+			}
+			Collections.reverse(result);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
 		
 	}
 	
@@ -90,16 +148,41 @@ public class StoreServiceImpl implements StoreService{
 	
 	@Override
 	public List<ReviewVo> getReviewList(int accountId, int storeId) {
+
+		
+		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
+		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
 		try {
-			return reviewDao.selectAll(accountId, storeId);
+			reviewList = reviewDao.selectAll(accountId, storeId);
+			reviewImageList = reviewDao.selectReviewImgListByStoreId(storeId);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
 		
+		System.out.println("reviewImageList size : "+reviewImageList);
+		System.out.println("reviewList size : "+reviewList);
+		
+		for(int i=0; i<reviewImageList.size(); i++) {
+			reviewImageList.get(i).setUrl(reviewImageList.get(i).getUrl());
+		}
+		
+		int imageListIndex = 0;
+		for (int i = 0; i < reviewList.size(); i++) {
+			reviewList.get(i).setImageList(new ArrayList());
+			for (int j = imageListIndex; j < reviewImageList.size(); j++) {
+				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReviewId()) {
+					reviewList.get(i).getImageList().add(reviewImageList.get(j));
+					imageListIndex++;
+				}else {
+					break;
+				}
+			}
+		}
+		
+		return reviewList;
 		
 	}
+	
 	@Override
 	public ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files) {
 		///
@@ -153,6 +236,7 @@ public class StoreServiceImpl implements StoreService{
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
+
 		}
 		return null;
 	}
@@ -203,7 +287,6 @@ public class StoreServiceImpl implements StoreService{
 			return 1;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -1;
@@ -270,16 +353,13 @@ public class StoreServiceImpl implements StoreService{
 			int review_id;
 			for (int i = 0; i < list.size(); i++) {
 				review_id = list.get(i).getReview_id();
-//			logger.debug("review_id="+review_id+", likeCount="+reviewDao.selectLikeHateLike(review_id)+", hateCount="+reviewDao.selectLikeHateHate(review_id));
 				reviewDao.updateLikeCount(review_id, reviewDao.selectLikeHateLike(review_id));
 				reviewDao.updateHateCount(review_id, reviewDao.selectLikeHateHate(review_id));
 			}
 			
-			
 			return 1;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -1;
@@ -290,14 +370,8 @@ public class StoreServiceImpl implements StoreService{
 			return reviewDao.deleteReviewImage(imageVo);
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -1;
 	}
-
-
-	
-
-
 }

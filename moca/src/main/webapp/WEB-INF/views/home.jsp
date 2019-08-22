@@ -21,7 +21,6 @@
 
 		$(document).ready(function() {
 			console.log("onready")
-
 		})
 
 	</script>
@@ -32,28 +31,6 @@
 	<h1>
 		Hello world!
 	</h1>
-	<form id="fileUploadForm" enctype="multipart/form-data" method="POST" actino="/moca/uploadImage">
-	
-		<label for="file1">file1</label>
-		<input type="file" id="files" name="files" multiple />
-	<!-- 	<input type="text" name="ssn_num" id="ssn_num" > -->
-		<input type="submit" value="Submit" id="btnSubmit">
-		<!-- <label for="file2">file2</label>
-		<input type="file" id="file2" name="file" required="required" /> -->
-	</form> 
-	<!-- <button id='btn-upload'>파일 업로드</button> -->
-	<br><br>
-	
-	
-	<!-- 
-	file upload 연습1
-	<form id="uploadForm" enctype="multipart/form-data"> 
-	<input type="file" id="fileId" name="file-data"/>
-	</form> 
-	<button id="btn-upload">file upload</button>
-	<br><br> -->
-
-	
 </body>
 
 </html>

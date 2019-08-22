@@ -44,7 +44,7 @@ public class StoreController {
 
  	//처음 상세페이지로 접속, vo 객체로 받기
 	@PostMapping("/stores")
-	public String addStore(@ModelAttribute StoreVo storeVo, Model model) throws SQLException {
+	public String addStore(@ModelAttribute StoreVo storeVo, Model model){
 		logger.info("getStoreId");
 
 		// 여기서 스토어ID가 있으면(0이 아니면) -> insert 안하고, 스토어ID가 없으면 insert 해야함
@@ -69,7 +69,7 @@ public class StoreController {
 
 	// 리다이렉트로 상세페이지로
 	@GetMapping("/stores/{storeId}")
-	public String getStore(@PathVariable("storeId") int storeId, Model model) throws SQLException {
+	public String getStore(@PathVariable("storeId") int storeId, Model model){
 		logger.debug("storeId : " + storeId + " - getStore");
 
 		StoreVo storeVo = storeService.getStore(storeId);
@@ -86,14 +86,22 @@ public class StoreController {
 		model.addAttribute("reviewVoList", storeService.getReviewList(accountId, storeId));
 
 		model.addAttribute("storeVo", storeVo);
+		
+		//storeImg의 개수에 따라 리뷰 이미지 vo 받아오기
+		model.addAttribute("StoreImgList", storeService.getStoreImgList(storeId));
+		
+		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));
 
 		return "store_detail";
 	}
 	
 	@PutMapping("/stores/{storeId}")
-	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo) throws SQLException{
+	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo){
 		
 		//회원만 가능하게 로그인 기능 구현되면 붙여넣을 것
+		//if(session.getAttribute("login")!==null) {
+			
+		//}
 
 		storeVo.setStore_Id(storeId);
 		logger.debug("storeId : " + storeId + " - updateStore");
@@ -107,7 +115,7 @@ public class StoreController {
 
 		if (isSuccess > 0) {
 			// 성공
-			return new ResponseEntity<>(HttpStatus.OK);
+			return ResponseEntity.status(HttpStatus.OK).body(storeService.getStoreInfoHistory(storeId));
 		} else {
 			// 실패
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -161,6 +169,7 @@ public class StoreController {
 		//받는 쪽에서 refresh하게
 		if(isEdite ==1) {
 			return new ResponseEntity<>(reviewVo, HttpStatus.OK);
+
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
@@ -246,25 +255,6 @@ public class StoreController {
 		//일단 페이지 띄워야 하니까 
 		return "redirect:../stores/"+1;
 	}
-	
-//	// 좋아요 싫어요 삭제
-//	@DeleteMapping("/reviewImage/{uu_id}")
-//	public ResponseEntity  deleteReviewImage(@PathVariable("uu_id") String uu_id) {		
-//		// 사용자 확인
-//		int accountId = 1;
-//		
-//		ImageVo imageVo = new ImageVo();
-//		imageVo.setAccountId(accountId);
-//		imageVo.setUu_id(uu_id);
-//		
-//		int isDelete = storeService.deleteReviewImage(imageVo);
-//		
-//		if(isDelete==1) {			
-//			return new ResponseEntity<>(HttpStatus.OK);
-//		}
-//		
-//		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//	}
 
 
 

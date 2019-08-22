@@ -165,6 +165,12 @@ public class ReviewDaoImpl implements ReviewDao {
 	public List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException{
 		return sqlSession.selectList("review.selectAllReviewLevel", storeId);
 	}
+	
+	//리뷰 이미지 가져오기
+	@Override
+	public List<ImageVo> selectReviewImgListByStoreId(int storeId) {
+		return sqlSession.selectList("review.selectReviewImgListByStoreId", storeId);
+	}
 
 	//리뷰 이미지 제거
 	@Override

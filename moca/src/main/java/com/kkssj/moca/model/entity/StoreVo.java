@@ -11,7 +11,7 @@ public class StoreVo {
 	private String name, category, url, tag, dayOff, tel;
 	private String address,roadAddress;
 	private String xLocation, yLocation, distance;
-	private String logoImg, reviewImg;
+	private String logoImg, storeImg1, storeImg2, storeImg3;
 	private double tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel, averageLevel;
 	private Date openTime,endTime;
 	private String openTime2,endTime2;
@@ -24,7 +24,7 @@ public class StoreVo {
 			 String yLocation, String url, String tag, int reviewCnt, int viewCnt,Date openTime, Date endTime,
 			 int wifi, int parkingLot, String dayOff, String tel, 
 			 double tasteLevel, double priceLevel, double serviceLevel, double moodLevel, double convenienceLevel, double averageLevel,
-			 String logoImg, String reviewImg){
+			 String logoImg, String storeImg1, String storeImg2, String storeImg3){
 		super();
 		this.store_Id = store_Id;
 		this.kakaoId = kakaoId;
@@ -51,7 +51,9 @@ public class StoreVo {
 		this.openTime = openTime;
 		this.endTime = endTime;
 		this.setLogoImg(logoImg);
-		this.setReviewImg(reviewImg);
+		this.setLogoImg(storeImg1);
+		this.setLogoImg(storeImg2);
+		this.setLogoImg(storeImg3);
 	}
 	
 	
@@ -282,13 +284,29 @@ public class StoreVo {
 	public void setLogoImg(String logoImg) {
 		this.logoImg = logoImg;
 	}
-
-	public String getReviewImg() {
-		return reviewImg;
+	
+	public String getStoreImg1() {
+		return storeImg1;
 	}
 
-	public void setReviewImg(String reviewImg) {
-		this.reviewImg = reviewImg;
+	public void setStoreImg1(String storeImg1) {
+		this.storeImg1 = storeImg1;
+	}
+
+	public String getStoreImg2() {
+		return storeImg2;
+	}
+
+	public void setStoreImg2(String storeImg2) {
+		this.storeImg2 = storeImg2;
+	}
+
+	public String getStoreImg3() {
+		return storeImg3;
+	}
+
+	public void setStoreImg3(String storeImg3) {
+		this.storeImg3 = storeImg3;
 	}
 
 	@Override
@@ -425,7 +443,7 @@ public class StoreVo {
 				+ ", parkingLot=" + parkingLot + ", viewCnt=" + viewCnt + ", name=" + name + ", category=" + category
 				+ ", url=" + url + ", tag=" + tag + ", dayOff=" + dayOff + ", tel=" + tel + ", address=" + address
 				+ ", roadAddress=" + roadAddress + ", xLocation=" + xLocation + ", yLocation=" + yLocation
-				+ ", distance=" + distance + ", logoImg=" + logoImg + ", reviewImg=" + reviewImg + ", tasteLevel="
+				+ ", distance=" + distance + ", logoImg=" + logoImg + ", tasteLevel="
 				+ tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", moodLevel="
 				+ moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel
 				+ ", openTime=" + openTime + ", endTime=" + endTime + ", openTime2=" + openTime2 + ", endTime2="

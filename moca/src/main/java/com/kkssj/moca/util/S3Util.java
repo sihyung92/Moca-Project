@@ -35,7 +35,6 @@ public class S3Util {
         this.conn = new AmazonS3Client(credentail, clientConfig);
         conn.setEndpoint("s3.ap-northeast-2.amazonaws.com");
     }
-    
     //bucketName getter    
     public String getBucketName() {
         return bucketName;
@@ -59,7 +58,6 @@ public class S3Util {
 
         String filePath = (fileName).replace(File.separatorChar, '/'); // 파일 구별자를 `/`로 설정(\->/) 이게 기존에 / 였어도 넘어오면서 \로 바뀌는 거같다.
         ObjectMetadata metaData = new ObjectMetadata();
-        System.out.println("metaData 정보 : "+metaData);
         metaData.setContentLength(fileData.length);   //메타데이터 설정 -->원래는 128kB까지 업로드 가능했으나 파일크기만큼 버퍼를 설정시켰다.
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileData); //파일 넣음
 

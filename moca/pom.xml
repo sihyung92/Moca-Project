@@ -171,8 +171,6 @@
 		    <artifactId>jackson-mapper-asl</artifactId>
 		    <version>1.9.13</version>
 		</dependency>
-
-		
 		
 		<!-- aws s3 관련 -->
 		<dependency>
@@ -197,8 +195,6 @@
 			<artifactId>imgscalr-lib</artifactId> 
 			<version>4.2</version> 
 		</dependency>
-
-		
 
 		<!-- 트랜잭션 디펜던시!!!!!!!!!!! -->
 		

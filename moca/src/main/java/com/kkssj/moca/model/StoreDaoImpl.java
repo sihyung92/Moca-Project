@@ -3,6 +3,7 @@ package com.kkssj.moca.model;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
 @Repository
@@ -60,6 +62,20 @@ public class StoreDaoImpl implements StoreDao {
 	@Override
 	public int updateLevel(StoreVo storeVo) throws SQLException {
 		return sqlSession.update("store.updateLevel", storeVo);
-		
+	}
+
+	@Override
+	public Map<String, Object> selectStoreInfoHistory(int storeId) throws SQLException {
+		return sqlSession.selectOne("store.selectStoreInfoHistory", storeId);
+	}
+
+	@Override
+	public Map<String, String> selectStoreImgList(int storeId) throws SQLException{
+		return sqlSession.selectOne("store.selectStoreImgList", storeId);
+	}
+
+	@Override
+	public List<ImageVo> selectStoreReviewImgList(Map<String, Integer> map) {
+		return sqlSession.selectList("store.selectStoreReviewImgList", map);
 	}
 }
