@@ -2,6 +2,8 @@
 *.txt
 target/
 bin/
+.settings/
+.classpath
 
 # Compiled class file
 *.class

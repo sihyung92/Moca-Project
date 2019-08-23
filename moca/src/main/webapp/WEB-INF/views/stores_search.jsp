@@ -29,7 +29,7 @@
 	.gyeonggi{
 		border : 1px solid black;
 	}
-	.region{
+	.region_list{
 		display : none;
 	}
 	
@@ -45,11 +45,9 @@
         });
         
 //지역 필터 클릭 이벤트
-		$('.seoul').click(function(){
-			$('.S_Region').toggle();
-		})
-		$('.gyeonggi').click(function(){
-			$('.G_Region').toggle();
+		$('#filter_region span').click(function(){
+			$('.region_list').hide();
+			$('.'+$(this).attr('class')).show();
 		});
 //지역 검색 시, 장소명으로 재검색 이벤트
 		$('#re-search').click(function(){
@@ -227,10 +225,11 @@
 				<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
 				<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
 				<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}"> checked="checked"</c:if>><span>거리순</span>
+				<button type="button">지역 선택</button>
 			</div>
 			<div id="filter_region" class="filter">
 				<span class="seoul">서울</span>
-				<div class="region">
+				<div class="region_list seoul">
 					<input type="hidden" name="region" value="서울"/>
 					<input type="radio" name="region" value="강남"><span>강남구</span>
 					<input type="radio" name="region" value="강동"><span>강동구</span>
@@ -259,7 +258,7 @@
 					<input type="radio" name="region" value="중랑"><span>중랑구</span>
 				</div>
 				<span class="gyeonggi">경기</span>
-				<div class="region">
+				<div class="region_list gyeonggi">
 					<input type="hidden" name="region" value="경기도"/>
 					<input type="radio" name="region" value="가평"><span>가평군</span>
 					<input type="radio" name="region" value="고양"><span>고양시</span>
@@ -293,13 +292,13 @@
 					<input type="radio" name="region" value="하남"><span>하남시</span>
 					<input type="radio" name="region" value="화성"><span>화성시</span>
 				</div>
-				<span class="">세종</span>
-				<div class="region">
+				<span class="sejong">세종</span>
+				<div class="region_list sejong">
 					<input type="hidden" name="region" value=""/>
 					<input type="radio" name="region" value="세종"><span>세종시</span>
 				</div>
-				<span class="">강원도</span>
-				<div class="region">
+				<span class="gangwon">강원도</span>
+				<div class="region_list gangwon">
 					<input type="hidden" name="region" value="강원도"/>
 					<input type="radio" name="region" value="강릉"><span>강릉시</span>
 					<input type="radio" name="region" value="고성"><span>고성군</span>
@@ -320,8 +319,8 @@
 					<input type="radio" name="region" value="화천"><span>화천군</span>
 					<input type="radio" name="region" value="횡성"><span>횡성군</span>
 				</div>
-				<span class="">경상북도</span>
-				<div class="region">
+				<span class="gyeongsangbuk-do">경상북도</span>
+				<div class="region_list gyeongsangbuk-do">
 					<input type="hidden" name="region" value="경상북도"/>
 					<input type="radio" name="region" value="경산"><span>경산시</span>
 					<input type="radio" name="region" value="경주"><span>경주시</span>
@@ -347,8 +346,8 @@
 					<input type="radio" name="region" value="칠곡"><span>칠곡군</span>
 					<input type="radio" name="region" value="포항"><span>포항시</span>
 				</div>
-				<span class="">경상남도</span>
-				<div class="region">
+				<span class="gyeongsangnam-do">경상남도</span>
+				<div class="region_list gyeongsangnam-do">
 					<input type="hidden" name="region" value="경상남도"/>
 					<input type="radio" name="region" value="거제"><span>거제시</span>
 					<input type="radio" name="region" value="거창"><span>거창군</span>
@@ -369,8 +368,8 @@
 					<input type="radio" name="region" value="함양"><span>함양군</span>
 					<input type="radio" name="region" value="합천"><span>합천군</span>
 				</div>
-				<span class="">광주</span>
-				<div class="region">
+				<span class="gwangju">광주</span>
+				<div class="region_list gwangju">
 					<input type="hidden" name="region" value="광주"/>
 					<input type="radio" name="region" value="광산"><span>광산구</span>
 					<input type="radio" name="region" value="동구"><span>동구</span>
@@ -378,8 +377,8 @@
 					<input type="radio" name="region" value="남구"><span>남구</span>
 					<input type="radio" name="region" value="북구"><span>북구</span>
 				</div>
-				<span class="">대구</span>
-				<div class="region">
+				<span class="daegu">대구</span>
+				<div class="region_list daegu">
 					<input type="hidden" name="region" value="대구"/>
 					<input type="radio" name="region" value="달서"><span>달서구</span>
 					<input type="radio" name="region" value="달성"><span>달성군</span>
@@ -390,8 +389,8 @@
 					<input type="radio" name="region" value="남구"><span>남구</span>
 					<input type="radio" name="region" value="북구"><span>북구</span>
 				</div>
-				<span class="">대전</span>
-				<div class="region">
+				<span class="daejeon">대전</span>
+				<div class="region_list daejeon">
 					<input type="hidden" name="region" value="대전"/>
 					<input type="radio" name="region" value="유성"><span>유성구</span>
 					<input type="radio" name="region" value="대덕"><span>대덕구</span>
@@ -399,8 +398,8 @@
 					<input type="radio" name="region" value="동구"><span>동구</span>
 					<input type="radio" name="region" value="서구"><span>서구</span>
 				</div>
-				<span class="">부산</span>
-				<div class="region">
+				<span class="busan">부산</span>
+				<div class="region_list busan">
 					<input type="hidden" name="region" value="부산"/>
 					<input type="radio" name="region" value="강서"><span>강서구</span>
 					<input type="radio" name="region" value="금정"><span>금정구</span>
@@ -419,8 +418,8 @@
 					<input type="radio" name="region" value="남구"><span>남구</span>
 					<input type="radio" name="region" value="북구"><span>북구</span>
 				</div>
-				<span class="">울산</span>
-				<div class="region">
+				<span class="ulsan">울산</span>
+				<div class="region_list ulsan">
 					<input type="hidden" name="region" value="울산"/>
 					<input type="radio" name="region" value="울주"><span>울주군</span>
 					<input type="radio" name="region" value="중구"><span>중구</span>
@@ -428,8 +427,8 @@
 					<input type="radio" name="region" value="동구"><span>동구</span>
 					<input type="radio" name="region" value="북구"><span>북구</span>
 				</div>				
-				<span class="">인천</span>
-				<div class="region">
+				<span class="incheon">인천</span>
+				<div class="region_list incheon">
 					<input type="hidden" name="region" value="인천"/>
 					<input type="radio" name="region" value="강화"><span>강화군</span>
 					<input type="radio" name="region" value="계양"><span>계양구</span>
@@ -442,8 +441,8 @@
 					<input type="radio" name="region" value="동구"><span>동구</span>
 					<input type="radio" name="region" value="서구"><span>서구</span>
 				</div>				
-				<span class="">전라남도</span>
-				<div class="region">
+				<span class="jeollanam-do">전라남도</span>
+				<div class="region_list jeollanam-do">
 					<input type="hidden" name="region" value="전라남도"/>
 					<input type="radio" name="region" value="강진"><span>강진군</span>
 					<input type="radio" name="region" value="고흥"><span>고흥군</span>
@@ -468,8 +467,8 @@
 					<input type="radio" name="region" value="해남"><span>해남군</span>
 					<input type="radio" name="region" value="화순"><span>화순군</span>
 				</div>				
-				<span class="">전라북도</span>
-				<div class="region">
+				<span class="jeollabuk-do">전라북도</span>
+				<div class="region_list jeollabuk-do">
 					<input type="hidden" name="region" value="전라북도"/>
 					<input type="radio" name="region" value="고창"><span>고창군</span>
 					<input type="radio" name="region" value="군산"><span>군산시</span>
@@ -487,14 +486,14 @@
 					<input type="radio" name="region" value="진안"><span>진안군</span>
 				</div>				
 				<!-- 제주도 지역 더 세분화 할지?? -->
-				<span class="">제주도</span>
-				<div class="region">
+				<span class="jeju">제주도</span>
+				<div class="region_list jeju">
 					<input type="hidden" name="region" value="제주도"/>
 					<input type="radio" name="region" value="제주"><span>제주시</span>
 					<input type="radio" name="region" value="서귀포"><span>서귀포시</span>
 				</div>				
-				<span class="">충청북도</span>
-				<div class="region">
+				<span class="chungcheongbuk-do">충청북도</span>
+				<div class="region_list chungcheongbuk-do">
 					<input type="hidden" name="region" value="충청북도"/>
 					<input type="radio" name="region" value="괴산"><span>괴산군</span>
 					<input type="radio" name="region" value="단양"><span>단양군</span>
@@ -508,8 +507,8 @@
 					<input type="radio" name="region" value="청주"><span>청주시</span>
 					<input type="radio" name="region" value="충주"><span>충주시</span>
 				</div>				
-				<span class="">충청남도</span>
-				<div class="region">
+				<span class="chungcheongnam-do">충청남도</span>
+				<div class="region_list chungcheongnam-do">
 					<input type="hidden" name="region" value="충청남도"/>
 					<input type="radio" name="region" value="계룡"><span>계룡시</span>
 					<input type="radio" name="region" value="공주"><span>공주시</span>
@@ -528,7 +527,7 @@
 					<input type="radio" name="region" value="홍성"><span>홍성군</span>
 				</div>				
 			</div>
-			<button>검색</button><br/>
+			<button type="submit">검색</button><br/>
 			<c:if test="${not empty msg_changedFilter}">원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</c:if>		
 		</form>	
 	</div>
