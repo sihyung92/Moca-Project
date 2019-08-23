@@ -63,29 +63,53 @@ var saveReview = function(){
 	var reviewFormData = new FormData(form);
 //	console.log($(reviewForm).serializeArray());
 
+	//전송전 사전 작업
+	var data = [];
 	
-
-	//ajax 통싱 - post방식으로 추가
+	
+	var form;
+	
+	var fileSize = fileBuffer.length;
+	if(fileSize >0){
+		for(var i=0 ; i < fileSize ; i ++){
+			var obj = {
+					name : "file",
+					value : fileBuffer[i],
+					type : "file"
+			}
+			console.log(obj);
+			data.push = obj;
+		}
+	}
+	
+	var file = {
+			key : "file",
+			value : fileBuffer[i]
+	}
+	console.log("data 사전 작업", fileBuffer , data, file);
+	
+	
+	//
 	$.ajax({
 		type: 'POST',
 		enctype : 'multipart/form-data',
 		url: '/moca/reviews',
-//		data: $(reviewForm).serializeArray(),
-		data : reviewFormData,
+		data : data,
+		dataType : "json",
 		contentType : false,
 		processData : false,
 		cache : false,
 		timeout : 600000,
-		success: function(reviewVo) {
+		success: function() {
 			console.log('ajax 통신 성공')
-			console.log(reviewVo);
-			
-			//리뷰 추가(최상단에)
-			addReviewInReviewContent(reviewVo);
+	//		console.log(reviewVo);
+	//		
+	//		//리뷰 추가(최상단에)
+	//		addReviewInReviewContent(reviewVo);
 	
 			$('#reviewModal').modal("hide");		//모달창 닫기
-
-
+	
+	
 			//수정 삭제 버튼 바인딩 해줄것 
 			
 			
@@ -95,6 +119,36 @@ var saveReview = function(){
 			
 		}
 	})
+
+//	//ajax 통신 - post방식으로 추가
+//	$.ajax({
+//		type: 'POST',
+//		enctype : 'multipart/form-data',
+//		url: '/moca/reviews',
+//		data : reviewFormData,
+//		contentType : false,
+//		processData : false,
+//		cache : false,
+//		timeout : 600000,
+//		success: function(reviewVo) {
+//			console.log('ajax 통신 성공')
+//			console.log(reviewVo);
+//			
+//			//리뷰 추가(최상단에)
+//			addReviewInReviewContent(reviewVo);
+//	
+//			$('#reviewModal').modal("hide");		//모달창 닫기
+//
+//
+//			//수정 삭제 버튼 바인딩 해줄것 
+//			
+//			
+//		},
+//		error: function(error) {
+//			console.log('ajax 통신 실패', error)
+//			
+//		}
+//	})
 }
 
 var addReviewInReviewContent = function(reviewVo) {

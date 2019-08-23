@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
@@ -130,7 +131,7 @@ public class StoreController {
     @ResponseBody
     @PostMapping(value ="/reviews")
     public ResponseEntity addReview(@RequestParam("file") MultipartFile[] files, HttpSession session, ReviewVo reviewVo) throws Exception{
-    	
+//    public ResponseEntity addReview(MultipartHttpServletRequest req, HttpSession session, ReviewVo reviewVo) throws Exception{
     	
     	//사용자 개정 등록(세션에서 왔다고 가정)
     	AccountVo accountVo = (AccountVo)session.getAttribute("login");
@@ -141,15 +142,19 @@ public class StoreController {
         reviewVo.setAccountId(accountVo.getAccount_id());
         logger.debug(reviewVo.toString());    	
 		
-		reviewVo = storeService.addReview(reviewVo,files);
-		
-		
-		if(reviewVo != null) {
-			logger.debug(reviewVo.toString());
-			return new ResponseEntity<>(reviewVo,HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        for (int i = 0; i < files.length; i++) {
+			logger.debug(files[i].getName());
 		}
+        return new ResponseEntity<>(HttpStatus.OK);
+//		reviewVo = storeService.addReview(reviewVo,files);
+//		
+//		
+//		if(reviewVo != null) {
+//			logger.debug(reviewVo.toString());
+//			return new ResponseEntity<>(reviewVo,HttpStatus.OK);
+//		}else {
+//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//		}
         
     }
     

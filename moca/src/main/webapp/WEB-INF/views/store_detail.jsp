@@ -64,10 +64,62 @@
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
+		//여러 파일을 가지고 있는 버퍼
+		var fileBuffer;
+		var fileListDiv;
+		var removeThumbnailBtn;
+		var newFileDiv;
+		var fileBuffer;
+
+	
 		$(document).ready(function() {
 			
 			//변수 바인딩
 			bindReviewVariable();
+			fileListDiv = $('#fileListDiv');
+
+			//리뷰 작성버튼 클릭시
+ 			fileBuffer = [];
+ 			
+			$('#files').change(function(){
+		       
+		        const target = document.getElementsByName('file');
+		        
+		        Array.prototype.push.apply(fileBuffer, target[0].files);
+		        var newFileDiv = '';
+		        $.each(target[0].files, function(index, file){
+		            const fileName = file.name;
+		            newFileDiv += '<div class="file newThumbnail">';
+		            newFileDiv += '<img src="'+URL.createObjectURL(file)+'">'
+		            newFileDiv += '<span>'+fileName+'</span>';
+		            newFileDiv += '<a href="#" class="removeThumbnailBtn">╳</a>';
+		            newFileDiv += '</div>';
+		            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
+		            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+		                resetFile();
+		                return false;
+		            }
+					
+		            
+		           
+		        });
+		        
+		        $(fileListDiv).html($(fileListDiv).html()+newFileDiv);
+	            ///removeThumbnailBtn 이벤트 바인딩
+				$('.removeThumbnailBtn').click(function(){
+	            	removeThumbnailBtn = $(this);
+				    var fileIndex = $(this).parent().index();	//삭제 버튼을 클릭한 이미지가 몇번째인지 (0부터)
+				    fileBuffer.splice(fileIndex,1);		// 삭제한 파일을 제외한 실제로 추가해야할 정보
+				    $('#fileListDiv>div:eq('+fileIndex+')').remove(); //삭제버튼에 해당하는
+				     
+				    const target = document.getElementsByName('files[]');
+
+				})
+		 
+		    });
+
+			
 			
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
@@ -627,7 +679,11 @@
 						<input name="review_id" id="review_id" value="0" style="display:none;" >
 						<div class="form-group">
 							<label for="picture-file">사진 선택</label>
-							<input type="file" name="file" id="picture-file" multiple="multiple"><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
+							<!-- <input type="file" name="file" id="picture-file" multiple="multiple"> --><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
+							<input multiple="multiple" name="file" id="files" type="file"/>
+							<div id="fileListDiv">
+							
+							</div>
 						</div> 
 						<div class="form-group">
 							<label for="review-content">후기</label>
