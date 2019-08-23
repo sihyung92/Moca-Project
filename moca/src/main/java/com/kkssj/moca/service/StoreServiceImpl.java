@@ -1,18 +1,15 @@
 package com.kkssj.moca.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import com.kkssj.moca.model.ReviewDao;
-import com.kkssj.moca.model.ReviewDaoImpl;
 import com.kkssj.moca.model.StoreDao;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;

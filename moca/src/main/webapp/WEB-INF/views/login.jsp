@@ -1,3 +1,4 @@
+<%@page import="com.kkssj.moca.model.entity.AccountVo"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -31,20 +32,7 @@
     		 var loginSession = JSON.parse(sessionStorage.getItem("login"));
     		 
 			console.log(sessionStorage.getItem("login"));
-			console.log(JSON.stringify(loginSession.id));
-			console.log(JSON.stringify(loginSession.properties.nickname));
-			console.log(JSON.stringify(loginSession.properties.profile_image));
-			console.log(JSON.stringify(loginSession.kakao_account.has_email));
-            console.log(JSON.stringify(loginSession.kakao_account.email_needs_agreement));
-            console.log(JSON.stringify(loginSession.kakao_account.is_email_valid));
-            console.log(JSON.stringify(loginSession.kakao_account.is_email_verified));
-            console.log(JSON.stringify(loginSession.kakao_account.email));
-            console.log(JSON.stringify(loginSession.kakao_account.has_age_range));
-            console.log(JSON.stringify(loginSession.kakao_account.age_range_needs_agreement));
-            console.log(JSON.stringify(loginSession.kakao_account.has_birthday));
-            console.log(JSON.stringify(loginSession.kakao_account.birthday_needs_agreement));
-            console.log(JSON.stringify(loginSession.kakao_account.has_gender));
-            console.log(JSON.stringify(loginSession.kakao_account.gender_needs_agreement));
+			
     	});
     	
     	// Naver 로그인 우선 제외
@@ -81,31 +69,32 @@
 	        			"followCount":"0",
 	        			"reviewCount":"0",
 	        			"platformId":JSON.stringify(res.id),
-	        			"nickname":JSON.stringify(res.properties.id),
+	        			"nickname":JSON.stringify(res.properties.nickname),
 	        			"platformType":"kakao",
 	        			"profileImage":JSON.stringify(res.properties.profile_image),
-	        			"thumbnailImage":JSON.stringify(res.properties.thumbnail_image)
+	        			"thumbnailImage":JSON.stringify(res.properties.thumbnail_image),
+	        			"email":JSON.stringify(res.kakao_account.email)
 	    			};
 	        	
+	        	console.log(JSON.stringify(res));
+	        	
 	        	$.ajax({
-				type: 'post',
-				url: 'login/'+acc_Id,
-				contentType: "application/json; charset=UTF-8",
-				datatype: "json",
-				data: JSON.stringify(param),
-				error: function(errorMsg) {
-					console.log("로그인 ajax 실패", errorMsg);
-				},
-				success: function(data) {
-					console.log("로그인 성공");
-					//카페 정보 바꿔주기
-					
-				}
-			});
-	        	  
-	        		        	  
-                  //sessionStorage.setItem("login",JSON.stringify(res));
-                  //redirToHome();
+					type: 'post',
+					url: 'login/'+acc_Id,
+					contentType: "application/json; charset=UTF-8",
+					datatype: "json",
+					data: JSON.stringify(param),
+					error: function(errorMsg) {
+						console.log("로그인 ajax 실패", errorMsg);
+					},
+					success: function(fromServer) {
+						
+						console.log("로그인 성공");
+						
+						sessionStorage.setItem("login",JSON.stringify(fromServer));
+						redirToHome();
+					}
+				});
 	          },
 	          fail: function(error) {
 	        	  
@@ -121,7 +110,7 @@
     });
     
     function redirToHome(){
-		  location.replace("http://localhost:8080/moca/login")
+		  location.replace("http://localhost:8080/moca/home2")
 	}
     </script>
     <style type="text/css">
@@ -151,7 +140,6 @@
 		<button id="login-btn" type="button" class="btn btn-primary col-md-offset-8" data-toggle="modal" data-target="#myModal">
 		  Login
 		</button>
-
 <!-- Modal -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document">

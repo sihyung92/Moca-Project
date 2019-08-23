@@ -1,14 +1,16 @@
 package com.kkssj.moca.model;
 
+import java.sql.SQLException;
+
 import com.kkssj.moca.model.entity.AccountVo;
 
 public interface AccountDao {
 	//create
-	int createUser();
+	int insertUser(AccountVo accountVo) throws SQLException;
 	//read(get)
-	AccountVo getUser(int account_Id);
+	AccountVo selectUser(String platformType, int platformId) throws SQLException;
 	//update
-	int updateUser();
+	int updateUser(AccountVo accountVo) throws SQLException;
 	//delete
-	int deleteUse();
+	int deleteUser() throws SQLException;
 }
