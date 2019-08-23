@@ -57,6 +57,7 @@
 	      container: '#kakao-login-btn',
 	      success: function(authObj) {
 	        // 로그인 성공시, API를 호출합니다.
+	        
 	        Kakao.API.request({
 	          url: '/v2/user/me',
 	          success: function(res) {
@@ -87,11 +88,9 @@
 					error: function(errorMsg) {
 						console.log("로그인 ajax 실패", errorMsg);
 					},
-					success: function(fromServer) {
+					success: function(data) {
 						
 						console.log("로그인 성공");
-						
-						sessionStorage.setItem("login",JSON.stringify(fromServer));
 						redirToHome();
 					}
 				});
@@ -100,7 +99,8 @@
 	        	  
 	            alert(JSON.stringify(error));
 	            
-	          }
+	          },
+	          scope: "account_email,birthday" 
 	        });
 	      },
 	      fail: function(err) {
