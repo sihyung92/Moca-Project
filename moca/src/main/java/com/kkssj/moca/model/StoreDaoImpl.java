@@ -31,9 +31,4 @@ public class StoreDaoImpl implements StoreDao {
 		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectByKakaoId", kakaoId);
 	}
 
-	@Override
-	public Properties selectByRegion(String region) {
-		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectByRegion", region);
-	}
-
 }

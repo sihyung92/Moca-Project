@@ -33,11 +33,6 @@ public class SearchServiceImpl implements SearchService {
 	}	
 
 	@Override
-	public Properties getByRegion(String region) {
-		return storeDao.selectByRegion(region);
-	}
-	
-	@Override
 	public StoreVo getMoreData(StoreVo currentVo) {	
 	//alist(카카오 검색 결과)의 가게Vo와 mocaDB 연계(데이터 추가)
 		StoreVo tempVo = storeDao.selectByKakaoId(currentVo.getKakaoId());
@@ -59,7 +54,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public List<StoreVo> getListFromKakaoAPI(String keyword, String region, String x, String y, Model model){
+	public List<StoreVo> getListFromKakaoAPI(String keyword, String[] region, String x, String y, Model model){
 		//(카카오 검색) 키워드 검색 파라미터 세팅
 		List<StoreVo> alist = new ArrayList<StoreVo>();
 		int page=1;		
@@ -68,10 +63,10 @@ public class SearchServiceImpl implements SearchService {
 		String sort="distance";
 		if(region!=null) {
 			sort="accuracy";
-			if(keyword.contains(region)){
+			if(keyword.contains(region[1])){
 				query=keyword;		//광진스타벅스
 			}else {
-				query=region+" "+keyword;
+				query=region[0]+" "+region[1]+" "+keyword;
 			}			
 		}else {
 			query=keyword;

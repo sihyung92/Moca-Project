@@ -25,7 +25,7 @@ public class SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
 	@RequestMapping(value = "/stores", method = RequestMethod.GET)
-	public String search(String keyword, String x, String y, String filter, String region, Model model) throws MalformedURLException {
+	public String search(String keyword, String x, String y, String filter, String[] region, Model model) throws MalformedURLException {
 		model.addAttribute("filter", filter);		
 	//0. 검색어 처리	
 		keyword = keyword.trim();		
@@ -51,7 +51,7 @@ public class SearchController {
 				variables.put("x", x);
 				variables.put("y", y);
 				variables.put("filter", filter);
-				variables.put("region",region);
+				variables.put("region",region[0]+" "+region[1]);
 				model.addAttribute("keyword", "#"+keyword);
 				model.addAttribute("alist",searchService.getListByTag(variables));				
 				return "stores_search";

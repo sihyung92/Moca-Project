@@ -10,6 +10,4 @@ public interface StoreDao {
 
 	List<StoreVo> selectListByTag(Map<String, String> variables);
 	StoreVo selectByKakaoId(int kakaoId);
-	Properties selectByRegion(String region);
-
 }

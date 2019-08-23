@@ -18,8 +18,4 @@
   <select id="selectByKakaoId" parameterType="INTEGER" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT STORE_ID, TAG, REVIEWCNT, VIEWCNT, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LOGOIMG FROM STORE WHERE KAKAOID=#{id}
   </select>
-  
-  <select id="selectByRegion" parameterType="String" resultType="java.util.Properties">
-	  SELECT * FROM COORDINATES WHERE REGION = #{value}  
-  </select>
 </mapper>
