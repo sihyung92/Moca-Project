@@ -70,99 +70,16 @@
         	//브라우저가 지오로케이션 지원하지 않을 때
         	$('#warning_geo strong').html("현재 위치 정보를 지원하지 않는 브라우저 입니다.");          
         }
-
-//카카오맵 API연결
-		//1. 카카오 맵 객체 생성
-		<c:if test="${not empty alist}">	//검색 결과 없으면 지도 만들지말자~~~~
-		    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-		    var options = {
-		    	center: new kakao.maps.LatLng(lat, lng), //지도의 중심 좌표        	
-		    	level: 3 	//지도 축척
-		    };
-		    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-		    //내 위치 마커 이미지 옵션
-		    var imageSrc = 'https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/pin_person.png'  ; 
-		    var imageSize = new kakao.maps.Size(40, 40);
-		  //  var imageOption = {offset: new kakao.maps.Point(27, 69)};
-			var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
-			var markerPosition = new kakao.maps.LatLng(lat, lng);
-			//내 위치 마커 생성
-			var marker = new kakao.maps.Marker({
-			    position: markerPosition, 
-			    image: markerImage,
-			    map: map,
-			    zIndex: 3
-			});   		
-
-		 //2. 핀(Marker), 오버레이(팝업 정보 패널) 객체 생성 전처리
-			var bounds = new kakao.maps.LatLngBounds();  //LatLngBounds객체 생성: 좌표가 다른 여러 핀에 대한 맵 바운더리 재설정
-			//자바 List -> 자바스크립트 Array로 변환(x, y, name 정보만) 
-			var alist = new Array();
-			<c:forEach items="${alist}" var="data">
-				alist.push({'lat':${data.yLocation},'lng':${data.xLocation}, 'store_Id': ${data.store_Id}, 'name':"${data.name}", 'roadAddress': '${data.roadAddress}', 'tel':'${data.tel }', 'tasteLevel':${data.tasteLevel},'priceLevel':${data.priceLevel}, 'serviceLevel':${data.serviceLevel}, 'moodLevel':${data.moodLevel}, 'convenienceLevel':${data.convenienceLevel}, 'logoImg':'${data.logoImg}'});
-			</c:forEach>
-
-		//3. 핀, 오버레이 객체 생성 & 맵 객체에 추가
-			for (var i = 0; i < alist.length ; i++) {
-				//핀(Marker)객체 생성
-				var position =new kakao.maps.LatLng(alist[i].lat,alist[i].lng);
-				var marker = new kakao.maps.Marker({ position : position, clickable: false});
-				//오버레이 객체 생성
-				var content = '<div class= "overlay" style="background-color:white;width: 300px"><div class ="logo"><img width="70px" height="50px" ';
-				if(alist[i].logoImg==""){
-					content+='src="https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/MoCA-logo.png"/>';
-				}else{
-					content+='src="'+alist[i].logoImg+'"/>';					
-				}
-				content+='</div><div class="top">'+alist[i].name+'</div><div class="center">'+alist[i].roadAddress+'<br/>'+alist[i].tel;	
-				if(alist[i].store_Id){
-					content+='<br/>맛'+alist[i].tasteLevel+' 가격'+alist[i].priceLevel+' 분위기'+alist[i].moodLevel+' 서비스'+alist[i].serviceLevel+' 편의성'+alist[i].convenienceLevel;
-				}
-				content+='</div><div class="bottom"></div></div>'; 
-				
-				var overlay = new kakao.maps.InfoWindow({
-				    content: content,
-				    position: marker.getPosition(),
-				    zIndex: 4     
-				});			
-				
-			    // 핀에 마우스 이벤트 적용(오버레이 토글 클로저 생성 및 실행)
-			    (function(marker, overlay) {
-			        // 핀에 mouseover 이벤트(지도에 오버레이 객체 팝업)
-			        kakao.maps.event.addListener(marker, 'mouseover', function() {
-				        overlay.open(map, marker);
-			        });		
-		        	// 핀에 mouseout 이벤트(지도에서 오버레이 객체 제거)
-			        kakao.maps.event.addListener(marker, 'mouseout', function() {
-				        overlay.close();
-			        });
-		   		})(marker, overlay);
-			marker.setMap(map);	//맵 객체에 생성한 마커 등록
-			bounds.extend(position);	//LatLngBounds객체에 핀의 위치 등록
-			}
-			
-			//4. 지도의 바운더리 재설정(LatLngBounds 객체 이용)
-			map.setBounds(bounds);
-
-			
-			//중심 좌표 변경 이벤트
-		//	$('#map').css({'position':'relative','z-index':0});
-			kakao.maps.event.addListener(map, 'center_changed', function() {
-			    var latlng = map.getCenter(); 	//중심 좌표 업데이트			    
-			    $('#map_re-search').show().css({'position':'relative','top':'-380px','left':'185px','z-index':2});
-			});			
-
-		</c:if> 
     };//onload 끝-
     
-  //Success Callback(현재 위치 정보 저장)
+  	//Success Callback(현재 위치 정보 저장)
     var sucCall = function (position) {
         lat = position.coords.latitude;	    //위도
         lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
 		$('#warning_geo').html("");
+		createMap();
     };
 
     // Error Callback(에러 메시지 출력)
@@ -170,15 +87,7 @@
     	tryAPIGeolocation();	//구글GeolocationAPI시도
     };   
     
-  	//HTTPS 없이 지역 위치 정보 받아오기(구글GeolocationAPI사용)
-	var apiGeolocationSuccess = function(position) {
-		lat = position.coords.latitude;	    //위도
-	    lng = position.coords.longitude;	//경도
-		$('.lat').val(lat);
-		$('.lng').val(lng);
-		$('#warning_geo').html("");
-	};
-
+	//HTTPS 없이 지역 위치 정보 받아오기(구글GeolocationAPI사용)
 	var tryAPIGeolocation = function() {
 	    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyD6yXSGVTGpBHjRDg2jSToQEpdkM8kLOhg", function(success) {
 	        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
@@ -194,8 +103,104 @@
 		            	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
 		           		break;
 		        } 
+		        createMap();
 	        });
 	};
+	
+	//구글GeolocationAPI Success Callback
+	var apiGeolocationSuccess = function(position) {
+		lat = position.coords.latitude;	    //위도
+	    lng = position.coords.longitude;	//경도
+		$('.lat').val(lat);
+		$('.lng').val(lng);
+		$('#warning_geo').html("");
+		createMap();
+	};
+	
+	//카카오 맵 생성(API연결)
+	var createMap = function(){
+	<c:if test="${not empty alist}">	//검색 결과 없으면 지도 만들지말자~~~~
+		//1. 카카오 맵 객체 생성
+	    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+	    var options = {
+	    	center: new kakao.maps.LatLng(lat, lng), //지도의 중심 좌표        	
+	    	level: 3 	//지도 축척
+	    };
+	    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+	    //2. 내 위치 핀(Marker) 객체 생성
+	    var imageSrc = 'https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/pin_person.png'; 	//내 위치 핀 이미지 파일
+	    var imageSize = new kakao.maps.Size(40, 40);	//내 위치 핀 이미지 사이즈 지정
+	  //var imageOption = {offset: new kakao.maps.Point(27, 69)};
+		var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);	//내 위치 핀 이미지 객체 생성
+		var markerPosition = new kakao.maps.LatLng(lat, lng);	//내 위치 핀 등록 위치 지정
+		//내 위치 핀 생성
+		var marker = new kakao.maps.Marker({
+		    position: markerPosition, 
+		    image: markerImage,
+		    map: map,
+		    zIndex: 3
+		});   		
+
+	 	//3. 검색 결과 alist의 가게들 핀(Marker), 오버레이(팝업 정보 패널) 객체 생성 전처리
+		var bounds = new kakao.maps.LatLngBounds();  //LatLngBounds객체 생성: 좌표가 다른 여러 핀에 대한 맵 바운더리 재설정
+		//자바 List -> 자바스크립트 Array로 변환(x, y, name 정보만) 
+		var alist = new Array();
+		<c:forEach items="${alist}" var="data">
+			alist.push({'lat':${data.yLocation},'lng':${data.xLocation}, 'store_Id': ${data.store_Id}, 'name':"${data.name}", 'roadAddress': '${data.roadAddress}', 'tel':'${data.tel }', 'tasteLevel':${data.tasteLevel},'priceLevel':${data.priceLevel}, 'serviceLevel':${data.serviceLevel}, 'moodLevel':${data.moodLevel}, 'convenienceLevel':${data.convenienceLevel}, 'logoImg':'${data.logoImg}'});
+		</c:forEach>
+
+		//4. 핀, 오버레이 객체 생성 & 맵 객체에 추가
+		for (var i = 0; i < alist.length ; i++) {
+			//핀(Marker)객체 생성
+			var position =new kakao.maps.LatLng(alist[i].lat,alist[i].lng);
+			var marker = new kakao.maps.Marker({ position : position, clickable: false});
+			//오버레이 객체 생성
+			var content = '<div class= "overlay" style="background-color:white;width: 300px"><div class ="logo"><img width="70px" height="50px" ';
+			if(alist[i].logoImg==""){
+				content+='src="https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/MoCA-logo.png"/>';
+			}else{
+				content+='src="'+alist[i].logoImg+'"/>';					
+			}
+			content+='</div><div class="top">'+alist[i].name+'</div><div class="center">'+alist[i].roadAddress+'<br/>'+alist[i].tel;	
+			if(alist[i].store_Id){
+				content+='<br/>맛'+alist[i].tasteLevel+' 가격'+alist[i].priceLevel+' 분위기'+alist[i].moodLevel+' 서비스'+alist[i].serviceLevel+' 편의성'+alist[i].convenienceLevel;
+			}
+			content+='</div><div class="bottom"></div></div>'; 
+			
+			var overlay = new kakao.maps.InfoWindow({
+			    content: content,
+			    position: marker.getPosition(),
+			    zIndex: 4     
+			});			
+			
+		    // 핀에 마우스 이벤트 적용(오버레이 토글 클로저 생성 및 실행)
+		    (function(marker, overlay) {
+		        // 핀에 mouseover 이벤트(지도에 오버레이 객체 팝업)
+		        kakao.maps.event.addListener(marker, 'mouseover', function() {
+			        overlay.open(map, marker);
+		        });		
+	        	// 핀에 mouseout 이벤트(지도에서 오버레이 객체 제거)
+		        kakao.maps.event.addListener(marker, 'mouseout', function() {
+			        overlay.close();
+		        });
+	   		})(marker, overlay);
+		marker.setMap(map);	//맵 객체에 생성한 마커 등록
+		bounds.extend(position);	//LatLngBounds객체에 핀의 위치 등록
+		}	//for문 끝-
+		
+		//5. 지도의 바운더리 재설정(LatLngBounds 객체 이용)
+		map.setBounds(bounds);
+
+		
+		//중심 좌표 변경 시, 재검색 이벤트 등록
+	//	$('#map').css({'position':'relative','z-index':0});
+		kakao.maps.event.addListener(map, 'center_changed', function() {
+		    var latlng = map.getCenter(); 	//중심 좌표 업데이트			    
+		    $('#map_re-search').show().css({'position':'relative','top':'-380px','left':'185px','z-index':2});
+		});		
+		</c:if> 
+	}
 	</script>	
 </head>
 <body>
