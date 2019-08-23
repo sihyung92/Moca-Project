@@ -1,6 +1,6 @@
 <%@page import="com.kkssj.moca.model.entity.AccountVo"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="EUC-KR"%>
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,8 +36,8 @@
 </head>
 <body>
 	<!-- test2 -->
-	<h2>hellooooooooooooooooooo¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·¤·000000000000000</h2>
-	<button id="test-btn">·Î±×ÀÎ ¼¼¼Ç È®ÀÎ ¹öÆ°</button>
+	<h2>helloooooooooooooooooooã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡ã…‡000000000000000</h2>
+	<button id="test-btn">ë¡œê·¸ì¸ ì„¸ì…˜ í™•ì¸ ë²„íŠ¼</button>
 
 </body>
 </html>
