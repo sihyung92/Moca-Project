@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="review">
+  <select id="selectAll" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
+	SELECT r.REVIEW_ID, r.ACCOUNTID, (r.ACCOUNTID=${ACCOUNTID}) 'editable', r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNTID}),0)  "isLike",
+	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
+	WHERE r.STOREID = #{STOREID}
+	ORDER BY FIELD(r.ACCOUNTID,#{ACCOUNTID}) DESC, r.LIKECOUNT DESC;
+  </select>
+  
+  <select id="selectReviewImgListByStoreId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">
+  	SELECT * FROM REVIEWIMAGE WHERE storeId=#{STORE_ID} order by reviewId
+  </select>
+  
+  <select id="selectAllReviewId" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	SELECT review_id FROM REVIEW
+  </select>
+  
+  <select id="selectAllReviewLevel" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	SELECT TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL
+	FROM REVIEW
+	WHERE STOREID = #{STOREID}
+  </select>
+  
+  <delete id="deleteReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	DELETE FROM REVIEW WHERE review_id=#{review_id} AND accountId= ${accountId}
+  </delete>
+   
+  <insert id="insertLikeHate"  parameterType="map">
+  	INSERT INTO LIKEHATE(review_id, account_id, isLike) VALUES(#{REVIEW_ID}, #{ACCOUNT_ID}, #{ISLIKE})
+  </insert>
+  
+  <update id="updateLikeHate" parameterType="map">
+  	UPDATE LIKEHATE SET isLike=#{ISLIKE } WHERE review_id = #{REVIEW_ID} AND account_id = #{ACCOUNT_ID}
+  </update>
+  <delete id="deleteLikeHate" parameterType="map">
+  	DELETE FROM LIKEHATE WHERE review_id = #{REVIEW_ID} AND account_id = #{ACCOUNT_ID}
+  </delete>
+  
+  <update id="updateLikeCount" parameterType="map">
+  	UPDATE REVIEW SET likeCount = #{LIKECOUNT} WHERE review_id = #{REVIEW_ID}
+  </update>
+  <update id="updateHateCount" parameterType="map">
+  	UPDATE REVIEW SET hateCount = #{HATECOUNT} WHERE review_id = #{REVIEW_ID}
+  </update>
+  <select id="selectLikeHateCount" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
+  	SELECT likeCount, hateCount FROM REVIEW WHERE review_id = #{id}
+  </select>
+  
+  <select id="selectLikeHateLike" parameterType="Integer" resultType="Integer">
+  	SELECT count(*) FROM (SELECT * FROM LIKEHATE WHERE isLike=1 AND review_id = #{id} ) l GROUP BY isLike;
+  </select>
+  <select id="selectLikeHateHate" parameterType="Integer" resultType="Integer">
+ 	SELECT count(*) FROM (SELECT * FROM LIKEHATE WHERE isLike=-1 AND review_id = #{id} ) l GROUP BY isLike;
+  </select>
+  
+  <insert id="insertReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	INSERT INTO REVIEW(ACCOUNTID, STOREID, REVIEWCONTENT, WRITEDATE, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LIKECOUNT,HATECOUNT) 
+  	VALUES(#{accountId}, #{storeId}, #{reviewContent}, NOW(), #{tasteLevel}, #{priceLevel}, #{serviceLevel}, #{moodLevel}, #{convenienceLevel}, #{averageLevel}, 0, 0)
+  </insert>
+  <select id="selectAddedOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
+  	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
+	WHERE  a.ACCOUNT_ID = #{id}
+	ORDER BY r.WRITEDATE DESC
+	LIMIT 1;
+  </select>
+  <update id="updateReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
+  	UPDATE REVIEW SET REVIEWCONTENT=#{reviewContent}, TASTELEVEL=#{tasteLevel}, PRICELEVEL=#{priceLevel}, 
+  	SERVICELEVEL=#{serviceLevel}, MOODLEVEL= #{moodLevel}, CONVENIENCELEVEL=#{convenienceLevel}, AVERAGELEVEL=#{averageLevel} 
+	WHERE STOREID=#{storeId} AND REVIEW_ID = #{review_id} AND ACCOUNTID=#{accountId}; 
+  </update>
+  
+  <insert id="insertReviewImage" parameterType="com.kkssj.moca.model.entity.ImageVo">
+  	INSERT INTO REVIEWIMAGE(UU_ID, REVIEWID, ACCOUNTID, STOREID, PATH, ORIGINNAME, VIEWS) 
+	VALUES(#{uu_id}, #{reviewId}, #{accountId}, #{storeId},#{path},#{originName}, 0)
+  </insert>
+  <delete id="deleteReviewImage" parameterType="com.kkssj.moca.model.entity.ImageVo">
+  	DELETE FROM REVIEWIMAGE WHERE UU_ID = #{UU_ID} AND ACCOUNTID = #{ACCOUNTID}
+  </delete>
+  
+  <select id="selectReviewImgListByReviewId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">
+ 	 SELECT uu_id, accountId, reviewId, storeId, path, originName, views
+ 	  FROM REVIEWIMAGE WHERE REVIEWID = #{reviewId};
+  </select>
+  
+</mapper>

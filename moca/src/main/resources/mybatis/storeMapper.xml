@@ -2,7 +2,6 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.kkssj.moca.model.StoreDao">
   <select id="selectByTag" parameterType="Map" resultType="com.kkssj.moca.model.entity.StoreVo">
 	  SELECT STORE_ID, ADDRESS, CATEGORY, KAKAOID, TEL, NAME, URL, ROADADDRESS, XLOCATION, YLOCATION, REVIEWCNT, VIEWCNT, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LOGOIMG, ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) "distance" FROM STORE WHERE TAG LIKE CONCAT('%',#{keyword},'%')
@@ -17,4 +16,33 @@
   <select id="selectByKakaoId" parameterType="INTEGER" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT STORE_ID, TAG, REVIEWCNT, VIEWCNT, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LOGOIMG FROM STORE WHERE KAKAOID=#{id}
   </select>
+  <select id="selectOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	SELECT * FROM STORE WHERE STORE_ID=#{val}
+  </select>
+  <select id="selectStoreInfoHistory" parameterType="Integer" resultType="map">
+  	select a.nickname, s.renewaldate 
+  	from STOREINFOHISTORY s join ACCOUNT a 
+  	where s.accountid=a.account_id and s.storeid=#{STORE_ID} order by renewaldate desc limit 1
+  </select>
+  <select id="selectStoreImgList" parameterType="Integer" resultType="map">
+  	SELECT storeImg1,storeImg2,storeImg3 FROM STORE WHERE store_id=#{STORE_ID}
+  </select>
+  <select id="selectStoreReviewImgList" parameterType="map" resultType="com.kkssj.moca.model.entity.ImageVo">
+  	SELECT * FROM REVIEWIMAGE WHERE storeId=#{STORE_ID} order by views limit #{LIMIT}
+  </select>
+  <insert id="insertOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
+  	INSERT INTO STORE(name,kakaoid,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
+  </insert>
+  <insert id="insertStoreInfoHistory" parameterType="map">
+  	INSERT INTO STOREINFOHISTORY(storeId,accountId,renewaldate,url,opentime,endtime,wifi,parkinglot,dayoff,tel) 
+  	VALUES(#{STORE_ID},#{ACCOUNT_ID},NOW(),#{URL},#{OPENTIME},#{ENDTIME},#{WIFI},#{PARKINGLOT},#{DAYOFF},#{TEL})
+  </insert>
+  <update id="updateOne" parameterType="com.kkssj.moca.model.entity.StoreVo" >
+  	UPDATE STORE SET wifi=#{wifi}, parkingLot=#{parkingLot}, dayOff=#{dayOff}, openTime=#{openTime}, endTime=#{endTime}, tel=#{tel}, url=#{url} WHERE store_id=#{store_Id}
+  </update>
+  <update id="updateLevel" parameterType="com.kkssj.moca.model.entity.StoreVo">
+  	UPDATE STORE SET tasteLevel=#{tasteLevel}, priceLevel=#{priceLevel}, serviceLevel=#{serviceLevel}, 
+  	moodLevel=#{moodLevel}, convenienceLevel=#{convenienceLevel}, averageLevel=#{averageLevel}
+  	WHERE store_id=#{store_Id}
+  </update>
 </mapper>
