@@ -140,21 +140,20 @@ public class StoreController {
     	accountVo.setAccount_id(1);
         
         reviewVo.setAccountId(accountVo.getAccount_id());
-        logger.debug(reviewVo.toString());    	
+        logger.debug(reviewVo.toString());  	
 		
         for (int i = 0; i < files.length; i++) {
 			logger.debug(files[i].getName());
 		}
-        return new ResponseEntity<>(HttpStatus.OK);
-//		reviewVo = storeService.addReview(reviewVo,files);
-//		
-//		
-//		if(reviewVo != null) {
-//			logger.debug(reviewVo.toString());
-//			return new ResponseEntity<>(reviewVo,HttpStatus.OK);
-//		}else {
-//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//		}
+		reviewVo = storeService.addReview(reviewVo,files);
+		
+		
+		if(reviewVo != null) {
+			logger.debug(reviewVo.toString());
+			return new ResponseEntity<>(reviewVo,HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
         
     }
     

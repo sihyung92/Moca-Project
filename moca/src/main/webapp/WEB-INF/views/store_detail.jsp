@@ -89,10 +89,10 @@
 		        var newFileDiv = '';
 		        $.each(target[0].files, function(index, file){
 		            const fileName = file.name;
-		            newFileDiv += '<div class="file newThumbnail">';
-		            newFileDiv += '<img src="'+URL.createObjectURL(file)+'">'
+		            newFileDiv += '<div class="file newThumbnail reviewThumbnailGroup">';
+		            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image" class="img-thumbnail">'
+		            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn" aria-hidden="true"></span>';
 		            newFileDiv += '<span>'+fileName+'</span>';
-		            newFileDiv += '<a href="#" class="removeThumbnailBtn">╳</a>';
 		            newFileDiv += '</div>';
 		            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
 		            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
@@ -100,8 +100,6 @@
 		                resetFile();
 		                return false;
 		            }
-					
-		            
 		           
 		        });
 		        
@@ -637,19 +635,19 @@
 			<div class="taste-level-div">
 				<label>맛</label>
 				<span class="taste-level"></span>점
-			</div><br>
+			</div>
 			<div class="price-level-div">
 				<label>가격</label>
 				<span class="price-level"></span>점
-			</div><br>
+			</div>
 			<div class="service-level-div">
 				<label>서비스</label>
 				<span class="service-level"></span>점
-			</div><br>
+			</div>
 			<div class="taste-level-div">
 				<label>분위기</label>
 				<span class="mood-level"></span>점
-			</div><br>
+			</div>
 			<div class="taste-level-div">
 				<label>편의성</label>
 				<span class="convenience-level"></span>점
