@@ -111,7 +111,7 @@ var addReviewInReviewContent = function(reviewVo) {
 	for(var i=0; i<reviewVo.imageList.length; i++){
 		var oldReviewThumbnail = reviewThumbnail.html();
 		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail"><img src="'+
-				reviewVo.imageList[i].url
+				reviewVo.imageList[i].thumbnailUrl
 				+'" alt="Image" class="img-thumbnail" id="'+
 				reviewVo.imageList[i].uu_id
 				+'"></div>');
