@@ -81,7 +81,6 @@ var saveReview = function(){
 			console.log(reviewVo);
 			
 			//리뷰 추가(최상단에)
-			
 			addReviewInReviewContent(reviewVo);
 	
 			$('#reviewModal').modal("hide");		//모달창 닫기
@@ -107,14 +106,20 @@ var addReviewInReviewContent = function(reviewVo) {
 	var reviewInfo = newReview.find('.review-info')
 	var reviewLevel = newReview.children(".review-level")
 	
-	var carouselSlide = reviewInfo.children('.carousel') // 나중에 사진 추가할때 사용
+	// 나중에 사진 추가할때 사용
+	var reviewThumbnail = reviewInfo.children('.reviewThumbnailGroup');
+	for(var i=0; i<reviewVo.imageList.length; i++){
+		var oldReviewThumbnail = reviewThumbnail.html();
+		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail"><img src="'+
+				reviewVo.imageList[i].url
+				+'" alt="Image" class="img-thumbnail" id="'+
+				reviewVo.imageList[i].uu_id
+				+'"></div>');
+	}
 	
 	reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 	reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
 	reviewerInfo.find('.reviewer-reviewse').text(reviewVo.reviewCount) 	//리뷰수
-	
-	//id에 review_id 추가
-	carouselSlide.attr('id', 'carousel-example-generic' + reviewVo.review_id);
 	
 	/// label 옆에 input 같은거 추가할 필요가 있음
 	reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())

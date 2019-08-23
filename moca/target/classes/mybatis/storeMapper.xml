@@ -24,7 +24,7 @@
   	INSERT INTO STORE(name,kakaoid,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
   </insert>
   <insert id="insertStoreInfoHistory" parameterType="map">
-  	INSERT INTO STOREINFOHISTORY(store_id,account_id,renewaldate,url,opentime,endtime,wifi,parkinglot,dayoff,tel) 
+  	INSERT INTO STOREINFOHISTORY(storeId,accountId,renewaldate,url,opentime,endtime,wifi,parkinglot,dayoff,tel) 
   	VALUES(#{STORE_ID},#{ACCOUNT_ID},NOW(),#{URL},#{OPENTIME},#{ENDTIME},#{WIFI},#{PARKINGLOT},#{DAYOFF},#{TEL})
   </insert>
   <update id="updateOne" parameterType="com.kkssj.moca.model.entity.StoreVo" >
