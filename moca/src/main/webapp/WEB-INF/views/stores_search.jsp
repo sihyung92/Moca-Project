@@ -29,10 +29,7 @@
 	.gyeonggi{
 		border : 1px solid black;
 	}
-	.S_Region{
-		display : none;
-	}
-	.G_Region{
+	.region{
 		display : none;
 	}
 	
@@ -55,7 +52,7 @@
 			$('.G_Region').toggle();
 		});
 //지역 검색 시, 장소명으로 재검색 이벤트
-		$('#re_search').click(function(){
+		$('#re-search').click(function(){
 			$('#search form input[name="keyword"]').attr("name", "");
 			$('#search form').append('<input type="hidden" name="keyword" value="\'${keyword}\'"/>');
 			$('#search form').submit();
@@ -147,8 +144,17 @@
 			bounds.extend(position);	//LatLngBounds객체에 핀의 위치 등록
 			}
 			
-		//4. 지도의 바운더리 재설정(LatLngBounds 객체 이용)
+			//4. 지도의 바운더리 재설정(LatLngBounds 객체 이용)
 			map.setBounds(bounds);
+
+			
+			//중심 좌표 변경 이벤트
+		//	$('#map').css({'position':'relative','z-index':0});
+			kakao.maps.event.addListener(map, 'center_changed', function() {
+			    var latlng = map.getCenter(); 	//중심 좌표 업데이트			    
+			    $('#map_re-search').show().css({'position':'relative','top':'-380px','left':'185px','z-index':2});
+			});			
+
 		</c:if> 
     };//onload 끝-
     
@@ -163,18 +169,35 @@
 
     // Error Callback(에러 메시지 출력)
     function errCall(error) {
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-            	$('#warning_geo strong').html("위치 정보 접근 거부 🙄 ...............정....정확한 검색을 위해 허....허용..을..");     
-                break;
-            case error.POSITION_UNAVAILABLE:
-            	$('#warning_geo strong').html("위치 확인이 불가능합니다. 🙄  🙄 ");
-            	break;
-            default:	//error.UNKNOWN_ERROR, error.TIMEOUT, default
-            	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
-           		break;
-        }
+    	tryAPIGeolocation();	//구글GeolocationAPI시도
     };   
+    
+  	//HTTPS 없이 지역 위치 정보 받아오기(구글GeolocationAPI사용)
+	var apiGeolocationSuccess = function(position) {
+		lat = position.coords.latitude;	    //위도
+	    lng = position.coords.longitude;	//경도
+		$('.lat').val(lat);
+		$('.lng').val(lng);
+		$('#warning_geo').html("");
+	};
+
+	var tryAPIGeolocation = function() {
+	    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyD6yXSGVTGpBHjRDg2jSToQEpdkM8kLOhg", function(success) {
+	        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
+	    }).fail(function(err) {
+		        switch (err.code) {
+		            case err.PERMISSION_DENIED:
+		            	$('#warning_geo strong').html("위치 정보 접근 거부 🙄 ...............정....정확한 검색을 위해 허....허용..을..");     
+		                break;
+		            case err.POSITION_UNAVAILABLE:
+		            	$('#warning_geo strong').html("위치 확인이 불가능합니다. 🙄  🙄 ");
+		            	break;
+		            default:	//error.UNKNOWN_ERROR, error.TIMEOUT, default
+		            	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
+		           		break;
+		        } 
+	        });
+	};
 	</script>	
 </head>
 <body>
@@ -506,10 +529,11 @@
 				</div>				
 			</div>
 			<button>검색</button><br/>
-			<c:if test="${not empty msg_changedFilter}">원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re_search" href="#">재검색</a>해보세요😉</c:if>		
+			<c:if test="${not empty msg_changedFilter}">원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</c:if>		
 		</form>	
 	</div>
 	<div id="warning_box">
+		<span id="warning_badRequest"><strong>${msg_badRequest }</strong></span><br/>
 		<span id="warning_wrongKeyword"><strong>${msg_wrongKeyword }</strong></span><br/>
 		<span id="warning_keywordEx"><small>${msg_keywordEx }</small></span>
 		<span id="warning_noResult"><c:if test="${alist[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
@@ -537,7 +561,10 @@
 		</c:forEach>			
 	</div>
 	<c:if test="${not empty alist }">
-		<div id="map" style="width:500px;height:400px;"></div>
+		<div>
+			<div id="map" style="width:500px;height:400px;"></div>
+			<button id="map_re-search" style="display:none">이 지역에서 재검색</button>	
+		</div>			
 	</c:if>
 </div>
 </body>

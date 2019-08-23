@@ -14,7 +14,6 @@
       DESC
     </if>    
   </select>
-
   <select id="selectByKakaoId" parameterType="INTEGER" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT STORE_ID, TAG, REVIEWCNT, VIEWCNT, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LOGOIMG FROM STORE WHERE KAKAOID=#{id}
   </select>

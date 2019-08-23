@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -54,7 +53,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public List<StoreVo> getListFromKakaoAPI(String keyword, String[] region, String x, String y, Model model){
+	public List<StoreVo> getListFromKakaoAPI(String keyword, String[] region, String x, String y, Model model) {
 		//(카카오 검색) 키워드 검색 파라미터 세팅
 		List<StoreVo> alist = new ArrayList<StoreVo>();
 		int page=1;		

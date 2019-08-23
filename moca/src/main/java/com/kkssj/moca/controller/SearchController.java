@@ -26,8 +26,16 @@ public class SearchController {
 	
 	@RequestMapping(value = "/stores", method = RequestMethod.GET)
 	public String search(String keyword, String x, String y, String filter, String[] region, Model model) throws MalformedURLException {
+	//0. URL을 통한 비정상 적인 접근 처리
+		if(keyword==null || x==null || y==null || filter==null || x.equals("") || y.equals("") || filter.equals("")) {
+			model.addAttribute("filter", "distance");
+			model.addAttribute("keyword", "");
+			model.addAttribute("msg_badRequest", "엥 뭐하셨어요...? 이러지 마시구, 다시 검색해주세요.");
+			model.addAttribute("msg_keywordEx", "예시) 키워드 검색: 비트카페<br/>태그 검색: #분위기 좋은");
+			return "stores_search";
+		}
 		model.addAttribute("filter", filter);		
-	//0. 검색어 처리	
+	//0. 비정상 적인 검색어 처리
 		keyword = keyword.trim();		
 		if(keyword.equals("") || keyword.equals("#")) {					//검색어가 없으면, 에러메시지와 함께 뷰페이지 리턴
 			model.addAttribute("msg_wrongKeyword", "검색어가 없네요.... :'(");
@@ -51,7 +59,7 @@ public class SearchController {
 				variables.put("x", x);
 				variables.put("y", y);
 				variables.put("filter", filter);
-				variables.put("region",region[0]+" "+region[1]);
+				if(region!=null) variables.put("region",region[0]+" "+region[1]);
 				model.addAttribute("keyword", "#"+keyword);
 				model.addAttribute("alist",searchService.getListByTag(variables));				
 				return "stores_search";
@@ -61,7 +69,9 @@ public class SearchController {
 	//2. 키워드 검색: 키워드 검색, #기호 앞에만 내용이 있는 경우
 		keyword=keyword.replace("#", "").trim();
 		//카카오 API 검색 & Selected_Region값 저장
-		List<StoreVo> alist = searchService.getListFromKakaoAPI(keyword, region, x, y, model); 
+		List<StoreVo> alist=null;
+		alist = searchService.getListFromKakaoAPI(keyword, region, x, y, model); 
+		
 		//mocaDB 열람 및 데이터 업데이트
 		for(StoreVo s: alist) s = searchService.getMoreData(s);
 		//정렬 처리
@@ -75,11 +85,5 @@ public class SearchController {
 		return "stores_search";
 	}
 	
-	
-	@RequestMapping(value="/stores", method=RequestMethod.POST)
-	public String detail(@ModelAttribute("bean") StoreVo bean) {			
-		logger.debug(bean.getAddress());		
-		return "stores_detail";
-	}
 }
 
