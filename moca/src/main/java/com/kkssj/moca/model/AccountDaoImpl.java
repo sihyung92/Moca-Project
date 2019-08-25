@@ -20,21 +20,18 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public int insertUser(AccountVo accountVo) throws SQLException{
 		// TODO Auto-generated method stub
-		System.out.println("insert");
 		return sqlSession.insert("account.insertUser", accountVo);
 	}
 
 	@Override
 	public AccountVo selectUser(String platformType, int platformId) throws SQLException{
 		// TODO Auto-generated method stub
-		System.out.println("select");
 		return sqlSession.selectOne("account.selectUserByKakaoId", (Integer)platformId);
 	}
 
 	@Override
 	public int updateUser(AccountVo accountVo) throws SQLException{
 		// TODO Auto-generated method stub
-		System.out.println("update");
 		return sqlSession.update("account.updateUserByKakaoId", accountVo);
 	}
 
