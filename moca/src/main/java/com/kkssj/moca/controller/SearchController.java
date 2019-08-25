@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kkssj.moca.model.entity.StoreVo;
 import com.kkssj.moca.service.SearchService;
@@ -24,10 +24,19 @@ public class SearchController {
 	SearchService searchService;	
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
+	@RequestMapping("/re-search")
+	@ResponseBody
+	public List<StoreVo> searchOnTheMap(String filter, String rect, String keyword, Model model){
+		String x= "";
+		String y= "";
+		String region[] = null; 
+		return searchService.getListFromKakaoAPI(keyword, region, x, y, rect, model);
+	}
+	
 	@RequestMapping(value = "/stores", method = RequestMethod.GET)
-	public String search(String keyword, String x, String y, String filter, String[] region, Model model) throws MalformedURLException {
+	public String search(String keyword, String x, String y, String filter, String[] region, String rect, Model model) throws MalformedURLException {
 	//0. URL을 통한 비정상 적인 접근 처리
-		if(keyword==null || x==null || y==null || filter==null || x.equals("") || y.equals("") || filter.equals("")) {
+		if(keyword==null || ((x==null || y==null || x.equals("") || y.equals("")) && rect==null)||filter==null ||  filter.equals("")) {
 			model.addAttribute("filter", "distance");
 			model.addAttribute("keyword", "");
 			model.addAttribute("msg_badRequest", "엥 뭐하셨어요...? 이러지 마시구, 다시 검색해주세요.");
@@ -70,7 +79,7 @@ public class SearchController {
 		keyword=keyword.replace("#", "").trim();
 		//카카오 API 검색 & Selected_Region값 저장
 		List<StoreVo> alist=null;
-		alist = searchService.getListFromKakaoAPI(keyword, region, x, y, model); 
+		alist = searchService.getListFromKakaoAPI(keyword, region, x, y, rect, model); 
 		
 		//mocaDB 열람 및 데이터 업데이트
 		for(StoreVo s: alist) s = searchService.getMoreData(s);
