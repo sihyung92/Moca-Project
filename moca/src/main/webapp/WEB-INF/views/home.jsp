@@ -2,13 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-	<title>Home</title>
-	<style type="text/css">
-	#header{
-		background-color:pink;
-	}
-	</style>
-<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
+<script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
@@ -47,7 +44,7 @@
 	};
 
 	var tryAPIGeolocation = function() {
-	    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyD6yXSGVTGpBHjRDg2jSToQEpdkM8kLOhg", function(success) {
+	    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCuHEcIvcJy_ub_jA-uohJVHgChPHUB27A", function(success) {
 	        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
 	    }).fail(function(err) {
 	        	switch (err.code) {
@@ -55,20 +52,15 @@
 	            	alert("현재 위치 정보 접근이 차단되었습니다.\n정확한 검색을 원하시면 접근을 허용해주세요.");
 	                break;  
 	        	}  
-	        });
+	    });
 	};
 	</script>
 </head>
 <body>
 <div id="header">
-	<form action="stores">
-		<input type="hidden" name="x" class="lng"/>
-		<input type="hidden" name="y" class="lat"/>		
-		<input type="hidden" name="filter" value="distance"/>
-		키워드는 <input type="text" name="keyword"/>
-		<button>입니당</button>
-	</form>		
-	<br/>
+	<div id="header">
+			<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
+	</div>
 </div>
 </body>
 </html>

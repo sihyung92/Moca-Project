@@ -35,7 +35,8 @@ public class SearchController {
 	
 	@RequestMapping(value = "/stores", method = RequestMethod.GET)
 	public String search(String keyword, String x, String y, String filter, String[] region, String rect, Model model) throws MalformedURLException {
-	//0. URL을 통한 비정상 적인 접근 처리
+		long enterTime=System.currentTimeMillis();
+		//0. URL을 통한 비정상 적인 접근 처리
 		if(keyword==null || ((x==null || y==null || x.equals("") || y.equals("")) && rect==null)||filter==null ||  filter.equals("")) {
 			model.addAttribute("filter", "distance");
 			model.addAttribute("keyword", "");
@@ -91,6 +92,10 @@ public class SearchController {
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("alist", alist);
 		logger.debug("카카오 검색 총 갯수: "+(alist.size()));
+		
+		//키워드 검색시간
+		long afterTime=System.currentTimeMillis();
+		logger.debug("search controller에서 키워드 검색에 걸린 시간은 : "+String.valueOf((afterTime-enterTime)/1000D)+"초");
 		return "stores_search";
 	}
 	
