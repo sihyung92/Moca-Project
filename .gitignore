@@ -4,6 +4,7 @@ target/
 bin/
 .settings/
 .classpath
+MoneySaver.java
 
 # Compiled class file
 *.class

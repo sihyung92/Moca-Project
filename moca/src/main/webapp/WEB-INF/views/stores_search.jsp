@@ -115,25 +115,31 @@
     function errCall(error) {
     	tryAPIGeolocation();	//구글GeolocationAPI시도
     };   
-    
-	//HTTPS 없이 지역 위치 정보 받아오기(구글GeolocationAPI사용)
+	
 	var tryAPIGeolocation = function() {
-	    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyCuHEcIvcJy_ub_jA-uohJVHgChPHUB27A", function(success) {
-	        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
-	    }).fail(function(err) {
-		        switch (err.code) {
-		            case err.PERMISSION_DENIED:
-		            	$('#warning_geo strong').html("위치 정보 접근 거부 🙄 ...............정....정확한 검색을 위해 허....허용..을..");     
-		                break;
-		            case err.POSITION_UNAVAILABLE:
-		            	$('#warning_geo strong').html("위치 확인이 불가능합니다. 🙄  🙄 ");
-		            	break;
-		            default:	//error.UNKNOWN_ERROR, error.TIMEOUT, default
-		            	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
-		           		break;
-		        } 
-		        createMap();
-	        });
+		$.ajax({
+			url:"moneysaver/googleGeolocation",
+			dataType: "text",
+			method: "post",
+			success: function(googleKey){
+			    jQuery.post(googleKey, function(success) {
+			        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
+			    }).fail(function(err) {
+			        switch (err.code) {
+			            case err.PERMISSION_DENIED:
+			            	$('#warning_geo strong').html("위치 정보 접근 거부 🙄 ...............정....정확한 검색을 위해 허....허용..을..");     
+			                break;
+			            case err.POSITION_UNAVAILABLE:
+			            	$('#warning_geo strong').html("위치 확인이 불가능합니다. 🙄  🙄 ");
+			            	break;
+			            default:	//error.UNKNOWN_ERROR, error.TIMEOUT, default
+			            	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
+			           		break;
+			        } 
+			        createMap();
+					});
+				}
+	     });
 	};
 	
 	//구글GeolocationAPI Success Callback
