@@ -43,20 +43,20 @@ public class StoreController {
 	////////////////////////
 	//store
 
- 	//Ã³À½ »ó¼¼ÆäÀÌÁö·Î Á¢¼Ó, vo °´Ã¼·Î ¹Ş±â
+ 	//ì²˜ìŒ ìƒì„¸í˜ì´ì§€ë¡œ ì ‘ì†, vo ê°ì²´ë¡œ ë°›ê¸°
 	@PostMapping("/stores")
 	public String addStore(@ModelAttribute StoreVo storeVo, Model model){
 		logger.info("getStoreId");
 
-		// ¿©±â¼­ ½ºÅä¾îID°¡ ÀÖÀ¸¸é(0ÀÌ ¾Æ´Ï¸é) -> insert ¾ÈÇÏ°í, ½ºÅä¾îID°¡ ¾øÀ¸¸é insert ÇØ¾ßÇÔ
+		// ì—¬ê¸°ì„œ ìŠ¤í† ì–´IDê°€ ìˆìœ¼ë©´(0ì´ ì•„ë‹ˆë©´) -> insert ì•ˆí•˜ê³ , ìŠ¤í† ì–´IDê°€ ì—†ìœ¼ë©´ insert í•´ì•¼í•¨
 		logger.debug("storeId : " + storeVo.getStore_Id());
 
-		// ¾øÀ¸¸é insert
-		// °ÅÁş insert°¡ ¾µ¶§¾øÀÌ ¸¹ÀÌ ÀÏ¾î³µÀ» ¶§ ALTER TABLE STORE AUTO_INCREMENT=º¯°æÇÒ°ª;À¸·Î seq ÃÊ±âÈ­
+		// ì—†ìœ¼ë©´ insert
+		// ê±°ì§“ insertê°€ ì“¸ë•Œì—†ì´ ë§ì´ ì¼ì–´ë‚¬ì„ ë•Œ ALTER TABLE STORE AUTO_INCREMENT=ë³€ê²½í• ê°’;ìœ¼ë¡œ seq ì´ˆê¸°í™”
 		if (storeVo.getStore_Id() == 0) {
-			logger.debug("½ºÅä¾î ID°¡ ¾ø½À´Ï´Ù");
+			logger.debug("ìŠ¤í† ì–´ IDê°€ ì—†ìŠµë‹ˆë‹¤");
 
-			// category ºĞ·ù ÈÄ ºĞ·ùµÈ Ä«Å×°í¸®·Î set storeVo
+			// category ë¶„ë¥˜ í›„ ë¶„ë¥˜ëœ ì¹´í…Œê³ ë¦¬ë¡œ set storeVo
 			storeVo.setCategory(changeCategory(storeVo.getCategory(), storeVo.getName()));
 			logger.debug(storeVo.getCategory());
 			logger.debug(storeVo.toString());
@@ -68,7 +68,7 @@ public class StoreController {
 	}
 
 
-	// ¸®´ÙÀÌ·ºÆ®·Î »ó¼¼ÆäÀÌÁö·Î
+	// ë¦¬ë‹¤ì´ë ‰íŠ¸ë¡œ ìƒì„¸í˜ì´ì§€ë¡œ
 	@GetMapping("/stores/{storeId}")
 	public String getStore(@PathVariable("storeId") int storeId, Model model){
 		logger.debug("storeId : " + storeId + " - getStore");
@@ -76,19 +76,19 @@ public class StoreController {
 		StoreVo storeVo = storeService.getStore(storeId);
 		logger.debug(storeVo.toString());
 
-		// ÀÌ¶§ storeVo¿¡ store_id °ªÀÌ ¾øÀ¸¸é ÇØ´çÆäÀÌÁö ¾ø´Ù´Â view ¸®ÅÏ
+		// ì´ë•Œ storeVoì— store_id ê°’ì´ ì—†ìœ¼ë©´ í•´ë‹¹í˜ì´ì§€ ì—†ë‹¤ëŠ” view ë¦¬í„´
 		if (storeVo.getStore_Id() == 0) {
-			// return "¿¡·¯ÆäÀÌÁö";
+			// return "ì—ëŸ¬í˜ì´ì§€";
 		}
 
-		// °èÁ¤ Á¤º¸¸¦ ¹Ş¾Æ¿À°í
+		// ê³„ì • ì •ë³´ë¥¼ ë°›ì•„ì˜¤ê³ 
 		int accountId = 1;
 
 		model.addAttribute("reviewVoList", storeService.getReviewList(accountId, storeId));
 
 		model.addAttribute("storeVo", storeVo);
 		
-		//storeImgÀÇ °³¼ö¿¡ µû¶ó ¸®ºä ÀÌ¹ÌÁö vo ¹Ş¾Æ¿À±â
+		//storeImgì˜ ê°œìˆ˜ì— ë”°ë¼ ë¦¬ë·° ì´ë¯¸ì§€ vo ë°›ì•„ì˜¤ê¸°
 		model.addAttribute("StoreImgList", storeService.getStoreImgList(storeId));
 		
 		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));
@@ -99,7 +99,7 @@ public class StoreController {
 	@PutMapping("/stores/{storeId}")
 	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo){
 		
-		//È¸¿ø¸¸ °¡´ÉÇÏ°Ô ·Î±×ÀÎ ±â´É ±¸ÇöµÇ¸é ºÙ¿©³ÖÀ» °Í
+		//íšŒì›ë§Œ ê°€ëŠ¥í•˜ê²Œ ë¡œê·¸ì¸ ê¸°ëŠ¥ êµ¬í˜„ë˜ë©´ ë¶™ì—¬ë„£ì„ ê²ƒ
 		//if(session.getAttribute("login")!==null) {
 			
 		//}
@@ -108,17 +108,17 @@ public class StoreController {
 		logger.debug("storeId : " + storeId + " - updateStore");
 		logger.debug(storeVo.toString());
 
-		// ¼öÁ¤ÇÑ »ç¶÷ÀÇ Id°¡ ÇÊ¿ä
-		int accountId = 1; // session¿¡¼­ ¾ò¾î¿À±â
+		// ìˆ˜ì •í•œ ì‚¬ëŒì˜ Idê°€ í•„ìš”
+		int accountId = 1; // sessionì—ì„œ ì–»ì–´ì˜¤ê¸°
 
-		// edit store¿¡¼­ store update, storeinfohistory insert
+		// edit storeì—ì„œ store update, storeinfohistory insert
 		int isSuccess = storeService.editStore(accountId, storeVo);
 
 		if (isSuccess > 0) {
-			// ¼º°ø
+			// ì„±ê³µ
 			return ResponseEntity.status(HttpStatus.OK).body(storeService.getStoreInfoHistory(storeId));
 		} else {
-			// ½ÇÆĞ
+			// ì‹¤íŒ¨
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 
@@ -127,13 +127,13 @@ public class StoreController {
 	////////////////////////
 	//review 
 	
-	//¸®ºä ÀÔ·Â, ¼­¹ö¿¡ ÆÄÀÏ ¾÷·Îµå
+	//ë¦¬ë·° ì…ë ¥, ì„œë²„ì— íŒŒì¼ ì—…ë¡œë“œ
     @ResponseBody
     @PostMapping(value ="/reviews")
     public ResponseEntity addReview(@RequestParam("file") MultipartFile[] files, HttpSession session, ReviewVo reviewVo) throws Exception{
 //    public ResponseEntity addReview(MultipartHttpServletRequest req, HttpSession session, ReviewVo reviewVo) throws Exception{
     	
-    	//»ç¿ëÀÚ °³Á¤ µî·Ï(¼¼¼Ç¿¡¼­ ¿Ô´Ù°í °¡Á¤)
+    	//ì‚¬ìš©ì ê°œì • ë“±ë¡(ì„¸ì…˜ì—ì„œ ì™”ë‹¤ê³  ê°€ì •)
     	AccountVo accountVo = (AccountVo)session.getAttribute("login");
     	accountVo = new AccountVo();
     	accountVo.setNickname("songhae");
@@ -158,7 +158,7 @@ public class StoreController {
     }
     
 	
-	//¸®ºä ¼öÁ¤
+	//ë¦¬ë·° ìˆ˜ì •
 	@PutMapping("/reviews/{review_id}")
 	@ResponseBody
 	public ResponseEntity editReview(@RequestParam("file") MultipartFile[] newFiles, 
@@ -166,17 +166,17 @@ public class StoreController {
 		
 		logger.debug(reviewVo.toString());
 		logger.debug(delThumbnails);
-		//¼¼¼ÇÀÌ ÀÛµ¿Çß´Ù°í °¡Á¤
+		//ì„¸ì…˜ì´ ì‘ë™í–ˆë‹¤ê³  ê°€ì •
 		reviewVo.setAccountId(1);
 		
 		for (int i = 0; i < newFiles.length; i++) {
 			logger.debug(newFiles[i].getName());
 		}
 		
-		//jsonÀ¸·Î ¼öÁ¤ ³»¿ë Àü¼Û
+		//jsonìœ¼ë¡œ ìˆ˜ì • ë‚´ìš© ì „ì†¡
 		reviewVo = storeService.editReview(reviewVo, newFiles, delThumbnails);
 		
-		//¹Ş´Â ÂÊ¿¡¼­ refreshÇÏ°Ô
+		//ë°›ëŠ” ìª½ì—ì„œ refreshí•˜ê²Œ
 		if(reviewVo!=null) {
 			return new ResponseEntity<>(reviewVo, HttpStatus.OK);
 		}
@@ -184,10 +184,10 @@ public class StoreController {
 		
 	}
 	
-	// ¸®ºä »èÁ¦
+	// ë¦¬ë·° ì‚­ì œ
 	@DeleteMapping("/reviews/{review_id}")
 	public ResponseEntity deleteReview(@PathVariable("review_id") int review_id){
-		// »ç¿ëÀÚ È®ÀÎ
+		// ì‚¬ìš©ì í™•ì¸
 		int accountId = 1;
 		
 		ReviewVo reviewVo = new ReviewVo();
@@ -207,11 +207,11 @@ public class StoreController {
 	////////////////////////
 	//likeHate
 
-	// ÁÁ¾Æ¿ä½È¾î¿ä Ãß°¡
+	// ì¢‹ì•„ìš”ì‹«ì–´ìš” ì¶”ê°€
 	@PostMapping("/likeHates/{review_id}")
 	public ResponseEntity addLikeHate(@PathVariable("review_id") int review_id, @RequestParam int isLike) {
 		
-		//°èÁ¤ Á¤º¸¸¦ ¹Ş¾Æ¿À°í
+		//ê³„ì • ì •ë³´ë¥¼ ë°›ì•„ì˜¤ê³ 
 		int accountId =1;
 		
 		if(storeService.addLikeHate(review_id, accountId, isLike) ==1) {
@@ -222,15 +222,15 @@ public class StoreController {
 
 	}
 
-	// ÁÁ¾Æ¿ä½È¾î¿ä ¼öÁ¤
-	// ¼­¹ö¿¡ server.xml¿¡ Connector ÅÂ±×¿¡ parseBodyMethods
+	// ì¢‹ì•„ìš”ì‹«ì–´ìš” ìˆ˜ì •
+	// ì„œë²„ì— server.xmlì— Connector íƒœê·¸ì— parseBodyMethods
 	// <Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1"
-	// redirectPort="8443" parseBodyMethods="POST,PUT,DELETE"/> Ãß°¡
+	// redirectPort="8443" parseBodyMethods="POST,PUT,DELETE"/> ì¶”ê°€
 	@PutMapping("/likeHates/{review_id}")
 	public ResponseEntity editLikeHate(@PathVariable("review_id") int review_id, @RequestParam int isLike) {
 		
 		
-		//°èÁ¤ Á¤º¸¸¦ ¹Ş¾Æ¿À°í
+		//ê³„ì • ì •ë³´ë¥¼ ë°›ì•„ì˜¤ê³ 
 		int accountId =1;
 		
 		if(storeService.editLikeHate(review_id, accountId, isLike) ==1) {
@@ -240,10 +240,10 @@ public class StoreController {
 		}
 	}
 
-	// ÁÁ¾Æ¿ä ½È¾î¿ä »èÁ¦
+	// ì¢‹ì•„ìš” ì‹«ì–´ìš” ì‚­ì œ
 	@DeleteMapping("/likeHates/{review_id}")
 	public ResponseEntity  deleteLikeHate(@PathVariable("review_id") int review_id, @RequestParam int isLike) {		
-		//°èÁ¤ Á¤º¸¸¦ ¹Ş¾Æ¿À°í
+		//ê³„ì • ì •ë³´ë¥¼ ë°›ì•„ì˜¤ê³ 
 		int accountId =1;	
 
 		if(storeService.deleteLikeHate(review_id, accountId, isLike) ==1) {
@@ -255,28 +255,28 @@ public class StoreController {
 
 
 	
-	//¸®ºä ÁÁ¾Æ¿ä¼ö µ¿±âÈ­(³ªÁß¿¡ put ¹æ½ÄÀ¸·Î º¯°æ)
+	//ë¦¬ë·° ì¢‹ì•„ìš”ìˆ˜ ë™ê¸°í™”(ë‚˜ì¤‘ì— put ë°©ì‹ìœ¼ë¡œ ë³€ê²½)
 	@GetMapping("/reviewsLikeHate")
 	public String syncReviewLikeHate() {
 		
 		int result = storeService.syncReviewLikeHate();
 		
-		//ÀÏ´Ü ÆäÀÌÁö ¶ç¿ö¾ß ÇÏ´Ï±î 
+		//ì¼ë‹¨ í˜ì´ì§€ ë„ì›Œì•¼ í•˜ë‹ˆê¹Œ 
 		return "redirect:../stores/"+1;
 	}
 
 
 
 	public String changeCategory(String category, String name) {
-		// Æ÷ÇÔµÇ¸é ÇØ´ç Ä«Å×°í¸®·Î º¯È¯
-		// ÇÁ·£Â÷ÀÌÁî(Ä«Å×°í¸®), ¾Ö°ß(Ä«Å×°í¸®), ½ºÅÍµğ(ÀÌ¸§), °í¾çÀÌ(Ä«Å×°í¸®), ¸¸È­+³î½£(ÀÌ¸§), º¸µå(Ä«Å×°í¸®), ·ëÄ«Æä(ÀÌ¸§)
-		String[] categoryCheck = { "Ä¿ÇÇÀü¹®Á¡", "¾Ö°ß", "°í¾çÀÌ", "º¸µå" };
-		String[] nameCheck = { "½ºÅÍµğ", "¸¸È­", "³î½£", "·ëÄ«Æä" };
+		// í¬í•¨ë˜ë©´ í•´ë‹¹ ì¹´í…Œê³ ë¦¬ë¡œ ë³€í™˜
+		// í”„ëœì°¨ì´ì¦ˆ(ì¹´í…Œê³ ë¦¬), ì• ê²¬(ì¹´í…Œê³ ë¦¬), ìŠ¤í„°ë””(ì´ë¦„), ê³ ì–‘ì´(ì¹´í…Œê³ ë¦¬), ë§Œí™”+ë†€ìˆ²(ì´ë¦„), ë³´ë“œ(ì¹´í…Œê³ ë¦¬), ë£¸ì¹´í˜(ì´ë¦„)
+		String[] categoryCheck = { "ì»¤í”¼ì „ë¬¸ì ", "ì• ê²¬", "ê³ ì–‘ì´", "ë³´ë“œ" };
+		String[] nameCheck = { "ìŠ¤í„°ë””", "ë§Œí™”", "ë†€ìˆ²", "ë£¸ì¹´í˜" };
 
 		for (int i = 0; i < categoryCheck.length; i++) {
 			if (category.contains(categoryCheck[i])) {
-				if (categoryCheck[i].equals("Ä¿ÇÇÀü¹®Á¡")) {
-					category = "ÇÁ·£Â÷ÀÌÁî";
+				if (categoryCheck[i].equals("ì»¤í”¼ì „ë¬¸ì ")) {
+					category = "í”„ëœì°¨ì´ì¦ˆ";
 				} else {
 					category = categoryCheck[i];
 				}
@@ -285,8 +285,8 @@ public class StoreController {
 
 		for (int i = 0; i < nameCheck.length; i++) {
 			if (name.contains(nameCheck[i])) {
-				if (nameCheck[i].equals("³î½£")) {
-					category = "¸¸È­";
+				if (nameCheck[i].equals("ë†€ìˆ²")) {
+					category = "ë§Œí™”";
 				} else {
 					category = nameCheck[i];
 				}

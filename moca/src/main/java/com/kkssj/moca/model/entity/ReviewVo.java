@@ -21,7 +21,7 @@ public class ReviewVo {
 	private String nickName;
 	private int followCount, reviewCount;
 	
-	//³»°¡ ¾´ ´ñ±ÛÀÎÁö (table¿£ ¾øÀ½)
+	//ë‚´ê°€ ì“´ ëŒ“ê¸€ì¸ì§€ (tableì—” ì—†ìŒ)
 	private int isMine;
 	
 	public ReviewVo() {
@@ -227,7 +227,7 @@ public class ReviewVo {
 				+ ", isMine=" + isMine + "]";
 	}
 
-	//5°¡Áö levelÀ» °¡Áö°í ¼Ò¼ıÁ¡ 1ÀÚ¸®±îÁö ÆòÁ¡ °è»ê
+	//5ê°€ì§€ levelì„ ê°€ì§€ê³  ì†Œìˆ«ì  1ìë¦¬ê¹Œì§€ í‰ì  ê³„ì‚°
 	public void calAverageLevel() {
 		this.averageLevel = Math.round(((this.tasteLevel + this.priceLevel + this.serviceLevel + this.moodLevel + this.convenienceLevel)/5.0)*10)/10.0;
 	}

@@ -3,6 +3,6 @@ package com.kkssj.moca.service;
 import com.kkssj.moca.model.entity.AccountVo;
 
 public interface AccountService {
-	//kakao·ÎºÎÅÍ ¹ŞÀº µ¥ÀÌÅÍ¸¦ VO °´Ã¼È­ÇÑ ÈÄ DB¿Í ´ëÁ¶ÇØ¼­ µ¥ÀÌÅÍ°¡ ¾ø´Ù¸é(È¤Àº ´Ù¸£´Ù¸é) Àçµî·Ï (select, insert, update?)
+	//kakaoë¡œë¶€í„° ë°›ì€ ë°ì´í„°ë¥¼ VO ê°ì²´í™”í•œ í›„ DBì™€ ëŒ€ì¡°í•´ì„œ ë°ì´í„°ê°€ ì—†ë‹¤ë©´(í˜¹ì€ ë‹¤ë¥´ë‹¤ë©´) ì¬ë“±ë¡ (select, insert, update?)
 	AccountVo login(AccountVo accountVo);
 }

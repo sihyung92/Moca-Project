@@ -28,19 +28,19 @@ public class AccountServiceImpl implements AccountService {
 		try {
 			AccountVo compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());
 			
-			if(compareVo==null) {	//·Î±×ÀÎ½Ã Ä«Ä«¿À·ÎºÎÅÍ ¹ŞÀº JSON => VO ·Î Á¶È¸ÇÑ °ªÀÌ ¾ø´Ù¸é
-				accountDao.insertUser(accountVo);	//»õ·ÎÀÌ JSON => VO¸¦ DB¿¡ ÀÔ·ÂÇÑ´Ù.
+			if(compareVo==null) {	//ë¡œê·¸ì¸ì‹œ ì¹´ì¹´ì˜¤ë¡œë¶€í„° ë°›ì€ JSON => VO ë¡œ ì¡°íšŒí•œ ê°’ì´ ì—†ë‹¤ë©´
+				accountDao.insertUser(accountVo);	//ìƒˆë¡œì´ JSON => VOë¥¼ DBì— ì…ë ¥í•œë‹¤.
 				
-				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//ÀÔ·ÂµÈ °ªÀ¸·Î »õ·Î Á¶È¸ÇØ¿Â´Ù.
+				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//ì…ë ¥ëœ ê°’ìœ¼ë¡œ ìƒˆë¡œ ì¡°íšŒí•´ì˜¨ë‹¤.
 				
 				return compareVo;
-			}else if(compareVo.hashCode()!=accountVo.hashCode()){	//HashCode·Î ºñ±³ÇÑ´Ù / µ¥ÀÌÅÍ°¡ ÀÖ±â´Â ÇÑµ¥ emailÀÌ³ª º¯µ¿ °¡´ÉÇÑ °ªÀÌ ´Ù¸¥Áö ºñ±³ÈÄ ´Ù¸£´Ù¸é JSON => VO·Î ¼öÁ¤ÇÑ´Ù. ÇöÀç ´Â ÀÛµ¿ ¾ÈµÉµí.
+			}else if(compareVo.hashCode()!=accountVo.hashCode()){	//HashCodeë¡œ ë¹„êµí•œë‹¤ / ë°ì´í„°ê°€ ìˆê¸°ëŠ” í•œë° emailì´ë‚˜ ë³€ë™ ê°€ëŠ¥í•œ ê°’ì´ ë‹¤ë¥¸ì§€ ë¹„êµí›„ ë‹¤ë¥´ë‹¤ë©´ JSON => VOë¡œ ìˆ˜ì •í•œë‹¤. í˜„ì¬ ëŠ” ì‘ë™ ì•ˆë ë“¯.
 				accountDao.updateUser(accountVo);
 				
-				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//º¯°æµÈ °ªÀ¸·Î »õ·Î Á¶È¸ÇØ¿Â´Ù.
+				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//ë³€ê²½ëœ ê°’ìœ¼ë¡œ ìƒˆë¡œ ì¡°íšŒí•´ì˜¨ë‹¤.
 				
 				return compareVo;
-			}else {	//DB¿¡ µ¥ÀÌÅÍµµ ÀÖÀ¸¸ç °ªµµ ´Ù¸£Áö ¾ÊÀº °æ¿ì ´Ù½Ã ÀÌ DB¼Ó VO(compareVo)¸¦ ¸®ÅÏÇØÁØ´Ù(ÀÌ¶§´Â account_id°¡ Á¦´ë·Î ¼³Á¤µÈ VO·Î ¹Ş¾Æ¿È)
+			}else {	//DBì— ë°ì´í„°ë„ ìˆìœ¼ë©° ê°’ë„ ë‹¤ë¥´ì§€ ì•Šì€ ê²½ìš° ë‹¤ì‹œ ì´ DBì† VO(compareVo)ë¥¼ ë¦¬í„´í•´ì¤€ë‹¤(ì´ë•ŒëŠ” account_idê°€ ì œëŒ€ë¡œ ì„¤ì •ëœ VOë¡œ ë°›ì•„ì˜´)
 				
 				return compareVo;
 			}

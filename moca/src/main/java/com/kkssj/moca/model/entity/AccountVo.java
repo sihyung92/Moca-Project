@@ -4,7 +4,7 @@ public class AccountVo {
 	int account_id, followCount, reviewCount, platformId ;
 	String nickname, platformType, profileImage, thumbnailImage;
 	
-	/*email Ãß°¡*/
+	/*email ì¶”ê°€*/
 	String email;
 	
 	public AccountVo() {
