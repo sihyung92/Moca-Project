@@ -26,13 +26,13 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public AccountVo selectUser(String platformType, int platformId) throws SQLException{
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne("account.selectUserByKakaoId", (Integer)platformId);
+		return sqlSession.selectOne("account.selectUserBy"+platformType+"Id", (Integer)platformId);
 	}
 
 	@Override
-	public int updateUser(AccountVo accountVo) throws SQLException{
+	public int updateUser(String platformType, AccountVo accountVo) throws SQLException{
 		// TODO Auto-generated method stub
-		return sqlSession.update("account.updateUserByKakaoId", accountVo);
+		return sqlSession.update("account.updateUserBy"+platformType+"Id", accountVo);
 	}
 
 	@Override

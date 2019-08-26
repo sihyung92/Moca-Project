@@ -10,7 +10,7 @@ public interface AccountDao {
 	//read(get)
 	AccountVo selectUser(String platformType, int platformId) throws SQLException;
 	//update
-	int updateUser(AccountVo accountVo) throws SQLException;
+	int updateUser(String platformType, AccountVo accountVo) throws SQLException;
 	//delete
 	int deleteUser() throws SQLException;
 }

@@ -26,55 +26,40 @@
     
     $(document).ready(function(){
     	
-    	<!-- 테스트용 버튼 -->
-	    	var testBtn = $('#test-btn');
-	    	testBtn.click(function(){
-	    		 //alert(sessionStorage.getItem("login"));
-	    		 
-	    		 var loginSession = JSON.parse(sessionStorage.getItem("login"));
-	    		 
-				console.log(sessionStorage.getItem("login"));
-				
-	    	});
-    	<!-- 테스트용 버튼 -->
-    	
-    	
-    	<!-- 로그인 버튼 -->
     		kakaoLogin();
-    	<!-- 로그인 버튼 -->
     });
     
+	//kakao login
     function kakaoLogin(){
-		//kakao login
 	    // 사용할 앱의 JavaScript 키를 설정해 주세요.
 	    Kakao.init('e85bc4677809dd977652da6eeaac836f');
+	    
 	    // 카카오 로그인 버튼을 생성합니다.
 	    Kakao.Auth.createLoginButton({
 	      container: '#kakao-login-btn',
 	      success: function(authObj) {
-	        // 로그인 성공시, API를 호출합니다.
-	        
-	        Kakao.API.request({
-	          url: '/v2/user/me',
-	          success: function(res) {
+	      
+	    	  // 로그인 성공시, API를 호출합니다.
+	    	  Kakao.API.request({
+	    		  url: '/v2/user/me',
+	    		  success: function(res) {
+	    			  // alert(sessionStorage.getItem("login"));
 	        	  
-	        	  // alert(sessionStorage.getItem("login"));
-	        	  
-	        	var acc_Id = JSON.stringify(res.id);
-	        	var param = {
-	        			"account_id":"1111111111",
-	        			"followCount":"0",
-	        			"reviewCount":"0",
-	        			"platformId":JSON.stringify(res.id),
-	        			"nickname":JSON.stringify(res.properties.nickname),
-	        			"platformType":"kakao",
-	        			"profileImage":JSON.stringify(res.properties.profile_image),
-	        			"thumbnailImage":JSON.stringify(res.properties.thumbnail_image),
-	        			"email":JSON.stringify(res.kakao_account.email),
-	        			"token":Kakao.Auth.getAccessToken()
-	    			};
-	        	
-	        	console.log(JSON.stringify(res));
+	    			  var acc_Id = JSON.stringify(res.id);
+	    			  var param = {
+	    					  //MySQL db속 account table의 accId가 INT라서 우선 이 값으로 설정 (구분값으로 생각하면 됨)
+		        			"account_id":"1111111111",
+		        			"followCount":"0",
+		        			"reviewCount":"0",
+		        			"platformId":JSON.stringify(res.id),
+		        			"nickname":JSON.stringify(res.properties.nickname),
+		        			"platformType":"kakao",
+		        			"profileImage":JSON.stringify(res.properties.profile_image),
+		        			"thumbnailImage":JSON.stringify(res.properties.thumbnail_image),
+		        			"email":JSON.stringify(res.kakao_account.email),
+		        			"token":Kakao.Auth.getAccessToken()
+	        			};
+	    			  console.log(JSON.stringify(res));
 	        	
 	        	$.ajax({
 					type: 'post',
