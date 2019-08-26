@@ -74,23 +74,23 @@
 			
 			//변수 바인딩
 			bindReviewVariable();
-			fileListDiv = $('#fileListDiv');
+			
 
 			//리뷰 작성버튼 클릭시
  			fileBuffer = [];
  			
 			$('#files').change(function(){
-		       
+				fileListDiv = $(this).next();
 		        const target = document.getElementsByName('file');
 		        
 		        Array.prototype.push.apply(fileBuffer, target[0].files);
 		        var newFileDiv = '';
 		        $.each(target[0].files, function(index, file){
 		            const fileName = file.name;
-		            newFileDiv += '<div class="file newThumbnail reviewThumbnailGroup">';
-		            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image" class="img-thumbnail">'
-		            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn" aria-hidden="true"></span>';
-		            newFileDiv += '<span>'+fileName+'</span>';
+		            newFileDiv += '<div class="file newThumbnail reviewThumbnail" style="width:121px">';
+		            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image">'
+		            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn"onclick="deleteReviewImg(this)" aria-hidden="true" style="position:relative; left:-95px; top:-30px; cursor:pointer; background-color:rgb(255,255,255,0.5);"></span>';
+		            //newFileDiv += '<span>'+fileName+'</span>';
 		            newFileDiv += '</div>';
 		            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
 		            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
@@ -101,7 +101,8 @@
 		            console.log("change",fileBuffer);
 		        });
 		        
-		        $(fileListDiv).html($(fileListDiv).html()+newFileDiv);
+//		        $(fileListDiv).html($(fileListDiv).html()+newFileDiv);
+		        $(fileListDiv).append(newFileDiv);
 	            ///removeThumbnailBtn 이벤트 바인딩
 				$('.removeThumbnailBtn').click(function(){
 	            	removeThumbnailBtn = $(this);
@@ -605,9 +606,7 @@
 		</div>
 		<div class="review-info col-md-8">
 			<div class="reviewThumbnailGroup">
-					
 			</div>
-			
 			<div class="review-data">
 				<div class="write-date-div">
 					<label>작성일</label>
@@ -678,9 +677,7 @@
 							<label for="picture-file">사진 선택</label>
 							<!-- <input type="file" name="file" id="picture-file" multiple="multiple"> --><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
 							<input multiple="multiple" name="file" id="files" type="file"/>
-							<div id="fileListDiv">
 							
-							</div>
 						</div> 
 						<div class="form-group">
 							<label for="review-content">후기</label>

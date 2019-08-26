@@ -40,7 +40,7 @@ public interface StoreService {
 	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);
 
 	//¸®ºä ¼öÁ¤
-	int editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails);
+	ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails);
 	
 	//¸®ºä Á¦°Å
 	int deleteReview(ReviewVo reviewVo);

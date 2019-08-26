@@ -169,14 +169,16 @@ public class StoreController {
 		//세션이 작동했다고 가정
 		reviewVo.setAccountId(1);
 		
-		int isEdite = 1;
+		for (int i = 0; i < newFiles.length; i++) {
+			logger.debug(newFiles[i].getName());
+		}
+		
 		//json으로 수정 내용 전송
-		//int isEdite = storeService.editReview(reviewVo, newFiles, delThumbnails);
+		reviewVo = storeService.editReview(reviewVo, newFiles, delThumbnails);
 		
 		//받는 쪽에서 refresh하게
-		if(isEdite ==1) {
+		if(reviewVo!=null) {
 			return new ResponseEntity<>(reviewVo, HttpStatus.OK);
-
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
