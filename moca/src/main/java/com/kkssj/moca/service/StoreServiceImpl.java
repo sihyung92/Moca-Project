@@ -33,7 +33,6 @@ import com.kkssj.moca.util.UploadFileUtils;
 public class StoreServiceImpl implements StoreService{
 	private static final Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
 	
-	
 
 	@Inject
 	ReviewDao reviewDao;
@@ -94,7 +93,7 @@ public class StoreServiceImpl implements StoreService{
 				Timestamp renewalDate = (Timestamp) map.get("renewaldate");
 				SimpleDateFormat format= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				
-				return updateInfoNickname +"´ÔÀÌ " + format.format(renewalDate) +"¿¡ ¸¶Áö¸·À¸·Î ¼öÁ¤ÇÏ¿´½À´Ï´Ù";
+				return updateInfoNickname +"ë‹˜ì´ " + format.format(renewalDate) +"ì— ë§ˆì§€ë§‰ìœ¼ë¡œ ìˆ˜ì •í•˜ì˜€ìŠµë‹ˆë‹¤";
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -104,12 +103,12 @@ public class StoreServiceImpl implements StoreService{
 	
 	@Override
 	public List<ImageVo> getStoreImgList(int storeId) {
-		//storeÅ×ÀÌºí¿¡ ÀÖ´Â storeImg1,2,3 °¡Á®¿À±â
+		//storeí…Œì´ë¸”ì— ìˆëŠ” storeImg1,2,3 ê°€ì ¸ì˜¤ê¸°
 		List<ImageVo> result = new ArrayList<ImageVo>();
 		int limit = 0;
 		try {
 			Map<String,String> storeImgUrlMap = storeDao.selectStoreImgList(storeId);
-			//°¡Á®¿Í¼­ null°ª È¤Àº ºó°ªÀÎ °³¼ö ¼¼±â
+			//ê°€ì ¸ì™€ì„œ nullê°’ í˜¹ì€ ë¹ˆê°’ì¸ ê°œìˆ˜ ì„¸ê¸°
 			if(storeImgUrlMap!=null) {
 				System.out.println(storeImgUrlMap.size());
 				System.out.println(storeImgUrlMap.toString());
@@ -117,14 +116,14 @@ public class StoreServiceImpl implements StoreService{
 			}else {
 				limit = 10;
 			}
-			//10°³Áß¿¡ ³ª¸ÓÁö °³¼ö¸¸Å­ °¡Á®¿À±â reviewImg
+			//10ê°œì¤‘ì— ë‚˜ë¨¸ì§€ ê°œìˆ˜ë§Œí¼ ê°€ì ¸ì˜¤ê¸° reviewImg
 			Map<String,Integer> map = new HashMap<String, Integer>();
 			map.put("LIMIT", limit);
 			map.put("STORE_ID", storeId);
 			
 			result = storeDao.selectStoreReviewImgList(map);
 			for(int i=0; i<result.size(); i++) {
-				//Ä«Æ®¸®Áö ±â¹ı
+				//ì¹´íŠ¸ë¦¬ì§€ ê¸°ë²•
 				result.get(i).setUrl();
 			}
 			if(storeImgUrlMap!=null) {
@@ -189,14 +188,14 @@ public class StoreServiceImpl implements StoreService{
 		///
 		String uploadPath = "review";
 		
-		//Æò±Õ Á¡¼ö °è»ê
+		//í‰ê·  ì ìˆ˜ ê³„ì‚°
 		reviewVo.calAverageLevel();
 		try {
-			//Á¤»óÀûÀ¸·Î ÀÔ·ÂµÇ¾úÀ»¶§
+			//ì •ìƒì ìœ¼ë¡œ ì…ë ¥ë˜ì—ˆì„ë•Œ
 			if(reviewDao.insertReview(reviewVo) ==1) {
 				reviewVo = reviewDao.selectAddedOne(reviewVo.getAccountId());
 				
-				//S3¿¡ ÆÄÀÏ ¾÷·Îµå
+				//S3ì— íŒŒì¼ ì—…ë¡œë“œ
 				MultipartFile file;
 		    	for (int i = 0; i < files.length; i++) {
 
@@ -216,7 +215,7 @@ public class StoreServiceImpl implements StoreService{
 		            }
 
 				}
-		    	//select·Î °¡Á®¿Í¼­ imgvo ³Ö±â
+		    	//selectë¡œ ê°€ì ¸ì™€ì„œ imgvo ë„£ê¸°
 		    	ArrayList<ImageVo> ReviewImgList = (ArrayList<ImageVo>) reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
 		    	for(int i=0; i<ReviewImgList.size(); i++) {
 		    		ReviewImgList.get(i).setUrl();
@@ -224,16 +223,16 @@ public class StoreServiceImpl implements StoreService{
 		    	reviewVo.setImageList(ReviewImgList);
 		    	
 				
-				//»óÁ¡¿¡ ´ëÇÑ ÆòÁ¡ µ¿±âÈ­
+				//ìƒì ì— ëŒ€í•œ í‰ì  ë™ê¸°í™”
 				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStoreId());
 				StoreVo storeVo = new StoreVo();
 				storeVo.setStore_Id(reviewVo.getStoreId());
 				storeVo.calAllLevel(list);
-				logger.debug("ÆòÁ¡ µ¿±âÈ­ µÈ StoreVo : "+storeVo.toString());
+				logger.debug("í‰ì  ë™ê¸°í™” ëœ StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);
 				
 				
-				// ¹æ±İ ÀÔ·ÂÇÑ reviewVo¸¦ ¸®ÅÏ  
+				// ë°©ê¸ˆ ì…ë ¥í•œ reviewVoë¥¼ ë¦¬í„´  
 				return reviewVo;
 			}
 			
@@ -269,11 +268,11 @@ public class StoreServiceImpl implements StoreService{
 					imageVo.setAccountId(reviewVo.getAccountId());
 					logger.debug(imageVo.toString());
 					delImageVoList.add(imageVo);
-					//db¿¡¼­ »èÁ¦
+					//dbì—ì„œ ì‚­ì œ
 					reviewDao.deleteReviewImage(imageVo);
 				}
 				
-				//aws thumnailµµ »èÁ¦, ¿øº»ÀÌ¹ÌÁöµµ »èÁ¦
+				//aws thumnailë„ ì‚­ì œ, ì›ë³¸ì´ë¯¸ì§€ë„ ì‚­ì œ
 				for (int i = 0; i < delImageVoList.size(); i++) {
 					ImageVo imageVo = delImageVoList.get(i);
 					logger.debug(imageVo.toString());
@@ -284,7 +283,7 @@ public class StoreServiceImpl implements StoreService{
 				}
 			}
 			
-			//S3¿¡ ÆÄÀÏ ¾÷·Îµå
+			//S3ì— íŒŒì¼ ì—…ë¡œë“œ
 			MultipartFile file;
 	    	for (int i = 0; i < newFiles.length; i++) {
 
@@ -301,31 +300,31 @@ public class StoreServiceImpl implements StoreService{
 	            	imgaeVo.setStoreId(reviewVo.getStoreId());
 	            	imgaeVo.setAccountId(reviewVo.getAccountId());
 	            	
-	            	//db¿¡ ÀÌ¹ÌÁö Ãß°¡
+	            	//dbì— ì´ë¯¸ì§€ ì¶”ê°€
 	            	reviewDao.insertReviewImage(imgaeVo);
 	            }
 			}
 	    	
-	    	//select·Î °¡Á®¿Í¼­ imgvo ³Ö±â
+	    	//selectë¡œ ê°€ì ¸ì™€ì„œ imgvo ë„£ê¸°
 	    	ArrayList<ImageVo> ReviewImgList = (ArrayList<ImageVo>) reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
 	    	for(int i=0; i<ReviewImgList.size(); i++) {
 	    		ReviewImgList.get(i).setUrl();
 	    	}
 	    	reviewVo.setImageList(ReviewImgList);
 			
-			//Æò±Õ Á¡¼ö ´Ù½Ã °è»ê
+			//í‰ê·  ì ìˆ˜ ë‹¤ì‹œ ê³„ì‚°
 			reviewVo.calAverageLevel();
 						
-			//¾÷µ¥ÀÌÆ® µÈ ÇàÀÇ ¼ö¸¦ ¹İÈ¯
+			//ì—…ë°ì´íŠ¸ ëœ í–‰ì˜ ìˆ˜ë¥¼ ë°˜í™˜
 			int result = reviewDao.updateReview(reviewVo);
 			
-			//»óÁ¡¿¡ ´ëÇÑ ÆòÁ¡ µ¿±âÈ­
+			//ìƒì ì— ëŒ€í•œ í‰ì  ë™ê¸°í™”
 			if(result>0) {
 				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStoreId());
 				StoreVo storeVo = new StoreVo();
 				storeVo.setStore_Id(reviewVo.getStoreId());
 				storeVo.calAllLevel(list);
-				logger.debug("ÆòÁ¡ µ¿±âÈ­ µÈ StoreVo : "+storeVo.toString());
+				logger.debug("í‰ì  ë™ê¸°í™” ëœ StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);				
 			}
 			
@@ -341,23 +340,23 @@ public class StoreServiceImpl implements StoreService{
 		return null;
 	}
 	
-	//¸®ºä »èÁ¦
+	//ë¦¬ë·° ì‚­ì œ
 	@Override
 	public int deleteReview(ReviewVo reviewVo){
 		S3Util s3 = new S3Util();
 		try {
-			//DB¿¡ ÀÖ´Â imageVo list Á¶È¸
+			//DBì— ìˆëŠ” imageVo list ì¡°íšŒ
 			List<ImageVo> imageVoList = reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
 			logger.debug("imageList size = " + imageVoList.size());
 			
-			//reviewÅ×ÀÌºí¿¡ ÀÖ´Â row»èÁ¦
-			//ÇØ´ç review_id¿¡ ÇØ´çÇÏ´Â reviewImageÅ×ÀÌºí¿¡ ÀÖ´Â rowµµ  °°ÀÌ »èÁ¦(cascade)
+			//reviewí…Œì´ë¸”ì— ìˆëŠ” rowì‚­ì œ
+			//í•´ë‹¹ review_idì— í•´ë‹¹í•˜ëŠ” reviewImageí…Œì´ë¸”ì— ìˆëŠ” rowë„  ê°™ì´ ì‚­ì œ(cascade)
 			int result = reviewDao.deleteReview(reviewVo);
 			logger.debug("delete result = "+ result);
 
 	
-			//¹İº¹
-			//imageVo·Î s3¿¡ ÀúÀåµÈ ÆÄÀÏ¸í »ı¼º > »èÁ¦
+			//ë°˜ë³µ
+			//imageVoë¡œ s3ì— ì €ì¥ëœ íŒŒì¼ëª… ìƒì„± > ì‚­ì œ
 			for (int i = 0; i < imageVoList.size(); i++) {
 				ImageVo imageVo = imageVoList.get(i);
 				logger.debug(imageVo.toString());
@@ -368,7 +367,7 @@ public class StoreServiceImpl implements StoreService{
 			}
 	
 			
-			//Á¤»óÀÏ °æ¿ì return 1
+			//ì •ìƒì¼ ê²½ìš° return 1
 			return 1;
 			
 		} catch (SQLException e) {
