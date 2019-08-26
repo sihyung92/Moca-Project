@@ -83,7 +83,7 @@
 	VALUES(#{uu_id}, #{reviewId}, #{accountId}, #{storeId},#{path},#{originName}, 0)
   </insert>
   <delete id="deleteReviewImage" parameterType="com.kkssj.moca.model.entity.ImageVo">
-  	DELETE FROM REVIEWIMAGE WHERE UU_ID = #{UU_ID} AND ACCOUNTID = #{ACCOUNTID}
+  	DELETE FROM REVIEWIMAGE WHERE UU_ID = #{uu_id} AND ACCOUNTID = #{accountId}
   </delete>
   
   <select id="selectReviewImgListByReviewId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">

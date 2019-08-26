@@ -195,6 +195,7 @@ var reviewData2ReviewModal = function(clickedEditBtn){
 var editReview = function(){
 	//delete한 썸네일 추가
 	$(reviewForm).append('<input type="hidden" name="delThumbnail" value="'+delThumbnail+'"/>');
+	console.log(reviewForm);
 	
 	//파일 추가
 	var form = $('#reviewForm')[0];
@@ -230,10 +231,22 @@ var editReview = function(){
 		cache : false,
 		timeout : 600000,
 		success: function(reviewVo) {
-			console.log('ajax 통신 성공')
+			console.log('ajax 통신 성공',reviewVo.imageList);
 			//리뷰 내용
 			editReviewRow.find('.reviewInfo-review-content').text(reviewFormObj.reviewContent);
-
+			
+			// 나중에 사진 추가할때 사용
+			var reviewThumbnail = editReviewRow.find('.reviewThumbnailGroup');
+			reviewThumbnail.html('');
+			for(var i=0; i<reviewVo.imageList.length; i++){
+				var oldReviewThumbnail = reviewThumbnail.html();
+				reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail"><img src="'+
+						reviewVo.imageList[i].thumbnailUrl
+						+'" alt="Image" class="img-thumbnail" id="'+
+						reviewVo.imageList[i].uu_id
+						+'"></div>');
+			}
+			
 			//평점
 			editReviewRow.find('.taste-level').text(reviewFormObj.tasteLevel);
 			editReviewRow.find('.price-level').text(reviewFormObj.priceLevel);

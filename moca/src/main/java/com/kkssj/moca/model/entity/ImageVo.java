@@ -3,7 +3,7 @@ package com.kkssj.moca.model.entity;
 import java.io.File;
 
 public class ImageVo {
-	private String uu_id, path, originName, url, thumbnailUrl, fieName, thumbnailFileName;
+	private String uu_id, path, originName, url, thumbnailUrl, fileName, thumbnailFileName;
 	private int storeId, reviewId, views, accountId;
 	
 	public ImageVo() {
@@ -108,12 +108,12 @@ public class ImageVo {
 	
 
 
-	public String getFieName() {
-		return fieName;
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setFieName() {
-		this.fieName = this.uu_id+"_"+this.originName;
+	public void setFileName() {
+		this.fileName = this.uu_id+"_"+this.originName;
 	}
 
 	public String getThumbnailFileName() {
@@ -141,6 +141,24 @@ public class ImageVo {
 				+ ", thumbnailUrl=" + thumbnailUrl + ", storeId=" + storeId + ", reviewId=" + reviewId + ", views="
 				+ views + ", accountId=" + accountId + "]";
 
+	}
+
+	public void setDelImageVo(String url) {
+		String pathUu_idOriginName = url.split(".com/")[1];
+		String path = pathUu_idOriginName.substring(0,pathUu_idOriginName.lastIndexOf("/"));
+		String uu_idOriginName = pathUu_idOriginName.substring(pathUu_idOriginName.lastIndexOf("/")+1);
+		setPath(path);
+		setUu_id(uu_idOriginName.split("_")[0]);
+		if(uu_idOriginName.contains("thumbnail")) {
+			setOriginName(uu_idOriginName.split("_")[2]);		
+		}else {
+			setOriginName(uu_idOriginName.split("_")[1]);
+		}
+		
+		setFileName();
+		setThumbnailFileName();
+		setUrl();
+		
 	}
 	
 	
