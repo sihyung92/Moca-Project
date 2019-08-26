@@ -30,6 +30,8 @@ var quotient; //몫
 var remainder; //나머지
 var callNum=1; //호출 넘버
 
+//리뷰 수정시 삭제된 이미지
+let delThumbnail="";
 
 ////////////////////////////
 //함수부
@@ -41,7 +43,7 @@ var bindReviewVariable = function(){
 	reviewForm = $('#reviewModal form');
 	saveReviewBtn = $('#saveReviewBtn');
 	editReviewBtn = $('#editReviewBtn');
-	imgFiles = $('#imgFiles');
+	imgFiles = $('#files');
 	
 	editBtn = $('.btn-edit')
 	deleteBtn = $('.btn-delete')
@@ -56,18 +58,18 @@ var bindReviewVariable = function(){
 
 
 //리뷰 저장
-var saveReview = function(){
-	console.log("saveReviewBtn clicked")
+var saveReview = function(fileBuffer){
+	console.log("saveReviewBtn clicked",fileBuffer)
 	var form = $('#reviewForm')[0];
 
 	var reviewFormData = new FormData(form);
 	
+	reviewFormData.delete('file');
+	
 	var fileSize = fileBuffer.length;
-	if(fileSize >0){
-		for(var i=0 ; i < fileSize ; i ++){
-			reviewFormData.append(i,fileBuffer[i]);
-		}
-	}
+	console.log("fileSize"+fileSize);
+	console.log("save",fileBuffer);
+	
 	
 	$.ajax({
 		type: 'POST',
@@ -75,15 +77,23 @@ var saveReview = function(){
 		url: '/moca/reviews',
 		data : reviewFormData,
 		dataType : "json",
-		contentType : false,
+		contentType : false,  
 		processData : false,
 		cache : false,
 		timeout : 600000,
+		beforeSend:function(){
+			if(fileSize >0){
+				for(var i=0 ; i < fileSize ; i ++){
+					reviewFormData.append("file",fileBuffer[i]);
+					console.log(i,fileBuffer[i]);
+				}
+			}
+	    },
 		success: function(reviewVo) {
-			console.log('ajax 통신 성공')
+			console.log('ajax 통신 성공');
 			console.log(reviewVo);
 			
-	//		//리뷰 추가(최상단에)
+			//리뷰 추가(최상단에)
 			addReviewInReviewContent(reviewVo);
 	
 			$('#reviewModal').modal("hide");		//모달창 닫기
@@ -116,6 +126,9 @@ var addReviewInReviewContent = function(reviewVo) {
 				reviewVo.imageList[i].uu_id
 				+'"></div>');
 	}
+	
+	newReview.find('.review-id').eq(0).val(''+reviewVo.review_id);
+	newReview.find('.review-id').eq(1).val(''+reviewVo.review_id);
 	
 	reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 	reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
@@ -153,40 +166,69 @@ var reviewData2ReviewModal = function(clickedEditBtn){
 	editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
 
 	//리뷰 아이디
-	reviewModal.find('#review_id').val( editReviewRow.find('.review-id').eq(0).val() );
+	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
 				
 	///사진(나중에 정해지면)
-	console.log(clickedEditBtn);
+	console.log(editReviewRow);
 	var reviewImg = editReviewRow.find('.reviewThumbnailGroup').clone();
+	console.log("reviewImg : ",reviewImg);
 	console.log(reviewImg);
-	reviewModal.find('#picture-file').after(reviewImg);
+	reviewModal.find('#files').after(reviewImg);
+	reviewImg.find('.reviewThumbnail img').attr('class','oldThumbnail');
 	$('#reviewModal').find('.reviewThumbnail').append('<span class="glyphicon glyphicon-remove thumbnailDeleteSpan" aria-hidden="true" onclick="deleteReviewImg(this)"></span>');		
 	$('.thumbnailDeleteSpan').css('position','relative').css('left','-95px').css('top','-30px').css('cursor','pointer')
 	.css('background-color','rgb(255,255,255,0.5)');
 	
 	//리뷰 내용
-	reviewModal.find('#review-content').text( editReviewRow.find('.reviewInfo-review-content').text() )
-
+	reviewModal.find('#review-content').val(editReviewRow.find('.reviewInfo-review-content').text());
+	
 	//평점
-	reviewModal.find('#taste-level').val( editReviewRow.find('.taste-level').text() )
-	reviewModal.find('#price-level').val( editReviewRow.find('.price-level').text() )
-	reviewModal.find('#service-level').val( editReviewRow.find('.service-level').text() )
-	reviewModal.find('#mood-level').val( editReviewRow.find('.mood-level').text() )
+	reviewModal.find('#taste-level').val( editReviewRow.find('.taste-level').text())
+	reviewModal.find('#price-level').val( editReviewRow.find('.price-level').text())
+	reviewModal.find('#service-level').val( editReviewRow.find('.service-level').text())
+	reviewModal.find('#mood-level').val( editReviewRow.find('.mood-level').text())
 	reviewModal.find('#convenience-level').val( editReviewRow.find('.convenience-level').text())
-	reviewModal.find('#average-level').val( editReviewRow.find('.average-level').text() )
+	reviewModal.find('#average-level').val( editReviewRow.find('.average-level').text())
 }
 
 //리뷰 수정
 var editReview = function(){
+	//delete한 썸네일 추가
+	$(reviewForm).append('<input type="hidden" name="delThumbnail" value="'+delThumbnail+'"/>');
+	
+	//파일 추가
+	var form = $('#reviewForm')[0];
+
+	var reviewFormData = new FormData(form);
+	
+	reviewFormData.delete('file');
+	
+	var fileSize = fileBuffer.length;
+	
+	if(fileSize >0){
+		for(var i=0 ; i < fileSize ; i ++){
+			reviewFormData.append("file",fileBuffer[i]);
+			console.log(i,fileBuffer[i]);
+		}
+	}
 	
 	reviewFormObj = $(reviewForm).serializeObject();
-	console.log(reviewFormObj.review_id,reviewFormObj);
+	//console.log(reviewFormObj.review_id,reviewFormObj);
+	console.log(reviewFormObj.review_id,reviewFormData);
+	
 
-	//ajax 통싱 - post방식으로 추가
+	//ajax 통신 - post방식으로 추가
 	$.ajax({
 		type: 'PUT',
 		url: '/moca/reviews/'+reviewFormObj.review_id,
-		data: reviewFormObj,
+		enctype : 'multipart/form-data',
+//		data: reviewFormObj,
+		data: reviewFormData,
+		dataType : "json",
+		contentType : false,  
+		processData : false,
+		cache : false,
+		timeout : 600000,
 		success: function(reviewVo) {
 			console.log('ajax 통신 성공')
 			//리뷰 내용
@@ -202,6 +244,7 @@ var editReview = function(){
 			
 			$('#reviewModal').modal("hide");	//모달창 닫기
 			
+			delThumbnail = "" //delThumbnail 초기화
 			
 		},
 		error: function(error) {
@@ -212,24 +255,6 @@ var editReview = function(){
 
 }
 
-var deleteThumbnail = function(imageId){
-	console.log("delete thumbnail, id = " + imageId);
-	
-	$.ajax({
-		type: 'DELETE',
-		url: '/moca/reviewImage/'+imageId,
-		success: function() {
-			console.log('ajax 통신 성공')
-			
-			//해당 이미지 삭제
-		},
-		error: function() {
-			console.log('ajax 통신 실패')
-			alert("취소 실패")
-		}
-	})
-}
-
 var clearReviewModalData = function(){
 				
 	///사진(나중에 정해지면)
@@ -237,7 +262,7 @@ var clearReviewModalData = function(){
 	reviewModal.find('.reviewThumbnailGroup').remove();
 
 	//리뷰 내용
-	reviewModal.find('#review-content').text('');
+	reviewModal.find('#review-content').val('');
 
 	//평점
 	reviewModal.find('#taste-level').val('1')
@@ -260,7 +285,7 @@ var deleteReview = function(review_id) {
 		},
 		error: function() {
 			console.log('ajax 통신 실패')
-			alert("취소 실패")
+			alert("리뷰 삭제 실패")
 		}
 	})
 }
@@ -269,6 +294,13 @@ var deleteReview = function(review_id) {
 //리뷰 사진 삭제 버튼 클릭시
 var deleteReviewImg = function(deleteBtn){
 	console.log(deleteBtn);
+	var temp = delThumbnail;
+	if(delThumbnail != ""){		
+		delThumbnail = temp+","+$(deleteBtn).prev().attr('src');		
+	}else{
+		delThumbnail = temp+$(deleteBtn).prev().attr('src');		
+	}
+	console.log(delThumbnail);
 	$(deleteBtn).parent().hide();
 }
 

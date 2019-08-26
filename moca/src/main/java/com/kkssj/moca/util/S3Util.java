@@ -23,11 +23,11 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 public class S3Util implements VariableManagement {
     
     //bucketName
-    private String bucketName = "moca-pictures"; 
+    private String bucketName = "team-moca"; 
     private AmazonS3 conn;
 
     public S3Util() {
-    	AWSCredentials credentail = new BasicAWSCredentials(accessKey,  secretKey);
+    	AWSCredentials credentail = new BasicAWSCredentials(accessKey,secretKey);
     	ClientConfiguration clientConfig = new ClientConfiguration();
     	clientConfig.setProtocol(Protocol.HTTP);
         this.conn = new AmazonS3Client(credentail, clientConfig);
