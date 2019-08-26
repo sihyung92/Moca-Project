@@ -26,6 +26,7 @@ public class S3Util implements VariableManagement {
     private String bucketName = "team-moca"; 
     private AmazonS3 conn;
 
+
     public S3Util() {
     	AWSCredentials credentail = new BasicAWSCredentials(accessKey,secretKey);
     	ClientConfiguration clientConfig = new ClientConfiguration();
@@ -38,53 +39,53 @@ public class S3Util implements VariableManagement {
         return bucketName;
     }
 
-    // ¹öÅ¶ ¸®½ºÆ®¸¦ °¡Á®¿À´Â ¸Ş¼­µåÀÌ´Ù.
+    // ë²„í‚· ë¦¬ìŠ¤íŠ¸ë¥¼ ê°€ì ¸ì˜¤ëŠ” ë©”ì„œë“œì´ë‹¤.
     public List<Bucket> getBucketList() {
         return conn.listBuckets();
     }
-    // ¹öÅ¶À» »ı¼ºÇÏ´Â ¸Ş¼­µåÀÌ´Ù.
+    // ë²„í‚·ì„ ìƒì„±í•˜ëŠ” ë©”ì„œë“œì´ë‹¤.
     public Bucket createBucket(String bucketName) {
         return conn.createBucket(bucketName);
     }
 
-    // Æú´õ »ı¼º (Æú´õ´Â ÆÄÀÏ¸í µÚ¿¡ "/"¸¦ ºÙ¿©¾ßÇÑ´Ù.)
+    // í´ë” ìƒì„± (í´ë”ëŠ” íŒŒì¼ëª… ë’¤ì— "/"ë¥¼ ë¶™ì—¬ì•¼í•œë‹¤.)
     public void createFolder(String bucketName, String folderName) {
         conn.putObject(bucketName, folderName + "/", new ByteArrayInputStream(new byte[0]), new ObjectMetadata());
     }
-    // ÆÄÀÏ ¾÷·Îµå
+    // íŒŒì¼ ì—…ë¡œë“œ
     public void fileUpload(String bucketName, String fileName, byte[] fileData) throws FileNotFoundException {
 
-        String filePath = (fileName).replace(File.separatorChar, '/'); // ÆÄÀÏ ±¸º°ÀÚ¸¦ `/`·Î ¼³Á¤(\->/) ÀÌ°Ô ±âÁ¸¿¡ / ¿´¾îµµ ³Ñ¾î¿À¸é¼­ \·Î ¹Ù²î´Â °Å°°´Ù.
+        String filePath = (fileName).replace(File.separatorChar, '/'); // íŒŒì¼ êµ¬ë³„ìë¥¼ `/`ë¡œ ì„¤ì •(\->/) ì´ê²Œ ê¸°ì¡´ì— / ì˜€ì–´ë„ ë„˜ì–´ì˜¤ë©´ì„œ \ë¡œ ë°”ë€ŒëŠ” ê±°ê°™ë‹¤.
         ObjectMetadata metaData = new ObjectMetadata();
-        metaData.setContentLength(fileData.length);   //¸ŞÅ¸µ¥ÀÌÅÍ ¼³Á¤ -->¿ø·¡´Â 128kB±îÁö ¾÷·Îµå °¡´ÉÇßÀ¸³ª ÆÄÀÏÅ©±â¸¸Å­ ¹öÆÛ¸¦ ¼³Á¤½ÃÄ×´Ù.
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileData); //ÆÄÀÏ ³ÖÀ½
+        metaData.setContentLength(fileData.length);   //ë©”íƒ€ë°ì´í„° ì„¤ì • -->ì›ë˜ëŠ” 128kBê¹Œì§€ ì—…ë¡œë“œ ê°€ëŠ¥í–ˆìœ¼ë‚˜ íŒŒì¼í¬ê¸°ë§Œí¼ ë²„í¼ë¥¼ ì„¤ì •ì‹œì¼°ë‹¤.
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileData); //íŒŒì¼ ë„£ìŒ
 
         conn.putObject(bucketName, filePath, byteArrayInputStream, metaData);
 
     }
 
-    // ÆÄÀÏ »èÁ¦
+    // íŒŒì¼ ì‚­ì œ
     public void fileDelete(String fileName) {
 
         System.out.println("fileName : " + fileName);
         String imgName = (fileName).replace(File.separatorChar, '/');
         conn.deleteObject(this.getBucketName(), imgName);
-        System.out.println("»èÁ¦¼º°ø");
+        System.out.println("ì‚­ì œì„±ê³µ");
     }
 
-    // ÆÄÀÏ URL
+    // íŒŒì¼ URL
     public String getFileURL(String bucketName, String fileName) {
-        System.out.println("³Ñ¾î¿À´Â ÆÄÀÏ¸í : "+fileName);
+        System.out.println("ë„˜ì–´ì˜¤ëŠ” íŒŒì¼ëª… : "+fileName);
         String imgName = (fileName).replace(File.separatorChar, '/');
         return conn.generatePresignedUrl(new GeneratePresignedUrlRequest(bucketName, imgName)).toString();
     }
 
-    // srcÆÄÀÏ ÀĞ¾î¿À±â
+    // srcíŒŒì¼ ì½ì–´ì˜¤ê¸°
     public S3ObjectInputStream getSrcFile(String bucketName, String fileName) throws IOException{
-        System.out.println("³Ñ¾î¿À´Â ÆÄÀÏ¸í : "+fileName);
+        System.out.println("ë„˜ì–´ì˜¤ëŠ” íŒŒì¼ëª… : "+fileName);
         fileName = (fileName).replace(File.separatorChar, '/');
-        S3Object s3object = conn.getObject(new GetObjectRequest(bucketName, fileName)); //ÇØ´ç ÆÄÀÏ s3°´Ã¼¿¡ ´ã±â
-        S3ObjectInputStream objectInputStream = s3object.getObjectContent();    //s3°´Ã¼¸¦ ½ºÆ®¸²À¸·Î º¯È¯
+        S3Object s3object = conn.getObject(new GetObjectRequest(bucketName, fileName)); //í•´ë‹¹ íŒŒì¼ s3ê°ì²´ì— ë‹´ê¸°
+        S3ObjectInputStream objectInputStream = s3object.getObjectContent();    //s3ê°ì²´ë¥¼ ìŠ¤íŠ¸ë¦¼ìœ¼ë¡œ ë³€í™˜
 
         return objectInputStream;
     }
