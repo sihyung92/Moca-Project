@@ -119,7 +119,7 @@
 					},
 					success: function(data) {
 						
-						console.log("로그인 성공");
+						//console.log("로그인 성공");
 						//redirToHome();
 						f5();
 					}
