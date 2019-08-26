@@ -23,7 +23,6 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public AccountVo login(AccountVo accountVo) {
 		// TODO Auto-generated method stub
-		System.out.println(accountVo.toString());
 		
 		try {
 			AccountVo compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());

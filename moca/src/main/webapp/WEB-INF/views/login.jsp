@@ -25,30 +25,26 @@
     <script type='text/javascript'>
     
     $(document).ready(function(){
-    	var testBtn = $('#test-btn');
-    	testBtn.click(function(){
-    		 //alert(sessionStorage.getItem("login"));
-    		 
-    		 var loginSession = JSON.parse(sessionStorage.getItem("login"));
-    		 
-			console.log(sessionStorage.getItem("login"));
-			
-    	});
     	
-    	// Naver 로그인 우선 제외
-		///* var naverLogin = new naver.LoginWithNaverId(
-		//		{
-		//			clientId: "Ku_XOqso7r1UgfC0sTeH",
-		//			callbackUrl: "http://localhost:8080/moca/navercallback",
-		//			isPopup: false, /* 팝업을 통한 연동처리 여부 */
-		//			loginButton: {color: "green", type: 3, height: 60} /* 로그인 버튼의 타입을 지정 */
-		//		}
-		//	);
-		//	/* 설정정보를 초기화하고 연동을 준비 */
-		//	naverLogin.init(); 
-			
-			
-			
+    	<!-- 테스트용 버튼 -->
+	    	var testBtn = $('#test-btn');
+	    	testBtn.click(function(){
+	    		 //alert(sessionStorage.getItem("login"));
+	    		 
+	    		 var loginSession = JSON.parse(sessionStorage.getItem("login"));
+	    		 
+				console.log(sessionStorage.getItem("login"));
+				
+	    	});
+    	<!-- 테스트용 버튼 -->
+    	
+    	
+    	<!-- 로그인 버튼 -->
+    		kakaoLogin();
+    	<!-- 로그인 버튼 -->
+    });
+    
+    function kakaoLogin(){
 		//kakao login
 	    // 사용할 앱의 JavaScript 키를 설정해 주세요.
 	    Kakao.init('e85bc4677809dd977652da6eeaac836f');
@@ -74,7 +70,8 @@
 	        			"platformType":"kakao",
 	        			"profileImage":JSON.stringify(res.properties.profile_image),
 	        			"thumbnailImage":JSON.stringify(res.properties.thumbnail_image),
-	        			"email":JSON.stringify(res.kakao_account.email)
+	        			"email":JSON.stringify(res.kakao_account.email),
+	        			"token":Kakao.Auth.getAccessToken()
 	    			};
 	        	
 	        	console.log(JSON.stringify(res));
@@ -100,19 +97,26 @@
 	            alert(JSON.stringify(error));
 	            
 	          },
-	          scope: "account_email,birthday" 
 	        });
 	      },
 	      fail: function(err) {
 	        alert(JSON.stringify(err));
 	      }
-	    });
-    });
+	    });    	
+    }
     
     function redirToHome(){
 		  location.replace("http://localhost:8080/moca/home2")
 	}
     </script>
+    
+    
+    
+    
+    
+    
+    
+    
     <style type="text/css">
         /* body .modal{
         	background-color: blue;

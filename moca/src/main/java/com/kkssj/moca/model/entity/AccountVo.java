@@ -6,12 +6,13 @@ public class AccountVo {
 	
 	/*email Ãß°¡*/
 	String email;
+	String token;
 	
 	public AccountVo() {
 	}
 
 	public AccountVo(int account_id, int followCount, int reviewCount, int platformId, String nickname,
-			String platformType, String profileImage, String thumbnailImage, String email) {
+			String platformType, String profileImage, String thumbnailImage, String email, String token) {
 		super();
 		this.account_id = account_id;
 		this.followCount = followCount;
@@ -23,6 +24,7 @@ public class AccountVo {
 		this.thumbnailImage = thumbnailImage;
 		
 		this.email = email;
+		this.token = token;
 	}
 
 
@@ -116,11 +118,27 @@ public class AccountVo {
 	}
 
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	@Override
+	public String toString() {
+		return "AccountVo [account_id=" + account_id + ", followCount=" + followCount + ", reviewCount=" + reviewCount
+				+ ", platformId=" + platformId + ", nickname=" + nickname + ", platformType=" + platformType
+				+ ", profileImage=" + profileImage + ", thumbnailImage=" + thumbnailImage + ", email=" + email
+				+ ", token=" + token + "]";
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + account_id;
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
 		result = prime * result + platformId;
@@ -139,6 +157,8 @@ public class AccountVo {
 		if (getClass() != obj.getClass())
 			return false;
 		AccountVo other = (AccountVo) obj;
+		if (account_id != other.account_id)
+			return false;
 		if (email == null) {
 			if (other.email != null)
 				return false;
@@ -169,11 +189,5 @@ public class AccountVo {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		return "AccountVo [account_id=" + account_id + ", followCount=" + followCount + ", reviewCount=" + reviewCount
-				+ ", platformId=" + platformId + ", nickname=" + nickname + ", platformType=" + platformType
-				+ ", profileImage=" + profileImage + ", thumbnailImage=" + thumbnailImage + ", email=" + email + "]";
-	}
 
 }
