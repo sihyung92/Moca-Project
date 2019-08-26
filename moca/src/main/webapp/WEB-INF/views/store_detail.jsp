@@ -53,14 +53,12 @@
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
-	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js"/>"> </script> 
-	
+	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=13"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
@@ -100,7 +98,7 @@
 		                resetFile();
 		                return false;
 		            }
-		           
+		            console.log("change",fileBuffer);
 		        });
 		        
 		        $(fileListDiv).html($(fileListDiv).html()+newFileDiv);
@@ -112,7 +110,7 @@
 				    $('#fileListDiv>div:eq('+fileIndex+')').remove(); //삭제버튼에 해당하는
 				     
 				    const target = document.getElementsByName('files[]');
-
+				    console.log("remove",fileBuffer);
 				})
 		 
 		    });
@@ -270,7 +268,8 @@
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				saveReview();
+				console.log(fileBuffer);
+				saveReview(fileBuffer);
 			})
 			
 			//수정 버튼 클릭시
@@ -586,7 +585,7 @@
 	<!-- clone할 review element -->
 	<div class="row"  id="reviewTemplate" style="display : none;">
 		<div class="editDeleteGroup btn-group" role="group">
-			<input type="number" style="display: none;" class="review-id" value=${reviewVo.review_id } >
+			<input type="number" style="display: none;" class="review-id" >
 			<button type="button" class="btn-edit btn btn-default">수정</button>
 			<button type="button" class="btn-delete btn btn-default">삭제</button>
 		</div>

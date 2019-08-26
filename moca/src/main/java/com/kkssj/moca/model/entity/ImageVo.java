@@ -50,11 +50,11 @@ public class ImageVo {
 	public void setUrl(String url) {
 		if(this.uu_id!=null) {
 			if(this.path.equals("")) {
-				this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_"+this.originName;	
-				this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_thumbnail_"+this.originName;
+				this.url = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_"+this.originName;	
+				this.thumbnailUrl = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_thumbnail_"+this.originName;
 			}else {
-				this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_"+this.originName;	
-				this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_thumbnail_"+this.originName;
+				this.url = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_"+this.originName;	
+				this.thumbnailUrl = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_thumbnail_"+this.originName;
 			}
 				
 		}else {
@@ -64,11 +64,11 @@ public class ImageVo {
 	}
 	public void setUrl() {
 		if(this.path.equals("")) {
-			this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_"+this.originName;
-			this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_thumbnail_"+this.originName;
+			this.url = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_"+this.originName;
+			this.thumbnailUrl = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_thumbnail_"+this.originName;
 		}else {
-			this.url = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_"+this.originName;
-			this.thumbnailUrl = "https://moca-pictures.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_thumbnail_"+this.originName;
+			this.url = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_"+this.originName;
+			this.thumbnailUrl = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.path+"/"+this.uu_id+"_thumbnail_"+this.originName;
 		}
 		
 	}

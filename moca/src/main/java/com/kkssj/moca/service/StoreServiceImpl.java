@@ -247,9 +247,9 @@ public class StoreServiceImpl implements StoreService{
 		}
 		return null;
 	}
-
+	
 	@Override
-	public int editReview(ReviewVo reviewVo) {
+	public int editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails) {
 		try {
 			//평균 점수 다시 계산
 			reviewVo.calAverageLevel();
@@ -263,6 +263,7 @@ public class StoreServiceImpl implements StoreService{
 		}
 		return -1;
 	}
+	
 	//리뷰 삭제
 	@Override
 	public int deleteReview(ReviewVo reviewVo){
@@ -285,8 +286,8 @@ public class StoreServiceImpl implements StoreService{
 				logger.debug(imageVo.toString());
 				imageVo.setFieName();
 				imageVo.setThumbnailFileName();
-				s3.fileDelete(imageVo.getFieName());
-				s3.fileDelete(imageVo.getThumbnailFileName());
+				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getFieName());
+				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getThumbnailFileName());
 			}
 	
 			
@@ -381,4 +382,5 @@ public class StoreServiceImpl implements StoreService{
 		}
 		return -1;
 	}
+
 }

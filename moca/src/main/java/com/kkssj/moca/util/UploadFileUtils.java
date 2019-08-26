@@ -29,7 +29,7 @@ public class UploadFileUtils {
     	
     	//S3 서버 관련 설정  
     	S3Util s3 = new S3Util();
-        String bucketName = "moca-pictures";
+        String bucketName = "team-moca";
             
         //범용고유식별자(36개의 문자로된 중복 가능성이 거의 없는)    
         UUID uuid = UUID.randomUUID();

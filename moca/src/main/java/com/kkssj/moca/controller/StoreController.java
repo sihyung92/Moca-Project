@@ -161,14 +161,17 @@ public class StoreController {
 	//리뷰 수정
 	@PutMapping("/reviews/{review_id}")
 	@ResponseBody
-	public ResponseEntity editReview(@PathVariable("review_id") int review_id, ReviewVo reviewVo) {
-		logger.debug(reviewVo.toString());
+	public ResponseEntity editReview(@RequestParam("file") MultipartFile[] newFiles, 
+			@RequestParam("delThumbnail") String delThumbnails, ReviewVo reviewVo) {
 		
+		logger.debug(reviewVo.toString());
+		logger.debug(delThumbnails);
 		//세션이 작동했다고 가정
 		reviewVo.setAccountId(1);
 		
+		int isEdite = 1;
 		//json으로 수정 내용 전송
-		int isEdite = storeService.editReview(reviewVo);
+		//int isEdite = storeService.editReview(reviewVo, newFiles, delThumbnails);
 		
 		//받는 쪽에서 refresh하게
 		if(isEdite ==1) {

@@ -20,16 +20,15 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 
-public class S3Util {
+public class S3Util implements VariableManagement {
     
     //bucketName
-    private String bucketName = "moca-pictures"; 
+    private String bucketName = "team-moca"; 
     private AmazonS3 conn;
-    private String accessKey = "AKIAIAHCGE3LVN42BX4A"; 	//¿¢¼¼½ºÅ°
-    private String secretKey = "GTzw0icsMAAxCrIEFqfe18UmMRGeHTc24eEQE5P+";	//º¸¾È ¿¢¼¼½ºÅ°
+
 
     public S3Util() {
-    	AWSCredentials credentail = new BasicAWSCredentials(accessKey,  secretKey);
+    	AWSCredentials credentail = new BasicAWSCredentials(accessKey,secretKey);
     	ClientConfiguration clientConfig = new ClientConfiguration();
     	clientConfig.setProtocol(Protocol.HTTP);
         this.conn = new AmazonS3Client(credentail, clientConfig);
