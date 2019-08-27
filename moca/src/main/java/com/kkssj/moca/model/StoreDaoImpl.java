@@ -88,4 +88,9 @@ public class StoreDaoImpl implements StoreDao {
 	public List<ImageVo> selectStoreReviewImgList(Map<String, Integer> map) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoreReviewImgList", map);
 	}
+
+	@Override
+	public List<StoreVo> selectHitStoresList() {		
+		return sqlSession.selectList("selectHitStoresList");
+	}
 }

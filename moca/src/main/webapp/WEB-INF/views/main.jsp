@@ -69,12 +69,12 @@
 <div id="header">
 			<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 </div>
-<div id="content container-fluid">
-	<div id=row>
-		<div class="col-md-offset-1 col-md-11">
-			<h5>주변 추천 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
-		</div> 
-		<div class="col-md-offset-1 col-md-11 carousel slide" id="carousel-example-generic" data-ride="carousel">
+<div id="content" class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<h5>지금 뜨는 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
+		</div>
+		<div class="col-md-12 carousel slide" id="carousel-example-generic" data-ride="carousel">
 		  <!-- Indicators -->
 		  <ol class="carousel-indicators">
 		    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
@@ -93,27 +93,7 @@
 		      <div class="carousel-caption">
 		        1page
 		      </div>
-		    </div>
-		    <div class="item">
-		     <ul class="item-inner" style="list-style:none">
-		     	<li style="float:left; width:200px;"><img src="..." alt="..."></li>
-		     	<li style="float:left;;width:200px"><img src="..." alt="..."></li>
-		     	<li style="float:left; width:200px"><img src="..." alt="..."></li>
-		     </ul>
-		      <div class="carousel-caption">
-		        2page
-		      </div>
-		    </div>
-		    <div class="item">
-		     <ul class="item-inner" style="list-style:none">
-		     	<li style="float:left; width:200px;"><img src="..." alt="..."></li>
-		     	<li style="float:left;;width:200px"><img src="..." alt="..."></li>
-		     	<li style="float:left; width:200px"><img src="..." alt="..."></li>
-		     </ul>
-		      <div class="carousel-caption">
-		        3page
-		      </div>
-		    </div>
+		    </div>  		   
 		  </div>
 		
 		  <!-- Controls -->
