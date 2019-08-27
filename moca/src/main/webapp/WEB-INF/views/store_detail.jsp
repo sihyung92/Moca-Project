@@ -51,9 +51,54 @@
 			overflow: hidden;
 	    }
 	    
-	    #reviewThumbnailGroup .clickedImg {
+	    
+	    
+	    .modal-content {
+		  position: relative;
+		  background-color: #fefefe;
+		  margin: auto;
+		  padding: 0;
+		  width: 90%;
+		  max-width: 1200px;
+		}	
+		#reviewDetailDiv {
+			overflow:hidden;
+		  text-align: center;
+		  background-color: black;
+		  padding: 2px 16px;
+		  color: white;
+		}
+		#reviewThumbnailGroup{
+			text-align: center;
+			background-color: black;
+			padding: 2px 16px;
+			color: white;
+		}
+		#reviewThumbnailGroup .clickedImg {
 	    	border: 5px solid red;
 	    }
+	    /* Next & previous buttons */
+		#preReviewImgBtn,
+		#nextReviewImgBtn {
+		  cursor: pointer;
+		  position: absolute;
+		  top: 50%;
+		  width: auto;
+		  padding: 16px;
+		  margin-top: -50px;
+		  font-weight: bold;
+		  font-size: 20px;
+		  transition: 0.6s ease;
+		  border-radius: 0 3px 3px 0;
+		  user-select: none;
+		  -webkit-user-select: none;
+		}
+		
+		/* Position the "next button" to the right */
+		#nextReviewImgBtn{
+		  right: 0;
+		  border-radius: 3px 0 0 3px;
+		}
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -62,7 +107,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=11"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
@@ -895,16 +940,16 @@
 	</div>
 	
 	<!-- 리뷰 이미지 디테일 -->
-	<div id="reviewsDetailModal" class="modal fade" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
+	<div id="reviewsDetailModal" class="modal fade" tabindex="-1">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title">상세 화면</h4>
 	      </div>
 	      <div id= "reviewDetailDiv" class="modal-body">
 	        <p>원본 이미지</p>
 	      </div>
+	      
+	      
 	      <div class="leftRightBtns">
 	        <button id="preReviewImgBtn" type="button" class="btn btn-default" aria-label="Left Align">
 			  <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -917,7 +962,6 @@
 			</div>
 	      </div>
 	    </div><!-- /.modal-content -->
-	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 </body>
 

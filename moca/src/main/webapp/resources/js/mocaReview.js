@@ -503,7 +503,7 @@ var showDetailReviewImg = function(clickedReviewImg){
 	//디테일 이미지의 인덱스
 	detailImgIdx = 0;
 	detailImgsSize = reviewThumbnailGroup.find('img').size();
-	for(var i=0; i<6 ; i++){
+	for(var i=0; i<detailImgsSize ; i++){
 		if(reviewThumbnailGroup.find('img').eq(i).hasClass('clickedImg')){
 			detailImgIdx = i;
 		}
@@ -521,7 +521,7 @@ var showDetailReviewImg = function(clickedReviewImg){
 			src : url
 		}));
 		
-		for(var i=0; i<6 ; i++){
+		for(var i=0; i<detailImgsSize ; i++){
 			if(reviewThumbnailGroup.find('img').eq(i).hasClass('clickedImg')){
 				detailImgIdx = i;
 			}
