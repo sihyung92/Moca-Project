@@ -32,7 +32,6 @@ import com.kkssj.moca.util.UploadFileUtils;
 @Service
 public class StoreServiceImpl implements StoreService{
 	private static final Logger logger = LoggerFactory.getLogger(StoreServiceImpl.class);
-	
 
 	@Inject
 	ReviewDao reviewDao;

@@ -50,6 +50,10 @@
 			object-fit: cover;
 			overflow: hidden;
 	    }
+	    
+	    #reviewThumbnailGroup .clickedImg {
+	    	border: 5px solid red;
+	    }
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -58,7 +62,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=13"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=11"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
@@ -68,6 +72,10 @@
 		var removeThumbnailBtn;
 		var newFileDiv;
 		var fileBuffer;
+
+
+		//나중에 삭제할 테스트 변수
+		var test;
 
 	
 		$(document).ready(function() {
@@ -311,6 +319,40 @@
 
 			//StoreImg 클래스 일 때 '카페에서 등록한 이미지 입니다'
 			$('.StoreImg').append('<span>카페에서 등록한 이미지 입니다</span>');
+
+
+			//리뷰 디테일 모달
+			reviewImg.click(function(){
+				//모달 활성화(+초기화)
+				reviewsDetailModal.modal("show");
+				
+
+				//섬네일 url > 원본 url
+				showDetailReviewImg(this);
+
+				
+				//데이터 값 전송
+				
+			})
+
+			$('#preReviewImgBtn').click(function(){
+				if(detailImgIdx > 0){
+					detailImgIdx =detailImgIdx-1;
+				}else{
+					detailImgIdx = 0;
+				}
+				showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
+				
+			})
+
+			$('#nextReviewImgBtn').click(function(){
+				if(detailImgIdx < detailImgsSize-1){
+					detailImgIdx =detailImgIdx+1;
+				}else{
+					detailImgIdx = detailImgsSize-1;
+				}
+				showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
+			})
 
 		});
 
@@ -851,6 +893,32 @@
 		</div>
 		</div>
 	</div>
+	
+	<!-- 리뷰 이미지 디테일 -->
+	<div id="reviewsDetailModal" class="modal fade" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">상세 화면</h4>
+	      </div>
+	      <div id= "reviewDetailDiv" class="modal-body">
+	        <p>원본 이미지</p>
+	      </div>
+	      <div class="leftRightBtns">
+	        <button id="preReviewImgBtn" type="button" class="btn btn-default" aria-label="Left Align">
+			  <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+			</button>
+	        <button id="nextReviewImgBtn" type="button" class="btn btn-default" aria-label="Left Align">
+			  <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+			</button>
+			<div id="reviewThumbnailGroup" class="reviewThumbnailGroup">
+				
+			</div>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 </body>
 
 </html>
