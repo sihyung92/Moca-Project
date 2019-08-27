@@ -37,6 +37,14 @@ var delThumbnail="";
 var maxNumForAdd = 0;
 var delCnt = 0;
 
+
+var reviewImg; 
+var reviewsDetailModal;
+var reviewThumbnailGroup;
+var detailImgIdx;
+var detailImgsSize;
+
+
 ////////////////////////////
 //함수부
 
@@ -58,6 +66,12 @@ var bindReviewVariable = function(){
 	//리뷰 더보기
 	quotient = $('.reviewCnt').length/3;
 	remainder = $('.reviewCnt').length%3;
+	
+	//리뷰 상세 보기
+	reviewImg = $('.review-content').find('img');
+	reviewsDetailModal =$('#reviewsDetailModal');
+	reviewThumbnailGroup = $('#reviewThumbnailGroup');
+	
 }
 
 
@@ -497,6 +511,59 @@ var cancelLikeHate = function(reviewId, isLike){
 
 	})
 
+}
+
+//리뷰 디테일 이미지를 보여줌
+var showDetailReviewImg = function(clickedReviewImg){
+	$('img').removeClass('clickedImg')
+	//클릭한 이미지에 class 추가	
+	$(clickedReviewImg).addClass('clickedImg');
+	
+	//섬네일 url 주소를 원본 url 주소로 변경
+	var url = thumbnailUrl2Url( clickedReviewImg.src );
+	
+	//
+	$('#reviewDetailDiv').html($('<img/>',{
+		id : 'reviewDetailImg',
+		src : url
+	}));
+	//클릭한 리뷰의 섬네일 이미지를 모달로
+	reviewThumbnailGroup.html($(clickedReviewImg).parents('.reviewThumbnailGroup').html());
+	
+	//디테일 이미지의 인덱스
+	detailImgIdx = 0;
+	detailImgsSize = reviewThumbnailGroup.find('img').size();
+	for(var i=0; i<detailImgsSize ; i++){
+		if(reviewThumbnailGroup.find('img').eq(i).hasClass('clickedImg')){
+			detailImgIdx = i;
+		}
+	}
+	
+	reviewThumbnailGroup.find('img').click(function(){
+		$('img').removeClass('clickedImg')
+		$(this).addClass('clickedImg');
+		//섬네일 url 주소를 원본 url 주소로 변경
+		var url = thumbnailUrl2Url( this.src );
+		
+		//
+		$('#reviewDetailDiv').html($('<img/>',{
+			id : 'reviewDetailImg',
+			src : url
+		}));
+		
+		for(var i=0; i<detailImgsSize ; i++){
+			if(reviewThumbnailGroup.find('img').eq(i).hasClass('clickedImg')){
+				detailImgIdx = i;
+			}
+		}
+	})
+	
+	
+}
+
+var thumbnailUrl2Url = function(thumbnailUrl){
+	var url = thumbnailUrl.split('_thumbnail')
+	return url[0]+url[1];
 }
 
 
