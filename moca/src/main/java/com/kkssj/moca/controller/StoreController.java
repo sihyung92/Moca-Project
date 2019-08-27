@@ -131,8 +131,9 @@ public class StoreController {
     @ResponseBody
     @PostMapping(value ="/reviews")
     public ResponseEntity addReview(@RequestParam("file") MultipartFile[] files, HttpSession session, ReviewVo reviewVo) throws Exception{
-//    public ResponseEntity addReview(MultipartHttpServletRequest req, HttpSession session, ReviewVo reviewVo) throws Exception{
-    	
+    	if(files.length>10) {
+    		return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+    	}
     	//사용자 개정 등록(세션에서 왔다고 가정)
     	AccountVo accountVo = (AccountVo)session.getAttribute("login");
     	accountVo = new AccountVo();
@@ -140,13 +141,12 @@ public class StoreController {
     	accountVo.setAccount_id(1);
         
         reviewVo.setAccountId(accountVo.getAccount_id());
-        logger.debug(reviewVo.toString());  	
+        logger.debug(reviewVo.toString());
 		
         for (int i = 0; i < files.length; i++) {
 			logger.debug(files[i].getName());
 		}
-		reviewVo = storeService.addReview(reviewVo,files);
-		
+		//reviewVo = storeService.addReview(reviewVo,files);
 		
 		if(reviewVo != null) {
 			logger.debug(reviewVo.toString());
@@ -154,16 +154,18 @@ public class StoreController {
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-        
     }
     
 	
 	//리뷰 수정
-	@PutMapping("/reviews/{review_id}")
+	@PostMapping("/reviews/{review_id}")
 	@ResponseBody
 	public ResponseEntity editReview(@RequestParam("file") MultipartFile[] newFiles, 
 			@RequestParam("delThumbnail") String delThumbnails, ReviewVo reviewVo) {
-		
+		String[] delThumbnail = delThumbnails.split(",");
+		if((newFiles.length+delThumbnail.length)>10) {
+    		return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+    	}
 		logger.debug(reviewVo.toString());
 		logger.debug(delThumbnails);
 		//세션이 작동했다고 가정

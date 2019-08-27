@@ -58,7 +58,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=13"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=14"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
@@ -78,45 +78,60 @@
 
 			//리뷰 작성버튼 클릭시
  			fileBuffer = [];
- 			
+		    //수정을 눌렀을 때와 입력을 눌렀을 때 파일 입력 개수의 차이
 			$('#files').change(function(){
-				fileListDiv = $(this).next();
-		        const target = document.getElementsByName('file');
-		        
-		        Array.prototype.push.apply(fileBuffer, target[0].files);
-		        var newFileDiv = '';
-		        $.each(target[0].files, function(index, file){
-		            const fileName = file.name;
-		            newFileDiv += '<div class="file newThumbnail reviewThumbnail" style="width:121px">';
-		            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image">'
-		            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn"onclick="deleteReviewImg(this)" aria-hidden="true" style="position:relative; left:-95px; top:-30px; cursor:pointer; background-color:rgb(255,255,255,0.5);"></span>';
-		            //newFileDiv += '<span>'+fileName+'</span>';
-		            newFileDiv += '</div>';
-		            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
-		            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
-		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
-		                resetFile();
-		                return false;
-		            }
-		            console.log("change",fileBuffer);
-		        });
+			    const target = document.getElementsByName('file');
+			    				
+				if($(this).next().attr('class')=='reviewThumbnailGroup'){
+					fileListDiv = $(this).next();
+					if(fileBuffer.length==0){
+						maxNumForAdd = $(fileListDiv).children().find('.oldThumbnail').filter(':visible').length
+					}
+			    }else{
+			    	$(this).parent().append('<div class="reviewThumbnailGroup"></div>');
+			    	fileListDiv = $(this).next();
+			    	maxNumForAdd = 0;
+				}
+				
+				if((fileBuffer.length*1)+maxNumForAdd>10 || (target[0].files.length*1)>10){
+					alert("파일은 10개까지만 등록가능합니다.");
+				}else{
+			        
+			        Array.prototype.push.apply(fileBuffer, target[0].files);
+			        var newFileDiv = '';
+			        $.each(target[0].files, function(index, file){
+			            const fileName = file.name;
+			            newFileDiv += '<div class="file newThumbnail reviewThumbnail" style="width:121px">';
+			            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image">'
+			            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn"onclick="deleteReviewImg(this)" aria-hidden="true" style="position:relative; left:-95px; top:-30px; cursor:pointer; background-color:rgb(255,255,255,0.5);"></span>';
+			            newFileDiv += '</div>';
+			            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
+			            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+			                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+			                resetFile();
+			                return false;
+			            }
+			        });
+				}
 		        
 //		        $(fileListDiv).html($(fileListDiv).html()+newFileDiv);
 		        $(fileListDiv).append(newFileDiv);
-	            ///removeThumbnailBtn 이벤트 바인딩
-				$('.removeThumbnailBtn').click(function(){
-	            	removeThumbnailBtn = $(this);
-				    var fileIndex = $(this).parent().index();	//삭제 버튼을 클릭한 이미지가 몇번째인지 (0부터)
-				    fileBuffer.splice(fileIndex,1);		// 삭제한 파일을 제외한 실제로 추가해야할 정보
-				    $('#fileListDiv>div:eq('+fileIndex+')').remove(); //삭제버튼에 해당하는
-				     
-				    const target = document.getElementsByName('files[]');
-				    console.log("remove",fileBuffer);
-				})
+			    if((fileBuffer.length*1)+maxNumForAdd>10){
+					alert("파일은 10개까지만 등록가능합니다.");
+					//10개가 넘은 경우 넘은 파일 입력된 이미지랑 filebuffer에서 삭제
+					$.each(target[0].files, function(index, file){
+						var num = 0;
+						if(index==0){
+							num = fileBuffer.length-index;
+						}
+						fileBuffer.splice(fileBuffer.length-1, 1);
+						$('#files').next().children().last().remove();
+					});
+				}
+				
 		 
 		    });
 
-			
 			
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
@@ -269,12 +284,13 @@
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				console.log(fileBuffer);
 				saveReview(fileBuffer);
 			})
 			
 			//수정 버튼 클릭시
 			editBtn.click(function(){
+				//파일 버퍼 내용 비우기
+				fileBuffer = [];
 				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
 				reviewData2ReviewModal(this);
 				reviewModal.find('#saveReviewBtn').css('display','none')
@@ -291,6 +307,7 @@
 			
 			reviewModalBtn.click(function(){
 				//모달에 있는 데이터 없애고 
+				fileBuffer = [];
 				clearReviewModalData();
 				reviewModal.find('#saveReviewBtn').css('display','')
 				reviewModal.find('#editReviewBtn').css('display','none')
@@ -313,6 +330,15 @@
 			$('.StoreImg').append('<span>카페에서 등록한 이미지 입니다</span>');
 
 		});
+		/*
+		$('#files').focus(function(e){
+			if((fileBuffer.length*1)>10 || (target[0].files.length*1)>10){
+				e.preventDefault();
+				e.stopPropagation();
+			alert("파일은 10개까지만 등록가능합니다.");
+		}
+ 		});
+		*/
 
 	</script>
 </head>
