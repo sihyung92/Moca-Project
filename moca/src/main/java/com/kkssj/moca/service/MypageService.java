@@ -8,10 +8,10 @@ import com.kkssj.moca.model.entity.ReviewVo;
 public interface MypageService{
 
 	//해당 account의 follower목록 가져오기
-	List<AccountVo> getFollower(int accountId);
+	List<AccountVo> getFollowerList(int accountId);
 	
 	//해당 account의 following목록 가져오기
-	List<AccountVo> getFollowing(int accountId);
+	List<AccountVo> getFollowingList(int accountId);
 	
 	//해당 account의 내가 쓴 리뷰 가져오기
 	List<ReviewVo> getMyreview(int accountId);
@@ -21,4 +21,12 @@ public interface MypageService{
 	
 	//해당 account의 회원탈퇴(삭제)
 	int deleteAccount(int accountId);
+
+	//해당 account의 follow신청
+	int addFollow(int follower, int following);
+
+	//해당 account의 follow신청취소
+	int deleteFollow(int follower, int following);
+	
+	
 }

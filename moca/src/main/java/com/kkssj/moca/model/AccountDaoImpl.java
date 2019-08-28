@@ -55,5 +55,21 @@ public class AccountDaoImpl implements AccountDao {
 		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowingList",accountId);
 	}
 
+	@Override
+	public int insertFollow(int follower, int following) throws SQLException {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("follower", follower);
+		map.put("following", following);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.insertFollow",map);
+	}
+
+	@Override
+	public int deleteFollow(int follower, int following) throws SQLException {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("follower", follower);
+		map.put("following", following);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.deleteFollow",map);
+	}
+
 
 }

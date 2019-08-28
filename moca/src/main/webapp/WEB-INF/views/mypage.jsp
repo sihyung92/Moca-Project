@@ -8,7 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<style type="text/css">
-		#userInfo, #followerInfo{
+		#userInfo, #followInfo{
 			margin:0px auto;
 			text-align: center;
 			display: inline-block;
@@ -20,7 +20,7 @@
 		.inlineBlock{
 			display: inline;
 		}
-		.followerInfo{
+		.followInfo{
 			text-align: center;
 			margin-right: 3rem;
 		}
@@ -36,11 +36,33 @@
 	var haveFavoriteInfo = false;
 	var haveLikeInfo = false;
 
-	var accountId = 1;
-	var followerInfoTemplate;
+	var accountId = "${accountVo.account_id}";
+	var isMine = "${accountVo.isMine}";
+	var followingId;
+	var followInfoTemplate;
+
+	var address = window.location.pathname
+	var followId = address.substring(address.lastIndexOf("/")+1);
 	
 	$(document).ready(function() { 
-		$('#followerInfo').hide();
+		if(isMine==1){
+			$('#followBtn').hide();
+		}
+
+		var followingList = new Array();
+		
+		<c:forEach items="${followingList}" var="following">
+			followingList.push("${following.account_id}");
+		</c:forEach>
+		console.log(followingList);
+		
+		for ( var i = 0; i < followingList.length; i++) {
+			if(followId==followingList[i]){
+				$('#followBtn').attr('class','btn btn-success');
+			}
+		}
+		
+		$('#followInfo').hide();
 		$('#mypageTab li').click(function(){
 			//탭 클릭과 데이터 유무에 따른 tabContent 통신
 			if($(this).index() ==1 && !haveFollowerInfo){
@@ -51,19 +73,23 @@
 					success: function(followerList) {
 						console.log(followerList);
 
-						console.log(followerInfoTemplate);
+						console.log(followInfoTemplate);
 						for(var i=0; i<followerList.length; i++){
-							followerInfoTemplate = $('#followerInfo').clone();
+							followInfoTemplate = $('#followInfo').clone();
 							console.log(followerList[i].thumbnailImage);
-							$(followerInfoTemplate).removeAttr('id');
-							$(followerInfoTemplate).find('img').attr('src',followerList[i].thumbnailImage.replace('"','').replace('"',''));
-							$(followerInfoTemplate).find('#nickName').html(followerList[i].nickname);
-							$(followerInfoTemplate).find('#accountLevel').html(followerList[i].accountLevel);
-							$(followerInfoTemplate).css('display','inline-block');
-							$('#followerDiv>div>div').append(followerInfoTemplate);
+							$(followInfoTemplate).removeAttr('id');
+							onclick="location.href='address'"
+							$(followInfoTemplate).attr('onclick','location.href="'+followerList[i].account_id+'"');
+							$(followInfoTemplate).find('img').attr('src',followerList[i].thumbnailImage);
+							$(followInfoTemplate).find('#nickName').html(followerList[i].nickname);
+							$(followInfoTemplate).find('#accountLevel').html(followerList[i].accountLevel);
+							$(followInfoTemplate).css('display','inline-block');
+							$(followInfoTemplate).css('cursor','pointer');
+							$('#followerDiv>div>div').append(followInfoTemplate);
 						}
-						$('#followerDiv>div>div.followerInfo').show();
-						$('#followerInfo').hide();
+						$('#followerDiv>div>div.followInfo').show();
+						$('#followInfo').hide();
+						
 						haveFollowerInfo =true;
 					},
 					error: function(request,status,error) {
@@ -74,9 +100,22 @@
 			}else if($(this).index() ==2 && !haveFollowingInfo){
 				$.ajax({
 					type: 'GET',
-					url: '/moca/following/1',
-					success: function(reviewVo) {
+					url: '/moca/following/'+accountId,
+					success: function(followingList) {
 
+						for(var i=0; i<followingList.length; i++){
+							followInfoTemplate = $('#followInfo').clone();
+							console.log(followingList[i].thumbnailImage);
+							$(followInfoTemplate).removeAttr('id');
+							$(followInfoTemplate).attr('onclick','location.href="'+followingList[i].account_id+'"');
+							$(followInfoTemplate).find('img').attr('src',followingList[i].thumbnailImage);
+							$(followInfoTemplate).find('#nickName').html(followingList[i].nickname);
+							$(followInfoTemplate).find('#accountLevel').html(followingList[i].accountLevel);
+							$(followInfoTemplate).css('display','inline-block');
+							$('#followingDiv>div>div').append(followInfoTemplate);
+						}
+						$('#followingDiv>div>div.followInfo').show();
+						$('#followInfo').hide();
 						
 						haveFollowingInfo =true;
 					},
@@ -120,12 +159,33 @@
 		})		
 
 		$('#followBtn').click(function() {
-			$('#followBtn').toggleClass("btn-success");
-			$('#followBtn').toggleClass('btn-default');
-		});
-		$('#followingBtn').click(function() {
-			$('#followingBtn').toggleClass("btn-success");
-			$('#followingBtn').toggleClass('btn-default');
+			var type;
+			
+			if($('#followBtn').attr('class')=='btn btn-default'){
+				//팔로우 신청
+				type = 'POST';
+				
+			}else if($('#followBtn').attr('class')=='btn btn-success'){
+				//팔로우 취소
+				type = 'DELETE';
+			}
+			$.ajax({
+				type: type,
+				url: '/moca/follow/'+accountId,
+				data: {"followId":followId},
+				success: function() {
+					//타입에 따라서 팔로잉/팔로우 텍스트 변경
+					$('#followBtn').toggleClass("btn-success");
+					$('#followBtn').toggleClass('btn-default');
+				},
+				error: function(request,status,error) {
+					//타입에 따라서 에러 텍스트 변경
+					if(error='Internal Server Error'){
+						alert('이미 팔로우한 대상입니다');
+					}
+				}
+			});
+			
 		});
     });
    
@@ -141,7 +201,7 @@
 			<div class="col-md-2 col-md-offset-2" >
 				<div id="userInfo">
 					<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle"><br>
-					<button id="followBtn" class="btn btn-default">팔로우</button><button id="followingBtn" class="btn btn-default">팔로잉</button><br>
+					<button id="followBtn" class="btn btn-default">팔로우</button><br>
 					<span id="nickName">별명</span><br>
 					Lv.<span id="accountLevel">3</span><br>			
 				</div>
@@ -188,8 +248,10 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="followingDiv">
-						<!--followingDiv  -->
-						<p>followingDiv</p>
+						<div class="row">
+							<div class="col-md-10 col-md-offset-1 inlineBlock" >
+							</div>
+						</div>
 					</div>
 					<div class="tab-pane fade" id="favoriteDiv">
 						<p>favoriteDiv</p>
@@ -209,8 +271,8 @@
 		<jsp:include page="../../resources/template/footer.jsp" flush="true"></jsp:include>
 	</div>
 	
-	<!--followerDiv  -->
-	<div class="followerInfo" id="followerInfo">
+	<!--followDiv  -->
+	<div class="followInfo" id="followInfo">
 		<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle" style="width:10rem;"><br>
 		<b><span id="nickName">별명</span></b><br>
 		<small>Lv.<span id="accountLevel">3</span></small><br>

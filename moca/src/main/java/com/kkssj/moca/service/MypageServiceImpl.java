@@ -17,7 +17,7 @@ public class MypageServiceImpl implements MypageService{
 	AccountDao accountDao;
 
 	@Override
-	public List<AccountVo> getFollower(int accountId) {
+	public List<AccountVo> getFollowerList(int accountId) {
 		try {
 			return accountDao.selectFollowerList(accountId);
 		} catch (SQLException e) {
@@ -27,7 +27,12 @@ public class MypageServiceImpl implements MypageService{
 	}
 
 	@Override
-	public List<AccountVo> getFollowing(int accountId) {
+	public List<AccountVo> getFollowingList(int accountId) {
+		try {
+			return accountDao.selectFollowingList(accountId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -43,6 +48,26 @@ public class MypageServiceImpl implements MypageService{
 
 	@Override
 	public int deleteAccount(int accountId) {
+		return 0;
+	}
+
+	@Override
+	public int addFollow(int follower, int following) {
+		try {
+			return accountDao.insertFollow(follower,following);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	@Override
+	public int deleteFollow(int follower, int following) {
+		try {
+			return accountDao.deleteFollow(follower,following);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 	

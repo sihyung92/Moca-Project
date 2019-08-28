@@ -21,9 +21,15 @@
   <delete id="deleteUser" parameterType="Integer" ></delete>
   
   <select id="selectFollowerList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
-  	SELECT ACCOUNT_ID,NICKNAME,THUMBNAILIMAGE,ACCOUNTLEVEL FROM ACCOUNT WHERE ACCOUNT_ID IN(SELECT FOLLOWER FROM FOLLOW WHERE FOLLOWING=1);
+  	SELECT ACCOUNT_ID,NICKNAME,THUMBNAILIMAGE,ACCOUNTLEVEL FROM ACCOUNT WHERE ACCOUNT_ID IN(SELECT FOLLOWER FROM FOLLOW WHERE FOLLOWING=#{ACCOUNT_ID})
   </select>
   <select id="selectFollowingList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
-  	
+  	SELECT ACCOUNT_ID,NICKNAME,THUMBNAILIMAGE,ACCOUNTLEVEL FROM ACCOUNT WHERE ACCOUNT_ID IN(SELECT FOLLOWING FROM FOLLOW WHERE FOLLOWER=#{ACCOUNT_ID})
   </select>
+  <insert id="insertFollow" parameterType="map">
+  	insert into FOLLOW (FOLLOWER,FOLLOWING) VALUES (#{follower},#{following})
+  </insert>
+  <delete id="deleteFollow" parameterType="map">
+  	delete from FOLLOW where FOLLOWER=#{follower} and FOLLOWING=#{following}
+  </delete>
 </mapper>

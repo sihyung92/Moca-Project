@@ -22,4 +22,10 @@ public interface AccountDao {
 	List<AccountVo> selectFollowingList(int accountId) throws SQLException;
 	
 	//해당 account의 내가 쓴 리뷰 가져오기
+	
+	//해당 account의 following목록 추가하기
+	int insertFollow(int follower, int following) throws SQLException;
+	
+	//해당account의 following 삭제
+	int deleteFollow(int follower, int following) throws SQLException;
 }
