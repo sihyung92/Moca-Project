@@ -22,7 +22,7 @@ public class StoreDaoImpl implements StoreDao {
 	@Inject
 	SqlSession sqlSession;
 	
-	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger logger = LoggerFactory.getLogger(StoreDao.class);
 	
 	@Override
 	public List<StoreVo> selectListByTag(Map<String, String> variables) {
@@ -90,7 +90,7 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
-	public List<StoreVo> selectHitStoresList() {		
+	public List<StoreVo> selectHitStoresList() {	
 		return sqlSession.selectList("selectHitStoresList");
-	}
+	} 
 }

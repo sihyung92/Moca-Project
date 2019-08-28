@@ -18,11 +18,13 @@ public class MainServiceImpl implements MainService{
 	
 	static Logger logger = LoggerFactory.getLogger(MainService.class);
 
-
 	@Override
 	public List<StoreVo> getHitStoresList() {
-		logger.debug(storeDao.selectHitStoresList().toString());
+		/*
+		 * List<StoreVo> list = storeDao.selectHitStoresList();
+		 * //list.get(1).setStoreImg1("null"); logger.debug(list.get(1).getStoreImg1());
+		 */
 		return storeDao.selectHitStoresList();
-	}
+	} 
 
 }
