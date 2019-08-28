@@ -345,7 +345,7 @@ public class StoreVo {
 		return true;
 	}	
 	
-	//kakao °Ë»ö setter
+	//kakao ï¿½Ë»ï¿½ setter
 	public void setAddress_name(String address_name) {
 		address = address_name;
 	}

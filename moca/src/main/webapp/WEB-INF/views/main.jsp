@@ -16,10 +16,11 @@
         $('.lat').val(lat);
 		$('.lng').val(lng); 		
     	//접속 브라우저의 웹 지오로케이션 지원 여부 판단  
-        if (navigator.geolocation){             		       
+         if (navigator.geolocation){             		       
             var options = { timeout: 2000, maximumAge: 3000, enableHighAccuracy: true};	//highAccuracy true: 모바일 기기는 GPS로 위치 정보 확인             
             navigator.geolocation.getCurrentPosition(sucCall, errCall, options);		//현재 위치 정보 얻기
         }
+
     };
 
     //Success Callback(현재 위치 정보 저장)
@@ -28,6 +29,7 @@
         lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
+    	cafesNearBy();
     };
 
     // Error Callback(에러 메시지 출력)
@@ -37,7 +39,7 @@
 
   //구글 GeolocationAPI Key값 받고, 실행
 	var tryAPIGeolocation = function() {		
-		$.ajax({
+		 $.ajax({
 			url:"moneysaver/googleGeolocation",
 			dataType: "text",
 			method: "post",
@@ -52,7 +54,7 @@
 			        	}  
 			    });
 			}
-		});		
+		});		 
 	};
 
  	//구글GeolocationAPI Success Callback
@@ -61,62 +63,91 @@
 	    lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
+		cafesNearBy();
 	};
-    
+	
+	function cafesNearBy(){
+	 	$.ajax({
+			url:"near",
+			data : {"x":lng,"y":lat},
+			dataType: "JSON",
+			method: "get",
+			error: function(){
+				$('.cafesNearBy').remove();
+				console.log('근처카페추천 비동기 실패했당..');
+			},
+			success: function(data){
+				var length=$(data).length;
+				$(data).each(function(idx,ele){
+					if(ele.storeImg1==null){
+						ele.storeImg1='';
+					}
+					
+					if(idx<5){
+						$('#carousel-example-generic .item:nth-child(1) .item-inner')
+						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;">'
+						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스"></li></a>');	     	
+					}else if(idx<10){
+						$('#carousel-example-generic .item:nth-child(2) .item-inner')
+						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;">'
+						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스"></li></a>');	     	
+					}else{
+						$('#carousel-example-generic .item:nth-child(3) .item-inner')
+						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;">'
+						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스"></li></a>');	     	
+					}
+				});
+				
+				if(length==0){
+					$('.cafesNearBy').remove();
+				}else if(length<5){
+					$('.carousel-inner>.item').not('.item:first-child').remove();
+					$('.carousel-indicators li').not('li:first-child').remove();
+					$('.carousel-control').remove();
+					$('.cafesNearBy').show()
+				}else if(length<10){
+					$('.carousel-inner>.item:last-child').remove();
+					$('.carousel-indicators li:last-child').remove();
+					$('.cafesNearBy').show()
+				}
+			}
+		});
+	};
 	</script>
 </head>
 <body>
 <div id="header">
 			<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 </div>
-<div id="content container-fluid">
-	<div id=row>
-		<div class="col-md-offset-1 col-md-11">
+<div id="content" class="container-fluid">
+	<div class="row cafesNearBy" style="display:hidden;">
+		<div class="col-md-12">
 			<h5>주변 추천 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
 		</div> 
-		<div class="col-md-offset-1 col-md-11 carousel slide" id="carousel-example-generic" data-ride="carousel">
+		<div class="col-md-12 carousel slide" id="carousel-example-generic" data-ride="carousel" style="height:300px;">
 		  <!-- Indicators -->
 		  <ol class="carousel-indicators">
 		    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-		    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+			<li data-target="#carousel-example-generic" data-slide-to="1"></li>
 		    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
 		  </ol>
 		
 		  <!-- Wrapper for slides -->
-		  <div class="carousel-inner" role="listbox">
-		    <div class="item active">
-		     <ul class="item-inner" style="list-style:none">
-		     	<li style="float:left; width:200px;"><img src="..." alt="..."></li>
-		     	<li style="float:left;;width:200px"><img src="..." alt="..."></li>
-		     	<li style="float:left; width:200px"><img src="..." alt="..."></li>
+		  <div class="carousel-inner" role="listbox" >
+		    <div class="item active" style="text-align:center;">
+		     <ul class="item-inner" style="list-style:none; text-align:center;">
 		     </ul>
-		      <div class="carousel-caption">
-		        1page
-		      </div>
 		    </div>
-		    <div class="item">
-		     <ul class="item-inner" style="list-style:none">
-		     	<li style="float:left; width:200px;"><img src="..." alt="..."></li>
-		     	<li style="float:left;;width:200px"><img src="..." alt="..."></li>
-		     	<li style="float:left; width:200px"><img src="..." alt="..."></li>
+		    <div class="item" style="text-align:center;">
+		     <ul class="item-inner" style="list-style:none; text-align:center;">
 		     </ul>
-		      <div class="carousel-caption">
-		        2page
-		      </div>
 		    </div>
-		    <div class="item">
-		     <ul class="item-inner" style="list-style:none">
-		     	<li style="float:left; width:200px;"><img src="..." alt="..."></li>
-		     	<li style="float:left;;width:200px"><img src="..." alt="..."></li>
-		     	<li style="float:left; width:200px"><img src="..." alt="..."></li>
+		    <div class="item" style="text-align:center;">
+		     <ul class="item-inner" style="list-style:none; text-align:center;">
 		     </ul>
-		      <div class="carousel-caption">
-		        3page
-		      </div>
 		    </div>
 		  </div>
-		
-		  <!-- Controls -->
+				  <!-- Controls -->
 		  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
 		    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 		    <span class="sr-only">Previous</span>

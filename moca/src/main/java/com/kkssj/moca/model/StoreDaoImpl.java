@@ -88,4 +88,11 @@ public class StoreDaoImpl implements StoreDao {
 	public List<ImageVo> selectStoreReviewImgList(Map<String, Integer> map) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoreReviewImgList", map);
 	}
+	
+	@Override
+	public List<StoreVo> selectByDistance(Map<String, String> variables) {
+		List<StoreVo> list = sqlSession.selectList("selectByDistance",variables);
+		logger.debug("DAO: 근처 카페 요청 후");
+		return list;
+	}
 }
