@@ -118,7 +118,7 @@ public class AccountVo {
 		return birthday;
 	}
 
-	public void setAge(Date birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 

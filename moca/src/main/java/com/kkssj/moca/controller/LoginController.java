@@ -7,11 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.method.annotation.SessionAttributeMethodArgumentResolver;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.service.AccountService;
@@ -39,7 +41,7 @@ public class LoginController {
 		if(returnVo==null) {
 			//로그아웃 시점
 			
-			model.addAttribute("login","NULL_VAL");
+			model.addAttribute("login",new AccountVo(0, 0, 0, 0, null, "\"NULL_VAL\"", null, null, null, 0, 0, null));
 			
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else {
@@ -49,34 +51,20 @@ public class LoginController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 	}
-	
-	@PostMapping(value = "/session")
-	@ResponseBody
-	public AccountVo session(Model model) {
-		if(model.asMap().get("login")==null) {
-			return new AccountVo(0, 0, 0, 0, null, "NON-CONNECTED", null, null, null, 0, 0, null);
-		}else if((model.asMap().get("login").toString()).equals("NULL_VAL")) {
-			return new AccountVo(0, 0, 0, 0, null, "NON-CONNECTED", null, null, null, 0, 0, null);
-		}else {
-			AccountVo accVo = (AccountVo)model.asMap().get("login");
-			return accVo;
-		}
 		
-	}
-	
 	@PostMapping(value = "logout")
 	@ResponseBody
 	public ResponseEntity logout(Model model) {
 
 		if(model.asMap().get("login")==null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}else if((model.asMap().get("login").toString()!="NULL_VAL")) {
-			
-			model.addAttribute("login","NULL_VAL");
-			
+		}else if(((AccountVo)(model.asMap().get("login"))).getPlatformType()!="NULL_VAL") {
+	
+			model.addAttribute("login",new AccountVo(0, 0, 0, 0, null, "NULL_VAL", null, null, null, 0, 0, null));
+			System.out.println("NULL_VAL 잘 설정했다.");
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
-			
+
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
