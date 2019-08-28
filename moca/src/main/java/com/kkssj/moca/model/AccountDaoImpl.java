@@ -2,6 +2,7 @@ package com.kkssj.moca.model;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -42,6 +43,16 @@ public class AccountDaoImpl implements AccountDao {
 	public int deleteUser() throws SQLException{
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<AccountVo> selectFollowerList(int accountId) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowerList",accountId);
+	}
+
+	@Override
+	public List<AccountVo> selectFollowingList(int accountId) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowingList",accountId);
 	}
 
 

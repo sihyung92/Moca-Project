@@ -8,20 +8,101 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<style type="text/css">
+		#userInfo{
+			margin:0px auto;
+			text-align: center;
+		}
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
-	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
-    window.onload = function () { 
+	var haveFollowerInfo = false;
+	var haveFollowingInfo = false;
+	var haveFavoriteInfo = false;
+	var haveLikeInfo = false;
+	
+	$(document).ready(function() { 
+		$('#mypageTab li').click(function(){
+			//탭 클릭과 데이터 유무에 따른 tabContent 통신
+			if($(this).index() ==1 && !haveFollowerInfo){
 
-    };
+				$.ajax({
+					type: 'GET',
+					url: '/moca/follower/1',
+					success: function(reviewVo) {
+
+						
+						haveFollowerInfo =true;
+					},
+					error: function(request,status,error) {
+
+					}
+				})
+
+			}else if($(this).index() ==2 && !haveFollowingInfo){
+
+				
+				$.ajax({
+					type: 'GET',
+					url: '/moca/following/1',
+					success: function(reviewVo) {
+
+						
+						haveFollowingInfo =true;
+					},
+					error: function(request,status,error) {
+
+					}
+				})
+
+			}else if($(this).index() ==3 && !haveFavoriteInfo){
+
+				//사진 이름 주소 별점
+				$.ajax({
+					type: 'GET',
+					url: '/moca/favoriteStores/1',
+					success: function(reviewVo) {
+
+						
+						haveFavoriteInfo =true;
+					},
+					error: function(request,status,error) {
+
+					}
+				})
+
+			}else if($(this).index() ==4 && !haveLikeInfo){
+
+				//사진 이름 주소 별점
+				$.ajax({
+					type: 'GET',
+					url: '/moca/likeStores/1',
+					success: function(reviewVo) {
+
+						
+						haveLikeInfo =true;
+					},
+					error: function(request,status,error) {
+
+					}
+				})
+		    }
+		})		
+    });
+
+    
+	$('#followBtn').click(function() {
+		$('#followBtn').toggleClass("btn btn-success");
+		$('#followBtn').removeClass();
+		$('#followBtn').addClass('btn btn-success');
+	});
+
+	$('#followingBtn').click(function() {
+		$('#followingBtn').attr('class','btn btn-success');
+	});
 
    
 	</script>
@@ -33,12 +114,12 @@
 	</div>
 	<div id="content">
 		<div class="row">
-			<div class="col-md-2 col-md-offset-2">
-				<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle">
-				<div>
+			<div class="col-md-2 col-md-offset-2" >
+				<div id="userInfo">
+					<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle"><br>
+					<button id="followBtn" class="btn btn-default">팔로우</button><button id="followingBtn" class="btn btn-default">팔로잉</button><br>
 					<span id="nickName">별명</span><br>
-					Lv.<span id="accountLevel">3</span><br>
-									
+					Lv.<span id="accountLevel">3</span><br>			
 				</div>
 			</div>
 			<div class="col-md-3">
@@ -54,7 +135,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
-				<ul class="nav nav-tabs">
+				<ul id="mypageTab" class="nav nav-tabs">
 					<li role="presentation" class="nav-item active">
 						<a class="nav-link active" data-toggle="tab" href="#myReviewDiv">내 게시글</a>
 					</li>
@@ -77,9 +158,11 @@
 						<p>myReviewDiv 리뷰 스타일 그대로 가져오고</p>
 					</div>
 					<div class="tab-pane fade" id="followerDiv">
+						<!--followerDiv  -->
 						<p>followerDiv </p>
 					</div>
 					<div class="tab-pane fade" id="followingDiv">
+						<!--followingDiv  -->
 						<p>followingDiv</p>
 					</div>
 					<div class="tab-pane fade" id="favoriteDiv">
