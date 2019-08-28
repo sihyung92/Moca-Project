@@ -26,21 +26,16 @@ public class AccountServiceImpl implements AccountService {
 		
 		try {
 			AccountVo compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());
-			System.out.println(compareVo.toString());
 			if(compareVo==null) {
 				accountDao.insertUser(accountVo);
-				
 				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());
-				
 				return compareVo;
 			}else if(compareVo.hashCode()!=accountVo.hashCode()){
 				accountDao.updateUser(accountVo.getPlatformType(), accountVo);
 				
 				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());
-				
 				return compareVo;
 			}else {
-				
 				return compareVo;
 			}
 		} catch (SQLException e) {

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="store">
+<mapper namespace="com.kkssj.moca.model.StoreDao">
   <select id="selectOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT * FROM STORE WHERE STORE_ID=#{val}
   </select>

@@ -20,19 +20,19 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public int insertUser(AccountVo accountVo) throws SQLException{
 		// TODO Auto-generated method stub
-		return sqlSession.insert("account.insertUser", accountVo);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.insertUser", accountVo);
 	}
 
 	@Override
 	public AccountVo selectUser(String platformType, int platformId) throws SQLException{
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne("account.selectUserBy"+platformType+"Id", (Integer)platformId);
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectUserBy"+platformType+"Id", (Integer)platformId);
 	}
 
 	@Override
 	public int updateUser(String platformType, AccountVo accountVo) throws SQLException{
 		// TODO Auto-generated method stub
-		return sqlSession.update("account.updateUserBy"+platformType+"Id", accountVo);
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateUserBy"+platformType+"Id", accountVo);
 	}
 
 	@Override

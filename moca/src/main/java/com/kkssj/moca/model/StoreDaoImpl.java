@@ -19,25 +19,25 @@ public class StoreDaoImpl implements StoreDao {
 
 	@Override
 	public StoreVo selectOne(int store_Id) throws SQLException {
-		return sqlSession.selectOne("store.selectOne", store_Id);
+		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectOne", store_Id);
 	}
 
 	@Override
 	public int insertOne(StoreVo storeVo) throws SQLException {
-		return sqlSession.insert("store.insertOne", storeVo);
+		return sqlSession.insert("com.kkssj.moca.model.StoreDao.insertOne", storeVo);
 	}
 
 	@Override
 	public StoreVo selectByKakaoId(int kakaoId) throws SQLException {
-		return sqlSession.selectOne("store.selectByKakaoId", kakaoId);
+		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectByKakaoId", kakaoId);
 	}
 
 	@Override
 	public int updateOne(StoreVo storeVo) throws SQLException {
-//		if(storeVo.infoEqual(sqlSession.selectOne("store.selectOne", storeVo.getStore_Id()))) {	
+//		if(storeVo.infoEqual(sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectOne", storeVo.getStore_Id()))) {	
 //			return -1;
 //		}
-		return sqlSession.update("store.updateOne", storeVo);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateOne", storeVo);
 	}
 
 	@Override
@@ -53,13 +53,13 @@ public class StoreDaoImpl implements StoreDao {
 		map.put("PARKINGLOT", storeVo.getParkingLot());
 		map.put("DAYOFF", storeVo.getDayOff());
 		map.put("TEL", storeVo.getTel());
-		int result = sqlSession.insert("store.insertStoreInfoHistory", map);
+		int result = sqlSession.insert("com.kkssj.moca.model.StoreDao.insertStoreInfoHistory", map);
 		return result;
 	}
 
 	@Override
 	public int updateLevel(StoreVo storeVo) throws SQLException {
-		return sqlSession.update("store.updateLevel", storeVo);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLevel", storeVo);
 		
 	}
 }

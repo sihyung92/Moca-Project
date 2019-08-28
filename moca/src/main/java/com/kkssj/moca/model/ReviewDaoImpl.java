@@ -30,14 +30,14 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNTID", accountId);
 		map.put("STOREID", storeId);
 		
-		return sqlSession.selectList("review.selectAll",map);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAll",map);
 	}
 	
 	//리뷰 추가
 	@Override
 	public int insertReview(ReviewVo reviewVo) throws SQLException {
 		logger.debug(reviewVo.toString());
-		int result = sqlSession.insert("review.insertReview", reviewVo);
+		int result = sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertReview", reviewVo);
 		logger.debug("result:"+result);
 		return result;
 	}
@@ -45,19 +45,19 @@ public class ReviewDaoImpl implements ReviewDao {
 	//방금 추가한 리뷰를 가져옴(추가 이후 생성되는 정보를 가져오기 위해)
 	@Override
 	public ReviewVo selectAddedOne(int accountId) throws SQLException {
-		return sqlSession.selectOne("review.selectAddedOne", accountId);
+		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAddedOne", accountId);
 	}
 
 	//리뷰 수정
 	@Override
 	public int updateReview(ReviewVo reviewVo) throws SQLException{
-		return sqlSession.update("review.updateReview", reviewVo);
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateReview", reviewVo);
 	}
 	
 
 	//리뷰 삭제
 	public int deleteReview(int review_id) throws SQLException {
-		return sqlSession.delete("review.deleteReview",review_id);
+		return sqlSession.delete("com.kkssj.moca.model.ReviewDao.deleteReview",review_id);
 	}
 
 	//likeHate 테이블에 row 추가
@@ -68,7 +68,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
 		
-		return sqlSession.insert("review.insertLikeHate", map);
+		return sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertLikeHate", map);
 	}
 
 	//likeHate 테이블에 row 수정
@@ -79,7 +79,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
 		
-		return sqlSession.update("review.updateLikeHate", map);
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeHate", map);
 	}
 
 
@@ -90,7 +90,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
 		
-		return sqlSession.delete("review.deleteLikeHate", map);
+		return sqlSession.delete("com.kkssj.moca.model.ReviewDao.deleteLikeHate", map);
 	}
 
 	//review 테이블에 likeCount값 수정
@@ -100,7 +100,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("LIKECOUNT", likeCount);
 		logger.debug("REVIEW_ID:"+review_id+ ", LIKECOUNT:"+likeCount);		
-		return sqlSession.update("review.updateLikeCount", map);
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeCount", map);
 	}
 
 	//review 테이블에 hateCount값 수정
@@ -110,13 +110,13 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("HATECOUNT", hateCount);
 		logger.debug("REVIEW_ID:"+review_id+ ", HATECOUNT:"+hateCount);		
-		return sqlSession.update("review.updateHateCount", map);
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateHateCount", map);
 	}
 
 	//review 테이블에 likeCount, hateCount값 조회
 	@Override
 	public ReviewVo selectLikeHateCount(int review_id) throws SQLException{
-		ReviewVo reviewVo = sqlSession.selectOne("review.selectLikeHateCount", review_id);
+		ReviewVo reviewVo = sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectLikeHateCount", review_id);
 		logger.debug("likeCount:"+reviewVo.getLikeCount());
 		return reviewVo;
 	}
@@ -126,7 +126,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public int selectLikeHateLike(int reviewId) throws SQLException{
 		try {
-			return sqlSession.selectOne("review.selectLikeHateLike", reviewId);
+			return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectLikeHateLike", reviewId);
 		}catch (NullPointerException e) {
 			//좋아요가 없는 경우
 			return 0;
@@ -138,7 +138,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public int selectLikeHateHate(int reviewId) {
 		try {
-			return sqlSession.selectOne("review.selectLikeHateHate", reviewId);
+			return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectLikeHateHate", reviewId);
 		}catch (NullPointerException e) {
 			//싫어요가 없는 경우
 			return 0;
@@ -149,13 +149,13 @@ public class ReviewDaoImpl implements ReviewDao {
 	//review 테이블에있는 review_id값 조회
 	@Override
 	public List<ReviewVo> selectAllReviewId() throws SQLException{
-		return sqlSession.selectList("review.selectAllReviewId");
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAllReviewId");
 	}
 	
 	//해당 store에 있는 review의 점수(맛, 가격 등) 조회
 	@Override
 	public List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException{
-		return sqlSession.selectList("review.selectAllReviewLevel", storeId);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAllReviewLevel", storeId);
 	}
 
 }

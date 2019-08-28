@@ -1,18 +1,24 @@
 package com.kkssj.moca.model.entity;
 
+import java.sql.Date;
+
 public class AccountVo {
 	int account_id, followCount, reviewCount, platformId ;
 	String nickname, platformType, profileImage, thumbnailImage;
 	
 	/*email 추가*/
 	String email;
-	String token;
+	
+	/*GENDER AGE BARISTA 추가 */
+	int gender, barista;
+	Date birthday;
 	
 	public AccountVo() {
 	}
 
 	public AccountVo(int account_id, int followCount, int reviewCount, int platformId, String nickname,
-			String platformType, String profileImage, String thumbnailImage, String email, String token) {
+			String platformType, String profileImage, String thumbnailImage, String email, int gender,
+			 int barista, Date birthday) {
 		super();
 		this.account_id = account_id;
 		this.followCount = followCount;
@@ -22,108 +28,106 @@ public class AccountVo {
 		this.platformType = platformType;
 		this.profileImage = profileImage;
 		this.thumbnailImage = thumbnailImage;
-		
 		this.email = email;
-		this.token = token;
+		this.gender = gender;
+		this.birthday = birthday;
+		this.barista = barista;
 	}
-
 
 	public int getAccount_id() {
 		return account_id;
 	}
 
-
 	public void setAccount_id(int account_id) {
 		this.account_id = account_id;
 	}
-
 
 	public int getFollowCount() {
 		return followCount;
 	}
 
-
 	public void setFollowCount(int followCount) {
 		this.followCount = followCount;
 	}
-
 
 	public int getReviewCount() {
 		return reviewCount;
 	}
 
-
 	public void setReviewCount(int reviewCount) {
 		this.reviewCount = reviewCount;
 	}
-
 
 	public int getPlatformId() {
 		return platformId;
 	}
 
-
 	public void setPlatformId(int platformId) {
 		this.platformId = platformId;
 	}
-
 
 	public String getNickname() {
 		return nickname;
 	}
 
-
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-
 
 	public String getPlatformType() {
 		return platformType;
 	}
 
-
 	public void setPlatformType(String platformType) {
 		this.platformType = platformType;
 	}
-
 
 	public String getProfileImage() {
 		return profileImage;
 	}
 
-
 	public void setProfileImage(String profileImage) {
 		this.profileImage = profileImage;
 	}
-
 
 	public String getThumbnailImage() {
 		return thumbnailImage;
 	}
 
-
 	public void setThumbnailImage(String thumbnailImage) {
 		this.thumbnailImage = thumbnailImage;
 	}
-
 
 	public String getEmail() {
 		return email;
 	}
 
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-
-	public String getToken() {
-		return token;
+	
+	public int getGender() {
+		return gender;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setAge(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public int getBarista() {
+		return barista;
+	}
+
+	public void setBarista(int barista) {
+		this.barista = barista;
 	}
 
 	@Override
@@ -131,15 +135,13 @@ public class AccountVo {
 		return "AccountVo [account_id=" + account_id + ", followCount=" + followCount + ", reviewCount=" + reviewCount
 				+ ", platformId=" + platformId + ", nickname=" + nickname + ", platformType=" + platformType
 				+ ", profileImage=" + profileImage + ", thumbnailImage=" + thumbnailImage + ", email=" + email
-				+ ", token=" + token + "]";
+				+ ", gender=" + gender + ", birthday=" + birthday + ", barista=" + barista + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + account_id;
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
 		result = prime * result + platformId;
 		result = prime * result + ((platformType == null) ? 0 : platformType.hashCode());
@@ -157,13 +159,6 @@ public class AccountVo {
 		if (getClass() != obj.getClass())
 			return false;
 		AccountVo other = (AccountVo) obj;
-		if (account_id != other.account_id)
-			return false;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
-			return false;
 		if (nickname == null) {
 			if (other.nickname != null)
 				return false;
@@ -188,6 +183,5 @@ public class AccountVo {
 			return false;
 		return true;
 	}
-
-
+	
 }

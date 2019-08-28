@@ -17,7 +17,7 @@ import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.service.AccountService;
 
 @Controller
-@SessionAttributes({"login","token"})
+@SessionAttributes("login")
 public class LoginController {
 	
 	@Inject
@@ -34,16 +34,17 @@ public class LoginController {
 	@PostMapping(value = "/login/{accountId}")
 	@ResponseBody
 	public ResponseEntity login(@PathVariable("accountId") int accountId, @RequestBody AccountVo accountVo, Model model){
-		AccountVo returnVo = accountService.login(accountVo);
+		AccountVo returnVo = accountService.login(stringFilter(accountVo));
 		
 		if(returnVo==null) {
+			//로그아웃 시점
+			
 			model.addAttribute("login","NULL_VAL");
-			model.addAttribute("token","NULL_VAL");
 			
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else {
+			//로그인 시점
 			model.addAttribute("login", returnVo);
-			model.addAttribute("token",accountVo.getToken());
 			
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
@@ -53,9 +54,9 @@ public class LoginController {
 	@ResponseBody
 	public AccountVo session(Model model) {
 		if(model.asMap().get("login")==null) {
-			return new AccountVo(0, 0, 0, 0, null, "NON-CONNECTED", null, null, null, null);
-		}else if((String)model.asMap().get("login").toString()=="NULL_VAL") {
-			return new AccountVo(0, 0, 0, 0, null, "NON-CONNECTED", null, null, null, null);
+			return new AccountVo(0, 0, 0, 0, null, "NON-CONNECTED", null, null, null, 0, 0, null);
+		}else if((model.asMap().get("login").toString()).equals("NULL_VAL")) {
+			return new AccountVo(0, 0, 0, 0, null, "NON-CONNECTED", null, null, null, 0, 0, null);
 		}else {
 			AccountVo accVo = (AccountVo)model.asMap().get("login");
 			return accVo;
@@ -67,15 +68,37 @@ public class LoginController {
 	@ResponseBody
 	public ResponseEntity logout(Model model) {
 
-		if((model.asMap().get("login").toString()!="NULL_VAL")&&((String)model.asMap().get("token")!="NULL_VAL")) {
+		if(model.asMap().get("login")==null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}else if((model.asMap().get("login").toString()!="NULL_VAL")) {
 			
 			model.addAttribute("login","NULL_VAL");
-			model.addAttribute("token","NULL_VAL");
 			
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 			
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	//단순 문자열 컨트롤 로직용 함수
+	public AccountVo stringFilter(AccountVo vo) {
+		if("kakao".equals(vo.getPlatformType())) {
+			AccountVo answer = new AccountVo(vo.getAccount_id(),vo.getFollowCount(),vo.getReviewCount(),vo.getPlatformId(),
+					cut(vo.getNickname()),cut(vo.getPlatformType()),cut(vo.getProfileImage()),cut(vo.getThumbnailImage()),
+					cut(vo.getEmail()),vo.getGender(),vo.getBarista(),vo.getBirthday());
+			return answer;
+		}else {
+			return vo;
+		}
+	}
+	public String cut(String string) {
+		String rt=string;
+		if(string==null) {
+			return null;
+		}else if(string.charAt(0)=='"'&&string.charAt(string.length()-1)=='"') {
+			rt=string.substring(1, string.length()-1);
+		}
+		return rt;
 	}
 }

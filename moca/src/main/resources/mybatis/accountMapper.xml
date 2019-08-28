@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="account">
+<mapper namespace="com.kkssj.moca.model.AccountDao">
   <select id="selectUserBykakaoId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
   SELECT * FROM ACCOUNT WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'kakao'
   </select>

@@ -51,8 +51,8 @@
 					var acc_Id = naverLogin.user.getId();
 					
 					var email = naverLogin.user.getEmail();
-                    var name = '"'+naverLogin.user.getNickName()+'"';
-                    var profileImage = '"'+naverLogin.user.getProfileImage()+'"';
+                    var name = naverLogin.user.getNickName();
+                    var profileImage = naverLogin.user.getProfileImage();
                     //var birthday = naverLogin.user.getBirthday();
                     var uniqId = naverLogin.user.getId();
                     //var age = naverLogin.user.getAge();
