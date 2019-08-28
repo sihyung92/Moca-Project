@@ -18,7 +18,7 @@ public interface StoreService {
 	//store
 	
 	//상세정보 가져오기
-	StoreVo getStore(int store_Id);
+	StoreVo getStore(int store_Id, int account_id);
 
 	//store가 있는지 확인하고 add
 	StoreVo addStore(StoreVo storeVo);
@@ -66,5 +66,13 @@ public interface StoreService {
 
 	//리뷰 이미지 삭제
 	int deleteReviewImage(ImageVo imageVo);
+
+	int addLikeStore(int storeId, int account_id);
+
+	int deleteLikeStore(int storeId, int account_id);
+
+	int addFavoriteStore(int storeId, int account_id);
+
+	int deleteFavoriteStore(int storeId, int account_id);
 
 }

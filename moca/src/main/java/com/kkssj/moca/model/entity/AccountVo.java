@@ -1,8 +1,12 @@
 package com.kkssj.moca.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccountVo {
 	int account_id, followCount, reviewCount, platformId ;
 	String nickname, platformType, profileImage, thumbnailImage;
+	ArrayList<StoreVo> favoriteStoreList, likeStoreList;
 	
 	/*email 추가*/
 	String email;
@@ -114,8 +118,22 @@ public class AccountVo {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public List<StoreVo> getFavoriteStoreList() {
+		return favoriteStoreList;
+	}
 
+	public void setFavoriteStoreList(ArrayList<StoreVo> favoriteStoreList) {
+		this.favoriteStoreList = favoriteStoreList;
+	}
 
+	public List<StoreVo> getLikeStoreList() {
+		return likeStoreList;
+	}
+
+	public void setLikeStoreList(ArrayList<StoreVo> list) {
+		this.likeStoreList = list;
+	}
 
 	@Override
 	public int hashCode() {

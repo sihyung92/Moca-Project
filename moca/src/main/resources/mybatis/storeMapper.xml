@@ -17,7 +17,11 @@
   	SELECT STORE_ID, TAG, REVIEWCNT, VIEWCNT, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LOGOIMG FROM STORE WHERE KAKAOID=#{id}
   </select>
   <select id="selectOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
-  	SELECT * FROM STORE WHERE STORE_ID=#{val}
+  	SELECT *, 
+  	(SELECT count(*) FROM LIKESTORE 		WHERE STORE_ID = #{STORE_ID} AND ACCOUNT_ID =#{ACCOUNT_ID}) "isLike", 
+  	(SELECT count(*) FROM FAVORITESTORE  	WHERE STORE_ID = #{STORE_ID} AND ACCOUNT_ID =#{ACCOUNT_ID}) "isFavorite",
+  	(SELECT count(*) FROM STORE 			WHERE STORE_ID = #{STORE_ID} AND MANAGERID =#{ACCOUNT_ID}) "isManager"
+  	FROM STORE WHERE STORE_ID=#{STORE_ID}
   </select>
   <select id="selectStoreInfoHistory" parameterType="Integer" resultType="map">
   	select a.nickname, s.renewaldate 

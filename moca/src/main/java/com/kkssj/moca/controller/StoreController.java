@@ -72,8 +72,11 @@ public class StoreController {
 	@GetMapping("/stores/{storeId}")
 	public String getStore(@PathVariable("storeId") int storeId, Model model){
 		logger.debug("storeId : " + storeId + " - getStore");
+		
+		AccountVo accountVo = new AccountVo();
+		accountVo.setAccount_id(1);
 
-		StoreVo storeVo = storeService.getStore(storeId);
+		StoreVo storeVo = storeService.getStore(storeId, accountVo.getAccount_id());
 		logger.debug(storeVo.toString());
 
 		// 이때 storeVo에 store_id 값이 없으면 해당페이지 없다는 view 리턴
@@ -81,10 +84,9 @@ public class StoreController {
 			// return "에러페이지";
 		}
 
-		// 계정 정보를 받아오고
-		int accountId = 1;
+		model.addAttribute("accountVo", accountVo);
 
-		model.addAttribute("reviewVoList", storeService.getReviewList(accountId, storeId));
+		model.addAttribute("reviewVoList", storeService.getReviewList(accountVo.getAccount_id(), storeId));
 
 		model.addAttribute("storeVo", storeVo);
 		
@@ -125,6 +127,73 @@ public class StoreController {
 	}
 	
 	////////////////////////
+	//카페 좋아요
+    @PostMapping(value ="/likeStore/{accountId}")
+    public ResponseEntity addLikeStore(@PathVariable("accountId") int accountId, @RequestParam int storeId) throws Exception{
+    	///세션과 pathVari로 받은 accountId 비교
+		AccountVo accountVo = new AccountVo();
+    	accountVo.setAccount_id(1);
+
+    	int result = storeService.addLikeStore(storeId, accountVo.getAccount_id());
+		
+		if(result == 1) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+    }
+	
+    @DeleteMapping(value ="/likeStore/{accountId}")
+    public ResponseEntity deleteLikeStore(@PathVariable("accountId") int accountId, @RequestParam int storeId) throws Exception{
+    	//세션과 pathVari로 받은 accountId 비교
+		AccountVo accountVo = new AccountVo();
+    	accountVo.setAccount_id(1);
+
+		int result = storeService.deleteLikeStore(storeId, accountVo.getAccount_id());
+		
+		if(result == 1) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+    }
+	
+	
+	////////////////////////
+	//카페 즐겨 찾기
+    @PostMapping(value ="/favoriteStore/{accountId}")
+    public ResponseEntity addFavoriteStore(@PathVariable("accountId") int accountId, @RequestParam int storeId ) throws Exception{
+    	///세션과 pathVari로 받은 accountId 비교
+		AccountVo accountVo = new AccountVo();
+    	accountVo.setAccount_id(1);
+
+    	int result = storeService.addFavoriteStore(storeId, accountVo.getAccount_id());
+		
+		if(result == 1) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+    }
+	
+    @DeleteMapping(value ="/favoriteStore/{accountId}")
+    public ResponseEntity deleteFavoriteStore(@PathVariable("accountId") int accountId, @RequestParam int storeId ) throws Exception{
+    	///세션과 pathVari로 받은 accountId 비교
+		AccountVo accountVo = new AccountVo();
+    	accountVo.setAccount_id(1);
+
+		int result = storeService.deleteFavoriteStore(storeId, accountVo.getAccount_id());
+		
+		if(result == 1) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+    }
+	
+	
+	
+	////////////////////////
 	//review 
 	
 	//리뷰 입력, 서버에 파일 업로드
@@ -146,7 +215,7 @@ public class StoreController {
         for (int i = 0; i < files.length; i++) {
 			logger.debug(files[i].getName());
 		}
-		//reviewVo = storeService.addReview(reviewVo,files);
+		reviewVo = storeService.addReview(reviewVo,files);
 		
 		if(reviewVo != null) {
 			logger.debug(reviewVo.toString());

@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.internal.S3AbortableInputStream;
+import com.kkssj.moca.model.AccountDao;
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.ReviewDaoImpl;
 import com.kkssj.moca.model.StoreDao;
@@ -39,14 +40,17 @@ public class StoreServiceImpl implements StoreService{
 	@Inject
 	StoreDao storeDao;
 	
+	@Inject
+	AccountDao accountDao;
+	
 	
 	//////////////////////////////
 	//Store
 
 	@Override
-	public StoreVo getStore(int store_Id){
+	public StoreVo getStore(int store_Id, int account_id){
 		try {
-			return storeDao.selectOne(store_Id);
+			return storeDao.selectOne(store_Id, account_id);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -453,6 +457,46 @@ public class StoreServiceImpl implements StoreService{
 			return reviewDao.deleteReviewImage(imageVo);
 			
 		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	@Override
+	public int addLikeStore(int storeId, int account_id) {
+		try {
+			return accountDao.insertLikeStore(storeId,account_id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	@Override
+	public int deleteLikeStore(int storeId, int account_id) {
+		try {
+			return accountDao.deleteLikeStore(storeId,account_id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	@Override
+	public int addFavoriteStore(int storeId, int account_id) {
+		try {
+			return accountDao.insertFavoriteStore(storeId,account_id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+		}
+	@Override
+	public int deleteFavoriteStore(int storeId, int account_id) {
+		try {
+			return accountDao.deleteFavoriteStore(storeId,account_id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -1;

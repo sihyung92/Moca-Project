@@ -16,20 +16,10 @@ public class StoreVo {
 	private Date openTime,endTime;
 	private String openTime2,endTime2;
 	
+	//LIKEHATE table
+	private int isLike, isFavorite, isManager;
+	
 	public StoreVo() {
-	}
-
-	@Override
-	public String toString() {
-		return "StoreVo [store_Id=" + store_Id + ", kakaoId=" + kakaoId + ", reviewCnt=" + reviewCnt + ", wifi=" + wifi
-				+ ", parkingLot=" + parkingLot + ", viewCnt=" + viewCnt + ", name=" + name + ", category=" + category
-				+ ", url=" + url + ", tag=" + tag + ", dayOff=" + dayOff + ", tel=" + tel + ", address=" + address
-				+ ", roadAddress=" + roadAddress + ", xLocation=" + xLocation + ", yLocation=" + yLocation
-				+ ", distance=" + distance + ", logoImg=" + logoImg + ", storeImg1=" + storeImg1 + ", storeImg2="
-				+ storeImg2 + ", storeImg3=" + storeImg3 + ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel
-				+ ", serviceLevel=" + serviceLevel + ", moodLevel=" + moodLevel + ", convenienceLevel="
-				+ convenienceLevel + ", averageLevel=" + averageLevel + ", openTime=" + openTime + ", endTime="
-				+ endTime + ", openTime2=" + openTime2 + ", endTime2=" + endTime2 + "]";
 	}
 
 	public int getStore_Id() {
@@ -292,6 +282,31 @@ public class StoreVo {
 		this.endTime2 = endTime2;
 	}
 	
+	public int getIsLike() {
+		return isLike;
+	}
+
+	public void setIsLike(int isLike) {
+		this.isLike = isLike;
+	}
+
+	public int getIsFavorite() {
+		return isFavorite;
+	}
+
+	public void setIsFavorite(int isFavorite) {
+		this.isFavorite = isFavorite;
+	}
+
+	public int getIsManager() {
+		return isManager;
+	}
+
+	public void setIsManager(int isManager) {
+		this.isManager = isManager;
+	}
+	
+
 	public void calAllLevel(List<ReviewVo> list) {
 		this.tasteLevel = 0;
 		this.priceLevel = 0;
@@ -345,7 +360,7 @@ public class StoreVo {
 		return true;
 	}	
 	
-	//kakao °Ë»ö setter
+	//kakao ï¿½Ë»ï¿½ setter
 	public void setAddress_name(String address_name) {
 		address = address_name;
 	}
@@ -381,6 +396,20 @@ public class StoreVo {
 
 	public void setY(String y) {
 		yLocation = y;
+	}
+
+	@Override
+	public String toString() {
+		return "StoreVo [store_Id=" + store_Id + ", kakaoId=" + kakaoId + ", reviewCnt=" + reviewCnt + ", wifi=" + wifi
+				+ ", parkingLot=" + parkingLot + ", viewCnt=" + viewCnt + ", name=" + name + ", category=" + category
+				+ ", url=" + url + ", tag=" + tag + ", dayOff=" + dayOff + ", tel=" + tel + ", address=" + address
+				+ ", roadAddress=" + roadAddress + ", xLocation=" + xLocation + ", yLocation=" + yLocation
+				+ ", distance=" + distance + ", logoImg=" + logoImg + ", storeImg1=" + storeImg1 + ", storeImg2="
+				+ storeImg2 + ", storeImg3=" + storeImg3 + ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel
+				+ ", serviceLevel=" + serviceLevel + ", moodLevel=" + moodLevel + ", convenienceLevel="
+				+ convenienceLevel + ", averageLevel=" + averageLevel + ", openTime=" + openTime + ", endTime="
+				+ endTime + ", openTime2=" + openTime2 + ", endTime2=" + endTime2 + ", isLike=" + isLike
+				+ ", isFavorite=" + isFavorite + ", isManager=" + isManager + "]";
 	}
 
 }

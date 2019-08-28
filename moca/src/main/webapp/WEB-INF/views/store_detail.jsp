@@ -12,6 +12,12 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<style type="text/css">
+		#likeFavoriteDiv{
+			text-align: right;
+		}
+		#likeFavoriteDiv span{
+			font-size:30px;
+		}
 		.carousel-inner img {
 			margin: 0px auto;
 		}
@@ -118,14 +124,25 @@
 		var newFileDiv;
 		var fileBuffer;
 
+		var likeStoreBtn;
+		var favoriteStoreBtn;
+		var storeId;
+		var accountId;
+
 
 		//나중에 삭제할 테스트 변수
 		var test;
 
 	
 		$(document).ready(function() {
-			
-			//변수 바인딩
+			//카페 변수 바인딩
+			likeStoreBtn = $('#likeStoreBtn');
+			favoriteStoreBtn = $('#favoriteStoreBtn');
+			storeId = $('#storeId').text();
+
+			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
+			console.log(accountId);			
+			//리뷰변수 바인딩
 			bindReviewVariable();
 			
 
@@ -416,6 +433,97 @@
 				showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
 			})
 
+			
+			
+			likeStoreBtn.click(function(){
+				//좋아요를 누르지 않은 경우
+				if(likeStoreBtn.hasClass('glyphicon-heart-empty')){
+
+					//좋아요 추가
+					$.ajax({
+						type: 'POST',
+						url: '/moca/likeStore/' + accountId,
+						data : {
+							storeId : storeId
+						},
+						success: function() {
+							likeStoreBtn.removeClass('glyphicon-heart-empty')
+							likeStoreBtn.addClass('glyphicon-heart')
+							
+						},
+						error: function() {
+
+						}
+					})		
+
+				}else{//좋아요를 누른경우
+
+					//좋아요에서 삭제
+					$.ajax({
+						type: 'DELETE',
+						url: '/moca/likeStore/' + accountId,
+						data : {
+							storeId : storeId
+						},
+						success: function() {
+							likeStoreBtn.removeClass('glyphicon-heart')
+							likeStoreBtn.addClass('glyphicon-heart-empty')
+							
+						},
+						error: function() {
+
+						}
+					})
+
+				}
+
+			})
+
+			favoriteStoreBtn.click(function(){
+				//즐겨찾기를 누르지 않은 경우
+				if(favoriteStoreBtn.hasClass('glyphicon-star-empty')){
+
+					//즐겨 찾기에 추가
+					$.ajax({
+						type: 'POST',
+						url: '/moca/favoriteStore/' + accountId,
+						data : {
+							storeId : storeId
+						},
+						success: function() {
+							favoriteStoreBtn.removeClass('glyphicon-star-empty')
+							favoriteStoreBtn.addClass('glyphicon-star')
+							
+						},
+						error: function() {
+						}
+					})
+
+					
+
+				}else{//즐겨찾기를 누른경우
+
+					//즐겨 찾기에서 삭제
+					$.ajax({
+						type: 'DELETE',
+						url: '/moca/favoriteStore/' + accountId,
+						data : {
+							storeId : storeId
+						},
+						success: function() {
+							favoriteStoreBtn.removeClass('glyphicon-star')
+							favoriteStoreBtn.addClass('glyphicon-star-empty')
+							
+						},
+						error: function() {
+						}
+					})
+
+					
+				}
+			})
+			
+
 		});
 		/*
 		$('#files').focus(function(e){
@@ -440,6 +548,22 @@
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2">
 					<div class="jumbotron text-center">
+						<span id="storeId" style= "display: none;">${storeVo.store_Id }</span>
+						<div id="likeFavoriteDiv">
+							<c:if test="${storeVo.isLike eq 0 }">
+								좋아요<span id="likeStoreBtn" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ></span>
+							</c:if>
+							<c:if test="${storeVo.isLike ne 0 }">
+								좋아요<span id="likeStoreBtn" class="glyphicon glyphicon-heart" aria-hidden="true" ></span>
+							</c:if>
+						
+							<c:if test="${storeVo.isFavorite eq 0 }">
+								즐겨찾기<span id="favoriteStoreBtn" class="glyphicon glyphicon-star-empty" aria-hidden="true" ></span>	
+							</c:if>
+							<c:if test="${storeVo.isFavorite ne 0 }">
+								즐겨찾기<span id="favoriteStoreBtn" class="glyphicon glyphicon-star" aria-hidden="true" ></span>	
+							</c:if>					
+						</div>
 
 						<!-- 태그 -->
 						<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
@@ -989,6 +1113,7 @@
 	      </div>
 	    </div><!-- /.modal-content -->
 	</div><!-- /.modal -->
+	<span id="accountId" style="display : none;">${accountVo.account_id }</span>
 </body>
 
 </html>
