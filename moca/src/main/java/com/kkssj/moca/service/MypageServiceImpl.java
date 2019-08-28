@@ -1,5 +1,6 @@
 package com.kkssj.moca.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,6 +18,11 @@ public class MypageServiceImpl implements MypageService{
 
 	@Override
 	public List<AccountVo> getFollower(int accountId) {
+		try {
+			return accountDao.selectFollowerList(accountId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

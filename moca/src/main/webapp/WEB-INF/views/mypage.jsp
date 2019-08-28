@@ -8,9 +8,21 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<style type="text/css">
-		#userInfo{
+		#userInfo, #followerInfo{
 			margin:0px auto;
 			text-align: center;
+			display: inline-block;
+		}
+		#followerDiv>div{
+			display: inline;
+			margin:0px 3px;
+		}
+		.inlineBlock{
+			display: inline;
+		}
+		.followerInfo{
+			text-align: center;
+			margin-right: 3rem;
 		}
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -23,18 +35,35 @@
 	var haveFollowingInfo = false;
 	var haveFavoriteInfo = false;
 	var haveLikeInfo = false;
+
+	var accountId = 1;
+	var followerInfoTemplate;
 	
 	$(document).ready(function() { 
+		$('#followerInfo').hide();
 		$('#mypageTab li').click(function(){
 			//탭 클릭과 데이터 유무에 따른 tabContent 통신
 			if($(this).index() ==1 && !haveFollowerInfo){
 
 				$.ajax({
 					type: 'GET',
-					url: '/moca/follower/1',
-					success: function(reviewVo) {
+					url: '/moca/follower/'+accountId,
+					success: function(followerList) {
+						console.log(followerList);
 
-						
+						console.log(followerInfoTemplate);
+						for(var i=0; i<followerList.length; i++){
+							followerInfoTemplate = $('#followerInfo').clone();
+							console.log(followerList[i].thumbnailImage);
+							$(followerInfoTemplate).removeAttr('id');
+							$(followerInfoTemplate).find('img').attr('src',followerList[i].thumbnailImage.replace('"','').replace('"',''));
+							$(followerInfoTemplate).find('#nickName').html(followerList[i].nickname);
+							$(followerInfoTemplate).find('#accountLevel').html(followerList[i].accountLevel);
+							$(followerInfoTemplate).css('display','inline-block');
+							$('#followerDiv>div>div').append(followerInfoTemplate);
+						}
+						$('#followerDiv>div>div.followerInfo').show();
+						$('#followerInfo').hide();
 						haveFollowerInfo =true;
 					},
 					error: function(request,status,error) {
@@ -43,8 +72,6 @@
 				})
 
 			}else if($(this).index() ==2 && !haveFollowingInfo){
-
-				
 				$.ajax({
 					type: 'GET',
 					url: '/moca/following/1',
@@ -91,19 +118,16 @@
 				})
 		    }
 		})		
+
+		$('#followBtn').click(function() {
+			$('#followBtn').toggleClass("btn-success");
+			$('#followBtn').toggleClass('btn-default');
+		});
+		$('#followingBtn').click(function() {
+			$('#followingBtn').toggleClass("btn-success");
+			$('#followingBtn').toggleClass('btn-default');
+		});
     });
-
-    
-	$('#followBtn').click(function() {
-		$('#followBtn').toggleClass("btn btn-success");
-		$('#followBtn').removeClass();
-		$('#followBtn').addClass('btn btn-success');
-	});
-
-	$('#followingBtn').click(function() {
-		$('#followingBtn').attr('class','btn btn-success');
-	});
-
    
 	</script>
 </head>
@@ -158,8 +182,10 @@
 						<p>myReviewDiv 리뷰 스타일 그대로 가져오고</p>
 					</div>
 					<div class="tab-pane fade" id="followerDiv">
-						<!--followerDiv  -->
-						<p>followerDiv </p>
+						<div class="row">
+							<div class="col-md-10 col-md-offset-1 inlineBlock" >
+							</div>
+						</div>
 					</div>
 					<div class="tab-pane fade" id="followingDiv">
 						<!--followingDiv  -->
@@ -182,7 +208,12 @@
 	<div id="footer">
 		<jsp:include page="../../resources/template/footer.jsp" flush="true"></jsp:include>
 	</div>
-
-</div>
+	
+	<!--followerDiv  -->
+	<div class="followerInfo" id="followerInfo">
+		<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle" style="width:10rem;"><br>
+		<b><span id="nickName">별명</span></b><br>
+		<small>Lv.<span id="accountLevel">3</span></small><br>
+	</div>
 </body>
 </html>

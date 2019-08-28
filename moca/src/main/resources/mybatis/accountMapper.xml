@@ -21,9 +21,9 @@
   <delete id="deleteUser" parameterType="Integer" ></delete>
   
   <select id="selectFollowerList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
-  
+  	SELECT ACCOUNT_ID,NICKNAME,THUMBNAILIMAGE,ACCOUNTLEVEL FROM ACCOUNT WHERE ACCOUNT_ID IN(SELECT FOLLOWER FROM FOLLOW WHERE FOLLOWING=1);
   </select>
   <select id="selectFollowingList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
-  
+  	
   </select>
 </mapper>

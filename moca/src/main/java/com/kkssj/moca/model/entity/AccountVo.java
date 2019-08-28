@@ -1,7 +1,7 @@
 package com.kkssj.moca.model.entity;
 
 public class AccountVo {
-	int account_id, followCount, reviewCount, platformId ;
+	int account_id, followCount, reviewCount, platformId, accountLevel;
 	String nickname, platformType, profileImage, thumbnailImage;
 	
 	/*email 추가*/
@@ -114,8 +114,14 @@ public class AccountVo {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public int getAccountLevel() {
+		return accountLevel;
+	}
 
-
+	public void setAccountLevel(int accountLevel) {
+		this.accountLevel = accountLevel;
+	}
 
 	@Override
 	public int hashCode() {

@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +31,7 @@ public class MyPageController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MyPageController.class);
 
-	@RequestMapping(value = "/mypage", method = RequestMethod.GET)
+	@GetMapping(value = "/mypage/{accountId}")
 	public String home() {
 		//해당 account 정보 가져오기 (그래프+배지 포함)
 		
@@ -45,10 +46,16 @@ public class MyPageController {
 	@ResponseBody
 	public ResponseEntity getFollower(@PathVariable("accountId") int accountId){
 		//세션의 id값과 path로 받아온 id값이 일치하는 지 확인
+		//if() {}
+		logger.debug("getFollower 들어옴");
 		
-		//
+		//follower목록 가져오기
+		List<AccountVo> followerList = mypageService.getFollower(accountId);
 		
-		return null;
+		if(followerList!=null) {
+			return new ResponseEntity<>(followerList, HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
 	}
 	
