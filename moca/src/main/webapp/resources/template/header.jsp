@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!-- kss 공통 header -->
+<!-- kss 공통 header  -->
     
     <style type="text/css">
         .modal .modal-body {
