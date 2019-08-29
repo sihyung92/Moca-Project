@@ -72,6 +72,9 @@ var bindReviewVariable = function(){
 	reviewsDetailModal =$('#reviewsDetailModal');
 	reviewThumbnailGroup = $('#reviewThumbnailGroup');
 	
+	//파일버퍼 초기화
+	fileBuffer = [];
+	
 }
 
 
@@ -184,15 +187,25 @@ var addReviewInReviewContent = function(reviewVo) {
 
 
 //리뷰 데이터를 리뷰 모달로 이동 (수정 때 사용)
-var reviewData2ReviewModal = function(clickedEditBtn){
+var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	clearReviewModalData();
 
 	reviewModal.modal("show");		//리뷰 모달창 show
 
 	editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
 
+	//store name
+	
+	//마이페이지에서만 제목을 따로 등록해야하기 때문
+	if(reviewModal.find('#reviewModalLabel').html="에 대한 리뷰"){
+		reviewModal.find('#reviewModalLabel').html(storeName+"에 대한 리뷰");
+	}
+	
+	
 	//리뷰 아이디
 	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
+	//스토어아이디
+	reviewModal.find('#storeId').val(editReviewRow.find('.storeId').eq(0).val());
 				
 	///사진(나중에 정해지면)
 	console.log(editReviewRow);
@@ -235,14 +248,11 @@ var editReview = function(){
 	if(fileSize >0){
 		for(var i=0 ; i < fileSize ; i ++){
 			reviewFormData.append("file",fileBuffer[i]);
-			console.log(i,fileBuffer[i]);
 		}
 	}
 	
 	reviewFormObj = $(reviewForm).serializeObject();
-	//console.log(reviewFormObj.review_id,reviewFormObj);
 	console.log(reviewFormObj.review_id,reviewFormData);
-	
 
 	//ajax 통신 - post방식으로 추가
 	$.ajax({
@@ -566,6 +576,108 @@ var thumbnailUrl2Url = function(thumbnailUrl){
 	return url[0]+url[1];
 }
 
+//좋아요 또는 싫어요 버튼 클릭시
+var bindLikeHateButtonEvent = function(clickedLikeHateButton){
+		//클릭한 버튼의 리뷰에 해당하는 정보를 변수 바인딩
+		//clickedLikeHateButton = $(this);
+		btnGroup = clickedLikeHateButton.parent();
+		reviewId = btnGroup.children('.review-id').val();
+		likeBtn = btnGroup.children('.like-btn');
+		hateBtn = btnGroup.children('.hate-btn');
+		likeCount = btnGroup.children('.like-count');
+		hateCount = btnGroup.children('.hate-count');
+		
+		var isLike;
+
+		//이전 상태 판단
+		if (clickedLikeHateButton.hasClass('like-btn')) {
+			isLike=1;
+			//좋아요 버튼을 눌렀을때 
+			if (likeBtn.hasClass('clicked')) {
+				//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
+				console.log('이전에 좋아요 누른 상태 > 좋아요를 누를때')
+				cancelLikeHate(reviewId, isLike);
+			} else if (hateBtn.hasClass('clicked')) {
+				//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
+				console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
+				changeLikeHate(reviewId, isLike);
+			} else {
+				//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
+				console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
+				addLikeHate(reviewId,isLike);
+			}
+		} else if (clickedLikeHateButton.hasClass('hate-btn')) {
+			isLike=-1;
+			
+			//싫어요 버튼을 눌렀을때 
+			if (likeBtn.hasClass('clicked')) {
+				//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
+				console.log('이전에 좋아요 누른 상태 > 싫어요 누를때 ')
+				changeLikeHate(reviewId, isLike);
+			} else if (hateBtn.hasClass('clicked')) {
+				//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
+				console.log('이전에 싫어요 누른 상태 > 싫어요를 누를때 ')
+				cancelLikeHate(reviewId, isLike);
+			} else {
+				//이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 => 싫어요
+				console.log('이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 ')
+				addLikeHate(reviewId, isLike);
+			}
+		}
+};
+
+//파일 change function
+var filesChange = function(){
+    const target = document.getElementsByName('file');
+    
+	if($(this).next().attr('class')=='reviewThumbnailGroup'){
+		fileListDiv = $(this).next();
+		if(fileBuffer.length==0){
+			maxNumForAdd = $(fileListDiv).children().find('.oldThumbnail').filter(':visible').length
+		}
+    }else{
+    	$(this).parent().append('<div class="reviewThumbnailGroup"></div>');
+    	fileListDiv = $(this).next();
+    	maxNumForAdd = 0;
+	}
+	
+	if((fileBuffer.length*1)+maxNumForAdd>10 || (target[0].files.length*1)>10){
+		alert("파일은 10개까지만 등록가능합니다.");
+	}else{
+        
+        Array.prototype.push.apply(fileBuffer, target[0].files);
+        var newFileDiv = '';
+        $.each(target[0].files, function(index, file){
+            const fileName = file.name;
+            newFileDiv += '<div class="file newThumbnail reviewThumbnail" style="width:121px">';
+            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image">'
+            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn"onclick="deleteReviewImg(this)" aria-hidden="true" style="position:relative; left:-95px; top:-30px; cursor:pointer; background-color:rgb(255,255,255,0.5);"></span>';
+            newFileDiv += '</div>';
+            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
+            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+                resetFile();
+                return false;
+            }
+        });
+	}
+    
+    $(fileListDiv).append(newFileDiv);
+    if((fileBuffer.length*1)+maxNumForAdd>10){
+		alert("파일은 10개까지만 등록가능합니다.");
+		//10개가 넘은 경우 넘은 파일 입력된 이미지랑 filebuffer에서 삭제
+		$.each(target[0].files, function(index, file){
+			var num = 0;
+			if(index==0){
+				num = fileBuffer.length-index;
+			}
+			fileBuffer.splice(fileBuffer.length-1, 1);
+			$('#files').next().children().last().remove();
+		});
+	}
+	
+
+};
 
 
 //form 형식의 내용을 js Object 형태로 변경

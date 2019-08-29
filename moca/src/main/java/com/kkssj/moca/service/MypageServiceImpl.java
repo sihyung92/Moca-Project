@@ -1,6 +1,7 @@
 package com.kkssj.moca.service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -8,13 +9,18 @@ import javax.inject.Inject;
 import org.springframework.stereotype.Service;
 
 import com.kkssj.moca.model.AccountDao;
+import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
 @Service
 public class MypageServiceImpl implements MypageService{
 	@Inject
 	AccountDao accountDao;
+	
+	@Inject
+	ReviewDao reviewDao;
 
 	@Override
 	public List<AccountVo> getFollowerList(int accountId) {
@@ -37,8 +43,35 @@ public class MypageServiceImpl implements MypageService{
 	}
 
 	@Override
-	public List<ReviewVo> getMyreview(int accountId) {
-		return null;
+	public List<ReviewVo> getMyreviewList(int accountId, int sessionId) {
+		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
+		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
+		try {
+			reviewList = reviewDao.selectReviewListByAccountId(accountId,sessionId);
+			reviewImageList = reviewDao.selectReviewImgListByAccountId(accountId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("reviewImageList size : "+reviewImageList);
+		System.out.println("reviewList size : "+reviewList);
+		
+		for(int i=0; i<reviewImageList.size(); i++) {
+			reviewImageList.get(i).setUrl("");
+		}
+		
+		int imageListIndex = 0;
+		for (int i = 0; i < reviewList.size(); i++) {
+			reviewList.get(i).setImageList(new ArrayList());
+			for (int j = imageListIndex; j < reviewImageList.size(); j++) {
+				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReviewId()) {
+					reviewList.get(i).getImageList().add(reviewImageList.get(j));
+					imageListIndex++;
+				}
+			}
+		}
+		return reviewList;
+		
 	}
 
 	@Override

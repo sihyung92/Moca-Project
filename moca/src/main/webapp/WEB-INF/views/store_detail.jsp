@@ -107,7 +107,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=14"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=15"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
@@ -131,60 +131,7 @@
 
 			//리뷰 작성버튼 클릭시
  			fileBuffer = [];
-		    //수정을 눌렀을 때와 입력을 눌렀을 때 파일 입력 개수의 차이
-			$('#files').change(function(){
-			    const target = document.getElementsByName('file');
-			    				
-				if($(this).next().attr('class')=='reviewThumbnailGroup'){
-					fileListDiv = $(this).next();
-					if(fileBuffer.length==0){
-						maxNumForAdd = $(fileListDiv).children().find('.oldThumbnail').filter(':visible').length
-					}
-			    }else{
-			    	$(this).parent().append('<div class="reviewThumbnailGroup"></div>');
-			    	fileListDiv = $(this).next();
-			    	maxNumForAdd = 0;
-				}
-				
-				if((fileBuffer.length*1)+maxNumForAdd>10 || (target[0].files.length*1)>10){
-					alert("파일은 10개까지만 등록가능합니다.");
-				}else{
-			        
-			        Array.prototype.push.apply(fileBuffer, target[0].files);
-			        var newFileDiv = '';
-			        $.each(target[0].files, function(index, file){
-			            const fileName = file.name;
-			            newFileDiv += '<div class="file newThumbnail reviewThumbnail" style="width:121px">';
-			            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image">'
-			            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn"onclick="deleteReviewImg(this)" aria-hidden="true" style="position:relative; left:-95px; top:-30px; cursor:pointer; background-color:rgb(255,255,255,0.5);"></span>';
-			            newFileDiv += '</div>';
-			            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
-			            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
-			                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
-			                resetFile();
-			                return false;
-			            }
-			        });
-				}
-		        
-//		        $(fileListDiv).html($(fileListDiv).html()+newFileDiv);
-		        $(fileListDiv).append(newFileDiv);
-			    if((fileBuffer.length*1)+maxNumForAdd>10){
-					alert("파일은 10개까지만 등록가능합니다.");
-					//10개가 넘은 경우 넘은 파일 입력된 이미지랑 filebuffer에서 삭제
-					$.each(target[0].files, function(index, file){
-						var num = 0;
-						if(index==0){
-							num = fileBuffer.length-index;
-						}
-						fileBuffer.splice(fileBuffer.length-1, 1);
-						$('#files').next().children().last().remove();
-					});
-				}
-				
-		 
-		    });
-
+		    $('#files').change(filesChange);
 			
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
@@ -231,58 +178,10 @@
 				}
 			});
 
-			
-
-
 			//좋아요 또는 싫어요 버튼 클릭시
-			likeHateButton.click(function() {
-				//클릭한 버튼의 리뷰에 해당하는 정보를 변수 바인딩
-				clickedLikeHateButton = $(this);
-				btnGroup = clickedLikeHateButton.parent();
-				reviewId = btnGroup.children('.review-id').val();
-				likeBtn = btnGroup.children('.like-btn');
-				hateBtn = btnGroup.children('.hate-btn');
-				likeCount = btnGroup.children('.like-count');
-				hateCount = btnGroup.children('.hate-count');
-				
-				var isLike;
-
-				//이전 상태 판단
-				if (clickedLikeHateButton.hasClass('like-btn')) {
-					isLike=1;
-					//좋아요 버튼을 눌렀을때 
-					if (likeBtn.hasClass('clicked')) {
-						//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
-						console.log('이전에 좋아요 누른 상태 > 좋아요를 누를때')
-						cancelLikeHate(reviewId, isLike);
-					} else if (hateBtn.hasClass('clicked')) {
-						//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
-						console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
-						changeLikeHate(reviewId, isLike);
-					} else {
-						//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
-						console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
-						addLikeHate(reviewId,isLike);
-					}
-				} else if (clickedLikeHateButton.hasClass('hate-btn')) {
-					isLike=-1;
-					
-					//싫어요 버튼을 눌렀을때 
-					if (likeBtn.hasClass('clicked')) {
-						//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
-						console.log('이전에 좋아요 누른 상태 > 싫어요 누를때 ')
-						changeLikeHate(reviewId, isLike);
-					} else if (hateBtn.hasClass('clicked')) {
-						//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
-						console.log('이전에 싫어요 누른 상태 > 싫어요를 누를때 ')
-						cancelLikeHate(reviewId, isLike);
-					} else {
-						//이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 => 싫어요
-						console.log('이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 ')
-						addLikeHate(reviewId, isLike);
-					}
-				}
-			})
+			likeHateButton.click(function(){
+				bindLikeHateButtonEvent($(this));
+			});
 
 			//리뷰 3개씩 끊어서 가져오기
 			$('.reviewCnt').hide();
@@ -383,7 +282,7 @@
 			$('.StoreImg').append('<span>카페에서 등록한 이미지 입니다</span>');
 
 
-			//리뷰 디테일 모달
+			//리뷰 이미지 디테일 모달
 			reviewImg.click(function(){
 				//모달 활성화(+초기화)
 				reviewsDetailModal.modal("show");
@@ -417,15 +316,6 @@
 			})
 
 		});
-		/*
-		$('#files').focus(function(e){
-			if((fileBuffer.length*1)>10 || (target[0].files.length*1)>10){
-				e.preventDefault();
-				e.stopPropagation();
-			alert("파일은 10개까지만 등록가능합니다.");
-		}
- 		});
-		*/
 
 	</script>
 </head>

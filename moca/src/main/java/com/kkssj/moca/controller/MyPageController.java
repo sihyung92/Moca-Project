@@ -43,6 +43,7 @@ public class MyPageController {
 		//해당 account 정보 가져오기 (그래프+배지 포함)
 		
 		//해당 account의 내가 쓴 리뷰 가져오기
+		model.addAttribute("reviewVoList", mypageService.getMyreviewList(accountId,accountVo.getAccount_id()));
 		
 		//세션의 id값과 path로 받아온 id값이 일치하는 지 확인
 		if(accountId==1) {

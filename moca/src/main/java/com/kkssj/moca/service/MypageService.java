@@ -14,7 +14,7 @@ public interface MypageService{
 	List<AccountVo> getFollowingList(int accountId);
 	
 	//해당 account의 내가 쓴 리뷰 가져오기
-	List<ReviewVo> getMyreview(int accountId);
+	List<ReviewVo> getMyreviewList(int accountId, int sessionId);
 	
 	//해당 account의 회원정보 수정하기
 	int editAccount(int accountId);
@@ -26,7 +26,6 @@ public interface MypageService{
 	int addFollow(int follower, int following);
 
 	//해당 account의 follow신청취소
-	int deleteFollow(int follower, int following);
-	
+	int deleteFollow(int follower, int following);	
 	
 }

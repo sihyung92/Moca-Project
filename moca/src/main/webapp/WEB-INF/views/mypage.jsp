@@ -24,10 +24,87 @@
 			text-align: center;
 			margin-right: 3rem;
 		}
+		
+		/* br태그 대신 margin */
+		.reviewCnt{
+			margin-bottom: 2em;
+		}
+		
+		/* 리뷰 내용 더보기 */
+		.review-data{overflow:hidden;}
+     	.review-data .more-review-content.hidden{
+	         white-space:nowrap;
+	         word-wrap:normal;
+	         width:90%;
+	         overflow:hidden;
+	         text-overflow: ellipsis;
+	         float:left;
+	      }
+	    .more-review-content-btn{display:none;white-space:nowrap;float:right;}
+	    
+	    .reviewThumbnailGroup .reviewThumbnail{
+	    	display: inline-block;
+	    }
+	    
+	    .reviewThumbnailGroup img{
+	    	width:100px;
+	    	height: 100px;
+			object-fit: cover;
+			overflow: hidden;
+	    }
+	    
+	    .modal-content {
+		  position: relative;
+		  background-color: #fefefe;
+		  margin: auto;
+		  padding: 0;
+		  width: 90%;
+		  max-width: 1200px;
+		}	
+		#reviewDetailDiv {
+			overflow:hidden;
+		  text-align: center;
+		  background-color: black;
+		  padding: 2px 16px;
+		  color: white;
+		}
+		#reviewThumbnailGroup{
+			text-align: center;
+			background-color: black;
+			padding: 2px 16px;
+			color: white;
+		}
+		#reviewThumbnailGroup .clickedImg {
+	    	border: 5px solid red;
+	    }
+	    /* Next & previous buttons */
+		#preReviewImgBtn,
+		#nextReviewImgBtn {
+		  cursor: pointer;
+		  position: absolute;
+		  top: 50%;
+		  width: auto;
+		  padding: 16px;
+		  margin-top: -50px;
+		  font-weight: bold;
+		  font-size: 20px;
+		  transition: 0.6s ease;
+		  border-radius: 0 3px 3px 0;
+		  user-select: none;
+		  -webkit-user-select: none;
+		}
+		
+		/* Position the "next button" to the right */
+		#nextReviewImgBtn{
+		  right: 0;
+		  border-radius: 3px 0 0 3px;
+		}
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
+	<!-- mocaReview -->
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=14"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<script type="text/javascript">
@@ -43,8 +120,125 @@
 
 	var address = window.location.pathname
 	var followId = address.substring(address.lastIndexOf("/")+1);
+
+	//여러 파일을 가지고 있는 버퍼
+	var fileBuffer;
+	var fileListDiv;
+	var removeThumbnailBtn;
+	var newFileDiv;
+	var fileBuffer;
 	
 	$(document).ready(function() { 
+		/////////////////내가 쓴글 관리 시작//////////////
+		//변수 바인딩
+		bindReviewVariable();
+
+		//좋아요 또는 싫어요 버튼 클릭시
+		likeHateButton.click(function(){
+			bindLikeHateButtonEvent($(this));
+		});
+
+		//fileBuffer 초기화
+		fileBuffer = [];
+
+		//수정을 눌렀을 때와 입력을 눌렀을 때 파일 입력 개수의 차이
+		$('#files').change(filesChange);
+		
+		//리뷰 3개씩 끊어서 가져오기
+		$('.reviewCnt').hide();
+		reviewCnt(quotient,remainder,callNum);
+		
+		
+		//리뷰 내용 더보기 style 변화
+		callReviewDataMore();
+
+		//리뷰 더보기 버튼을 눌렀을 때
+		$('#moreReview').click(function(){
+				callNum += 1;
+				reviewCnt(quotient,remainder,callNum);
+				callReviewDataMore();
+		});
+		
+		//리뷰 저장 버튼 클릭시
+		$(saveReviewBtn).click(function() {
+			saveReview(fileBuffer);
+		})
+		
+		//수정 버튼 클릭시
+		editBtn.click(function(){
+			//파일 버퍼 내용 비우기
+			fileBuffer = [];
+			//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
+			var storeName = $(this).parent().parent().find('.reviewer-info').find('.storeName-div').find('.storeName').html();
+			console.log(storeName);
+			reviewData2ReviewModal(this,storeName);
+			reviewModal.find('#saveReviewBtn').css('display','none')
+			reviewModal.find('#editReviewBtn').css('display','')
+			$('#reviewModal').modal("show");		//리뷰 모달창 show
+						
+		})
+		
+		
+		//리뷰 수정 버튼 클릭시
+		editReviewBtn.click(editReview);
+		
+		reviewModalBtn.click(function(){
+			//모달에 있는 데이터 없애고 
+			fileBuffer = [];
+			clearReviewModalData();
+			reviewModal.find('#saveReviewBtn').css('display','')
+			reviewModal.find('#editReviewBtn').css('display','none')
+			$('#reviewModal').modal("show");		//리뷰 모달창 show
+		})
+		
+
+		//리뷰 삭제 버튼 클릭시
+		deleteBtn.click(function(){
+			var reviewId = $(this).parent().find('.review-id').val();
+			var reviewTodelete = $(this).parent().parent();
+			console.log(reviewTodelete);
+			$('#confirm').modal({ backdrop: 'static', keyboard: false })
+	        .one('click', '#delete', function() {
+	        	reviewTodelete.remove();
+				deleteReview(reviewId);
+	        });
+		});
+
+		//리뷰 이미지 디테일 모달
+		reviewImg.click(function(){
+			//모달 활성화(+초기화)
+			reviewsDetailModal.modal("show");
+			
+
+			//섬네일 url > 원본 url
+			showDetailReviewImg(this);
+
+			
+			//데이터 값 전송
+			
+		});
+
+		$('#preReviewImgBtn').click(function(){
+			if(detailImgIdx > 0){
+				detailImgIdx =detailImgIdx-1;
+			}else{
+				detailImgIdx = 0;
+			}
+			showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
+			
+		});
+
+		$('#nextReviewImgBtn').click(function(){
+			if(detailImgIdx < detailImgsSize-1){
+				detailImgIdx =detailImgIdx+1;
+			}else{
+				detailImgIdx = detailImgsSize-1;
+			}
+			showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
+		});
+		
+		/////////////////내가 쓴글 관리 끝//////////////
+		
 		if(isMine==1){
 			$('#followBtn').hide();
 		}
@@ -239,7 +433,120 @@
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane fade active in" id="myReviewDiv">
-						<p>myReviewDiv 리뷰 스타일 그대로 가져오고</p>
+						<div class="review-content">
+							<!-- js로 리뷰 수만큼 추가 할 것  -->
+							<c:forEach items="${reviewVoList }" var="reviewVo">
+								<div class="row reviewCnt">
+									<c:if test="${reviewVo.editable eq 1}">
+										<div class="editDeleteGroup btn-group" role="group">
+											<input name="storeId" class="storeId" value=${reviewVo.storeId} style="display: none;">
+											<input type="number" class="review-id"
+												value=${reviewVo.review_id } style="display: none;">
+											<button type="button" class="btn-edit btn btn-default">수정</button>
+											<button type="button" class="btn-delete btn btn-default">삭제</button>
+										</div>
+									</c:if>
+									<div class="reviewer-info col-md-2">
+										<div class="storeLogo-div">
+											<!-- store logo 이미지 -->
+											<c:if test="${empty reviewVo.storeLogoImg}">
+												<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
+													alt="logo" class="img-circle" style="width: 100px;">
+											</c:if>
+											<c:if test="${not empty reviewVo.storeLogoImg}">
+												<img src="<c:url value="${reviewVo.storeLogoImg }" />" alt="logo"
+													class="img-circle" style="width: 100px;">
+											</c:if>
+										</div>
+										<div class="storeName-div">
+											<!-- store 이름 -->
+											<span class="storeName">${reviewVo.storeName}</span>
+										</div>
+									</div>
+
+
+									<div class="review-info col-md-8">
+										<div class="row">
+											<div class="reviewThumbnailGroup">
+												<c:forEach items="${reviewVo.imageList}" var="reviewImg"
+													varStatus="status">
+													<div class="reviewThumbnail">
+														<img src="${reviewImg.thumbnailUrl}" alt="Image"
+															class="img-thumbnail" id="${reviewImg.uu_id}">
+													</div>
+												</c:forEach>
+											</div>
+											<div class="review-data">
+												<div class="write-date-div">
+													<label>작성일</label> <span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
+												</div>
+												<div class="review-content-div">
+													<label>리뷰 내용</label> <span
+														class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+												</div>
+												<span class="more-review-content-btn">더보기</span>
+											</div>
+											<div class="form-group like-hate">
+												<div class="btn-group" data-toggle="buttons">
+													<input type="number" class="review-id"
+														value=${reviewVo.review_id } style="display: none;">
+													<c:choose>
+														<c:when test="${reviewVo.isLike==1 }">
+															<button type="button"
+																class="btn btn-primary like-btn clicked">좋아요</button>
+														</c:when>
+														<c:otherwise>
+															<button type="button" class="btn btn-primary like-btn ">좋아요</button>
+														</c:otherwise>
+													</c:choose>
+													<input type="number" class="like-count"
+														value=${reviewVo.likeCount }>
+													<c:choose>
+														<c:when test="${reviewVo.isLike==-1 }">
+															<button type="button"
+																class="btn btn-primary hate-btn clicked">싫어요</button>
+														</c:when>
+														<c:otherwise>
+															<button type="button" class="btn btn-primary hate-btn">싫어요</button>
+														</c:otherwise>
+													</c:choose>
+
+													<input type="number" class="hate-count"
+														value=${reviewVo.hateCount }>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="review-level col-md-2">
+										<div class="taste-level-div">
+											<label>맛</label> <span class="taste-level">${reviewVo.tasteLevel }</span>점
+										</div>
+										<div class="price-level-div">
+											<label>가격</label> <span class="price-level">${reviewVo.priceLevel }</span>점
+										</div>
+										<div class="service-level-div">
+											<label>서비스</label> <span class="service-level">${reviewVo.serviceLevel }</span>점
+										</div>
+										<div class="taste-level-div">
+											<label>분위기</label> <span class="mood-level">${reviewVo.moodLevel }</span>점
+										</div>
+										<div class="taste-level-div">
+											<label>편의성</label> <span class="convenience-level">${reviewVo.convenienceLevel }</span>점
+										</div>
+										<div class="taste-level-div">
+											<label for="average_level">평균</label> <span
+												class="average-level">${reviewVo.averageLevel }</span>점
+										</div>
+									</div>
+									<br>
+									<br>
+									<br>
+								</div>
+							</c:forEach>
+						</div>
+						<div class="review-footer">
+							<button id="moreReview">더보기</button>
+						</div>
 					</div>
 					<div class="tab-pane fade" id="followerDiv">
 						<div class="row">
@@ -277,5 +584,7 @@
 		<b><span id="nickName">별명</span></b><br>
 		<small>Lv.<span id="accountLevel">3</span></small><br>
 	</div>
+	
+	<jsp:include page="../../resources/template/reviewModal.jsp" flush="true"></jsp:include>
 </body>
 </html>

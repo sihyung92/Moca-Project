@@ -14,6 +14,9 @@ public class ReviewVo {
 	private int editable;
 	private ArrayList<ImageVo> imageList;
 	
+	//mypage에 store정보 가져오기
+	private String storeName, storeLogoImg;
+	
 	//LIKEHATE table
 	private int isLike;
 	
@@ -214,6 +217,24 @@ public class ReviewVo {
 	public void setImageList(ArrayList<ImageVo> imageList) {
 		this.imageList = imageList;
 	}
+	
+	//mypage용도//
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
+
+	public String getStoreLogoImg() {
+		return storeLogoImg;
+	}
+
+	public void setStoreLogoImg(String storeLogoImg) {
+		this.storeLogoImg = storeLogoImg;
+	}
+	//mypage용도//
 
 
 	@Override
@@ -232,6 +253,9 @@ public class ReviewVo {
 		this.averageLevel = Math.round(((this.tasteLevel + this.priceLevel + this.serviceLevel + this.moodLevel + this.convenienceLevel)/5.0)*10)/10.0;
 	}
 
+
+
+	
 
 
 

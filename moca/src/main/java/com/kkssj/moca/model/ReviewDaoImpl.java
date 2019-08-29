@@ -183,6 +183,21 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("review.selectReviewImgListByReviewId", reviewId);
 	}
 
+	//accountId로 review 가져오기
+	@Override
+	public List<ReviewVo> selectReviewListByAccountId(int accountId,int sessionId) throws SQLException {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("SESSION_ID", sessionId);
+		return sqlSession.selectList("review.selectReviewListByAccountId", map);
+	}
+
+	//accountId로 reviewImg 가져오기
+	@Override
+	public List<ImageVo> selectReviewImgListByAccountId(int accountId) throws SQLException {
+		return sqlSession.selectList("review.selectReviewImgListByAccountId", accountId);
+	}
+
 	
 
 }

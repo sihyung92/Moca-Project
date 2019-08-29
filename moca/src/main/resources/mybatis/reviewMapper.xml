@@ -91,4 +91,19 @@
  	  FROM REVIEWIMAGE WHERE REVIEWID = #{reviewId};
   </select>
   
+  <select id="selectReviewListByAccountId" parameterType="map" resultType="com.kkssj.moca.model.entity.ReviewVo">
+  	SELECT r.REVIEW_ID, r.ACCOUNTID, (r.ACCOUNTID=${SESSION_ID}) 'editable', r.STOREID, s.NAME 'storeName', s.LOGOIMG 'storeLogoImg', r.REVIEWCONTENT, r.WRITEDATE, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, r.AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{SESSION_ID}),0)  "isLike",
+	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
+	JOIN STORE s ON r.STOREID = s.STORE_ID
+	WHERE r.ACCOUNTID = #{ACCOUNT_ID}
+	ORDER BY r.WRITEDATE DESC;
+  </select>
+  
+  <select id="selectReviewImgListByAccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">
+ 	 SELECT uu_id, accountId, reviewId, storeId, path, originName, views
+ 	  FROM REVIEWIMAGE WHERE ACCOUNTID = #{ACCOUNTID};
+  </select>
 </mapper>
