@@ -1,8 +1,6 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
