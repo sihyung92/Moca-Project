@@ -146,7 +146,7 @@ public class StoreController {
         for (int i = 0; i < files.length; i++) {
 			logger.debug(files[i].getName());
 		}
-		//reviewVo = storeService.addReview(reviewVo,files);
+		reviewVo = storeService.addReview(reviewVo,files);
 		
 		if(reviewVo != null) {
 			logger.debug(reviewVo.toString());

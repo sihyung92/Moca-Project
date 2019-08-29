@@ -446,7 +446,7 @@
 											<button type="button" class="btn-delete btn btn-default">삭제</button>
 										</div>
 									</c:if>
-									<div class="reviewer-info col-md-2">
+									<div class="reviewer-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.storeId}'" style="cursor:pointer;">
 										<div class="storeLogo-div">
 											<!-- store logo 이미지 -->
 											<c:if test="${empty reviewVo.storeLogoImg}">
