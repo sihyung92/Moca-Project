@@ -48,7 +48,7 @@
          }); */
         $('.suggestion a li').mouseenter(function(){
             var overlay = $(this).children('div');
-            overlay.show();
+           // overlay.show();
             var imgs = $(this).children('img');
             var i=0;
           	//이미지 슬라이드 함수
@@ -163,7 +163,7 @@
 			    <c:if test="${length gt 10}">	
 				   <div class="item">		    
 				     <ul class="item-inner" style="list-style:none">
-				     	<c:forEach items="${hitStores}" var="bean" begin="10" end="14"> 
+				     	<c:forEach items="${hitStores}" var="bean" begin="10" end="12"> 
 					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
 					     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
 				     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
