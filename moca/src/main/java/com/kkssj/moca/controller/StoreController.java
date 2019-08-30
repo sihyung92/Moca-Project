@@ -273,6 +273,7 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
+		reviewVo.setAccount_id(accountVo.getAccount_id());
 		
 		String[] delThumbnail = delThumbnails.split(",");
 		if((newFiles.length+delThumbnail.length)>10) {
@@ -280,8 +281,7 @@ public class StoreController {
     	}
 		logger.debug(reviewVo.toString());
 		logger.debug(delThumbnails);
-		//세션이 작동했다고 가정
-		reviewVo.setAccount_id(1);
+		
 		
 		for (int i = 0; i < newFiles.length; i++) {
 			logger.debug(newFiles[i].getName());

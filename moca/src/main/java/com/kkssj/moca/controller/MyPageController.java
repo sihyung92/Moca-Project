@@ -31,6 +31,22 @@ public class MyPageController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MyPageController.class);
 
+	@GetMapping(value = "/mypage")
+	public String myHome(HttpSession session){
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			///어디로 보낼지는 회의를 거쳐서
+			return "redirect:/mypage/0";
+		}
+
+		logger.debug(accountVo.toString());
+		
+		return "redirect:/mypage/"+accountVo.getAccount_id();
+	}
+	
 	@GetMapping(value = "/mypage/{accountId}")
 	public String home(@PathVariable("accountId") int accountId, Model model, HttpSession session){
 		
@@ -39,6 +55,7 @@ public class MyPageController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
+			return "mypage";
 		}else {
 			logger.debug(accountVo.toString());
 		}
@@ -81,12 +98,12 @@ public class MyPageController {
 			accountVo = new AccountVo();
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
-		
+		logger.debug(accountVo.toString());
 		//나의 마이페이지가 아닌 경우
 		if(accountVo.getAccount_id() != accountId) {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
-		logger.debug(accountVo.toString());
+		
 		
 
 		
@@ -109,7 +126,7 @@ public class MyPageController {
 			accountVo = new AccountVo();
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
-		
+		logger.debug(accountVo.toString());
 		//나의 마이페이지가 아닌 경우
 		if(accountVo.getAccount_id() != accountId) {
 			return new ResponseEntity<>(HttpStatus.LOCKED);

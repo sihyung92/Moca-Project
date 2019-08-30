@@ -145,8 +145,8 @@
 	var newFileDiv;
 	var fileBuffer;
 
-	/// 접속자 아이디
-	var id=1;
+	/// mypage 사용자 id(url 주소의 맨 마지막)
+	var id=$(location).attr('pathname').split('/')[$(location).attr('pathname').split('/').length-1];
 
 	var storeTemplate;
 	
