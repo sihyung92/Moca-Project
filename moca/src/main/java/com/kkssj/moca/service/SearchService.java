@@ -12,6 +12,6 @@ public interface SearchService {
 
 	List<StoreVo> getListByTag(Map<String, String> variables);
 	StoreVo getMoreData(StoreVo currentVo);
-	List<StoreVo> getListFromKakaoAPI(String keyword, String[] region, String x, String y, Model model) ;
+	List<StoreVo> getListFromKakaoAPI(String keyword, String[] region, String x, String y, String rect, Model model) ;
 	List<StoreVo> sort(List<StoreVo> alist, String filter);
 }

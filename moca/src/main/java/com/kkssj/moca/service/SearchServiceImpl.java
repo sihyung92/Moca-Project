@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,6 +27,8 @@ import com.kkssj.moca.model.entity.kakaoAPI.Meta;
 public class SearchServiceImpl implements SearchService {
 	@Inject
 	StoreDao storeDao;
+	
+	Logger logger = LoggerFactory.getLogger(SearchService.class);
 	
 	@Override
 	public List<StoreVo> getListByTag(Map<String, String> variables) {		
@@ -53,14 +57,16 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public List<StoreVo> getListFromKakaoAPI(String keyword, String[] region, String x, String y, Model model) {
+	public List<StoreVo> getListFromKakaoAPI(String keyword, String[] region, String x, String y, String rect, Model model) {
 		//(카카오 검색) 키워드 검색 파라미터 세팅
 		List<StoreVo> alist = new ArrayList<StoreVo>();
 		int page=1;		
 		//키워드 추출
 		String query=null;
+		//sort 기준 변경1 : 지역 필터 검색
 		String sort="distance";
 		if(region!=null) {
+			logger.debug("지역 필터 들어옴!");
 			sort="accuracy";
 			if(keyword.contains(region[1])){
 				query=keyword;		//광진스타벅스
@@ -69,6 +75,10 @@ public class SearchServiceImpl implements SearchService {
 			}			
 		}else {
 			query=keyword;
+		}
+		//sort 기준 변경2 : 지도 내 재검색
+		if(rect!=null) {
+			sort="accuracy";
 		}
 		
 //카카오 API 접속 정보 세팅
@@ -83,8 +93,11 @@ public class SearchServiceImpl implements SearchService {
 //		HttpEntity<MultiValueMap> requestEntity =new HttpEntity(map, headers);		//POST로 인식하는 듯
 		
 //카카오 API 동기 통신 & 데이터 받기
+		//지도 내 재검색 기능
+		url+="&rect="+rect;
 		//JSON 데이터 Vo객체로 파싱
 		ResponseEntity<KakaoCafeVo> response = restTemplate.exchange(url, HttpMethod.GET, entity, KakaoCafeVo.class, sort, x, y, query, page);	//Object 파라미터는 URL에 순서대로 인식	
+		
 		//카카오 API 검색 결과 alist에 추가
 		StoreVo[] kakaoStores = response.getBody().getDocuments();
 		Meta kakaoInfo = response.getBody().getMeta();
@@ -99,9 +112,6 @@ public class SearchServiceImpl implements SearchService {
 		}	
 		
 		for(StoreVo s : kakaoStores) {			
-//			if(region!=null&&!region.equals("")&&!s.getAddress().contains(region)) {		//지역 필터 적용 시, kakaoStores의 Vo객체가 선택 지역에 속하지 않을 때
-//				continue;
-//			}
 			alist.add(s);
 		}		
 		
@@ -111,9 +121,6 @@ public class SearchServiceImpl implements SearchService {
 			kakaoStores = response.getBody().getDocuments();
 			kakaoInfo = response.getBody().getMeta();			
 			for(StoreVo s : kakaoStores) {
-//				if(region!=null&&!region.equals("")&&!d.getAddress().contains(region)) 
-//					continue;
-//				}
 				alist.add(s);
 			}
 		}		

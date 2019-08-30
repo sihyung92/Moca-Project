@@ -91,6 +91,10 @@
  	  FROM REVIEWIMAGE WHERE REVIEW_ID = #{reviewId};
   </select>
   
+  <select id="selectRecentReviews" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	 SELECT REVIEWCONTENT, WRITEDATE, ACCOUNT_ID, STORE_ID, REVIEW_ID FROM REVIEW ORDER BY WRITEDATE DESC
+  </select>
+  
   <select id="selectReviewListByAccountId" parameterType="map" resultType="com.kkssj.moca.model.entity.ReviewVo">
   	SELECT r.REVIEW_ID, r.ACCOUNT_ID, (r.ACCOUNT_ID=${SESSION_ID}) 'editable', r.STORE_ID, s.NAME 'storeName', s.LOGOIMG 'storeLogoImg', r.REVIEWCONTENT, r.WRITEDATE, 
 	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, r.AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 

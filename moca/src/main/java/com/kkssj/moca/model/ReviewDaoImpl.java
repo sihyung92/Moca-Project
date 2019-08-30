@@ -22,8 +22,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	@Inject
 	SqlSession sqlSession;
-
-
+  
 	//store 디테일 페이지에서 해당 카페의 review를 가져옴
 	@Override
 	public List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException {
@@ -50,13 +49,13 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAddedOne", accountId);
 	}
 
+
 	//리뷰 수정
 	@Override
 	public int updateReview(ReviewVo reviewVo) throws SQLException{
 		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateReview", reviewVo);
 	}
 	
-
 	//리뷰 삭제
 	public int deleteReview(ReviewVo reviewVo) throws SQLException {
 		return sqlSession.delete("com.kkssj.moca.model.ReviewDao.deleteReview",reviewVo);
@@ -83,6 +82,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		
 		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeHate", map);
 	}
+
 
 
 	//likeHate 테이블에 row 삭제
@@ -123,7 +123,6 @@ public class ReviewDaoImpl implements ReviewDao {
 		return reviewVo;
 	}
 
-
 	//likeHate 테이블에 isLike=1인 개수 조회
 	@Override
 	public int selectLikeHateLike(int reviewId) throws SQLException{
@@ -147,13 +146,11 @@ public class ReviewDaoImpl implements ReviewDao {
 		}
 	}
 	
-	
 	//리뷰 이미지 등록
 	@Override
 	public int insertReviewImage(ImageVo imgaeVo) throws SQLException {
 		return sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertReviewImage", imgaeVo);
 	}
-
 
 	//review 테이블에있는 review_id값 조회
 	@Override
@@ -166,7 +163,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	public List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException{
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAllReviewLevel", storeId);
 	}
-	
+
 	//리뷰 이미지 가져오기
 	@Override
 	public List<ImageVo> selectReviewImgListByStoreId(int storeId) {
@@ -199,6 +196,9 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewImgListByAccountId", accountId);
 	}
 
-	
+	@Override
+	public List<ReviewVo> selectRecentReviews() {
+		return sqlSession.selectList("selectRecentReviews");
+	}
 
 }

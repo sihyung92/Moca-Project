@@ -23,18 +23,23 @@
 	.center{
 		color : black;
 	}
-	.seoul{
+	#filter_region>span{
 		border : 1px solid black;
 	}
-	.gyeonggi{
-		border : 1px solid black;
-	}
-	.region{
+	.region_list{
 		display : none;
 	}
-	
+	.seoul{
+		display : inline-block;
+	}
+	span.seoul{
+		background-color : yellow;
+	}
 </style>
-<script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
+<script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e63ece9668927d2e8027037f0aeb06b5"></script>
 <script type="text/javascript">
 	var lat,lng;		
@@ -44,13 +49,35 @@
            	$(this).children().first().submit();
         });
         
-//지역 필터 클릭 이벤트
-		$('.seoul').click(function(){
-			$('.S_Region').toggle();
-		})
-		$('.gyeonggi').click(function(){
-			$('.G_Region').toggle();
+//지역 필터 -> 지역1(도 / 광역시) 클릭 이벤트
+		$('#filter_region>span').click(function(){
+			$('#filter_region>span').css('background-color','white');
+			$(this).css('background-color','yellow');
+			$('.region_list').hide();
+			$('.'+$(this).attr('class')).show();
 		});
+		
+//지역 필터 -> 지역2(시 / 구) 클릭 이벤트 
+		$('#filter_region input[type="radio"]').click(function() {
+			$('#filter_region input[type="radio"]').not(this).attr('checked',false);
+			$(this).attr('checked', !$(this).attr('checked'));
+		});
+		
+//지역 필터 모달 적용버튼 클릭이벤트
+		$('#region_modal_btn').click(function(){
+			var region1 = $('#filter_region input[checked="checked"]').parent().children('input[type="hidden"]').val();
+			var region2 = $('#filter_region input[checked="checked"]').val();
+			
+			if(region2!=undefined){
+				$('#region1').add('#region2').removeAttr('disabled');
+				$('#region1').val(region1);
+				$('#region2').val(region2);
+			}else{
+				$('#region1').add('#region2').attr('disabled',true);
+			}
+			$('#region_modal').modal('hide');
+		});
+		
 //지역 검색 시, 장소명으로 재검색 이벤트
 		$('#re-search').click(function(){
 			$('#search form input[name="keyword"]').attr("name", "");
@@ -72,165 +99,190 @@
         	//브라우저가 지오로케이션 지원하지 않을 때
         	$('#warning_geo strong').html("현재 위치 정보를 지원하지 않는 브라우저 입니다.");          
         }
-
-//카카오맵 API연결
-		//1. 카카오 맵 객체 생성
-		<c:if test="${not empty alist}">	//검색 결과 없으면 지도 만들지말자~~~~
-		    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-		    var options = {
-		    	center: new kakao.maps.LatLng(lat, lng), //지도의 중심 좌표        	
-		    	level: 3 	//지도 축척
-		    };
-		    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-
-		    //내 위치 마커 이미지 옵션
-		    var imageSrc = 'https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/pin_person.png'  ; 
-		    var imageSize = new kakao.maps.Size(40, 40);
-		  //  var imageOption = {offset: new kakao.maps.Point(27, 69)};
-			var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
-			var markerPosition = new kakao.maps.LatLng(lat, lng);
-			//내 위치 마커 생성
-			var marker = new kakao.maps.Marker({
-			    position: markerPosition, 
-			    image: markerImage,
-			    map: map,
-			    zIndex: 3
-			});   		
-
-		 //2. 핀(Marker), 오버레이(팝업 정보 패널) 객체 생성 전처리
-			var bounds = new kakao.maps.LatLngBounds();  //LatLngBounds객체 생성: 좌표가 다른 여러 핀에 대한 맵 바운더리 재설정
-			//자바 List -> 자바스크립트 Array로 변환(x, y, name 정보만) 
-			var alist = new Array();
-			<c:forEach items="${alist}" var="data">
-				alist.push({'lat':${data.yLocation},'lng':${data.xLocation}, 'store_Id': ${data.store_Id}, 'name':"${data.name}", 'roadAddress': '${data.roadAddress}', 'tel':'${data.tel }', 'tasteLevel':${data.tasteLevel},'priceLevel':${data.priceLevel}, 'serviceLevel':${data.serviceLevel}, 'moodLevel':${data.moodLevel}, 'convenienceLevel':${data.convenienceLevel}, 'logoImg':'${data.logoImg}'});
-			</c:forEach>
-
-		//3. 핀, 오버레이 객체 생성 & 맵 객체에 추가
-			for (var i = 0; i < alist.length ; i++) {
-				//핀(Marker)객체 생성
-				var position =new kakao.maps.LatLng(alist[i].lat,alist[i].lng);
-				var marker = new kakao.maps.Marker({ position : position, clickable: false});
-				//오버레이 객체 생성
-				var content = '<div class= "overlay" style="background-color:white;width: 300px"><div class ="logo"><img width="70px" height="50px" ';
-				if(alist[i].logoImg==""){
-					content+='src="https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/MoCA-logo.png"/>';
-				}else{
-					content+='src="'+alist[i].logoImg+'"/>';					
-				}
-				content+='</div><div class="top">'+alist[i].name+'</div><div class="center">'+alist[i].roadAddress+'<br/>'+alist[i].tel;	
-				if(alist[i].store_Id){
-					content+='<br/>맛'+alist[i].tasteLevel+' 가격'+alist[i].priceLevel+' 분위기'+alist[i].moodLevel+' 서비스'+alist[i].serviceLevel+' 편의성'+alist[i].convenienceLevel;
-				}
-				content+='</div><div class="bottom"></div></div>'; 
-				
-				var overlay = new kakao.maps.InfoWindow({
-				    content: content,
-				    position: marker.getPosition(),
-				    zIndex: 4     
-				});			
-				
-			    // 핀에 마우스 이벤트 적용(오버레이 토글 클로저 생성 및 실행)
-			    (function(marker, overlay) {
-			        // 핀에 mouseover 이벤트(지도에 오버레이 객체 팝업)
-			        kakao.maps.event.addListener(marker, 'mouseover', function() {
-				        overlay.open(map, marker);
-			        });		
-		        	// 핀에 mouseout 이벤트(지도에서 오버레이 객체 제거)
-			        kakao.maps.event.addListener(marker, 'mouseout', function() {
-				        overlay.close();
-			        });
-		   		})(marker, overlay);
-			marker.setMap(map);	//맵 객체에 생성한 마커 등록
-			bounds.extend(position);	//LatLngBounds객체에 핀의 위치 등록
-			}
-			
-			//4. 지도의 바운더리 재설정(LatLngBounds 객체 이용)
-			map.setBounds(bounds);
-
-			
-			//중심 좌표 변경 이벤트
-		//	$('#map').css({'position':'relative','z-index':0});
-			kakao.maps.event.addListener(map, 'center_changed', function() {
-			    var latlng = map.getCenter(); 	//중심 좌표 업데이트			    
-			    $('#map_re-search').show().css({'position':'relative','top':'-380px','left':'185px','z-index':2});
-			});			
-
-		</c:if> 
     };//onload 끝-
     
-  //Success Callback(현재 위치 정보 저장)
+  	//Success Callback(현재 위치 정보 저장)
     var sucCall = function (position) {
         lat = position.coords.latitude;	    //위도
         lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
 		$('#warning_geo').html("");
+		createMap();
     };
 
     // Error Callback(에러 메시지 출력)
     function errCall(error) {
     	tryAPIGeolocation();	//구글GeolocationAPI시도
     };   
-    
-  	//HTTPS 없이 지역 위치 정보 받아오기(구글GeolocationAPI사용)
+	
+	var tryAPIGeolocation = function() {
+		$.ajax({
+			url:"moneysaver/googleGeolocation",
+			dataType: "text",
+			method: "post",
+			success: function(googleKey){
+			    jQuery.post(googleKey, function(success) {
+			        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
+			    }).fail(function(err) {
+			        switch (err.code) {
+			            case err.PERMISSION_DENIED:
+			            	$('#warning_geo strong').html("위치 정보 접근 거부 🙄 ...............정....정확한 검색을 위해 허....허용..을..");     
+			                break;
+			            case err.POSITION_UNAVAILABLE:
+			            	$('#warning_geo strong').html("위치 확인이 불가능합니다. 🙄  🙄 ");
+			            	break;
+			            default:	//error.UNKNOWN_ERROR, error.TIMEOUT, default
+			            	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
+			           		break;
+			        } 
+			        createMap();
+					});
+				}
+	     });
+	};
+	
+	//구글GeolocationAPI Success Callback
 	var apiGeolocationSuccess = function(position) {
 		lat = position.coords.latitude;	    //위도
 	    lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
 		$('#warning_geo').html("");
+		createMap();
 	};
+	
+	//카카오 맵 생성(API연결)
+	var createMap = function(){
+	<c:if test="${not empty alist}">	//검색 결과 없으면 지도 만들지말자~~~~
+		//1. 카카오 맵 객체 생성
+	    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+	    var mapCenter = new kakao.maps.LatLng(lat, lng);//지도의 중심 좌표   = 현재 위치
+	    var options = {
+	    	center: mapCenter,      	
+	    	level: 3 	//지도 축척
+	    };
+	    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
 
-	var tryAPIGeolocation = function() {
-	    jQuery.post( "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyD6yXSGVTGpBHjRDg2jSToQEpdkM8kLOhg", function(success) {
-	        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
-	    }).fail(function(err) {
-		        switch (err.code) {
-		            case err.PERMISSION_DENIED:
-		            	$('#warning_geo strong').html("위치 정보 접근 거부 🙄 ...............정....정확한 검색을 위해 허....허용..을..");     
-		                break;
-		            case err.POSITION_UNAVAILABLE:
-		            	$('#warning_geo strong').html("위치 확인이 불가능합니다. 🙄  🙄 ");
-		            	break;
-		            default:	//error.UNKNOWN_ERROR, error.TIMEOUT, default
-		            	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
-		           		break;
-		        } 
-	        });
-	};
+	    //2. 내 위치 핀(Marker) 객체 생성
+	    var imageSrc = 'https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/pin_person.png'; 	//내 위치 핀 이미지 파일
+	    var imageSize = new kakao.maps.Size(40, 40);	//내 위치 핀 이미지 사이즈 지정
+	  //var imageOption = {offset: new kakao.maps.Point(27, 69)};
+		var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);	//내 위치 핀 이미지 객체 생성
+		//내 위치 핀 생성
+		var marker = new kakao.maps.Marker({
+		    position: mapCenter, 	//내 위치 핀 = 현재 위치 = 지도 중심 좌표
+		    image: markerImage,
+		    map: map,
+		    zIndex: 3
+		});   		
+
+	 	//3. 검색 결과 alist의 가게들 핀(Marker), 오버레이(팝업 정보 패널) 객체 생성 전처리
+		var bounds = new kakao.maps.LatLngBounds();  //LatLngBounds객체 생성: 좌표가 다른 여러 핀에 대한 맵 바운더리 재설정
+		//자바 List -> 자바스크립트 Array로 변환(x, y, name 정보만) 
+		var alist = new Array();
+		<c:forEach items="${alist}" var="data">
+			alist.push({'lat':${data.yLocation},'lng':${data.xLocation}, 'store_Id': ${data.store_Id}, 'name':"${data.name}", 'roadAddress': '${data.roadAddress}', 'tel':'${data.tel }', 'tasteLevel':${data.tasteLevel},'priceLevel':${data.priceLevel}, 'serviceLevel':${data.serviceLevel}, 'moodLevel':${data.moodLevel}, 'convenienceLevel':${data.convenienceLevel}, 'logoImg':'${data.logoImg}'});
+		</c:forEach>
+
+		//4. 핀, 오버레이 객체 생성 & 맵 객체에 추가
+		for (var i = 0; i < alist.length ; i++) {
+			//핀(Marker)객체 생성
+			var position =new kakao.maps.LatLng(alist[i].lat,alist[i].lng);
+			var marker = new kakao.maps.Marker({ position : position, clickable: false});
+			//오버레이 객체 생성
+			var content = '<div class= "overlay" style="background-color:white;width: 300px"><div class ="logo"><img width="70px" height="50px" ';
+			if(alist[i].logoImg==""){
+				content+='src="https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/MoCA-logo.png"/>';
+			}else{
+				content+='src="'+alist[i].logoImg+'"/>';					
+			}
+			content+='</div><div class="top">'+alist[i].name+'</div><div class="center">'+alist[i].roadAddress+'<br/>'+alist[i].tel;	
+			if(alist[i].store_Id){
+				content+='<br/>맛'+alist[i].tasteLevel+' 가격'+alist[i].priceLevel+' 분위기'+alist[i].moodLevel+' 서비스'+alist[i].serviceLevel+' 편의성'+alist[i].convenienceLevel;
+			}
+			content+='</div><div class="bottom"></div></div>'; 
+			
+			var overlay = new kakao.maps.InfoWindow({
+			    content: content,
+			    position: marker.getPosition(),
+			    zIndex: 4     
+			});			
+			
+		    // 핀에 마우스 이벤트 적용(오버레이 토글 클로저 생성 및 실행)
+		    (function(marker, overlay) {
+		        // 핀에 mouseover 이벤트(지도에 오버레이 객체 팝업)
+		        kakao.maps.event.addListener(marker, 'mouseover', function() {
+			        overlay.open(map, marker);
+		        });		
+	        	// 핀에 mouseout 이벤트(지도에서 오버레이 객체 제거)
+		        kakao.maps.event.addListener(marker, 'mouseout', function() {
+			        overlay.close();
+		        });
+	   		})(marker, overlay);
+		marker.setMap(map);	//맵 객체에 생성한 마커 등록
+		bounds.extend(position);	//LatLngBounds객체에 핀의 위치 등록
+		}	//for문 끝-
+		
+		//5. 지도의 바운더리 재설정(LatLngBounds 객체 이용)
+		map.setBounds(bounds);
+		
+		//맵 중심 좌표 변경 이벤트
+	//	$('#map').css({'position':'relative','z-index':0});
+		kakao.maps.event.addListener(map, 'center_changed', function() {
+		    $('#map_re-search').show().css({'position':'relative','top':'-380px','left':'185px','z-index':2});
+			
+		});
+		//지도 내 재검색 기능
+		$('#map_re-search').click(function(){
+			var location = map.getBounds();
+			var rect = location.ea +','+ location.la +','+ location.ja +','+ location.ka;		
+
+			$.ajax({	//비동기로 받아오기
+				url: "re-search",
+				dataType: "json",
+				data: {"filter":"${filter}", "keyword":"${keyword}", "rect": rect},
+				success: function(data){
+					console.log(data);
+				} 
+			});	
+			//window.location.href="stores?filter=${filter}&keyword=${keyword}&rect="+rect; 	//동기로 데이터 받아오기
+		});		    
+		</c:if> 		
+	};	
+	
 	</script>	
 </head>
 <body>
-<div id="header">
-	<form action="stores">
-		<input type="hidden" name="x" class="lng"/>
-		<input type="hidden" name="y" class="lat"/>		
-		<input type="hidden" name="filter" value="distance"/>
-		키워드는 <input type="text" name="keyword"/>
-		<button>입니당</button>
-	</form>
-	<br/>
-</div>
-<div id="content">
-	<br/><br/><br/><br/>
-	<div id="warning_geo">
-		<strong>정확한 검색을 위해 위치 정보 접근을 허용해주세요:)</strong><br/>
-		<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
-	</div>
-	<div id="search">		
-		<form action="stores">
-			<input type="hidden" name="x" class="lng"/>
-			<input type="hidden" name="y" class="lat">
-			키워드는 <input type="text" name="keyword" value="${keyword}"/> 입니당
-			<div id="filter_sort" class="filter">
-				<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
-				<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
-				<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
-				<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}"> checked="checked"</c:if>><span>거리순</span>
-			</div>
-			<div id="filter_region" class="filter">
+<div class="modal fade" id="region_modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="gridSystemModalLabel"><!--modal start -->
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="gridSystemModalLabel">지역선택</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        	<div id="filter_region" class="filter">
 				<span class="seoul">서울</span>
-				<div class="region">
+				<span class="gyeonggi">경기</span>
+				<span class="sejong">세종</span>
+				<span class="gangwon">강원도</span>
+				<span class="gyeongsangbuk-do">경상북도</span>
+				<span class="gyeongsangnam-do">경상남도</span>
+				<span class="gwangju">광주</span>
+				<span class="daegu">대구</span>
+				<span class="daejeon">대전</span>
+				<span class="busan">부산</span>
+				<span class="ulsan">울산</span>
+				<span class="incheon">인천</span>
+				<span class="jeollanam-do">전라남도</span>
+				<span class="jeollabuk-do">전라북도</span>
+				<!-- 제주도 지역 더 세분화 할지?? -->
+				<span class="jeju">제주도</span>
+				<span class="chungcheongbuk-do">충청북도</span>
+				<span class="chungcheongnam-do">충청남도</span>
+				<div class="region_list seoul">
 					<input type="hidden" name="region" value="서울"/>
 					<input type="radio" name="region" value="강남"><span>강남구</span>
 					<input type="radio" name="region" value="강동"><span>강동구</span>
@@ -258,8 +310,7 @@
 					<input type="radio" name="region" value="중구"><span>중구</span>
 					<input type="radio" name="region" value="중랑"><span>중랑구</span>
 				</div>
-				<span class="gyeonggi">경기</span>
-				<div class="region">
+				<div class="region_list gyeonggi">
 					<input type="hidden" name="region" value="경기도"/>
 					<input type="radio" name="region" value="가평"><span>가평군</span>
 					<input type="radio" name="region" value="고양"><span>고양시</span>
@@ -293,13 +344,11 @@
 					<input type="radio" name="region" value="하남"><span>하남시</span>
 					<input type="radio" name="region" value="화성"><span>화성시</span>
 				</div>
-				<span class="">세종</span>
-				<div class="region">
+				<div class="region_list sejong">
 					<input type="hidden" name="region" value=""/>
 					<input type="radio" name="region" value="세종"><span>세종시</span>
 				</div>
-				<span class="">강원도</span>
-				<div class="region">
+				<div class="region_list gangwon">
 					<input type="hidden" name="region" value="강원도"/>
 					<input type="radio" name="region" value="강릉"><span>강릉시</span>
 					<input type="radio" name="region" value="고성"><span>고성군</span>
@@ -320,8 +369,7 @@
 					<input type="radio" name="region" value="화천"><span>화천군</span>
 					<input type="radio" name="region" value="횡성"><span>횡성군</span>
 				</div>
-				<span class="">경상북도</span>
-				<div class="region">
+				<div class="region_list gyeongsangbuk-do">
 					<input type="hidden" name="region" value="경상북도"/>
 					<input type="radio" name="region" value="경산"><span>경산시</span>
 					<input type="radio" name="region" value="경주"><span>경주시</span>
@@ -347,8 +395,7 @@
 					<input type="radio" name="region" value="칠곡"><span>칠곡군</span>
 					<input type="radio" name="region" value="포항"><span>포항시</span>
 				</div>
-				<span class="">경상남도</span>
-				<div class="region">
+				<div class="region_list gyeongsangnam-do">
 					<input type="hidden" name="region" value="경상남도"/>
 					<input type="radio" name="region" value="거제"><span>거제시</span>
 					<input type="radio" name="region" value="거창"><span>거창군</span>
@@ -369,8 +416,7 @@
 					<input type="radio" name="region" value="함양"><span>함양군</span>
 					<input type="radio" name="region" value="합천"><span>합천군</span>
 				</div>
-				<span class="">광주</span>
-				<div class="region">
+				<div class="region_list gwangju">
 					<input type="hidden" name="region" value="광주"/>
 					<input type="radio" name="region" value="광산"><span>광산구</span>
 					<input type="radio" name="region" value="동구"><span>동구</span>
@@ -378,8 +424,7 @@
 					<input type="radio" name="region" value="남구"><span>남구</span>
 					<input type="radio" name="region" value="북구"><span>북구</span>
 				</div>
-				<span class="">대구</span>
-				<div class="region">
+				<div class="region_list daegu">
 					<input type="hidden" name="region" value="대구"/>
 					<input type="radio" name="region" value="달서"><span>달서구</span>
 					<input type="radio" name="region" value="달성"><span>달성군</span>
@@ -390,8 +435,7 @@
 					<input type="radio" name="region" value="남구"><span>남구</span>
 					<input type="radio" name="region" value="북구"><span>북구</span>
 				</div>
-				<span class="">대전</span>
-				<div class="region">
+				<div class="region_list daejeon">
 					<input type="hidden" name="region" value="대전"/>
 					<input type="radio" name="region" value="유성"><span>유성구</span>
 					<input type="radio" name="region" value="대덕"><span>대덕구</span>
@@ -399,8 +443,7 @@
 					<input type="radio" name="region" value="동구"><span>동구</span>
 					<input type="radio" name="region" value="서구"><span>서구</span>
 				</div>
-				<span class="">부산</span>
-				<div class="region">
+				<div class="region_list busan">
 					<input type="hidden" name="region" value="부산"/>
 					<input type="radio" name="region" value="강서"><span>강서구</span>
 					<input type="radio" name="region" value="금정"><span>금정구</span>
@@ -419,8 +462,7 @@
 					<input type="radio" name="region" value="남구"><span>남구</span>
 					<input type="radio" name="region" value="북구"><span>북구</span>
 				</div>
-				<span class="">울산</span>
-				<div class="region">
+				<div class="region_list ulsan">
 					<input type="hidden" name="region" value="울산"/>
 					<input type="radio" name="region" value="울주"><span>울주군</span>
 					<input type="radio" name="region" value="중구"><span>중구</span>
@@ -428,8 +470,7 @@
 					<input type="radio" name="region" value="동구"><span>동구</span>
 					<input type="radio" name="region" value="북구"><span>북구</span>
 				</div>				
-				<span class="">인천</span>
-				<div class="region">
+				<div class="region_list incheon">
 					<input type="hidden" name="region" value="인천"/>
 					<input type="radio" name="region" value="강화"><span>강화군</span>
 					<input type="radio" name="region" value="계양"><span>계양구</span>
@@ -442,8 +483,7 @@
 					<input type="radio" name="region" value="동구"><span>동구</span>
 					<input type="radio" name="region" value="서구"><span>서구</span>
 				</div>				
-				<span class="">전라남도</span>
-				<div class="region">
+				<div class="region_list jeollanam-do">
 					<input type="hidden" name="region" value="전라남도"/>
 					<input type="radio" name="region" value="강진"><span>강진군</span>
 					<input type="radio" name="region" value="고흥"><span>고흥군</span>
@@ -468,8 +508,7 @@
 					<input type="radio" name="region" value="해남"><span>해남군</span>
 					<input type="radio" name="region" value="화순"><span>화순군</span>
 				</div>				
-				<span class="">전라북도</span>
-				<div class="region">
+				<div class="region_list jeollabuk-do">
 					<input type="hidden" name="region" value="전라북도"/>
 					<input type="radio" name="region" value="고창"><span>고창군</span>
 					<input type="radio" name="region" value="군산"><span>군산시</span>
@@ -486,15 +525,12 @@
 					<input type="radio" name="region" value="정읍"><span>정읍시</span>
 					<input type="radio" name="region" value="진안"><span>진안군</span>
 				</div>				
-				<!-- 제주도 지역 더 세분화 할지?? -->
-				<span class="">제주도</span>
-				<div class="region">
+				<div class="region_list jeju">
 					<input type="hidden" name="region" value="제주도"/>
 					<input type="radio" name="region" value="제주"><span>제주시</span>
 					<input type="radio" name="region" value="서귀포"><span>서귀포시</span>
 				</div>				
-				<span class="">충청북도</span>
-				<div class="region">
+				<div class="region_list chungcheongbuk-do">
 					<input type="hidden" name="region" value="충청북도"/>
 					<input type="radio" name="region" value="괴산"><span>괴산군</span>
 					<input type="radio" name="region" value="단양"><span>단양군</span>
@@ -508,8 +544,7 @@
 					<input type="radio" name="region" value="청주"><span>청주시</span>
 					<input type="radio" name="region" value="충주"><span>충주시</span>
 				</div>				
-				<span class="">충청남도</span>
-				<div class="region">
+				<div class="region_list chungcheongnam-do">
 					<input type="hidden" name="region" value="충청남도"/>
 					<input type="radio" name="region" value="계룡"><span>계룡시</span>
 					<input type="radio" name="region" value="공주"><span>공주시</span>
@@ -528,7 +563,40 @@
 					<input type="radio" name="region" value="홍성"><span>홍성군</span>
 				</div>				
 			</div>
-			<button>검색</button><br/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+        <button type="button" class="btn btn-primary" id="region_modal_btn">필터 적용!</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="header">
+		<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
+</div>
+<div id="content">
+	<br/><br/><br/><br/>
+	<div id="warning_geo">
+		<strong>정확한 검색을 위해 위치 정보 접근을 허용해주세요:)</strong><br/>
+		<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
+	</div>
+	<div id="search">		
+		<form action="stores">
+			<input type="hidden" name="x" class="lng"/>
+			<input type="hidden" name="y" class="lat">
+			키워드는 <input type="text" name="keyword" value="${keyword}"/> 입니당
+			<div id="filter_sort" class="filter">
+				<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
+				<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
+				<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
+				<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}"> checked="checked"</c:if>><span>거리순</span>
+				<!-- 모달 트리거 버튼-->
+				<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#region_modal">지역 필터</button>
+			</div>
+			<input type="hidden" name="region" id="region1" disabled="disabled"/>
+			<input type="hidden" name="region" id="region2" disabled="disabled"/>
+			<button type="submit">검색</button><br/>
 			<c:if test="${not empty msg_changedFilter}">원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</c:if>		
 		</form>	
 	</div>

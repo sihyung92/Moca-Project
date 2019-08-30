@@ -22,7 +22,7 @@ public class StoreDaoImpl implements StoreDao {
 	@Inject
 	SqlSession sqlSession;
 	
-	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger logger = LoggerFactory.getLogger(StoreDao.class);
 	
 	@Override
 	public List<StoreVo> selectListByTag(Map<String, String> variables) {
@@ -92,4 +92,30 @@ public class StoreDaoImpl implements StoreDao {
 	public List<ImageVo> selectStoreReviewImgList(Map<String, Integer> map) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoreReviewImgList", map);
 	}
+
+	@Override
+	public List<StoreVo> selectStoresNearBy(Map<String, String> variables) {
+		List<StoreVo> list = sqlSession.selectList("selectStoresNearBy",variables);
+		logger.debug("DAO: 근처 카페 요청 후");
+		return list;
+	}
+
+	@Override
+	public List<StoreVo> selectTrendStoresList(String tagName) {
+		return sqlSession.selectList("selectByReviewTag",tagName);
+	}
+	
+	public List<StoreVo> selectHitStoresList(Map<String, String> variables) {	
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectHitStoresList", variables);
+	}
+
+	@Override
+	public List<StoreVo> selectBestStoresList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectBestStoresList");
+	}
+
+	@Override
+	public List<StoreVo> selectTakeoutStoresList(Map<String, String> variables) {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTakeoutStoresList", variables);
+	} 
 }

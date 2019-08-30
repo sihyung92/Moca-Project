@@ -27,4 +27,15 @@ public interface StoreDao {
 	List<ImageVo> selectStoreReviewImgList(Map<String, Integer> map) throws SQLException;
 
 	List<StoreVo> selectListByTag(Map<String, String> variables);
+
+	List<StoreVo> selectStoresNearBy(Map<String, String> variables);
+
+	List<StoreVo> selectTrendStoresList(String tagName);
+	
+	List<StoreVo> selectHitStoresList(Map<String, String> variables);
+	
+	List<StoreVo> selectBestStoresList();
+	
+	List<StoreVo> selectTakeoutStoresList(Map<String, String> variables);
+	
 }

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -10,14 +11,16 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">moca</a>
+      <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
-
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <form class="navbar-form navbar-left">
+      <form class="navbar-form navbar-left" action="stores">
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search" size="50">
+          <input type="text" name="keyword" class="form-control" placeholder="Search" size="50">
+          <input type="hidden" name="x" class="lng"/>
+		  <input type="hidden" name="y" class="lat"/>		
+		  <input type="hidden" name="filter" value="distance"/>
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
       </form>

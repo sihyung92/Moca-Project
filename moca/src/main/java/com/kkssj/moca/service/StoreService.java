@@ -16,7 +16,6 @@ public interface StoreService {
 	
 	///////////////////////
 	//store
-	
 	//상세정보 가져오기
 	StoreVo getStore(int store_Id, int account_id);
 
@@ -32,7 +31,6 @@ public interface StoreService {
 	
 	///////////////////////
 	//review
-	
 	//리뷰 리스트 가져오기
 	List<ReviewVo> getReviewList(int accountId, int storeId);
 	
@@ -48,7 +46,6 @@ public interface StoreService {
 	
 	///////////////////////
 	//likeHate
-
 	//좋아요 싫어요 추가하기
 	int addLikeHate(int review_id, int accountId, int isLike);
 
