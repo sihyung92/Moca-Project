@@ -154,6 +154,7 @@
 						+'</li></a>');	     	
 					}
 					/////임시로 넣어놓음. refactoring대상/////
+					var slide;
 			        $('.suggestion #storesNearBy_carousel a li').mouseenter(function(){
 			            var overlay = $(this).children('div');
 			            overlay.show();
@@ -168,7 +169,7 @@
 			        	})();        
 			        });
 			         
-			        $('#storesNearBy_carousel .suggestion a li').mouseleave(function(){
+			        $('.suggestion #storesNearBy_carousel a li').mouseleave(function(){
 			            clearTimeout(slide);
 						$(this).children().hide();
 						var firstImg = $(this).children()[1];

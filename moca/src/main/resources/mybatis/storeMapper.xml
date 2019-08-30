@@ -57,16 +57,16 @@
   </select>
   <select id="selectStoresNearBy" parameterType="Map" resultType="com.kkssj.moca.model.entity.StoreVo">
 	 <![CDATA[
-	 SELECT * FROM (SELECT @rownum:=@rownum+1 as rownum, STORE_ID, LOGOIMG, STOREIMG1, STOREIMG2, STOREIMG3, ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) as distance
+	 SELECT STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, ROADADDRESS, VIEWCNT, AVERAGELEVEL, REVIEWCNT FROM (SELECT @rownum:=@rownum+1 as rownum, STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, ROADADDRESS, VIEWCNT, AVERAGELEVEL, REVIEWCNT, ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) as distance
 	 FROM STORE, (SELECT @ROWNUM:=0) forRN HAVING distance<5000 ORDER BY AVERAGELEVEL) A WHERE rownum<16 ORDER BY rownum;
 	 ]]>
   </select>
   <select id="selectByReviewTag" parameterType="java.lang.String" resultType="com.kkssj.moca.model.entity.StoreVo">
 	 <![CDATA[
-  	  	SELECT * FROM
-	  	(SELECT STORE.store_id, NAME, STOREIMG1, STOREIMG2, STOREIMG3, @rownum:=@rownum+1 as rownum
-		FROM (SELECT store_id, COUNT(${value}) as cnt FROM TAGS GROUP BY store_id HAVING cnt>0)innerTable
-		INNER JOIN STORE ON innerTable.store_id = STORE.STORE_ID, (SELECT @ROWNUM:=0) forRN	ORDER BY AVERAGELEVEL)innerTable2
+  	  	SELECT STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, ROADADDRESS, VIEWCNT, AVERAGELEVEL FROM
+	  	(SELECT  STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, ROADADDRESS, VIEWCNT, AVERAGELEVEL, REVIEWCNT,@rownum:=@rownum+1 as rownum
+		FROM (SELECT STORE.STORE_ID,cnt, NAME, STOREIMG1, STOREIMG2, STOREIMG3, ROADADDRESS, VIEWCNT, AVERAGELEVEL, REVIEWCNT FROM (SELECT store_id, COUNT(${value}) as cnt FROM TAGS GROUP BY store_id HAVING cnt>0)innerTable
+		INNER JOIN STORE ON innerTable.store_id = STORE.STORE_ID, (SELECT @ROWNUM:=0)forRN)innerTable2 ORDER BY AVERAGELEVEL DESC )innerTable3
 		WHERE rownum<16 ORDER BY rownum;
 	 ]]>
   </select>

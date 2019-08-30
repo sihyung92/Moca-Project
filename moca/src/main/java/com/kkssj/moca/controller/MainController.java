@@ -47,6 +47,7 @@ public class MainController {
 		
 		model.addAttribute("hitStores", mainService.getHitStoresList());
 		model.addAttribute("trendStores", mainService.getTrendStoresList("예쁜"));
+		model.addAttribute("recentReviews",mainService.getRecentReviews());
 		return "main";
 	}
 

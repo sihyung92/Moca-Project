@@ -91,4 +91,8 @@
  	  FROM REVIEWIMAGE WHERE REVIEWID = #{reviewId};
   </select>
   
+  <select id="selectRecentReviews" resultType="com.kkssj.moca.model.entity.ReviewVo">
+ 	 SELECT REVIEWCONTENT, WRITEDATE, ACCOUNT_ID, STORE_ID, REVIEW_ID FROM REVIEW ORDER BY WRITEDATE DESC
+  </select>
+  
 </mapper>

@@ -24,7 +24,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	SqlSession sqlSession;
 
 
-	//store µðÅ×ÀÏ ÆäÀÌÁö¿¡¼­ ÇØ´ç Ä«ÆäÀÇ review¸¦ °¡Á®¿È
+	//store ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ Ä«ï¿½ï¿½ï¿½ï¿½ reviewï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -34,7 +34,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("review.selectAll",map);
 	}
 	
-	//¸®ºä Ãß°¡
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 	@Override
 	public int insertReview(ReviewVo reviewVo) throws SQLException {
 		logger.debug(reviewVo.toString());
@@ -43,25 +43,25 @@ public class ReviewDaoImpl implements ReviewDao {
 		return result;
 	}
 
-	//¹æ±Ý Ãß°¡ÇÑ ¸®ºä¸¦ °¡Á®¿È(Ãß°¡ ÀÌÈÄ »ý¼ºµÇ´Â Á¤º¸¸¦ °¡Á®¿À±â À§ÇØ)
+	//ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ä¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 	@Override
 	public ReviewVo selectAddedOne(int accountId) throws SQLException {
 		return sqlSession.selectOne("review.selectAddedOne", accountId);
 	}
 
-	//¸®ºä ¼öÁ¤
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public int updateReview(ReviewVo reviewVo) throws SQLException{
 		return sqlSession.update("review.updateReview", reviewVo);
 	}
 	
 
-	//¸®ºä »èÁ¦
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	public int deleteReview(ReviewVo reviewVo) throws SQLException {
 		return sqlSession.delete("review.deleteReview",reviewVo);
 	}
 
-	//likeHate Å×ÀÌºí¿¡ row Ãß°¡
+	//likeHate ï¿½ï¿½ï¿½Ìºï¿½ row ï¿½ß°ï¿½
 	@Override
 	public int insertLikeHate(int review_id, int accountId, int isLike) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -72,7 +72,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.insert("review.insertLikeHate", map);
 	}
 
-	//likeHate Å×ÀÌºí¿¡ row ¼öÁ¤
+	//likeHate ï¿½ï¿½ï¿½Ìºï¿½ row ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public int updateLikeHate(int review_id, int accountId, int isLike) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -84,7 +84,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	}
 
 
-	//likeHate Å×ÀÌºí¿¡ row »èÁ¦
+	//likeHate ï¿½ï¿½ï¿½Ìºï¿½ row ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public int deleteLikeHate(int review_id, int accountId) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -94,7 +94,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.delete("review.deleteLikeHate", map);
 	}
 
-	//review Å×ÀÌºí¿¡ likeCount°ª ¼öÁ¤
+	//review ï¿½ï¿½ï¿½Ìºï¿½ likeCountï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public int updateLikeCount(int review_id, int likeCount) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -104,7 +104,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.update("review.updateLikeCount", map);
 	}
 
-	//review Å×ÀÌºí¿¡ hateCount°ª ¼öÁ¤
+	//review ï¿½ï¿½ï¿½Ìºï¿½ hateCountï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public int updateHateCount(int review_id, int hateCount) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -114,7 +114,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.update("review.updateHateCount", map);
 	}
 
-	//review Å×ÀÌºí¿¡ likeCount, hateCount°ª Á¶È¸
+	//review ï¿½ï¿½ï¿½Ìºï¿½ likeCount, hateCountï¿½ï¿½ ï¿½ï¿½È¸
 	@Override
 	public ReviewVo selectLikeHateCount(int review_id) throws SQLException{
 		ReviewVo reviewVo = sqlSession.selectOne("review.selectLikeHateCount", review_id);
@@ -123,56 +123,56 @@ public class ReviewDaoImpl implements ReviewDao {
 	}
 
 
-	//likeHate Å×ÀÌºí¿¡ isLike=1ÀÎ °³¼ö Á¶È¸
+	//likeHate ï¿½ï¿½ï¿½Ìºï¿½ isLike=1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 	@Override
 	public int selectLikeHateLike(int reviewId) throws SQLException{
 		try {
 			return sqlSession.selectOne("review.selectLikeHateLike", reviewId);
 		}catch (NullPointerException e) {
-			//ÁÁ¾Æ¿ä°¡ ¾ø´Â °æ¿ì
+			//ï¿½ï¿½ï¿½Æ¿ä°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			return 0;
 		}
 		
 	}
 
-	//likeHate Å×ÀÌºí¿¡ isLike=-1ÀÎ °³¼ö Á¶È¸
+	//likeHate ï¿½ï¿½ï¿½Ìºï¿½ isLike=-1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸
 	@Override
 	public int selectLikeHateHate(int reviewId) throws SQLException {
 		try {
 			return sqlSession.selectOne("review.selectLikeHateHate", reviewId);
 		}catch (NullPointerException e) {
-			//½È¾î¿ä°¡ ¾ø´Â °æ¿ì
+			//ï¿½È¾ï¿½ä°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			return 0;
 		}
 	}
 	
 	
-	//¸®ºä ÀÌ¹ÌÁö µî·Ï
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	@Override
 	public int insertReviewImage(ImageVo imgaeVo) throws SQLException {
 		return sqlSession.insert("review.insertReviewImage", imgaeVo);
 	}
 
 
-	//review Å×ÀÌºí¿¡ÀÖ´Â review_id°ª Á¶È¸
+	//review ï¿½ï¿½ï¿½Ìºï¿½ï¿½Ö´ï¿½ review_idï¿½ï¿½ ï¿½ï¿½È¸
 	@Override
 	public List<ReviewVo> selectAllReviewId() throws SQLException{
 		return sqlSession.selectList("review.selectAllReviewId");
 	}
 	
-	//ÇØ´ç store¿¡ ÀÖ´Â reviewÀÇ Á¡¼ö(¸À, °¡°Ý µî) Á¶È¸
+	//ï¿½Ø´ï¿½ storeï¿½ï¿½ ï¿½Ö´ï¿½ reviewï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½) ï¿½ï¿½È¸
 	@Override
 	public List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException{
 		return sqlSession.selectList("review.selectAllReviewLevel", storeId);
 	}
 	
-	//¸®ºä ÀÌ¹ÌÁö °¡Á®¿À±â
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public List<ImageVo> selectReviewImgListByStoreId(int storeId) {
 		return sqlSession.selectList("review.selectReviewImgListByStoreId", storeId);
 	}
 
-	//¸®ºä ÀÌ¹ÌÁö Á¦°Å
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	@Override
 	public int deleteReviewImage(ImageVo imageVo) throws SQLException {
 		return sqlSession.delete("review.deleteReviewImage", imageVo);
@@ -183,6 +183,9 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("review.selectReviewImgListByReviewId", reviewId);
 	}
 
-	
+	@Override
+	public List<ReviewVo> selectRecentReviews() {
+		return sqlSession.selectList("selectRecentReviews");
+	}
 
 }
