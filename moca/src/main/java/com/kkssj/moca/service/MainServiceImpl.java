@@ -1,6 +1,7 @@
 package com.kkssj.moca.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -19,12 +20,17 @@ public class MainServiceImpl implements MainService{
 	static Logger logger = LoggerFactory.getLogger(MainService.class);
 
 	@Override
-	public List<StoreVo> getHitStoresList() {
+	public List<StoreVo> getHitStoresList(Map<String, String> variables) {
 		/*
 		 * List<StoreVo> list = storeDao.selectHitStoresList();
 		 * //list.get(1).setStoreImg1("null"); logger.debug(list.get(1).getStoreImg1());
 		 */
-		return storeDao.selectHitStoresList();
+		return storeDao.selectHitStoresList(variables);
+	}
+
+	@Override
+	public List<StoreVo> getBestStoresList() {
+		return storeDao.selectBestStoresList();
 	} 
 
 }

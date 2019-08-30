@@ -90,7 +90,12 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
-	public List<StoreVo> selectHitStoresList() {	
-		return sqlSession.selectList("selectHitStoresList");
+	public List<StoreVo> selectHitStoresList(Map<String, String> variables) {	
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectHitStoresList", variables);
+	}
+
+	@Override
+	public List<StoreVo> selectBestStoresList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectBestStoresList");
 	} 
 }

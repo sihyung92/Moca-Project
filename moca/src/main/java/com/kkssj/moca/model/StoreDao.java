@@ -28,5 +28,8 @@ public interface StoreDao {
 
 	List<StoreVo> selectListByTag(Map<String, String> variables);
 
-	List<StoreVo> selectHitStoresList();
+	List<StoreVo> selectHitStoresList(Map<String, String> variables);
+	
+	List<StoreVo> selectBestStoresList();
+	
 }
