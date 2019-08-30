@@ -187,7 +187,7 @@
 			</div>
 		</div>
 	</c:if>
-<!-- Hit stores 추천 캐러샐 -->
+<!-- Best stores 추천 캐러샐 -->
 	<c:if test="${not empty bestStores}">
 		<c:set var="length" value="${fn:length(bestStores)}"/>
  		<div class="row suggestion">
@@ -222,7 +222,7 @@
 			    <c:if test="${length gt 5}">
 			    <div class="item">
 			     <ul class="item-inner" style="list-style:none">
-			     	<c:forEach items="${hitStores}" var="bean" begin="5" end="9"> 
+			     	<c:forEach items="${bestStores}" var="bean" begin="5" end="9"> 
 				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
 				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
 				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
@@ -235,7 +235,7 @@
 			    <c:if test="${length gt 10}">	
 				   <div class="item">		    
 				     <ul class="item-inner" style="list-style:none">
-				     	<c:forEach items="${hitStores}" var="bean" begin="10" end="12"> 
+				     	<c:forEach items="${bestStores}" var="bean" begin="10" end="14"> 
 					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
 					     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
 				     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
@@ -258,6 +258,77 @@
 			</div>
 		</div>
 	</c:if>
+<!-- TakeOut stores 추천 캐러샐 -->
+<c:if test="${not empty takeOutStores}">
+	<c:set var="length" value="${fn:length(takeoutStores)}"/>
+		<div class="row suggestion">
+		<div class="col-md-12">
+			<h5>주변의 테이크 아웃 전문점 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
+		</div>
+		<div class="col-md-12 carousel slide" id="takeOutStores" data-ride="carousel">
+		  <!-- Indicators -->
+		  <ol class="carousel-indicators">
+		    <li data-target="#takeOutStores" data-slide-to="0" class="active"></li>
+		    <c:if test="${length gt 5}">
+		   	 	<li data-target="#takeOutStores" data-slide-to="1"></li>
+		    </c:if>
+		    <c:if test="${length gt 10}">
+		    	<li data-target="#takeOutStores" data-slide-to="2"></li>
+		    </c:if>
+		  </ol>		
+		  <!-- Wrapper for slides -->
+		  <div class="carousel-inner" role="listbox">
+		    <div class="item active">
+		     <ul class="item-inner" style="list-style:none">
+		     	<c:forEach items="${takeOutStores}" var="bean" begin="0" end="4" > 
+			     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
+			     		<div style="width:300px; height:300px; background-color:#ffffff; opacity:0.6; filter: alpha(opacity=60); display:none;"></div>
+			     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
+			     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
+			     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
+			     	</li></a>
+		     	</c:forEach>
+		     </ul>	
+		    </div>
+		    <c:if test="${length gt 5}">
+		    <div class="item">
+		     <ul class="item-inner" style="list-style:none">
+		     	<c:forEach items="${takeOutStores}" var="bean" begin="5" end="9"> 
+			     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
+			     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
+			     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
+			     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
+			     	</li></a>
+		     	</c:forEach> 
+		     </ul>		
+		    </div>
+		    </c:if>     
+		    <c:if test="${length gt 10}">	
+			   <div class="item">		    
+			     <ul class="item-inner" style="list-style:none">
+			     	<c:forEach items="${takeOutStores}" var="bean" begin="10" end="14"> 
+				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
+				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
+			     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
+			     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
+				     	</li></a>
+			     	</c:forEach>
+			     </ul>		     
+			    </div> 
+			</c:if> 	  		   
+			  </div>	
+		  <!-- Controls -->
+		  <a class="left carousel-control" href="#takeOutStores" role="button" data-slide="prev">
+		    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+		    <span class="sr-only">Previous</span>
+		  </a>
+		  <a class="right carousel-control" href="#takeOutStores" role="button" data-slide="next">
+		    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+		    <span class="sr-only">Next</span>
+		  </a>
+		</div>
+	</div>
+</c:if>
 </div>
 </body>
 </html>

@@ -42,10 +42,13 @@ public class MainController {
 		Map<String, String> variables = new HashMap<String, String>();
 		variables.put("x", x );
 		variables.put("y", y);
-		//Hit Stores 추천 메소드
+		//Hit Stores 추천 
+		logger.debug((mainService.getHitStoresList(variables)).toString());
 		model.addAttribute("hitStores", mainService.getHitStoresList(variables));		
-		//Best Stores 추천 메소드
-		model.addAttribute("bestStores", mainService.getBestStoresList());
+		//Best Stores 추천 
+	//	model.addAttribute("bestStores", mainService.getBestStoresList());
+		//TakeOut Stores 추천
+	//	model.addAttribute("takeOutStores", mainService.getTakeoutStoresList(variables));
 		return "main";
 	} 
 
