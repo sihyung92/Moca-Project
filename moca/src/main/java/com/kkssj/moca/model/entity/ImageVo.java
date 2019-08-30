@@ -4,7 +4,7 @@ import java.io.File;
 
 public class ImageVo {
 	private String uu_id, path, originName, url, thumbnailUrl, fileName, thumbnailFileName;
-	private int storeId, reviewId, views, accountId;
+	private int store_id, review_id, views, account_id;
 	
 	public ImageVo() {
 		
@@ -27,6 +27,30 @@ public class ImageVo {
 		this.uu_id = uu_id;
 	}
 
+	public int getStore_id() {
+		return store_id;
+	}
+
+	public void setStore_id(int store_id) {
+		this.store_id = store_id;
+	}
+
+	public int getReview_id() {
+		return review_id;
+	}
+
+	public void setReview_id(int review_id) {
+		this.review_id = review_id;
+	}
+
+	public int getAccount_id() {
+		return account_id;
+	}
+
+	public void setAccount_id(int account_id) {
+		this.account_id = account_id;
+	}
+	
 	public String getPath() {
 		return path;
 	}
@@ -73,21 +97,6 @@ public class ImageVo {
 		
 	}
 
-	public int getStoreId() {
-		return storeId;
-	}
-
-	public void setStoreId(int storeId) {
-		this.storeId = storeId;
-	}
-
-	public int getReviewId() {
-		return reviewId;
-	}
-
-	public void setReviewId(int reviewId) {
-		this.reviewId = reviewId;
-	}
 
 	public int getViews() {
 		return views;
@@ -97,16 +106,6 @@ public class ImageVo {
 		this.views = views;
 	}
 	
-	public int getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(int accountId) {
-		this.accountId = accountId;
-	}
-	
-	
-
 
 	public String getFileName() {
 		return fileName;
@@ -123,9 +122,6 @@ public class ImageVo {
 	public void setThumbnailFileName() {
 		this.thumbnailFileName = this.uu_id+"_thumbnail_"+this.originName;
 	}
-	
-	
-	
 
 	public String getThumbnailUrl() {
 		return thumbnailUrl;
@@ -135,12 +131,13 @@ public class ImageVo {
 		this.thumbnailUrl = thumbnailUrl;
 	}
 
+	
 	@Override
 	public String toString() {
 		return "ImageVo [uu_id=" + uu_id + ", path=" + path + ", originName=" + originName + ", url=" + url
-				+ ", thumbnailUrl=" + thumbnailUrl + ", storeId=" + storeId + ", reviewId=" + reviewId + ", views="
-				+ views + ", accountId=" + accountId + "]";
-
+				+ ", thumbnailUrl=" + thumbnailUrl + ", fileName=" + fileName + ", thumbnailFileName="
+				+ thumbnailFileName + ", store_id=" + store_id + ", review_id=" + review_id + ", views=" + views
+				+ ", account_id=" + account_id + "]";
 	}
 
 	public void setDelImageVo(String url) {
@@ -160,6 +157,7 @@ public class ImageVo {
 		setUrl();
 		
 	}
+
 	
 	
 }

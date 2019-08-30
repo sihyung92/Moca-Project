@@ -17,15 +17,36 @@ public interface AccountDao {
 	//delete
 	int deleteUser() throws SQLException;
 	
+	//가고 싶은 카페 리스트 가져오기
 	List<StoreVo> selectFavoriteStoreList(int account_id) throws SQLException;
 	
+	//좋아요한 카페 리스트 가져오기
 	List<StoreVo> selectLikeStoreList(int account_id) throws SQLException;
 	
+	//카페 좋아요 누르기
 	int insertLikeStore(int storeId, int account_id) throws SQLException;
 	
+	//카페 좋아요 취소
 	int deleteLikeStore(int storeId, int account_id) throws SQLException;
 	
+	//가고싶은 카페 추가
 	int insertFavoriteStore(int storeId, int account_id) throws SQLException;
 	
+	//가고싶은 카페 취소
 	int deleteFavoriteStore(int storeId, int account_id) throws SQLException;
+	
+	//해당 account의 follower 가져오기
+	List<AccountVo> selectFollowerList(int accountId) throws SQLException;
+	
+	//해당 account의 following목록 가져오기
+	List<AccountVo> selectFollowingList(int accountId) throws SQLException;
+	
+	//해당 account의 following목록 추가하기
+	int insertFollow(int follower, int following) throws SQLException;
+	
+	//해당account의 following 삭제
+	int deleteFollow(int follower, int following) throws SQLException;
+	
+	//해당 account의 정보 불러오기
+	AccountVo selectByaccountId(int account_id) throws SQLException;
 }

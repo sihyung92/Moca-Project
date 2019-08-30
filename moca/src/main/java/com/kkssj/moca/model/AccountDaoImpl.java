@@ -92,6 +92,36 @@ public class AccountDaoImpl implements AccountDao {
 		map.put("ACCOUNT_ID", account_id);
 		return sqlSession.insert("com.kkssj.moca.model.AccountDao.deleteFavoriteStore", map);
 	}
+	
+	public List<AccountVo> selectFollowerList(int account_id) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowerList",account_id);
+	}
+
+	@Override
+	public List<AccountVo> selectFollowingList(int account_id) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowingList",account_id);
+	}
+
+	@Override
+	public int insertFollow(int follower, int following) throws SQLException {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("follower", follower);
+		map.put("following", following);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.insertFollow",map);
+	}
+
+	@Override
+	public int deleteFollow(int follower, int following) throws SQLException {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("follower", follower);
+		map.put("following", following);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.deleteFollow",map);
+	}
+
+	@Override
+	public AccountVo selectByaccountId(int account_id) {
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectByaccountId",account_id);
+	}
 
 
 }

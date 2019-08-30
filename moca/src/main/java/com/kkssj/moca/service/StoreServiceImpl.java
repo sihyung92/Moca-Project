@@ -173,7 +173,7 @@ public class StoreServiceImpl implements StoreService{
 		for (int i = 0; i < reviewList.size(); i++) {
 			reviewList.get(i).setImageList(new ArrayList());
 			for (int j = imageListIndex; j < reviewImageList.size(); j++) {
-				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReviewId()) {
+				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReview_id()) {
 					reviewList.get(i).getImageList().add(reviewImageList.get(j));
 					imageListIndex++;
 				}else {
@@ -196,7 +196,7 @@ public class StoreServiceImpl implements StoreService{
 		try {
 			//정상적으로 입력되었을때
 			if(reviewDao.insertReview(reviewVo) ==1) {
-				reviewVo = reviewDao.selectAddedOne(reviewVo.getAccountId());
+				reviewVo = reviewDao.selectAddedOne(reviewVo.getAccount_id());
 				
 				//S3에 파일 업로드
 				MultipartFile file;
@@ -211,9 +211,9 @@ public class StoreServiceImpl implements StoreService{
 		            
 		            if((file.getSize() != 0) && file.getContentType().contains("image")) {
 		            	ImageVo imgaeVo = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
-		            	imgaeVo.setReviewId(reviewVo.getReview_id());
-		            	imgaeVo.setStoreId(reviewVo.getStoreId());
-		            	imgaeVo.setAccountId(reviewVo.getAccountId());
+		            	imgaeVo.setReview_id(reviewVo.getReview_id());
+		            	imgaeVo.setStore_id(reviewVo.getStore_id());
+		            	imgaeVo.setAccount_id(reviewVo.getAccount_id());
 		            	reviewDao.insertReviewImage(imgaeVo);
 		            }
 
@@ -227,9 +227,9 @@ public class StoreServiceImpl implements StoreService{
 		    	
 				
 				//상점에 대한 평점 동기화
-				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStoreId());
+				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStore_id());
 				StoreVo storeVo = new StoreVo();
-				storeVo.setStore_Id(reviewVo.getStoreId());
+				storeVo.setStore_Id(reviewVo.getStore_id());
 				storeVo.calAllLevel(list);
 				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);
@@ -266,9 +266,9 @@ public class StoreServiceImpl implements StoreService{
 				for(int i=0; i<delThumbnailArray.length; i++) {
 					ImageVo imageVo = new ImageVo();
 					imageVo.setDelImageVo(delThumbnailArray[i]);
-					imageVo.setStoreId(reviewVo.getStoreId());
-					imageVo.setReviewId(reviewVo.getReview_id());
-					imageVo.setAccountId(reviewVo.getAccountId());
+					imageVo.setStore_id(reviewVo.getStore_id());
+					imageVo.setReview_id(reviewVo.getReview_id());
+					imageVo.setAccount_id(reviewVo.getAccount_id());
 					logger.debug(imageVo.toString());
 					delImageVoList.add(imageVo);
 					//db에서 삭제
@@ -299,9 +299,9 @@ public class StoreServiceImpl implements StoreService{
 	            
 	            if((file.getSize() != 0) && file.getContentType().contains("image")) {
 	            	ImageVo imgaeVo = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
-	            	imgaeVo.setReviewId(reviewVo.getReview_id());
-	            	imgaeVo.setStoreId(reviewVo.getStoreId());
-	            	imgaeVo.setAccountId(reviewVo.getAccountId());
+	            	imgaeVo.setReview_id(reviewVo.getReview_id());
+	            	imgaeVo.setStore_id(reviewVo.getStore_id());
+	            	imgaeVo.setAccount_id(reviewVo.getAccount_id());
 	            	
 	            	//db에 이미지 추가
 	            	reviewDao.insertReviewImage(imgaeVo);
@@ -323,9 +323,9 @@ public class StoreServiceImpl implements StoreService{
 			
 			//상점에 대한 평점 동기화
 			if(result>0) {
-				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStoreId());
+				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStore_id());
 				StoreVo storeVo = new StoreVo();
-				storeVo.setStore_Id(reviewVo.getStoreId());
+				storeVo.setStore_Id(reviewVo.getStore_id());
 				storeVo.calAllLevel(list);
 				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);				
