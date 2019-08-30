@@ -22,7 +22,7 @@ public class StoreDaoImpl implements StoreDao {
 	@Inject
 	SqlSession sqlSession;
 	
-	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger logger = LoggerFactory.getLogger(StoreDao.class);
 	
 	@Override
 	public List<StoreVo> selectListByTag(Map<String, String> variables) {
@@ -88,6 +88,11 @@ public class StoreDaoImpl implements StoreDao {
 	public List<ImageVo> selectStoreReviewImgList(Map<String, Integer> map) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoreReviewImgList", map);
 	}
+
+	@Override
+	public List<StoreVo> selectHitStoresList() {	
+		return sqlSession.selectList("selectHitStoresList");
+	} 
 	
 	@Override
 	public List<StoreVo> selectByDistance(Map<String, String> variables) {

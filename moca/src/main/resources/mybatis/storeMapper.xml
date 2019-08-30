@@ -3,11 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kkssj.moca.model.StoreDao">
-	<select id="selectByDistance" parameterType="Map" resultType="com.kkssj.moca.model.entity.StoreVo">
-		 <![CDATA[
-		 SELECT * FROM (SELECT @rownum:=@rownum+1 as rownum, STORE_ID, LOGOIMG, STOREIMG1, STOREIMG2, STOREIMG3, ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) as distance FROM STORE, (SELECT @ROWNUM:=0) forRN HAVING distance<20000 ORDER BY AVERAGELEVEL) A WHERE rownum<16;
-		 ]]>
-	</select>
+
   <select id="selectByTag" parameterType="Map" resultType="com.kkssj.moca.model.entity.StoreVo">
 	  SELECT STORE_ID, ADDRESS, CATEGORY, KAKAOID, TEL, NAME, URL, ROADADDRESS, XLOCATION, YLOCATION, REVIEWCNT, VIEWCNT, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LOGOIMG, ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) "distance" FROM STORE WHERE TAG LIKE CONCAT('%',#{keyword},'%')
     <if test="region!=null">
@@ -50,4 +46,18 @@
   	moodLevel=#{moodLevel}, convenienceLevel=#{convenienceLevel}, averageLevel=#{averageLevel}
   	WHERE store_id=#{store_Id}
   </update>
+  <select id="selectHitStoresList" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	<![CDATA[  	
+ 	SELECT STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, VIEWCNT, ROWNUM FROM 
+	(SELECT STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, VIEWCNT, @ROWNUM:=@ROWNUM+1 AS ROWNUM FROM
+	(SELECT STORE.STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, INNERTABLE.VIEWCNT FROM
+	(SELECT STORE_ID, COUNT(*) AS VIEWCNT FROM LOG, (SELECT @ROWNUM:=0) ROWNUMTABLE WHERE CLASSIFICATION='스토어뷰' AND LOGTIME>(NOW() - INTERVAL 1 DAY) GROUP BY STORE_ID ORDER BY VIEWCNT DESC) INNERTABLE
+	INNER JOIN STORE ON INNERTABLE.STORE_ID=STORE.STORE_ID WHERE REVIEWCNT>=0 AND AVERAGELEVEL>=0 ORDER BY VIEWCNT DESC) INNERTABLE2) OUTERTABLE WHERE ROWNUM<16;
+ 	]]>
+  </select>
+  <select id="selectByDistance" parameterType="Map" resultType="com.kkssj.moca.model.entity.StoreVo">
+	 <![CDATA[
+	 SELECT * FROM (SELECT @rownum:=@rownum+1 as rownum, STORE_ID, LOGOIMG, STOREIMG1, STOREIMG2, STOREIMG3, ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) as distance FROM STORE, (SELECT @ROWNUM:=0) forRN HAVING distance<5000 ORDER BY AVERAGELEVEL) A WHERE rownum<16;
+	 ]]>
+  </select>
 </mapper>

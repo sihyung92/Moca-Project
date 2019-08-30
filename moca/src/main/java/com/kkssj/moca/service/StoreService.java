@@ -17,54 +17,54 @@ public interface StoreService {
 	///////////////////////
 	//store
 	
-	//»ó¼¼Á¤º¸ °¡Á®¿À±â
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	StoreVo getStore(int store_Id);
 
-	//store°¡ ÀÖ´ÂÁö È®ÀÎÇÏ°í add
+	//storeï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ add
 	StoreVo addStore(StoreVo storeVo);
 	
-	//store »ó¼¼Á¤º¸ update
+	//store ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ update
 	int editStore(int accountId, StoreVo storeVo);
 
-	//storeInfoHistory °¡Á®¿À±â
+	//storeInfoHistory ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	String getStoreInfoHistory(int storeId);
 	
 	
 	///////////////////////
 	//review
 	
-	//¸®ºä ¸®½ºÆ® °¡Á®¿À±â
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	List<ReviewVo> getReviewList(int accountId, int storeId);
 	
-	//¸®ºä Ãß°¡
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);
 
-	//¸®ºä ¼öÁ¤
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	int editReview(ReviewVo reviewVo);
 	
-	//¸®ºä Á¦°Å
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	int deleteReview(ReviewVo reviewVo);
 	
 	
 	///////////////////////
 	//likeHate
 
-	//ÁÁ¾Æ¿ä ½È¾î¿ä Ãß°¡ÇÏ±â
+	//ï¿½ï¿½ï¿½Æ¿ï¿½ ï¿½È¾ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ï±ï¿½
 	int addLikeHate(int review_id, int accountId, int isLike);
 
-	//ÁÁ¾Æ¿ä ½È¾î¿ä ¼öÁ¤
+	//ï¿½ï¿½ï¿½Æ¿ï¿½ ï¿½È¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	int editLikeHate(int review_id, int accountId, int isLike);
 
-	//ÁÁ¾Æ¿ä ½È¾î¿ä Á¦°Å
+	//ï¿½ï¿½ï¿½Æ¿ï¿½ ï¿½È¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	int deleteLikeHate(int review_id, int accountId, int isLike);
 
-	//reviewÀÇ ÁÁ¾Æ¿ä ½È¾î¿ä Ä«¿îÆ®¸¦ likehate Å×ÀÌºíÀÇ °ª°ú µ¿±âÈ­
+	//reviewï¿½ï¿½ ï¿½ï¿½ï¿½Æ¿ï¿½ ï¿½È¾ï¿½ï¿½ Ä«ï¿½ï¿½Æ®ï¿½ï¿½ likehate ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­
 	int syncReviewLikeHate();
 	
-	//storeÀÇ ´ëÇ¥ÀÌ¹ÌÁöµé
+	//storeï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½
 	List<ImageVo> getStoreImgList(int storeId);
 
-	//¸®ºä ÀÌ¹ÌÁö »èÁ¦
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	int deleteReviewImage(ImageVo imageVo);
 
 }

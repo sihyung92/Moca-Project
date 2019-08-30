@@ -7,5 +7,7 @@ import com.kkssj.moca.model.entity.StoreVo;
 
 public interface MainService {
 
+	List<StoreVo> getHitStoresList();
+
 	List<StoreVo> getCafesNearBy(Map<String, String> variables);
 }

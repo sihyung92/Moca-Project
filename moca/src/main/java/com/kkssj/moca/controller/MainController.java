@@ -1,6 +1,5 @@
 package com.kkssj.moca.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,13 @@ public class MainController {
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Model model) {
+	public String home(Model model) {		
+		model.addAttribute("hitStores", mainService.getHitStoresList());
 		return "main";
 	}
+//	@ResponseBody
+//	@RequestMapping("/hits")
+//	public List<StoreVo> getHits() {
+//		return mainService.getHitStoresList();
+//	}	
 }
