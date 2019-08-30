@@ -16,55 +16,62 @@ public interface StoreService {
 	
 	///////////////////////
 	//store
-	
-	//������ ��������
-	StoreVo getStore(int store_Id);
+	//상세정보 가져오기
+	StoreVo getStore(int store_Id, int account_id);
 
-	//store�� �ִ��� Ȯ���ϰ� add
+	//store가 있는지 확인하고 add
 	StoreVo addStore(StoreVo storeVo);
 	
-	//store ������ update
+	//store 상세정보 update
 	int editStore(int accountId, StoreVo storeVo);
 
-	//storeInfoHistory ��������
+	//storeInfoHistory 가져오기
 	String getStoreInfoHistory(int storeId);
 	
 	
 	///////////////////////
 	//review
-	
-	//���� ����Ʈ ��������
+	//리뷰 리스트 가져오기
 	List<ReviewVo> getReviewList(int accountId, int storeId);
 	
-	//���� �߰�
+	//리뷰 추가
 	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);
 
-	//���� ����
-	int editReview(ReviewVo reviewVo);
+	//리뷰 수정
+	ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails);
 	
-	//���� ����
+	//리뷰 제거
 	int deleteReview(ReviewVo reviewVo);
 	
 	
 	///////////////////////
 	//likeHate
-
-	//���ƿ� �Ⱦ�� �߰��ϱ�
+	//좋아요 싫어요 추가하기
 	int addLikeHate(int review_id, int accountId, int isLike);
 
-	//���ƿ� �Ⱦ�� ����
+	//좋아요 싫어요 수정
 	int editLikeHate(int review_id, int accountId, int isLike);
 
-	//���ƿ� �Ⱦ�� ����
+	//좋아요 싫어요 제거
 	int deleteLikeHate(int review_id, int accountId, int isLike);
 
-	//review�� ���ƿ� �Ⱦ�� ī��Ʈ�� likehate ���̺��� ���� ����ȭ
+	//review의 좋아요 싫어요 카운트를 likehate 테이블의 값과 동기화
 	int syncReviewLikeHate();
 	
-	//store�� ��ǥ�̹�����
+	//store의 대표이미지들
 	List<ImageVo> getStoreImgList(int storeId);
 
-	//���� �̹��� ����
+	//리뷰 이미지 삭제
 	int deleteReviewImage(ImageVo imageVo);
+
+	int addLikeStore(int storeId, int account_id);
+
+	int deleteLikeStore(int storeId, int account_id);
+
+	int addFavoriteStore(int storeId, int account_id);
+
+	int deleteFavoriteStore(int storeId, int account_id);
+
+	StoreVo editStoreImg(StoreVo storeVo, MultipartFile[] newFiles, String[] delStoreImgArr);
 
 }

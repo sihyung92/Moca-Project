@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="account">
+<mapper namespace="com.kkssj.moca.model.AccountDao">
   <select id="selectUserByKakaoId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
   SELECT * FROM ACCOUNT WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'kakao'
   </select>
@@ -19,4 +19,43 @@
   UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'Another'
   </update>
   <delete id="deleteUser" parameterType="Integer" ></delete>
+  <select id="selectFavoriteStoreList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	SELECT  s.STORE_ID, s.NAME, s.ADDRESS, s.AVERAGELEVEL, s.LOGOIMG
+  	FROM FAVORITESTORE f JOIN STORE s ON f.STORE_ID =s.STORE_ID
+  	WHERE f.ACCOUNT_ID = #{ACCOUNT_ID};
+  </select>
+  <select id="selectLikeStoreList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
+	SELECT  s.STORE_ID, s.NAME, s.ADDRESS, s.AVERAGELEVEL, s.LOGOIMG
+	FROM LIKESTORE l JOIN STORE s ON l.STORE_ID =s.STORE_ID
+	WHERE l.ACCOUNT_ID = #{ACCOUNT_ID};
+  </select>
+  
+  <insert id="insertLikeStore" parameterType="map" >
+ 	INSERT INTO LIKESTORE(STORE_ID, ACCOUNT_ID) VALUES(#{STORE_ID},#{ACCOUNT_ID});
+  </insert>
+  <delete id="deleteLikeStore" parameterType="map" >
+  	DELETE FROM LIKESTORE WHERE STORE_ID=#{STORE_ID} AND ACCOUNT_ID = #{ACCOUNT_ID};
+  </delete>
+  <insert id="insertFavoriteStore" parameterType="map" >
+  	INSERT INTO FAVORITESTORE(STORE_ID, ACCOUNT_ID) VALUES(#{STORE_ID},#{ACCOUNT_ID});
+  </insert>
+  <delete id="deleteFavoriteStore" parameterType="map" >
+  	DELETE FROM FAVORITESTORE WHERE STORE_ID=#{STORE_ID} AND ACCOUNT_ID = #{ACCOUNT_ID};
+  </delete>
+  <select id="selectFollowerList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  	SELECT ACCOUNT_ID,NICKNAME,THUMBNAILIMAGE,ACCOUNTLEVEL FROM ACCOUNT WHERE ACCOUNT_ID IN(SELECT FOLLOWER FROM FOLLOW WHERE FOLLOWING=#{ACCOUNT_ID})
+  </select>
+  <select id="selectFollowingList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  	SELECT ACCOUNT_ID,NICKNAME,THUMBNAILIMAGE,ACCOUNTLEVEL FROM ACCOUNT WHERE ACCOUNT_ID IN(SELECT FOLLOWING FROM FOLLOW WHERE FOLLOWER=#{ACCOUNT_ID})
+  </select>
+  <insert id="insertFollow" parameterType="map">
+  	insert into FOLLOW (FOLLOWER,FOLLOWING) VALUES (#{follower},#{following})
+  </insert>
+  <delete id="deleteFollow" parameterType="map">
+  	delete from FOLLOW where FOLLOWER=#{follower} and FOLLOWING=#{following}
+  </delete>
+  
+  <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </select>
 </mapper>

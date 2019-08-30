@@ -22,30 +22,30 @@ import com.kkssj.moca.model.entity.ImageVo;
 public class UploadFileUtils {
     private static final Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
 
-    // String uploadPath ÆÄÀÏÀÇ ÀúÀå°æ·Î
-    // String originalName ¿øº» ÆÄÀÏ ÀÌ¸§
-    // byte[] fileData ÆÄÀÏ µ¥ÀÌÅÍ
+    // String uploadPath íŒŒì¼ì˜ ì €ì¥ê²½ë¡œ
+    // String originalName ì›ë³¸ íŒŒì¼ ì´ë¦„
+    // byte[] fileData íŒŒì¼ ë°ì´í„°
     public static ImageVo uploadFile(String path, String originalName, byte[] fileData) throws Exception {  	
     	
-    	//S3 ¼­¹ö °ü·Ã ¼³Á¤  
+    	//S3 ì„œë²„ ê´€ë ¨ ì„¤ì •
     	S3Util s3 = new S3Util();
-        String bucketName = "moca-pictures";
+        String bucketName = "team-moca";
             
-        //¹ü¿ë°íÀ¯½Äº°ÀÚ(36°³ÀÇ ¹®ÀÚ·ÎµÈ Áßº¹ °¡´É¼ºÀÌ °ÅÀÇ ¾ø´Â)    
+        //ë²”ìš©ê³ ìœ ì‹ë³„ì(36ê°œì˜ ë¬¸ìë¡œëœ ì¤‘ë³µ ê°€ëŠ¥ì„±ì´ ê±°ì˜ ì—†ëŠ”)       
         UUID uuid = UUID.randomUUID();
         String uu_id = uuid.toString();
         
         
         String savedName =path+"/"+ uu_id.toString() + "_" + originalName;
         String uploadedFileName =savedName.replace(File.separatorChar, '/');        
-        s3.fileUpload(bucketName, uploadedFileName, fileData);  //  Ãß°¡ 
-//      s3.fileUpload(bucketName, uploadPath+savedPath+uploadedFileName, fileData);  //  Ãß°¡ 
+        s3.fileUpload(bucketName, uploadedFileName, fileData);  //  ì¶”ê°€
+//      s3.fileUpload(bucketName, uploadPath+savedPath+uploadedFileName, fileData);  //  ì¶”ê°€ 
         
         ///////////////////
         //thumnail
         savedName = path+"/"+ uu_id.toString() + "_thumbnail_" + originalName;
         uploadedFileName =savedName.replace(File.separatorChar, '/');   
-        s3.fileUpload(bucketName, uploadedFileName, makeThumbnail(originalName, fileData));  //  Ãß°¡ 
+        s3.fileUpload(bucketName, uploadedFileName, makeThumbnail(originalName, fileData));  //  ì¶”ê°€ 
         
         
 //        if (MediaUtils.getMediaType(formatName) != null) {
@@ -57,34 +57,34 @@ public class UploadFileUtils {
         return new ImageVo(uu_id, path , originalName);
     }
     
-    //¼¶³×ÀÏ »ı¼º
+  //ì„¬ë„¤ì¼ ìƒì„±
     private static byte[] makeThumbnail(String fileName, byte[] fileData) throws Exception{
-    	//ÀúÀåµÈ ¿øº»ÆÄÀÏ·Î ºÎÅÍ BufferedImage °´Ã¼¸¦ »ı¼º
+    	//ì €ì¥ëœ ì›ë³¸íŒŒì¼ë¡œ ë¶€í„° BufferedImage ê°ì²´ë¥¼ ìƒì„±
     	BufferedImage sourceImage = bytesToBufferedImage(fileData);
     	logger.debug("sourceImage - " +sourceImage.getWidth()+","+ sourceImage.getHeight());
     	
-    	//ÃÖÁ¾ ÀÌ¹ÌÁöÀÇ Å©±â
+    	//ìµœì¢… ì´ë¯¸ì§€ì˜ í¬ê¸°
     	int destinationWidth = 200;
     	int destinationHeight = 200;
     	
-    	//¿øº» ÀÌ¹ÌÁöÀÇ Å©±â
+    	//ì›ë³¸ ì´ë¯¸ì§€ì˜ í¬ê¸°
     	int sourceWidth = sourceImage.getWidth();
     	int sourceHeight = sourceImage.getHeight();
     	
-    	//¿øº» ³Êºñ¸¦ ±âÁØÀ¸·Î ¼¶³×ÀÏÀÇ ºñÀ²·Î ³ôÀÌ °è°£
+    	//ì›ë³¸ ë„ˆë¹„ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ì„¬ë„¤ì¼ì˜ ë¹„ìœ¨ë¡œ ë†’ì´ ê³„ê°„
     	int nWidth = sourceWidth;
     	int nHeight = (sourceWidth * destinationHeight) / destinationWidth;
     	
-    	//°è»êµÈ ³ôÀÌ°¡ ¿øº» º¸´Ù ³ô´Ù¸é cropÀÌ ¾ÈµÊÀ¸·Î ¿øº»ÀÇ ³ôÀÌ ±âÁØÀ¸·Î ³Êºñ °è»ê
+    	//ê³„ì‚°ëœ ë†’ì´ê°€ ì›ë³¸ ë³´ë‹¤ ë†’ë‹¤ë©´ cropì´ ì•ˆë¨ìœ¼ë¡œ ì›ë³¸ì˜ ë†’ì´ ê¸°ì¤€ìœ¼ë¡œ ë„ˆë¹„ ê³„ì‚°
     	if(nHeight > sourceHeight) {
     		nWidth = (sourceHeight * destinationWidth) / destinationHeight;
     		nHeight = sourceHeight;
     	}
     	
-    	//°è»êµÈ Å©±â·Î ¿øº» ÀÌ¹ÌÁö¸¦ °¡¿îµ¥¼­ crop
+    	//ê³„ì‚°ëœ í¬ê¸°ë¡œ ì›ë³¸ ì´ë¯¸ì§€ë¥¼ ê°€ìš´ë°ì„œ crop
     	BufferedImage cropedImage = Scalr.crop(sourceImage, (sourceWidth-nHeight)/2, (sourceHeight - nHeight)/2, nWidth, nHeight); 
     	
-    	//cropµÈ ÀÌ¹ÌÁö·Î ½æ³×ÀÏÀ» »ı¼º
+    	//cropëœ ì´ë¯¸ì§€ë¡œ ì¸ë„¤ì¼ì„ ìƒì„±
     	BufferedImage destinationIamge = Scalr.resize(cropedImage, destinationWidth, destinationHeight);
     	logger.debug("destinationIamge - " +destinationIamge.getWidth()+","+ destinationIamge.getHeight());
     	return bufferedImageToBytes(destinationIamge, fileName);
@@ -94,7 +94,7 @@ public class UploadFileUtils {
     private static byte[] bufferedImageToBytes(BufferedImage image, String fileName) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()){
         	
-        	//ÆÄÀÏ ÀÌ¸§ÀÇ È®ÀåÀÚ ÁÖÀÔ
+        	//íŒŒì¼ ì´ë¦„ì˜ í™•ì¥ì ì£¼ì…
             ImageIO.write(image, fileName.substring(fileName.lastIndexOf(".")+1), out);
             return out.toByteArray();
         }catch (Exception e) {
@@ -116,7 +116,7 @@ public class UploadFileUtils {
     
 
     
-    //ÀÌ¹ÌÁö ÆÄÀÏÀÌ ¾Æ´Ñ°æ¿ì¿¡ ¾ÆÀÌÄÜ »ı¼º
+    //ì´ë¯¸ì§€ íŒŒì¼ì´ ì•„ë‹Œê²½ìš°ì— ì•„ì´ì½˜ ìƒì„±
     private static String makeIcon(String uploadPath, String path, String fileName) throws Exception {
 
         String iconName = uploadPath + path + File.separator + fileName;
@@ -124,7 +124,7 @@ public class UploadFileUtils {
         return iconName.substring(uploadPath.length()).replace(File.separatorChar, '/');
     }
     
- // °æ·Î ¼³Á¤Ã³¸® 
+    // ê²½ë¡œ ì„¤ì •ì²˜ë¦¬ 
     private static String calcPath(String uploadPath) {
 
 
@@ -132,10 +132,10 @@ public class UploadFileUtils {
        
     }
 
-    //Æú´õ »ı¼º Ã³¸®
+    //í´ë” ìƒì„± ì²˜ë¦¬
     private static void makeDir(String uploadPath, String... paths) {
         
-        //Áßº¹ ÆÄÀÏ Á¸ÀçÇÏ¸é ¾Æ¹«Ã³¸® ÇÏÁö ¾ÊÀ½
+    	//ì¤‘ë³µ íŒŒì¼ ì¡´ì¬í•˜ë©´ ì•„ë¬´ì²˜ë¦¬ í•˜ì§€ ì•ŠìŒ
         if (new File(paths[paths.length - 1]).exists()) {
             return;
         }

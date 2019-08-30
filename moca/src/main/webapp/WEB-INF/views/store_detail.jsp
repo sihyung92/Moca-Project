@@ -12,6 +12,12 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<style type="text/css">
+		#likeFavoriteDiv{
+			text-align: right;
+		}
+		#likeFavoriteDiv span{
+			font-size:30px;
+		}
 		.carousel-inner img {
 			margin: 0px auto;
 		}
@@ -50,17 +56,86 @@
 			object-fit: cover;
 			overflow: hidden;
 	    }
+	    
+	    
+	    
+	    .modal-content {
+		  position: relative;
+		  background-color: #fefefe;
+		  margin: auto;
+		  padding: 0;
+		  width: 90%;
+		  max-width: 1200px;
+		}	
+		#reviewDetailDiv {
+			overflow:hidden;
+		  text-align: center;
+		  background-color: black;
+		  padding: 2px 16px;
+		  color: white;
+		}
+		#reviewThumbnailGroup{
+			text-align: center;
+			background-color: black;
+			padding: 2px 16px;
+			color: white;
+		}
+		#reviewThumbnailGroup .clickedImg {
+	    	border: 5px solid red;
+	    }
+	    /* Next & previous buttons */
+		#preReviewImgBtn,
+		#nextReviewImgBtn {
+		  cursor: pointer;
+		  position: absolute;
+		  top: 50%;
+		  width: auto;
+		  padding: 16px;
+		  margin-top: -50px;
+		  font-weight: bold;
+		  font-size: 20px;
+		  transition: 0.6s ease;
+		  border-radius: 0 3px 3px 0;
+		  user-select: none;
+		  -webkit-user-select: none;
+		}
+		
+		/* Position the "next button" to the right */
+		#nextReviewImgBtn{
+		  right: 0;
+		  border-radius: 3px 0 0 3px;
+		}
+		
+		
+		/* 카페 관리자의 사진 수정 */
+		.storeImgGroup  .storeImg{
+	    	display: inline-block;
+	    }
+	    
+	    .storeImgGroup  img{
+	    	width:100px;
+	    	height: 100px;
+			object-fit: cover;
+			overflow: hidden;
+	    }
+	    
+	    .storeImgGroup .StoreImgDeleteSpan{
+	    	position : relative;
+	    	left:-95px;
+	    	top:-30px;
+	    	cursor:pointer;
+	    	background-color:rgb(255,255,255,0.5);
+	    }
+		
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
-	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js"/>"> </script> 
-	
+	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=11"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
@@ -71,53 +146,42 @@
 		var newFileDiv;
 		var fileBuffer;
 
+		var likeStoreBtn;
+		var favoriteStoreBtn;
+		var storeId;
+		var accountId;
+		
+		var editStoreImgsBtn;
+		var storeImgswModal;
+		var storeImgs;
+		var toBeDeletedStoreImgUrls;
+		var oldStoreImgUrls ="";
+		var storeFiles; //storeImg 수정 모달에서 file input
+
+
+		//나중에 삭제할 테스트 변수
+		var test;
+
 	
 		$(document).ready(function() {
+			//카페 변수 바인딩
+			likeStoreBtn = $('#likeStoreBtn');
+			favoriteStoreBtn = $('#favoriteStoreBtn');
+			storeId = $('#storeId').text();
+			editStoreImgsBtn = $('#editStoreImgsBtn');
+			storeImgswModal = $('#storeImgswModal');
+			storeFiles = $('#storeFiles');
 			
-			//변수 바인딩
+
+			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
+							
+			//리뷰변수 바인딩
 			bindReviewVariable();
-			fileListDiv = $('#fileListDiv');
+			
 
 			//리뷰 작성버튼 클릭시
  			fileBuffer = [];
- 			
-			$('#files').change(function(){
-		       
-		        const target = document.getElementsByName('file');
-		        
-		        Array.prototype.push.apply(fileBuffer, target[0].files);
-		        var newFileDiv = '';
-		        $.each(target[0].files, function(index, file){
-		            const fileName = file.name;
-		            newFileDiv += '<div class="file newThumbnail reviewThumbnailGroup">';
-		            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image" class="img-thumbnail">'
-		            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn" aria-hidden="true"></span>';
-		            newFileDiv += '<span>'+fileName+'</span>';
-		            newFileDiv += '</div>';
-		            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
-		            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
-		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
-		                resetFile();
-		                return false;
-		            }
-		           
-		        });
-		        
-		        $(fileListDiv).html($(fileListDiv).html()+newFileDiv);
-	            ///removeThumbnailBtn 이벤트 바인딩
-				$('.removeThumbnailBtn').click(function(){
-	            	removeThumbnailBtn = $(this);
-				    var fileIndex = $(this).parent().index();	//삭제 버튼을 클릭한 이미지가 몇번째인지 (0부터)
-				    fileBuffer.splice(fileIndex,1);		// 삭제한 파일을 제외한 실제로 추가해야할 정보
-				    $('#fileListDiv>div:eq('+fileIndex+')').remove(); //삭제버튼에 해당하는
-				     
-				    const target = document.getElementsByName('files[]');
-
-				})
-		 
-		    });
-
-			
+		    $('#files').change(filesChange);
 			
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
@@ -164,58 +228,10 @@
 				}
 			});
 
-			
-
-
 			//좋아요 또는 싫어요 버튼 클릭시
-			likeHateButton.click(function() {
-				//클릭한 버튼의 리뷰에 해당하는 정보를 변수 바인딩
-				clickedLikeHateButton = $(this);
-				btnGroup = clickedLikeHateButton.parent();
-				reviewId = btnGroup.children('.review-id').val();
-				likeBtn = btnGroup.children('.like-btn');
-				hateBtn = btnGroup.children('.hate-btn');
-				likeCount = btnGroup.children('.like-count');
-				hateCount = btnGroup.children('.hate-count');
-				
-				var isLike;
-
-				//이전 상태 판단
-				if (clickedLikeHateButton.hasClass('like-btn')) {
-					isLike=1;
-					//좋아요 버튼을 눌렀을때 
-					if (likeBtn.hasClass('clicked')) {
-						//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
-						console.log('이전에 좋아요 누른 상태 > 좋아요를 누를때')
-						cancelLikeHate(reviewId, isLike);
-					} else if (hateBtn.hasClass('clicked')) {
-						//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
-						console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
-						changeLikeHate(reviewId, isLike);
-					} else {
-						//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
-						console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
-						addLikeHate(reviewId,isLike);
-					}
-				} else if (clickedLikeHateButton.hasClass('hate-btn')) {
-					isLike=-1;
-					
-					//싫어요 버튼을 눌렀을때 
-					if (likeBtn.hasClass('clicked')) {
-						//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
-						console.log('이전에 좋아요 누른 상태 > 싫어요 누를때 ')
-						changeLikeHate(reviewId, isLike);
-					} else if (hateBtn.hasClass('clicked')) {
-						//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
-						console.log('이전에 싫어요 누른 상태 > 싫어요를 누를때 ')
-						cancelLikeHate(reviewId, isLike);
-					} else {
-						//이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 => 싫어요
-						console.log('이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 ')
-						addLikeHate(reviewId, isLike);
-					}
-				}
-			})
+			likeHateButton.click(function(){
+				bindLikeHateButtonEvent($(this));
+			});
 
 			//리뷰 3개씩 끊어서 가져오기
 			$('.reviewCnt').hide();
@@ -270,11 +286,13 @@
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				saveReview();
+				saveReview(fileBuffer);
 			})
 			
 			//수정 버튼 클릭시
 			editBtn.click(function(){
+				//파일 버퍼 내용 비우기
+				fileBuffer = [];
 				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
 				reviewData2ReviewModal(this);
 				reviewModal.find('#saveReviewBtn').css('display','none')
@@ -291,6 +309,7 @@
 			
 			reviewModalBtn.click(function(){
 				//모달에 있는 데이터 없애고 
+				fileBuffer = [];
 				clearReviewModalData();
 				reviewModal.find('#saveReviewBtn').css('display','')
 				reviewModal.find('#editReviewBtn').css('display','none')
@@ -312,6 +331,230 @@
 			//StoreImg 클래스 일 때 '카페에서 등록한 이미지 입니다'
 			$('.StoreImg').append('<span>카페에서 등록한 이미지 입니다</span>');
 
+
+			//리뷰 이미지 디테일 모달
+			reviewImg.click(function(){
+				//모달 활성화(+초기화)
+				reviewsDetailModal.modal("show");
+				
+
+				//섬네일 url > 원본 url
+				showDetailReviewImg(this);
+
+				
+				//데이터 값 전송
+				
+			})
+
+			$('#preReviewImgBtn').click(function(){
+				if(detailImgIdx > 0){
+					detailImgIdx =detailImgIdx-1;
+				}else{
+					detailImgIdx = 0;
+				}
+				showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
+				
+			})
+
+			$('#nextReviewImgBtn').click(function(){
+				if(detailImgIdx < detailImgsSize-1){
+					detailImgIdx =detailImgIdx+1;
+				}else{
+					detailImgIdx = detailImgsSize-1;
+				}
+				showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
+			})
+
+			
+			
+			likeStoreBtn.click(function(){
+				//좋아요를 누르지 않은 경우
+				if(likeStoreBtn.hasClass('glyphicon-heart-empty')){
+
+					//좋아요 추가
+					$.ajax({
+						type: 'POST',
+						url: '/moca/likeStore/' + accountId,
+						data : {
+							storeId : storeId
+						},
+						success: function() {
+							likeStoreBtn.removeClass('glyphicon-heart-empty')
+							likeStoreBtn.addClass('glyphicon-heart')
+							
+						},
+						error: function() {
+
+						}
+					})		
+
+				}else{//좋아요를 누른경우
+
+					//좋아요에서 삭제
+					$.ajax({
+						type: 'DELETE',
+						url: '/moca/likeStore/' + accountId,
+						data : {
+							storeId : storeId
+						},
+						success: function() {
+							likeStoreBtn.removeClass('glyphicon-heart')
+							likeStoreBtn.addClass('glyphicon-heart-empty')
+							
+						},
+						error: function() {
+
+						}
+					})
+
+				}
+
+			})
+
+			favoriteStoreBtn.click(function(){
+				//즐겨찾기를 누르지 않은 경우
+				if(favoriteStoreBtn.hasClass('glyphicon-star-empty')){
+
+					//즐겨 찾기에 추가
+					$.ajax({
+						type: 'POST',
+						url: '/moca/favoriteStore/' + accountId,
+						data : {
+							storeId : storeId
+						},
+						success: function() {
+							favoriteStoreBtn.removeClass('glyphicon-star-empty')
+							favoriteStoreBtn.addClass('glyphicon-star')
+							
+						},
+						error: function() {
+						}
+					})
+
+					
+
+				}else{//즐겨찾기를 누른경우
+
+					//즐겨 찾기에서 삭제
+					$.ajax({
+						type: 'DELETE',
+						url: '/moca/favoriteStore/' + accountId,
+						data : {
+							storeId : storeId
+						},
+						success: function() {
+							favoriteStoreBtn.removeClass('glyphicon-star')
+							favoriteStoreBtn.addClass('glyphicon-star-empty')
+							
+						},
+						error: function() {
+						}
+					})
+
+					
+				}
+			})
+
+			editStoreImgsBtn.click(function(){
+				storeImgswModal.modal("show");
+
+				//삭제될 카페 이미지 주소 초기화
+				toBeDeletedStoreImgUrls = ""
+
+				//파일 버퍼 초기화
+				fileBuffer = [];
+
+				//카페에서 등록된 이미지
+				storeImgs = $('.StoreImg');
+
+				//내용 비워줌
+				$('.storeImgGroup').html("")
+
+				//카페에서 등록한 이미지를 모달로
+				for(var idx=0; idx<storeImgs.size() ; idx++){
+					var oldStoreImg = $('#storeImgTemplate').clone('true');
+					oldStoreImg.removeAttr('id')
+					oldStoreImg.find('img').addClass('oldStoreImg')
+					oldStoreImg.find('img').attr('src', storeImgs[idx].getElementsByTagName('img')[0].src );
+					$('.storeImgGroup').append(oldStoreImg)
+				}
+
+				//기존의 클릭이벤트 제거
+				$('.StoreImgDeleteSpan').unbind();
+				$('.StoreImgDeleteSpan').click(function(){					
+					
+					test = this;
+					//newStoreImg인 경우 
+					if($(this.previousElementSibling).hasClass('newStoreImg')){
+						//fileBuffer에서 제거
+						//fileBuffer에서 제거할 newStoreImg의 index = 제거한 이미지의 index - oldStoreImg의 갯수
+						fileBuffer.splice($(this).parent().index()-$('.oldStoreImg').size(),1);
+					}else{// oldStoreImg인 경우
+						//삭제될 이미지 url에 추가
+						toBeDeletedStoreImgUrls = toBeDeletedStoreImgUrls +","+ this.previousElementSibling.src
+					}
+					
+					//해당 img를 포함하는 div 삭제
+					this.parentElement.remove();					
+					
+				})
+				
+			})
+
+			storeFiles.change(function(){
+				var target = document.getElementById('storeFiles');
+
+				//가지고 온 갯수를 통해 최대 갯수비교
+				var storeImgSize = $('.storeImgGroup .storeImg').size();
+
+				//3개 이상인지 체크
+				if(target.files.length +storeImgSize >3){
+					alert("파일은 3개까지만 등록가능합니다.");
+					return false;
+				}
+
+				//확장자 체크
+				for(var i=0; i<target.files.length ; i++){
+					var fileName = target.files[i].name
+					var fileEx = fileName.slice(fileName.indexOf(".")+1).toLowerCase()
+					
+					//이미지 형식인 경우만 받아 들임
+					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+		                return false;
+		            }
+				}
+
+				//fileBuffer에 추가 
+				Array.prototype.push.apply(fileBuffer, target.files);
+				
+				$.each(target.files, function(index, file){
+					URL.createObjectURL(file)
+					var fileName = file.name;
+					var newStoreImg = $('#storeImgTemplate').clone('true');
+					newStoreImg.find('img').addClass('newStoreImg')
+					newStoreImg.removeAttr('id')
+					newStoreImg.find('img').attr('src', URL.createObjectURL(file));
+					$('.storeImgGroup').append(newStoreImg)
+				})
+				
+			})
+
+			//수정 버튼을 눌렀을때
+			$('#editStoreImgBtn').click(function(){
+				//oldStoreImg
+				var oldStoreImgs = $('.oldStoreImg')
+				for(var i=0 ; i < oldStoreImgs.length; i++){
+					oldStoreImgUrls = oldStoreImgUrls + ","+oldStoreImgs[0].src
+				}
+				
+				//맨 앞에 , 문자 제거
+				toBeDeletedStoreImgUrls = toBeDeletedStoreImgUrls.substring(1);
+				oldStoreImgUrls = oldStoreImgUrls.substring(1);
+				console.log(fileBuffer,toBeDeletedStoreImgUrls )
+				editStoreImg();
+			})
+
 		});
 
 	</script>
@@ -327,6 +570,22 @@
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2">
 					<div class="jumbotron text-center">
+						<span id="storeId" style= "display: none;">${storeVo.store_Id }</span>
+						<div id="likeFavoriteDiv">
+							<c:if test="${storeVo.isLike eq 0 }">
+								좋아요<span id="likeStoreBtn" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ></span>
+							</c:if>
+							<c:if test="${storeVo.isLike ne 0 }">
+								좋아요<span id="likeStoreBtn" class="glyphicon glyphicon-heart" aria-hidden="true" ></span>
+							</c:if>
+						
+							<c:if test="${storeVo.isFavorite eq 0 }">
+								즐겨찾기<span id="favoriteStoreBtn" class="glyphicon glyphicon-star-empty" aria-hidden="true" ></span>	
+							</c:if>
+							<c:if test="${storeVo.isFavorite ne 0 }">
+								즐겨찾기<span id="favoriteStoreBtn" class="glyphicon glyphicon-star" aria-hidden="true" ></span>	
+							</c:if>					
+						</div>
 
 						<!-- 태그 -->
 						<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
@@ -348,6 +607,9 @@
 							</c:if>
 							&nbsp;${storeVo.name}
 						</h1>
+						<c:if test="${storeVo.isManager eq 1}">
+							<span>내가 관리하는 카페 입니다.</span>						
+						</c:if>
 					</div>
 				</div>
 			</div>
@@ -397,6 +659,9 @@
 					</div>
 				</div>
 				<!-- 갖고있는 이미지의 개수만큼  캐러셀 끝-->
+				<c:if test="${storeVo.isManager eq 1}">
+					<button id="editStoreImgsBtn">수정</button>
+				</c:if>
 			</div>
 			<div class="col-md-4">
 				<canvas id="myChart"></canvas>
@@ -586,7 +851,7 @@
 	<!-- clone할 review element -->
 	<div class="row"  id="reviewTemplate" style="display : none;">
 		<div class="editDeleteGroup btn-group" role="group">
-			<input type="number" style="display: none;" class="review-id" value=${reviewVo.review_id } >
+			<input type="number" style="display: none;" class="review-id" >
 			<button type="button" class="btn-edit btn btn-default">수정</button>
 			<button type="button" class="btn-delete btn btn-default">삭제</button>
 		</div>
@@ -606,9 +871,7 @@
 		</div>
 		<div class="review-info col-md-8">
 			<div class="reviewThumbnailGroup">
-					
 			</div>
-			
 			<div class="review-data">
 				<div class="write-date-div">
 					<label>작성일</label>
@@ -673,15 +936,13 @@
 				</div>
 				<div class="modal-body" data-role="content">
 					<form id="reviewForm">
-						<input name="storeId" value=${storeVo.store_Id} style="display:none;" >
+						<input name="store_id" value=${storeVo.store_Id} style="display:none;" >
 						<input name="review_id" id="review_id" value="0" style="display:none;" >
 						<div class="form-group">
 							<label for="picture-file">사진 선택</label>
 							<!-- <input type="file" name="file" id="picture-file" multiple="multiple"> --><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
 							<input multiple="multiple" name="file" id="files" type="file"/>
-							<div id="fileListDiv">
 							
-							</div>
 						</div> 
 						<div class="form-group">
 							<label for="review-content">후기</label>
@@ -855,6 +1116,76 @@
 		</div>
 		</div>
 	</div>
+	
+	<!-- 리뷰 이미지 디테일 -->
+	<div id="reviewsDetailModal" class="modal fade" tabindex="-1">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	      </div>
+	      <div id= "reviewDetailDiv" class="modal-body">
+	        <p>원본 이미지</p>
+	      </div>
+	      
+	      
+	      <div class="leftRightBtns">
+	        <button id="preReviewImgBtn" type="button" class="btn btn-default" aria-label="Left Align">
+			  <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+			</button>
+	        <button id="nextReviewImgBtn" type="button" class="btn btn-default" aria-label="Left Align">
+			  <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+			</button>
+			<div id="reviewThumbnailGroup" class="reviewThumbnailGroup">
+				
+			</div>
+	      </div>
+	    </div><!-- /.modal-content -->
+	</div><!-- /.modal -->
+	
+	
+	<c:if test="${storeVo.isManager eq 1}">
+		<!-- 카페 Manager 모달 -->
+		<div class="modal fade" id="storeImgswModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">
+							${storeVo.name} 사진 수정</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" data-role="content">
+						<form id="storeImgForm">
+							<input name="storeId" value=${storeVo.store_Id } style="display:none;" >
+							<input name="managerId" value=${accountVo.account_id } style="display:none;" >
+							<div class="form-group">
+								<label for="picture-file">사진 선택</label>
+								<input multiple="multiple" name="storeFiles" id="storeFiles" type="file"/>
+							</div>
+							<div class="storeImgGroup">
+							
+							</div>
+							<input type="hidden" class="delStoreImg"  name="delStoreImg"/>
+							<input type="hidden" class="oldStoreImg"  name="oldStoreImg"/>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary" id="editStoreImgBtn">수정</button>
+					</div>
+				</div>
+			</div>
+		</div>	
+		
+		<!-- storeImg clone -->
+		<div class="storeImg" id="storeImgTemplate">
+			<img alt="Image">
+			<span class="glyphicon glyphicon-remove StoreImgDeleteSpan" aria-hidden="true"></span>
+		</div>
+						
+	</c:if>
+	<span id="accountId" style="display : none;">${accountVo.account_id }</span>
 </body>
 
 </html>

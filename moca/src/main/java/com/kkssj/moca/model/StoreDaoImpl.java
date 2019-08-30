@@ -35,8 +35,12 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
-	public StoreVo selectOne(int store_Id) throws SQLException {
-		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectOne", store_Id);
+	public StoreVo selectOne(int store_Id,int account_id) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_Id);
+		map.put("ACCOUNT_ID", account_id);
+		
+		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectOne", map);
 	}
 
 	@Override

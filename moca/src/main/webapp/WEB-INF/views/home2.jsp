@@ -38,6 +38,8 @@
 	<!-- test2 -->
 	<h2>helloooooooooooooooooooしししししししししししししししししし000000000000000</h2>
 	<button id="test-btn">稽益昔 室芝 溌昔 獄動</button>
+	
+	<p>Git Master merge #4 test</p>
 
 </body>
 </html>

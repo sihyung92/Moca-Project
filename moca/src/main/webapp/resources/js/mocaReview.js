@@ -30,6 +30,23 @@ var quotient; //몫
 var remainder; //나머지
 var callNum=1; //호출 넘버
 
+//리뷰 수정시 삭제된 이미지
+var delThumbnail="";
+
+//리뷰이미지 수정시 현재있는 이미지 개수
+var maxNumForAdd = 0;
+var delCnt = 0;
+
+
+var reviewImg; 
+var reviewsDetailModal;
+var reviewThumbnailGroup;
+var detailImgIdx;
+var detailImgsSize;
+
+
+//회원정보수정 이미지
+var userImage;
 
 ////////////////////////////
 //함수부
@@ -41,7 +58,7 @@ var bindReviewVariable = function(){
 	reviewForm = $('#reviewModal form');
 	saveReviewBtn = $('#saveReviewBtn');
 	editReviewBtn = $('#editReviewBtn');
-	imgFiles = $('#imgFiles');
+	imgFiles = $('#files');
 	
 	editBtn = $('.btn-edit')
 	deleteBtn = $('.btn-delete')
@@ -52,22 +69,39 @@ var bindReviewVariable = function(){
 	//리뷰 더보기
 	quotient = $('.reviewCnt').length/3;
 	remainder = $('.reviewCnt').length%3;
+	
+	//리뷰 상세 보기
+	reviewImg = $('.review-content').find('img');
+	reviewsDetailModal =$('#reviewsDetailModal');
+	reviewThumbnailGroup = $('#reviewThumbnailGroup');
+	
+	//파일버퍼 초기화
+	fileBuffer = [];
+	
 }
 
 
 //리뷰 저장
-var saveReview = function(){
-	console.log("saveReviewBtn clicked")
+var saveReview = function(fileBuffer){
+	console.log("saveReviewBtn clicked",fileBuffer)
 	var form = $('#reviewForm')[0];
 
 	var reviewFormData = new FormData(form);
 	
+	reviewFormData.delete('file');
+	
 	var fileSize = fileBuffer.length;
+	console.log("fileSize"+fileSize);
+	console.log("save",fileBuffer);
+	
 	if(fileSize >0){
 		for(var i=0 ; i < fileSize ; i ++){
-			reviewFormData.append(i,fileBuffer[i]);
+			reviewFormData.append("file",fileBuffer[i]);
+			console.log(i,fileBuffer[i]);
 		}
 	}
+	
+	console.log('formData',reviewFormData.get('file'));
 	
 	$.ajax({
 		type: 'POST',
@@ -75,15 +109,19 @@ var saveReview = function(){
 		url: '/moca/reviews',
 		data : reviewFormData,
 		dataType : "json",
-		contentType : false,
+		contentType : false,  
 		processData : false,
 		cache : false,
 		timeout : 600000,
+		beforeSend:function(){
+			
+			
+	    },
 		success: function(reviewVo) {
-			console.log('ajax 통신 성공')
+			console.log('ajax 통신 성공');
 			console.log(reviewVo);
 			
-	//		//리뷰 추가(최상단에)
+			//리뷰 추가(최상단에)
 			addReviewInReviewContent(reviewVo);
 	
 			$('#reviewModal').modal("hide");		//모달창 닫기
@@ -91,8 +129,12 @@ var saveReview = function(){
 			//수정 삭제 버튼 바인딩 해줄것 
 			
 		},
-		error: function(error) {
-			console.log('ajax 통신 실패', error);
+		error: function(request,status,error) {
+			if(error=='Too Many Requests'){				
+				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
+			}else{
+				console.log('ajax 통신 실패', error);
+			}
 		}
 	})
 }
@@ -116,6 +158,9 @@ var addReviewInReviewContent = function(reviewVo) {
 				reviewVo.imageList[i].uu_id
 				+'"></div>');
 	}
+	
+	newReview.find('.review-id').eq(0).val(''+reviewVo.review_id);
+	newReview.find('.review-id').eq(1).val(''+reviewVo.review_id);
 	
 	reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 	reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
@@ -145,53 +190,103 @@ var addReviewInReviewContent = function(reviewVo) {
 
 
 //리뷰 데이터를 리뷰 모달로 이동 (수정 때 사용)
-var reviewData2ReviewModal = function(clickedEditBtn){
+var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	clearReviewModalData();
 
 	reviewModal.modal("show");		//리뷰 모달창 show
 
 	editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
 
+	//store name
+	
+	//마이페이지에서만 제목을 따로 등록해야하기 때문
+	if(reviewModal.find('#reviewModalLabel').html="에 대한 리뷰"){
+		reviewModal.find('#reviewModalLabel').html(storeName+"에 대한 리뷰");
+	}
+	
+	
 	//리뷰 아이디
-	reviewModal.find('#review_id').val( editReviewRow.find('.review-id').eq(0).val() );
+	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
+	//스토어아이디
+	reviewModal.find('#storeId').val(editReviewRow.find('.storeId').eq(0).val());
 				
-	///사진(나중에 정해지면)
-	console.log(clickedEditBtn);
+	//사진
+	
+	console.log(editReviewRow);
 	var reviewImg = editReviewRow.find('.reviewThumbnailGroup').clone();
+	console.log("reviewImg : ",reviewImg);
 	console.log(reviewImg);
-	reviewModal.find('#picture-file').after(reviewImg);
-	$('#reviewModal').find('.reviewThumbnail').append('<span class="glyphicon glyphicon-remove thumbnailDeleteSpan" aria-hidden="true" onclick="deleteReviewImg(this)"></span>');		
+	reviewModal.find('#files').after(reviewImg);
+	reviewImg.find('.reviewThumbnail img').attr('class','oldThumbnail');
+	$('#reviewModal').find('.reviewThumbnail').append('<span class="glyphicon glyphicon-remove thumbnailDeleteSpan" aria-hidden="true" onclick="deleteReviewImg(this)"></span>');
 	$('.thumbnailDeleteSpan').css('position','relative').css('left','-95px').css('top','-30px').css('cursor','pointer')
 	.css('background-color','rgb(255,255,255,0.5)');
 	
 	//리뷰 내용
-	reviewModal.find('#review-content').text( editReviewRow.find('.reviewInfo-review-content').text() )
-
+	reviewModal.find('#review-content').val(editReviewRow.find('.reviewInfo-review-content').text());
+	
 	//평점
-	reviewModal.find('#taste-level').val( editReviewRow.find('.taste-level').text() )
-	reviewModal.find('#price-level').val( editReviewRow.find('.price-level').text() )
-	reviewModal.find('#service-level').val( editReviewRow.find('.service-level').text() )
-	reviewModal.find('#mood-level').val( editReviewRow.find('.mood-level').text() )
+	reviewModal.find('#taste-level').val( editReviewRow.find('.taste-level').text())
+	reviewModal.find('#price-level').val( editReviewRow.find('.price-level').text())
+	reviewModal.find('#service-level').val( editReviewRow.find('.service-level').text())
+	reviewModal.find('#mood-level').val( editReviewRow.find('.mood-level').text())
 	reviewModal.find('#convenience-level').val( editReviewRow.find('.convenience-level').text())
-	reviewModal.find('#average-level').val( editReviewRow.find('.average-level').text() )
+	reviewModal.find('#average-level').val( editReviewRow.find('.average-level').text())
 }
 
 //리뷰 수정
 var editReview = function(){
+	//delete한 썸네일 추가
+	$(reviewForm).append('<input type="hidden" name="delThumbnail" value="'+delThumbnail+'"/>');
+	console.log(reviewForm);
+	
+	//파일 추가
+	var form = $('#reviewForm')[0];
+
+	var reviewFormData = new FormData(form);
+	
+	reviewFormData.delete('file');
+	
+	var fileSize = fileBuffer.length;
+	
+	if(fileSize >0){
+		for(var i=0 ; i < fileSize ; i ++){
+			reviewFormData.append("file",fileBuffer[i]);
+		}
+	}
 	
 	reviewFormObj = $(reviewForm).serializeObject();
-	console.log(reviewFormObj.review_id,reviewFormObj);
+	console.log(reviewFormObj.review_id,reviewFormData);
 
-	//ajax 통싱 - post방식으로 추가
+	//ajax 통신 - post방식으로 추가
 	$.ajax({
-		type: 'PUT',
+		type: 'POST',
 		url: '/moca/reviews/'+reviewFormObj.review_id,
-		data: reviewFormObj,
+		enctype : 'multipart/form-data',
+//		data: reviewFormObj,
+		data: reviewFormData,
+		dataType : "json",
+		contentType : false,  
+		processData : false,
+		cache : false,
+		timeout : 600000,
 		success: function(reviewVo) {
-			console.log('ajax 통신 성공')
+			console.log('ajax 통신 성공',reviewVo.imageList);
 			//리뷰 내용
 			editReviewRow.find('.reviewInfo-review-content').text(reviewFormObj.reviewContent);
-
+			
+			// 나중에 사진 추가할때 사용
+			var reviewThumbnail = editReviewRow.find('.reviewThumbnailGroup');
+			reviewThumbnail.html('');
+			for(var i=0; i<reviewVo.imageList.length; i++){
+				var oldReviewThumbnail = reviewThumbnail.html();
+				reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail"><img src="'+
+						reviewVo.imageList[i].thumbnailUrl
+						+'" alt="Image" class="img-thumbnail" id="'+
+						reviewVo.imageList[i].uu_id
+						+'"></div>');
+			}
+			
 			//평점
 			editReviewRow.find('.taste-level').text(reviewFormObj.tasteLevel);
 			editReviewRow.find('.price-level').text(reviewFormObj.priceLevel);
@@ -202,32 +297,18 @@ var editReview = function(){
 			
 			$('#reviewModal').modal("hide");	//모달창 닫기
 			
+			delThumbnail = "" //delThumbnail 초기화
 			
 		},
 		error: function(error) {
-			console.log('ajax 통신 실패', error)
-			
+			if(error=='Too Many Requests'){				
+				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
+			}else{
+				console.log('ajax 통신 실패', error);
+			}
 		}
 	})
 
-}
-
-var deleteThumbnail = function(imageId){
-	console.log("delete thumbnail, id = " + imageId);
-	
-	$.ajax({
-		type: 'DELETE',
-		url: '/moca/reviewImage/'+imageId,
-		success: function() {
-			console.log('ajax 통신 성공')
-			
-			//해당 이미지 삭제
-		},
-		error: function() {
-			console.log('ajax 통신 실패')
-			alert("취소 실패")
-		}
-	})
 }
 
 var clearReviewModalData = function(){
@@ -237,7 +318,7 @@ var clearReviewModalData = function(){
 	reviewModal.find('.reviewThumbnailGroup').remove();
 
 	//리뷰 내용
-	reviewModal.find('#review-content').text('');
+	reviewModal.find('#review-content').val('');
 
 	//평점
 	reviewModal.find('#taste-level').val('1')
@@ -260,7 +341,7 @@ var deleteReview = function(review_id) {
 		},
 		error: function() {
 			console.log('ajax 통신 실패')
-			alert("취소 실패")
+			alert("리뷰 삭제 실패")
 		}
 	})
 }
@@ -269,7 +350,42 @@ var deleteReview = function(review_id) {
 //리뷰 사진 삭제 버튼 클릭시
 var deleteReviewImg = function(deleteBtn){
 	console.log(deleteBtn);
-	$(deleteBtn).parent().hide();
+	var temp = delThumbnail;
+	
+	//추가해준 이미지가 아니면
+	if($(deleteBtn).prev().attr('src').indexOf('blob')==-1){
+		if(delThumbnail != ""){		
+			delThumbnail = temp+","+$(deleteBtn).prev().attr('src');		
+		}else{
+			delThumbnail = temp+$(deleteBtn).prev().attr('src');		
+		}		
+	}
+	console.log(delThumbnail);
+	
+	//삭제 버튼을 클릭한 이미지가 몇번째인지 (0부터)
+	var fileIndex = $(deleteBtn).parent().index();	
+	
+	//이미 있는 이미지의 갯수가 0 이상이면
+    if($(deleteBtn).parent().parent().find('.oldThumbnail').filter(':visible').length>0){
+    	
+    	//더 올릴수 있는 이미지의 갯수를 구함
+    	maxNumForAdd = $(deleteBtn).parent().parent().find('.oldThumbnail').filter(':visible').length;
+    	maxNumForAdd = maxNumForAdd-1;
+    	
+    	//더 올릴수 있는 파일의 갯수
+	    fileIndex = fileIndex - maxNumForAdd;
+	}
+    console.log($(deleteBtn).parent().attr('class'));
+    
+    //내가 새로 추가한 이미지인 경우
+    if($(deleteBtn).parent().attr('class')=='file newThumbnail reviewThumbnail'){
+    	
+    	//
+    	var hiddenLength = $(deleteBtn).parent().prevAll().find('.newThumbnail').filter(':hidden').length;
+    	fileBuffer.splice($('.newThumbnail').filter(':visible').index($(deleteBtn).parent()),1);// 삭제한 파일을 제외한 실제로 추가해야할 정보     		
+    }
+    
+    $(deleteBtn).parent().hide();
 }
 
 //리뷰 개수 더보기
@@ -420,6 +536,220 @@ var cancelLikeHate = function(reviewId, isLike){
 			alert("취소 실패")
 		}
 
+	})
+
+}
+
+//리뷰 디테일 이미지를 보여줌
+var showDetailReviewImg = function(clickedReviewImg){
+	$('img').removeClass('clickedImg')
+	//클릭한 이미지에 class 추가	
+	$(clickedReviewImg).addClass('clickedImg');
+	
+	//섬네일 url 주소를 원본 url 주소로 변경
+	var url = thumbnailUrl2Url( clickedReviewImg.src );
+	
+	//
+	$('#reviewDetailDiv').html($('<img/>',{
+		id : 'reviewDetailImg',
+		src : url
+	}));
+	//클릭한 리뷰의 섬네일 이미지를 모달로
+	reviewThumbnailGroup.html($(clickedReviewImg).parents('.reviewThumbnailGroup').html());
+	
+	//디테일 이미지의 인덱스
+	detailImgIdx = 0;
+	detailImgsSize = reviewThumbnailGroup.find('img').size();
+	for(var i=0; i<detailImgsSize ; i++){
+		if(reviewThumbnailGroup.find('img').eq(i).hasClass('clickedImg')){
+			detailImgIdx = i;
+		}
+	}
+	
+	reviewThumbnailGroup.find('img').click(function(){
+		$('img').removeClass('clickedImg')
+		$(this).addClass('clickedImg');
+		//섬네일 url 주소를 원본 url 주소로 변경
+		var url = thumbnailUrl2Url( this.src );
+		
+		//
+		$('#reviewDetailDiv').html($('<img/>',{
+			id : 'reviewDetailImg',
+			src : url
+		}));
+		
+		for(var i=0; i<detailImgsSize ; i++){
+			if(reviewThumbnailGroup.find('img').eq(i).hasClass('clickedImg')){
+				detailImgIdx = i;
+			}
+		}
+	})
+	
+	
+}
+
+var thumbnailUrl2Url = function(thumbnailUrl){
+	var url = thumbnailUrl.split('_thumbnail')
+	return url[0]+url[1];
+}
+
+//좋아요 또는 싫어요 버튼 클릭시
+var bindLikeHateButtonEvent = function(clickedLikeHateButton){
+		//클릭한 버튼의 리뷰에 해당하는 정보를 변수 바인딩
+		//clickedLikeHateButton = $(this);
+		btnGroup = clickedLikeHateButton.parent();
+		reviewId = btnGroup.children('.review-id').val();
+		likeBtn = btnGroup.children('.like-btn');
+		hateBtn = btnGroup.children('.hate-btn');
+		likeCount = btnGroup.children('.like-count');
+		hateCount = btnGroup.children('.hate-count');
+		
+		var isLike;
+
+		//이전 상태 판단
+		if (clickedLikeHateButton.hasClass('like-btn')) {
+			isLike=1;
+			//좋아요 버튼을 눌렀을때 
+			if (likeBtn.hasClass('clicked')) {
+				//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
+				console.log('이전에 좋아요 누른 상태 > 좋아요를 누를때')
+				cancelLikeHate(reviewId, isLike);
+			} else if (hateBtn.hasClass('clicked')) {
+				//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
+				console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
+				changeLikeHate(reviewId, isLike);
+			} else {
+				//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
+				console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
+				addLikeHate(reviewId,isLike);
+			}
+		} else if (clickedLikeHateButton.hasClass('hate-btn')) {
+			isLike=-1;
+			
+			//싫어요 버튼을 눌렀을때 
+			if (likeBtn.hasClass('clicked')) {
+				//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
+				console.log('이전에 좋아요 누른 상태 > 싫어요 누를때 ')
+				changeLikeHate(reviewId, isLike);
+			} else if (hateBtn.hasClass('clicked')) {
+				//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
+				console.log('이전에 싫어요 누른 상태 > 싫어요를 누를때 ')
+				cancelLikeHate(reviewId, isLike);
+			} else {
+				//이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 => 싫어요
+				console.log('이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 ')
+				addLikeHate(reviewId, isLike);
+			}
+		}
+};
+
+//파일 change function
+var filesChange = function(){
+    const target = document.getElementsByName('file');
+    
+	if($(this).next().attr('class')=='reviewThumbnailGroup'){
+		fileListDiv = $(this).next();
+		if(fileBuffer.length==0){
+			maxNumForAdd = $(fileListDiv).children().find('.oldThumbnail').filter(':visible').length
+		}
+    }else{
+    	$(this).parent().append('<div class="reviewThumbnailGroup"></div>');
+    	fileListDiv = $(this).next();
+    	maxNumForAdd = 0;
+	}
+	
+	if((fileBuffer.length*1)+maxNumForAdd>10 || (target[0].files.length*1)>10){
+		alert("파일은 10개까지만 등록가능합니다.");
+	}else{
+        
+        Array.prototype.push.apply(fileBuffer, target[0].files);
+        var newFileDiv = '';
+        $.each(target[0].files, function(index, file){
+            const fileName = file.name;
+            newFileDiv += '<div class="file newThumbnail reviewThumbnail" style="width:121px">';
+            newFileDiv += '<img src="'+URL.createObjectURL(file)+'" alt="Image">'
+            newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn"onclick="deleteReviewImg(this)" aria-hidden="true" style="position:relative; left:-95px; top:-30px; cursor:pointer; background-color:rgb(255,255,255,0.5);"></span>';
+            newFileDiv += '</div>';
+            const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
+            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+                resetFile();
+                return false;
+            }
+        });
+	}
+    
+    $(fileListDiv).append(newFileDiv);
+    if((fileBuffer.length*1)+maxNumForAdd>10){
+		alert("파일은 10개까지만 등록가능합니다.");
+		//10개가 넘은 경우 넘은 파일 입력된 이미지랑 filebuffer에서 삭제
+		$.each(target[0].files, function(index, file){
+			var num = 0;
+			if(index==0){
+				num = fileBuffer.length-index;
+			}
+			fileBuffer.splice(fileBuffer.length-1, 1);
+			$('#files').next().children().last().remove();
+		});
+	}
+	
+
+};
+
+var url2PathFileName = function(imgUrl){
+	return imgUrl.split('.com/')[1]
+}
+
+//카페 이미지 수정
+var editStoreImg = function(){
+	//delete한 썸네일 추가
+	$('.delStoreImg').val(toBeDeletedStoreImgUrls);
+	$('.oldStoreImg').val(oldStoreImgUrls);
+	
+	//파일 추가
+	var form = $('#storeImgForm')[0];
+
+	var storeImgFormData = new FormData(form);
+	
+	storeImgFormData.delete('file');
+	
+	var fileSize = fileBuffer.length;
+	
+	if(fileSize >0){
+		for(var i=0 ; i < fileSize ; i ++){
+			storeImgFormData.append("file",fileBuffer[i]);
+			console.log(i,fileBuffer[i]);
+		}
+	}
+	
+	var storeImgFormObj = $(form).serializeObject();
+	console.log(storeImgFormObj,storeImgFormData);
+	
+
+	//ajax 통신 - post방식으로 추가
+	$.ajax({
+		type: 'POST',
+		url: '/moca/storeImg/'+storeImgFormObj.storeId,
+		enctype : 'multipart/form-data',
+		data: storeImgFormData,
+		dataType : "json",
+		contentType : false,  
+		processData : false,
+		cache : false,
+		timeout : 600000,
+		success: function(storeVo) {
+			console.log('ajax 통신 성공');
+			
+			//파일 수정
+			
+		},
+		error: function(error) {
+			if(error=='Too Many Requests'){				
+				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
+			}else{
+				console.log('ajax 통신 실패', error);
+			}
+		}
 	})
 
 }
