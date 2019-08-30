@@ -32,10 +32,16 @@ public class MyPageController {
 	private static final Logger logger = LoggerFactory.getLogger(MyPageController.class);
 
 	@GetMapping(value = "/mypage/{accountId}")
-	public String home(@PathVariable("accountId") int accountId, Model model) {
-		AccountVo accountVo = new AccountVo();
-		//세션
-		accountVo.setAccount_id(1);
+	public String home(@PathVariable("accountId") int accountId, Model model, HttpSession session){
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+		}else {
+			logger.debug(accountVo.toString());
+		}
 		
 		
 		AccountVo currentPageAccount = mypageService.getAccountInfo(accountId);
@@ -66,12 +72,22 @@ public class MyPageController {
 	}
 	
 	@GetMapping("/favoriteStores/{accountId}")
-	public ResponseEntity getFavoriteStores(@PathVariable("accountId") int accountId) {
-		//session의 accountId와 비교
-		//다르면
-//		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	public ResponseEntity getFavoriteStores(@PathVariable("accountId") int accountId, HttpSession session){
 		
-		logger.debug("accountId = "+ accountId);
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		//나의 마이페이지가 아닌 경우
+		if(accountVo.getAccount_id() != accountId) {
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		logger.debug(accountVo.toString());
+		
 
 		
 		
@@ -84,11 +100,20 @@ public class MyPageController {
 	}
 	
 	@GetMapping("/likeStores/{accountId}")
-	public ResponseEntity getLikeStores(@PathVariable("accountId") int accountId) {
-		//session의 accountId와 비교
-		//다르면
-//		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		logger.debug("accountId = "+ accountId);
+	public ResponseEntity getLikeStores(@PathVariable("accountId") int accountId, HttpSession session){
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		//나의 마이페이지가 아닌 경우
+		if(accountVo.getAccount_id() != accountId) {
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
 		
 		List<StoreVo> likeStoreList = mypageService.getLikeStoreList(accountId);
 		
@@ -101,8 +126,22 @@ public class MyPageController {
 	//해당 account의 follow 추가
 	@PostMapping(value="/follow/{accountId}")
 	@ResponseBody
-	public ResponseEntity addFollow(@PathVariable("accountId") int following){
-		int follower = 1; //세션 할당
+	public ResponseEntity addFollow(@PathVariable("accountId") int following, HttpSession session){
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		//나의 마이페이지가 아닌 경우
+		if(accountVo.getAccount_id() != following) {
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		int follower = accountVo.getAccount_id(); //세션 할당
 		logger.debug(following+":"+follower);
 		
 		int result = mypageService.addFollow(follower,following);
@@ -116,8 +155,22 @@ public class MyPageController {
 	//해당 account의 follow 삭제
 	@DeleteMapping(value="/follow/{accountId}")
 	@ResponseBody
-	public ResponseEntity deleteFollow(@PathVariable("accountId") int following){
-		int follower = 1; //세션 할당
+	public ResponseEntity deleteFollow(@PathVariable("accountId") int following, HttpSession session){
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		//나의 마이페이지가 아닌 경우
+		if(accountVo.getAccount_id() != following) {
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		int follower = accountVo.getAccount_id(); //세션 할당
 		logger.debug(following+":"+follower);
 		
 		int result = mypageService.deleteFollow(follower,following);
@@ -132,8 +185,17 @@ public class MyPageController {
 	@GetMapping(value="/follower/{accountId}")
 	@ResponseBody
 	public ResponseEntity getFollower(@PathVariable("accountId") int accountId, HttpSession session){
-		//세션의 id값과 path로 받아온 id값이 일치하는 지 확인
-		if(accountId!=1) {
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		//나의 마이페이지가 아닌 경우
+		if(accountVo.getAccount_id() != accountId) {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
@@ -150,9 +212,18 @@ public class MyPageController {
 	//해당 account의 following 가져오기
 	@GetMapping(value="/following/{accountId}")
 	@ResponseBody
-	public ResponseEntity getFollowing(@PathVariable("accountId") int accountId){
-		//세션의 id값과 path로 받아온 id값이 일치하는 지 확인
-		if(accountId!=1) {
+	public ResponseEntity getFollowing(@PathVariable("accountId") int accountId, HttpSession session){
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		//나의 마이페이지가 아닌 경우
+		if(accountVo.getAccount_id() != accountId) {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
@@ -166,22 +237,45 @@ public class MyPageController {
 	}
 	
 		
-	//해당 account의 회원정보 수정하기
+	///해당 account의 회원정보 수정하기
 	@PostMapping(value="/editAccount/{accountId}")
 	@ResponseBody
-	public ResponseEntity editAccount(@RequestParam("file") MultipartFile[] userImage, @PathVariable("accountId") int accountId, AccountVo accountVo) {
-		//세션의 id값과 path로 받아온 id값이 일치하는 지 확인
-		if(accountId==1) {
-			return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity editAccount(@RequestParam("file") MultipartFile[] userImage, @PathVariable("accountId") int accountId, AccountVo editAccountVo, HttpSession session){
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
-		return new ResponseEntity<>(HttpStatus.LOCKED);
+		
+		//나의 마이페이지가 아닌 경우
+		if(accountVo.getAccount_id() != accountId) {
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		return null;
 	}
 		
-	//해당 account의 회원탈퇴(삭제)
+	///해당 account의 회원탈퇴(삭제)
 	@DeleteMapping(value="/deleteAccount/{accountId}")
 	@ResponseBody
-	public	ResponseEntity deleteAccount(@PathVariable("accountId") int accountId) {
-		//세션의 id값과 path로 받아온 id값이 일치하는 지 확인
+	public	ResponseEntity deleteAccount(@PathVariable("accountId") int accountId, HttpSession session){
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		//나의 마이페이지가 아닌 경우
+		if(accountVo.getAccount_id() != accountId) {
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
 		return null;
 	}
 }

@@ -794,7 +794,7 @@
 								: </label>
 								<div class="col-sm-10">
 								<input class="form-control" id="userEmail"
-								value="${currentPageAccount.accountEmail}" placeholder="이메일을 입력해주세요" />
+								value="${currentPageAccount.email}" placeholder="이메일을 입력해주세요" />
 								</div>
 						</div>
 					</form>

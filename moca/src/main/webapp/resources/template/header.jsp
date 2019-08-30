@@ -7,11 +7,11 @@
     
 <!--//css 설정-->
     <style type="text/css">
-        .modal .modal-body {
+        #Login-Modal .modal-body {
             max-height: 350px;
             overflow-y: auto;
         }
-        .modal-open .modal{
+        .modal-open #Login-Modal{
             overflow-y: hidden;
         }
         .sns-login-btn * {
