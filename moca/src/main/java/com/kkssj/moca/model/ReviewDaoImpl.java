@@ -24,44 +24,45 @@ public class ReviewDaoImpl implements ReviewDao {
 	SqlSession sqlSession;
 
 
-	//store µğÅ×ÀÏ ÆäÀÌÁö¿¡¼­ ÇØ´ç Ä«ÆäÀÇ review¸¦ °¡Á®¿È
+	//store ë””í…Œì¼ í˜ì´ì§€ì—ì„œ í•´ë‹¹ ì¹´í˜ì˜ reviewë¥¼ ê°€ì ¸ì˜´
 	@Override
 	public List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("ACCOUNTID", accountId);
-		map.put("STOREID", storeId);
+		logger.debug("storeId : "+storeId);
+		map.put("ACCOUNT_ID", accountId);
+		map.put("STORE_ID", storeId);
 		
-		return sqlSession.selectList("review.selectAll",map);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAll",map);
 	}
 	
-	//¸®ºä Ãß°¡
+	//ë¦¬ë·° ì¶”ê°€
 	@Override
 	public int insertReview(ReviewVo reviewVo) throws SQLException {
 		logger.debug(reviewVo.toString());
-		int result = sqlSession.insert("review.insertReview", reviewVo);
+		int result = sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertReview", reviewVo);
 		logger.debug("result:"+result);
 		return result;
 	}
 
-	//¹æ±İ Ãß°¡ÇÑ ¸®ºä¸¦ °¡Á®¿È(Ãß°¡ ÀÌÈÄ »ı¼ºµÇ´Â Á¤º¸¸¦ °¡Á®¿À±â À§ÇØ)
+	//ë°©ê¸ˆ ì¶”ê°€í•œ ë¦¬ë·°ë¥¼ ê°€ì ¸ì˜´(ì¶”ê°€ ì´í›„ ìƒì„±ë˜ëŠ” ì •ë³´ë¥¼ ê°€ì ¸ì˜¤ê¸° ìœ„í•´)
 	@Override
 	public ReviewVo selectAddedOne(int accountId) throws SQLException {
-		return sqlSession.selectOne("review.selectAddedOne", accountId);
+		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAddedOne", accountId);
 	}
 
-	//¸®ºä ¼öÁ¤
+	//ë¦¬ë·° ìˆ˜ì •
 	@Override
 	public int updateReview(ReviewVo reviewVo) throws SQLException{
-		return sqlSession.update("review.updateReview", reviewVo);
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateReview", reviewVo);
 	}
 	
 
-	//¸®ºä »èÁ¦
+	//ë¦¬ë·° ì‚­ì œ
 	public int deleteReview(ReviewVo reviewVo) throws SQLException {
-		return sqlSession.delete("review.deleteReview",reviewVo);
+		return sqlSession.delete("com.kkssj.moca.model.ReviewDao.deleteReview",reviewVo);
 	}
 
-	//likeHate Å×ÀÌºí¿¡ row Ãß°¡
+	//likeHate í…Œì´ë¸”ì— row ì¶”ê°€
 	@Override
 	public int insertLikeHate(int review_id, int accountId, int isLike) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -69,10 +70,10 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
 		
-		return sqlSession.insert("review.insertLikeHate", map);
+		return sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertLikeHate", map);
 	}
 
-	//likeHate Å×ÀÌºí¿¡ row ¼öÁ¤
+	//likeHate í…Œì´ë¸”ì— row ìˆ˜ì •
 	@Override
 	public int updateLikeHate(int review_id, int accountId, int isLike) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -80,107 +81,122 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
 		
-		return sqlSession.update("review.updateLikeHate", map);
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeHate", map);
 	}
 
 
-	//likeHate Å×ÀÌºí¿¡ row »èÁ¦
+	//likeHate í…Œì´ë¸”ì— row ì‚­ì œ
 	@Override
 	public int deleteLikeHate(int review_id, int accountId) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
 		
-		return sqlSession.delete("review.deleteLikeHate", map);
+		return sqlSession.delete("com.kkssj.moca.model.ReviewDao.deleteLikeHate", map);
 	}
 
-	//review Å×ÀÌºí¿¡ likeCount°ª ¼öÁ¤
+	//review í…Œì´ë¸”ì— likeCountê°’ ìˆ˜ì •
 	@Override
 	public int updateLikeCount(int review_id, int likeCount) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("LIKECOUNT", likeCount);
 		logger.debug("REVIEW_ID:"+review_id+ ", LIKECOUNT:"+likeCount);		
-		return sqlSession.update("review.updateLikeCount", map);
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeCount", map);
 	}
 
-	//review Å×ÀÌºí¿¡ hateCount°ª ¼öÁ¤
+	//review í…Œì´ë¸”ì— hateCountê°’ ìˆ˜ì •
 	@Override
 	public int updateHateCount(int review_id, int hateCount) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("HATECOUNT", hateCount);
 		logger.debug("REVIEW_ID:"+review_id+ ", HATECOUNT:"+hateCount);		
-		return sqlSession.update("review.updateHateCount", map);
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateHateCount", map);
 	}
 
-	//review Å×ÀÌºí¿¡ likeCount, hateCount°ª Á¶È¸
+	//review í…Œì´ë¸”ì— likeCount, hateCountê°’ ì¡°íšŒ
 	@Override
 	public ReviewVo selectLikeHateCount(int review_id) throws SQLException{
-		ReviewVo reviewVo = sqlSession.selectOne("review.selectLikeHateCount", review_id);
+		ReviewVo reviewVo = sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectLikeHateCount", review_id);
 		logger.debug("likeCount:"+reviewVo.getLikeCount());
 		return reviewVo;
 	}
 
 
-	//likeHate Å×ÀÌºí¿¡ isLike=1ÀÎ °³¼ö Á¶È¸
+	//likeHate í…Œì´ë¸”ì— isLike=1ì¸ ê°œìˆ˜ ì¡°íšŒ
 	@Override
 	public int selectLikeHateLike(int reviewId) throws SQLException{
 		try {
-			return sqlSession.selectOne("review.selectLikeHateLike", reviewId);
+			return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectLikeHateLike", reviewId);
 		}catch (NullPointerException e) {
-			//ÁÁ¾Æ¿ä°¡ ¾ø´Â °æ¿ì
+			//ì¢‹ì•„ìš”ê°€ ì—†ëŠ” ê²½ìš°
 			return 0;
 		}
 		
 	}
 
-	//likeHate Å×ÀÌºí¿¡ isLike=-1ÀÎ °³¼ö Á¶È¸
+	//likeHate í…Œì´ë¸”ì— isLike=-1ì¸ ê°œìˆ˜ ì¡°íšŒ
 	@Override
 	public int selectLikeHateHate(int reviewId) throws SQLException {
 		try {
-			return sqlSession.selectOne("review.selectLikeHateHate", reviewId);
+			return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectLikeHateHate", reviewId);
 		}catch (NullPointerException e) {
-			//½È¾î¿ä°¡ ¾ø´Â °æ¿ì
+			//ì‹«ì–´ìš”ê°€ ì—†ëŠ” ê²½ìš°
 			return 0;
 		}
 	}
 	
 	
-	//¸®ºä ÀÌ¹ÌÁö µî·Ï
+	//ë¦¬ë·° ì´ë¯¸ì§€ ë“±ë¡
 	@Override
 	public int insertReviewImage(ImageVo imgaeVo) throws SQLException {
-		return sqlSession.insert("review.insertReviewImage", imgaeVo);
+		return sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertReviewImage", imgaeVo);
 	}
 
 
-	//review Å×ÀÌºí¿¡ÀÖ´Â review_id°ª Á¶È¸
+	//review í…Œì´ë¸”ì—ìˆëŠ” review_idê°’ ì¡°íšŒ
 	@Override
 	public List<ReviewVo> selectAllReviewId() throws SQLException{
-		return sqlSession.selectList("review.selectAllReviewId");
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAllReviewId");
 	}
 	
-	//ÇØ´ç store¿¡ ÀÖ´Â reviewÀÇ Á¡¼ö(¸À, °¡°İ µî) Á¶È¸
+	//í•´ë‹¹ storeì— ìˆëŠ” reviewì˜ ì ìˆ˜(ë§›, ê°€ê²© ë“±) ì¡°íšŒ
 	@Override
 	public List<ReviewVo> selectAllReviewLevel(int storeId) throws SQLException{
-		return sqlSession.selectList("review.selectAllReviewLevel", storeId);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAllReviewLevel", storeId);
 	}
 	
-	//¸®ºä ÀÌ¹ÌÁö °¡Á®¿À±â
+	//ë¦¬ë·° ì´ë¯¸ì§€ ê°€ì ¸ì˜¤ê¸°
 	@Override
 	public List<ImageVo> selectReviewImgListByStoreId(int storeId) {
-		return sqlSession.selectList("review.selectReviewImgListByStoreId", storeId);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewImgListByStoreId", storeId);
 	}
 
-	//¸®ºä ÀÌ¹ÌÁö Á¦°Å
+	//ë¦¬ë·° ì´ë¯¸ì§€ ì œê±°
 	@Override
 	public int deleteReviewImage(ImageVo imageVo) throws SQLException {
-		return sqlSession.delete("review.deleteReviewImage", imageVo);
+		return sqlSession.delete("com.kkssj.moca.model.ReviewDao.deleteReviewImage", imageVo);
 	}
 
 	@Override
 	public List<ImageVo> selectReviewImgListByReviewId(int reviewId) throws SQLException {
-		return sqlSession.selectList("review.selectReviewImgListByReviewId", reviewId);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewImgListByReviewId", reviewId);
+	}
+
+	//accountIdë¡œ review ê°€ì ¸ì˜¤ê¸°
+	@Override
+	public List<ReviewVo> selectReviewListByAccountId(int accountId,int sessionId) throws SQLException {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("SESSION_ID", sessionId);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewListByAccountId", map);
+	}
+
+	//accountIdë¡œ reviewImg ê°€ì ¸ì˜¤ê¸°
+	@Override
+	public List<ImageVo> selectReviewImgListByAccountId(int accountId) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewImgListByAccountId", accountId);
 	}
 
 	

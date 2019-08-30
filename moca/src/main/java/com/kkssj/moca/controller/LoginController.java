@@ -31,7 +31,7 @@ public class LoginController {
 	@ResponseBody
 	public AccountVo login(@PathVariable("accountId") int accountId, @RequestBody AccountVo accountVo){
 		
-		//¼­ºñ½º È¤Àº dao·Î ·Î±×ÀÎ Á¤º¸°¡ ÀÖ´ÂÁö ¾ø´ÂÁö Ã³¸®ÇØ¼­ ¾ø´Â »ç¶÷ÀÌ¸é »õ vo°´Ã¼·Î ¼±¾ğÇØ¼­ ¼¼¼Ç¿¡´Ù°¡ ´Ù½Ã ³Ö?
+		//ì„œë¹„ìŠ¤ í˜¹ì€ daoë¡œ ë¡œê·¸ì¸ ì •ë³´ê°€ ìˆëŠ”ì§€ ì—†ëŠ”ì§€ ì²˜ë¦¬í•´ì„œ ì—†ëŠ” ì‚¬ëŒì´ë©´ ìƒˆ voê°ì²´ë¡œ ì„ ì–¸í•´ì„œ ì„¸ì…˜ì—ë‹¤ê°€ ë‹¤ì‹œ ë„£?
 		
 		AccountVo returnVo = null;
 		returnVo = accountService.login(accountVo);

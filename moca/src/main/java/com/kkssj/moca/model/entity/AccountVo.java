@@ -1,10 +1,14 @@
 package com.kkssj.moca.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccountVo {
-	int account_id, followCount, reviewCount, platformId ;
-	String nickname, platformType, profileImage, thumbnailImage;
+
+	int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp;
+	String nickname, platformType, profileImage, thumbnailImage, accountEmail;
 	
-	/*email Ãß°¡*/
+	/*email ì¶”ê°€*/
 	String email;
 	
 	public AccountVo() {
@@ -115,59 +119,38 @@ public class AccountVo {
 		this.email = email;
 	}
 
-
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
-		result = prime * result + platformId;
-		result = prime * result + ((platformType == null) ? 0 : platformType.hashCode());
-		result = prime * result + ((profileImage == null) ? 0 : profileImage.hashCode());
-		result = prime * result + ((thumbnailImage == null) ? 0 : thumbnailImage.hashCode());
-		return result;
+	public int getAccountLevel() {
+		return accountLevel;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		AccountVo other = (AccountVo) obj;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
-			return false;
-		if (nickname == null) {
-			if (other.nickname != null)
-				return false;
-		} else if (!nickname.equals(other.nickname))
-			return false;
-		if (platformId != other.platformId)
-			return false;
-		if (platformType == null) {
-			if (other.platformType != null)
-				return false;
-		} else if (!platformType.equals(other.platformType))
-			return false;
-		if (profileImage == null) {
-			if (other.profileImage != null)
-				return false;
-		} else if (!profileImage.equals(other.profileImage))
-			return false;
-		if (thumbnailImage == null) {
-			if (other.thumbnailImage != null)
-				return false;
-		} else if (!thumbnailImage.equals(other.thumbnailImage))
-			return false;
-		return true;
+	public void setAccountLevel(int accountLevel) {
+		this.accountLevel = accountLevel;
 	}
+
+	public int getIsMine() {
+		return isMine;
+	}
+
+	public void setIsMine(int isMine) {
+		this.isMine = isMine;
+	}
+
+	public int getExp() {
+		return exp;
+	}
+
+	public void setExp(int exp) {
+		this.exp = exp;
+	}
+
+	public String getAccountEmail() {
+		return accountEmail;
+	}
+
+	public void setAccountEmail(String accountEmail) {
+		this.accountEmail = accountEmail;
+	}
+
 
 	@Override
 	public String toString() {

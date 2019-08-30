@@ -17,54 +17,64 @@ public interface StoreService {
 	///////////////////////
 	//store
 	
-	//»ó¼¼Á¤º¸ °¡Á®¿À±â
-	StoreVo getStore(int store_Id);
+	//ìƒì„¸ì •ë³´ ê°€ì ¸ì˜¤ê¸°
+	StoreVo getStore(int store_Id, int account_id);
 
-	//store°¡ ÀÖ´ÂÁö È®ÀÎÇÏ°í add
+	//storeê°€ ìˆëŠ”ì§€ í™•ì¸í•˜ê³  add
 	StoreVo addStore(StoreVo storeVo);
 	
-	//store »ó¼¼Á¤º¸ update
+	//store ìƒì„¸ì •ë³´ update
 	int editStore(int accountId, StoreVo storeVo);
 
-	//storeInfoHistory °¡Á®¿À±â
+	//storeInfoHistory ê°€ì ¸ì˜¤ê¸°
 	String getStoreInfoHistory(int storeId);
 	
 	
 	///////////////////////
 	//review
 	
-	//¸®ºä ¸®½ºÆ® °¡Á®¿À±â
+	//ë¦¬ë·° ë¦¬ìŠ¤íŠ¸ ê°€ì ¸ì˜¤ê¸°
 	List<ReviewVo> getReviewList(int accountId, int storeId);
 	
-	//¸®ºä Ãß°¡
+	//ë¦¬ë·° ì¶”ê°€
 	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);
 
-	//¸®ºä ¼öÁ¤
-	int editReview(ReviewVo reviewVo);
+	//ë¦¬ë·° ìˆ˜ì •
+	ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails);
 	
-	//¸®ºä Á¦°Å
+	//ë¦¬ë·° ì œê±°
 	int deleteReview(ReviewVo reviewVo);
 	
 	
 	///////////////////////
 	//likeHate
 
-	//ÁÁ¾Æ¿ä ½È¾î¿ä Ãß°¡ÇÏ±â
+	//ì¢‹ì•„ìš” ì‹«ì–´ìš” ì¶”ê°€í•˜ê¸°
 	int addLikeHate(int review_id, int accountId, int isLike);
 
-	//ÁÁ¾Æ¿ä ½È¾î¿ä ¼öÁ¤
+	//ì¢‹ì•„ìš” ì‹«ì–´ìš” ìˆ˜ì •
 	int editLikeHate(int review_id, int accountId, int isLike);
 
-	//ÁÁ¾Æ¿ä ½È¾î¿ä Á¦°Å
+	//ì¢‹ì•„ìš” ì‹«ì–´ìš” ì œê±°
 	int deleteLikeHate(int review_id, int accountId, int isLike);
 
-	//reviewÀÇ ÁÁ¾Æ¿ä ½È¾î¿ä Ä«¿îÆ®¸¦ likehate Å×ÀÌºíÀÇ °ª°ú µ¿±âÈ­
+	//reviewì˜ ì¢‹ì•„ìš” ì‹«ì–´ìš” ì¹´ìš´íŠ¸ë¥¼ likehate í…Œì´ë¸”ì˜ ê°’ê³¼ ë™ê¸°í™”
 	int syncReviewLikeHate();
 	
-	//storeÀÇ ´ëÇ¥ÀÌ¹ÌÁöµé
+	//storeì˜ ëŒ€í‘œì´ë¯¸ì§€ë“¤
 	List<ImageVo> getStoreImgList(int storeId);
 
-	//¸®ºä ÀÌ¹ÌÁö »èÁ¦
+	//ë¦¬ë·° ì´ë¯¸ì§€ ì‚­ì œ
 	int deleteReviewImage(ImageVo imageVo);
+
+	int addLikeStore(int storeId, int account_id);
+
+	int deleteLikeStore(int storeId, int account_id);
+
+	int addFavoriteStore(int storeId, int account_id);
+
+	int deleteFavoriteStore(int storeId, int account_id);
+
+	StoreVo editStoreImg(StoreVo storeVo, MultipartFile[] newFiles, String[] delStoreImgArr);
 
 }

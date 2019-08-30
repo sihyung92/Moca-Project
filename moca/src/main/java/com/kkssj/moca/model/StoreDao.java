@@ -8,7 +8,7 @@ import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
 public interface StoreDao {
-	StoreVo selectOne(int store_Id) throws SQLException;
+	StoreVo selectOne(int store_Id,int account_id) throws SQLException;
 	
 	StoreVo selectByKakaoId(int kakaoId);
 	

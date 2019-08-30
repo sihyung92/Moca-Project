@@ -6,10 +6,10 @@ import java.util.Map;
 import org.springframework.http.MediaType;
 
 public class MediaUtils {
-	// Map<String, MediaType> Å¸ÀÔÀÇ mediaMap°´Ã¼ »ı¼º
+	// Map<String, MediaType> íƒ€ì…ì˜ mediaMapê°ì²´ ìƒì„±
 	private static Map<String, MediaType> mediaMap;
 	
-	// ÃÊ±âÈ­ ºí·Ï¿¡¼­ mediaMap ÃÊ±âÈ­
+	// ì´ˆê¸°í™” ë¸”ë¡ì—ì„œ mediaMap ì´ˆê¸°í™”
 	static {
 		mediaMap = new HashMap<>();
 		mediaMap.put("JPG", MediaType.IMAGE_JPEG);
@@ -17,9 +17,9 @@ public class MediaUtils {
 		mediaMap.put("PNG", MediaType.IMAGE_PNG);
 	}
 	
-	// getMediaType(type)À¸·Î È£Ãâ½Ã
-	// mediaMapÀÇ ÀÌ¹ÌÁö Å¸ÀÔÀÇ Å°("JPG", "GIF", "PNG")°¡ Á¸ÀçÇÑ´Ù¸é(È®ÀåÀÚ°¡ ÀÌ¹ÌÁö Å¸ÀÔÀÌ¶ó¸é) MediaType Å¸ÀÔ »ó¼ö ¸®ÅÏ
-	// Á¸ÀçÇÏÁö ¾Ê´Â´Ù¸é(È®ÀåÀÚ°¡ ±× ¿Ü Å¸ÀÔÀÌ¶ó¸é) null ¸®ÅÏ
+	// getMediaType(type)ìœ¼ë¡œ í˜¸ì¶œì‹œ
+	// mediaMapì˜ ì´ë¯¸ì§€ íƒ€ì…ì˜ í‚¤("JPG", "GIF", "PNG")ê°€ ì¡´ì¬í•œë‹¤ë©´(í™•ì¥ìê°€ ì´ë¯¸ì§€ íƒ€ì…ì´ë¼ë©´) MediaType íƒ€ì… ìƒìˆ˜ ë¦¬í„´
+	// ì¡´ì¬í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´(í™•ì¥ìê°€ ê·¸ ì™¸ íƒ€ì…ì´ë¼ë©´) null ë¦¬í„´
 	public static MediaType getMediaType(String type) {
 		return mediaMap.get(type.toUpperCase());
 	}
