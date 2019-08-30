@@ -74,8 +74,8 @@
         lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
-    	cafesNearBy();
     };
+    	cafesNearBy();
 
     // Error Callback(에러 메시지 출력)
     function errCall(error) {
@@ -199,19 +199,19 @@
 </div>
 <div id="content" class="container-fluid">
 <!-- 주변 카페 추천 -->
-<!-- 	<div class="row suggestion" id="storesNearBy" style="display:hidden;">
+ 	<div class="row suggestion" id="storesNearBy" style="display:none;">
 		<div class="col-md-12">
 			<h5>주변 추천 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
 		</div> 
 		<div class="col-md-12 carousel slide" id="storesNearBy_carousel" data-ride="carousel" style="height:300px;">
-		  Indicators
+		 <!-- Indicators -->
 		  <ol class="carousel-indicators">
 		    <li data-target="#storesNearBy_carousel" data-slide-to="0" class="active"></li>
 			<li data-target="#storesNearBy_carousel" data-slide-to="1"></li>
 		    <li data-target="#storesNearBy_carousel" data-slide-to="2"></li>
 		  </ol>
 		
-		  Wrapper for slides
+		 <!-- Wrapper for slides -->
 		  <div class="carousel-inner" role="listbox" >
 		    <div class="item active" style="text-align:center;">
 		     <ul class="item-inner" style="list-style:none; text-align:center;">
@@ -226,7 +226,7 @@
 		     </ul>
 		    </div>
 				  </div>	
-			  Controls
+			  <!-- Controls -->
 			  <a class="left carousel-control" href="#storesNearBy_carousel" role="button" data-slide="prev">
 			    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 			    <span class="sr-only">Previous</span>
@@ -236,7 +236,7 @@
 			    <span class="sr-only">Next</span>
 			  </a>
 			</div>
-		</div> -->
+		</div>
 <!-- Hit stores 추천 캐러샐 -->
 	<c:if test="${not empty hitStores }">
 		<c:set var="length" value="${fn:length(hitStores)}"/>

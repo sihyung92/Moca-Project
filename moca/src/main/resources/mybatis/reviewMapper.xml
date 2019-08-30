@@ -92,7 +92,10 @@
   </select>
   
   <select id="selectRecentReviews" resultType="com.kkssj.moca.model.entity.ReviewVo">
- 	 SELECT REVIEWCONTENT, WRITEDATE, ACCOUNT_ID, STORE_ID, REVIEW_ID FROM REVIEW ORDER BY WRITEDATE DESC
+  	 <![CDATA[
+ 	SELECT * FROM (SELECT REVIEWCONTENT, WRITEDATE, ACCOUNT_ID, STORE_ID, REVIEW_ID, @ROWNUM:=@ROWNUM+1 AS ROWNUM  FROM REVIEW,(SELECT @ROWNUM:=0) RN ORDER BY STORE_ID DESC)INNERTABLE
+	WHERE ROWNUM<16
+	]]>
   </select>
   
   <select id="selectReviewListByAccountId" parameterType="map" resultType="com.kkssj.moca.model.entity.ReviewVo">

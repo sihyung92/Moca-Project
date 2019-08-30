@@ -1,5 +1,6 @@
 package com.kkssj.moca.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,22 +48,45 @@ public class MainController {
 		}else if(session.getAttribute("x") == null|| session.getAttribute("y") == null) {
 			return "geolocation";
 		}
-	//	List<String> listNames = new ArrayList<String>();
-	//	List<List<StoreVo>> storesList = new ArrayList<List<StoreVo>>();
 		Map<String, String> variables = new HashMap<String, String>();
 		variables.put("x", x );
 		variables.put("y", y);
-		//Hit Stores 추천 
-		model.addAttribute("hitStores", mainService.getHitStoresList(variables));		
-		//Best Stores 추천 
-		model.addAttribute("bestStores", mainService.getBestStoresList());
-		//흑당커피:)
-		model.addAttribute("trendStores", mainService.getTrendStoresList("예쁜"));
-		//최신 리뷰
+		
+		//추천 문구 목록
+		List<String> listNames = new ArrayList<String>();
+		//각 추천 stores들을 출력순으로 삽입할 리스트
+		List<List<StoreVo>> storesList = new ArrayList<List<StoreVo>>();
+		
+		//Hit Stores추천, index : 0
+		listNames.add("지금 뜨는 카페");
+		storesList.add(mainService.getHitStoresList(variables));
+		
+		//Best Stores추천, index : 1
+		listNames.add("한주간 베스트 카페");
+		storesList.add(mainService.getBestStoresList());
+		
+		//Trend Stores, index : 2
+		listNames.add("흑당흑당 카페카페(미구현)");
+		storesList.add(mainService.getTrendStoresList("예쁜"));
+		
+		//takeOut Stores, index : 3
+		listNames.add("주변의 테이크아웃 전문점");
+		storesList.add(mainService.getTakeoutStoresList(variables));
+		
+//		//Hit Stores 추천 
+//		model.addAttribute("hitStores", mainService.getHitStoresList(variables));		
+//		//Best Stores 추천 
+//		model.addAttribute("bestStores", mainService.getBestStoresList());
+//		//흑당커피:)
+//		model.addAttribute("trendStores", mainService.getTrendStoresList("예쁜"));
+//		//최신 리뷰
 		model.addAttribute("recentReviews",mainService.getRecentReviews());
-		//TakeOut Stores 추천
-		model.addAttribute("takeOutStores", mainService.getTakeoutStoresList(variables));
-		return "main";
+//		//TakeOut Stores 추천
+//		model.addAttribute("takeOutStores", mainService.getTakeoutStoresList(variables));
+		
+		model.addAttribute("listNames",listNames);
+		model.addAttribute("storesList",storesList);
+		return "main2";
 	}
 
 	@RequestMapping(value="/geolocation", method = RequestMethod.GET)
