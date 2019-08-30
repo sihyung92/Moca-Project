@@ -140,7 +140,7 @@ public class StoreController {
     	accountVo.setNickname("songhae");
     	accountVo.setAccount_id(1);
         
-        reviewVo.setAccountId(accountVo.getAccount_id());
+        reviewVo.setAccount_id(accountVo.getAccount_id());
         logger.debug(reviewVo.toString());
 		
         for (int i = 0; i < files.length; i++) {
@@ -169,7 +169,7 @@ public class StoreController {
 		logger.debug(reviewVo.toString());
 		logger.debug(delThumbnails);
 		//세션이 작동했다고 가정
-		reviewVo.setAccountId(1);
+		reviewVo.setAccount_id(1);
 		
 		for (int i = 0; i < newFiles.length; i++) {
 			logger.debug(newFiles[i].getName());
@@ -193,7 +193,7 @@ public class StoreController {
 		int accountId = 1;
 		
 		ReviewVo reviewVo = new ReviewVo();
-		reviewVo.setAccountId(accountId);
+		reviewVo.setAccount_id(accountId);
 		reviewVo.setReview_id(review_id);
 		
 		int isDelete = storeService.deleteReview(reviewVo);
@@ -267,8 +267,7 @@ public class StoreController {
 		return "redirect:../stores/"+1;
 	}
 
-
-
+	
 	public String changeCategory(String category, String name) {
 		// 포함되면 해당 카테고리로 변환
 		// 프랜차이즈(카테고리), 애견(카테고리), 스터디(이름), 고양이(카테고리), 만화+놀숲(이름), 보드(카테고리), 룸카페(이름)
@@ -282,6 +281,7 @@ public class StoreController {
 				} else {
 					category = categoryCheck[i];
 				}
+				break;
 			}
 		}
 
@@ -292,6 +292,7 @@ public class StoreController {
 				} else {
 					category = nameCheck[i];
 				}
+				break;
 			}
 		}
 

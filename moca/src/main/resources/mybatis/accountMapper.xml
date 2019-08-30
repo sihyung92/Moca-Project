@@ -32,4 +32,8 @@
   <delete id="deleteFollow" parameterType="map">
   	delete from FOLLOW where FOLLOWER=#{follower} and FOLLOWING=#{following}
   </delete>
+  
+  <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </select>
 </mapper>

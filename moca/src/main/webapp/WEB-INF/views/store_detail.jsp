@@ -674,7 +674,7 @@
 				</div>
 				<div class="modal-body" data-role="content">
 					<form id="reviewForm">
-						<input name="storeId" value=${storeVo.store_Id} style="display:none;" >
+						<input name="store_id" value=${storeVo.store_Id} style="display:none;" >
 						<input name="review_id" id="review_id" value="0" style="display:none;" >
 						<div class="form-group">
 							<label for="picture-file">사진 선택</label>

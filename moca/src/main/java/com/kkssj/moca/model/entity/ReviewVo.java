@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class ReviewVo {
 	//REVIEW table
-	private int review_id, accountId, storeId;
+	private int review_id, account_id, store_id;
 	private String reviewContent;
 	private Date writeDate;
 	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
@@ -37,8 +37,8 @@ public class ReviewVo {
 			int likeCount, int hateCount, int isLike, String nickName, int followCount, int reviewCount, int isMine) {
 		super();
 		this.review_id = review_id;
-		this.accountId = accountId;
-		this.storeId = storeId;
+		this.account_id = accountId;
+		this.store_id = storeId;
 		this.reviewContent = reviewContent;
 		this.writeDate = writeDate;
 		this.tasteLevel = tasteLevel;
@@ -64,22 +64,6 @@ public class ReviewVo {
 
 	public void setReview_id(int review_id) {
 		this.review_id = review_id;
-	}
-
-	public int getAccountId() {
-		return accountId;
-	}
-
-	public void setAccountId(int accountId) {
-		this.accountId = accountId;
-	}
-
-	public int getStoreId() {
-		return storeId;
-	}
-
-	public void setStoreId(int storeId) {
-		this.storeId = storeId;
 	}
 
 	public String getReviewContent() {
@@ -239,7 +223,7 @@ public class ReviewVo {
 
 	@Override
 	public String toString() {
-		return "ReviewVo [review_id=" + review_id + ", accountId=" + accountId + ", storeId=" + storeId
+		return "ReviewVo [review_id=" + review_id + ", account_id=" + account_id + ", store_id=" + store_id
 				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate
 				+ ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel
 				+ ", moodLevel=" + moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel="
@@ -251,6 +235,30 @@ public class ReviewVo {
 	//5가지 level을 가지고 소숫점 1자리까지 평점 계산
 	public void calAverageLevel() {
 		this.averageLevel = Math.round(((this.tasteLevel + this.priceLevel + this.serviceLevel + this.moodLevel + this.convenienceLevel)/5.0)*10)/10.0;
+	}
+
+
+
+	public int getAccount_id() {
+		return account_id;
+	}
+
+
+
+	public void setAccount_id(int account_id) {
+		this.account_id = account_id;
+	}
+
+
+
+	public int getStore_id() {
+		return store_id;
+	}
+
+
+
+	public void setStore_id(int store_id) {
+		this.store_id = store_id;
 	}
 
 

@@ -9,9 +9,10 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<style type="text/css">
 		#userInfo, #followInfo{
-			margin:0px auto;
+			margin:20px auto;
 			text-align: center;
 			display: inline-block;
+			width:100%;
 		}
 		#followerDiv>div{
 			display: inline;
@@ -99,12 +100,28 @@
 		  right: 0;
 		  border-radius: 3px 0 0 3px;
 		}
+		
+		/*글리피콘 사이즈*/
+		.glyphicon-cog{
+			font-size: 2rem;
+		}
+		
+		.popover{
+			width:300px;
+    		max-width: 100%;
+		}
+		
+		#userImage{
+			margin: 20px auto;
+			text-align: center;
+		}
+		
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=14"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<script type="text/javascript">
@@ -178,7 +195,6 @@
 						
 		})
 		
-		
 		//리뷰 수정 버튼 클릭시
 		editReviewBtn.click(editReview);
 		
@@ -239,8 +255,8 @@
 		
 		/////////////////내가 쓴글 관리 끝//////////////
 		
-		if(isMine==1){
-			$('#followBtn').hide();
+		if(isMine!=1){
+			$('#followBtn').show();
 		}
 
 		var followingList = new Array();
@@ -381,7 +397,70 @@
 			});
 			
 		});
+
+		//레벨제 설명 툴팁 옵션
+		$('#levelGuide').popover({
+			trigger : 'hover',
+			html : true
+		});
+
+		//회원정보 수정 모달
+		$('#userInfoUpdateBtn').click(function(){
+			$('#userInfoUpdate').modal("show");
+		});
+
+		//input file 버튼 대체
+		$('#userImageUpdateBtn').click(function(){
+			$('#userImageUpdateInput').click();
+		});
+
+		//input file change시
+		$('#userImageUpdateInput').change(userImageChange);
+
+		//회원 탈퇴 버튼 클릭시
+		$('#deleteUserBtn').click(function(){
+			if (confirm("정말 탈퇴하시겠습니까??") == true){    //확인
+			    console.log("삭제됨");
+			    $('#userInfoUpdate').modal("hide");
+			    //ajax통신으로 세션에서도 삭제,디비에서도 삭제
+			    //회원 탈퇴이유도 받았으면 좋겠다 ()
+			    window.location.href=''
+			}else{   //취소
+			    return;
+			}
+		});
+
+		//회원 정보 수정 확인 눌렀을 때 
+		$('#updateBtn').click(function(){
+			if(isMine==1){
+				$.ajax({
+					type: 'POST',
+					url: '/editAccount/'+accountId,
+					success: function() {
+						
+						haveLikeInfo =true;
+					},
+					error: function(request,status,error) {
+	
+					}
+				})
+			}
+		});
+		
     });
+
+	//회원정보 수정 때 userImage change되면
+	var userImageChange = function(){
+		const userImageUpdateInput = document.getElementById('userImageUpdateInput');
+		var userImage = userImageUpdateInput.files[0];
+		const fileName = userImage.name;
+		const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
+	    if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+	        alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+	        resetFile();
+	        return false;
+	    }
+	};
    
 	</script>
 </head>
@@ -394,18 +473,33 @@
 		<div class="row">
 			<div class="col-md-2 col-md-offset-2" >
 				<div id="userInfo">
-					<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle"><br>
-					<button id="followBtn" class="btn btn-default">팔로우</button><br>
-					<span id="nickName">별명</span><br>
-					Lv.<span id="accountLevel">3</span><br>			
+					<c:if test="${accountVo.isMine eq 1}">
+					<span class="glyphicon glyphicon-cog" id="userInfoUpdateBtn" aria-hidden="true" style="float:right;"></span>
+					</c:if>
+					<br>
+					<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle"><br>
+					<button id="followBtn" class="btn btn-default" style="display:none;">팔로우</button><br>
+					<span id="nickName">${currentPageAccount.nickname}</span><br>
+					Lv.<span id="accountLevel">${currentPageAccount.accountLevel}</span>
+					<span class="glyphicon glyphicon-question-sign" aria-hidden="true"
+						id="levelGuide" data-toggle="popover" title="등급제도 안내"
+						data-content="8단계의 등급을 설명해요 나중에">
+					</span> <br>
+					<c:if test="${accountVo.isMine eq 1}">
+					<div class="progress">
+						<div class="progress-bar progress-bar-info" role="progressbar"
+							aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
+							style="width: 20%">
+							20%
+						</div>
+					</div>
+					</c:if>
 				</div>
 			</div>
-			<div class="col-md-3">
-				그래프
+			<div class="col-md-3" id="userGraph">
 			
 			</div>
-			<div class="col-md-3">
-				배지
+			<div class="col-md-3" id="userBadge">
 			
 			</div>
 			<br><br>
@@ -439,14 +533,14 @@
 								<div class="row reviewCnt">
 									<c:if test="${reviewVo.editable eq 1}">
 										<div class="editDeleteGroup btn-group" role="group">
-											<input name="storeId" class="storeId" value=${reviewVo.storeId} style="display: none;">
+											<input name="storeId" class="storeId" value=${reviewVo.store_id} style="display: none;">
 											<input type="number" class="review-id"
 												value=${reviewVo.review_id } style="display: none;">
 											<button type="button" class="btn-edit btn btn-default">수정</button>
 											<button type="button" class="btn-delete btn btn-default">삭제</button>
 										</div>
 									</c:if>
-									<div class="reviewer-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.storeId}'" style="cursor:pointer;">
+									<div class="reviewer-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
 										<div class="storeLogo-div">
 											<!-- store logo 이미지 -->
 											<c:if test="${empty reviewVo.storeLogoImg}">
@@ -583,6 +677,56 @@
 		<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle" style="width:10rem;"><br>
 		<b><span id="nickName">별명</span></b><br>
 		<small>Lv.<span id="accountLevel">3</span></small><br>
+	</div>
+	
+	<!--회원정보 수정 모달 -->
+	<div id="userInfoUpdate" class="modal fade" aria-hidden="true" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title">회원 정보 수정</h4>
+		      	</div>
+				<div class="modal-body">
+					<form class="form-horizontal">
+						<div class="form-group" id="userImage">
+							<!-- 프로필사진 수정 -->
+							<img alt="basicProfile"
+								src="${currentPageAccount.thumbnailImage}" class="img-circle">
+							<button type="button" id="userImageUpdateBtn" class="btn btn-default" aria-label="Right Align" style="position:relative; left:-35px; top:40px">
+								<span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+							</button>
+							<input type="file" id="userImageUpdateInput" style="display:none"/>
+						</div>
+						<!-- 닉네임 수정 -->
+						<div class="form-group">
+							<label for="nickName" class="col-sm-2 control-label">닉네임
+								: </label>
+								<div class="col-sm-10">
+								<input class="form-control" name="nickName" id="nickName"
+								value="${currentPageAccount.nickname}" placeholder="닉네임을 입력해주세요" />
+								</div>
+						</div>
+						<!-- 이메일 수정 -->
+						<div class="form-group">
+							<label for="userEmail" class="col-sm-2 control-label">이메일
+								: </label>
+								<div class="col-sm-10">
+								<input class="form-control" id="userEmail"
+								value="${currentPageAccount.accountEmail}" placeholder="이메일을 입력해주세요" />
+								</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger"
+						id="deleteUserBtn" style="float: left;">회원탈퇴</button>
+					<button type="button" id="updateBtn" data-dismiss="modal" class="btn btn-primary"
+						>수정</button>
+					<button type="button" data-dismiss="modal" class="btn">취소</button>
+				</div>
+			</div>
+		</div>
 	</div>
 	
 	<jsp:include page="../../resources/template/reviewModal.jsp" flush="true"></jsp:include>

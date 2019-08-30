@@ -45,6 +45,9 @@ var detailImgIdx;
 var detailImgsSize;
 
 
+//회원정보수정 이미지
+var userImage;
+
 ////////////////////////////
 //함수부
 

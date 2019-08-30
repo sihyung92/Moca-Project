@@ -64,7 +64,7 @@ public class MypageServiceImpl implements MypageService{
 		for (int i = 0; i < reviewList.size(); i++) {
 			reviewList.get(i).setImageList(new ArrayList());
 			for (int j = imageListIndex; j < reviewImageList.size(); j++) {
-				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReviewId()) {
+				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReview_id()) {
 					reviewList.get(i).getImageList().add(reviewImageList.get(j));
 					imageListIndex++;
 				}
@@ -102,6 +102,16 @@ public class MypageServiceImpl implements MypageService{
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	@Override
+	public AccountVo getAccountInfo(int Account_id) {
+		try {
+			return accountDao.selectByaccountId(Account_id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 

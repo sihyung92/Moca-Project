@@ -28,8 +28,9 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("ACCOUNTID", accountId);
-		map.put("STOREID", storeId);
+		logger.debug("storeId : "+storeId);
+		map.put("ACCOUNT_ID", accountId);
+		map.put("STORE_ID", storeId);
 		
 		return sqlSession.selectList("review.selectAll",map);
 	}

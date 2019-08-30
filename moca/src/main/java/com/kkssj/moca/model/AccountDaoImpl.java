@@ -46,13 +46,13 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public List<AccountVo> selectFollowerList(int accountId) throws SQLException {
-		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowerList",accountId);
+	public List<AccountVo> selectFollowerList(int account_id) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowerList",account_id);
 	}
 
 	@Override
-	public List<AccountVo> selectFollowingList(int accountId) throws SQLException {
-		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowingList",accountId);
+	public List<AccountVo> selectFollowingList(int account_id) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowingList",account_id);
 	}
 
 	@Override
@@ -69,6 +69,11 @@ public class AccountDaoImpl implements AccountDao {
 		map.put("follower", follower);
 		map.put("following", following);
 		return sqlSession.insert("com.kkssj.moca.model.AccountDao.deleteFollow",map);
+	}
+
+	@Override
+	public AccountVo selectByaccountId(int account_id) {
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectByaccountId",account_id);
 	}
 
 

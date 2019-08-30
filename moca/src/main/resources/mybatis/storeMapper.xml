@@ -22,19 +22,19 @@
   <select id="selectStoreInfoHistory" parameterType="Integer" resultType="map">
   	select a.nickname, s.renewaldate 
   	from STOREINFOHISTORY s join ACCOUNT a 
-  	where s.accountid=a.account_id and s.storeid=#{STORE_ID} order by renewaldate desc limit 1
+  	where s.ACCOUNT_ID=a.account_id and s.STORE_ID=#{STORE_ID} order by renewaldate desc limit 1
   </select>
   <select id="selectStoreImgList" parameterType="Integer" resultType="map">
   	SELECT storeImg1,storeImg2,storeImg3 FROM STORE WHERE store_id=#{STORE_ID}
   </select>
   <select id="selectStoreReviewImgList" parameterType="map" resultType="com.kkssj.moca.model.entity.ImageVo">
-  	SELECT * FROM REVIEWIMAGE WHERE storeId=#{STORE_ID} order by views limit #{LIMIT}
+  	SELECT * FROM REVIEWIMAGE WHERE STORE_ID=#{STORE_ID} order by views limit #{LIMIT}
   </select>
   <insert id="insertOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
   	INSERT INTO STORE(name,kakaoid,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
   </insert>
   <insert id="insertStoreInfoHistory" parameterType="map">
-  	INSERT INTO STOREINFOHISTORY(storeId,accountId,renewaldate,url,opentime,endtime,wifi,parkinglot,dayoff,tel) 
+  	INSERT INTO STOREINFOHISTORY(STORE_ID,ACCOUNT_ID,renewaldate,url,opentime,endtime,wifi,parkinglot,dayoff,tel) 
   	VALUES(#{STORE_ID},#{ACCOUNT_ID},NOW(),#{URL},#{OPENTIME},#{ENDTIME},#{WIFI},#{PARKINGLOT},#{DAYOFF},#{TEL})
   </insert>
   <update id="updateOne" parameterType="com.kkssj.moca.model.entity.StoreVo" >

@@ -26,6 +26,9 @@ public interface MypageService{
 	int addFollow(int follower, int following);
 
 	//해당 account의 follow신청취소
-	int deleteFollow(int follower, int following);	
+	int deleteFollow(int follower, int following);
+
+	//해당 account의 정보 가져오기
+	AccountVo getAccountInfo(int Account_id);	
 	
 }
