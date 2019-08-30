@@ -1,12 +1,10 @@
 package com.kkssj.moca.controller;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,14 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
-
 import com.kkssj.moca.model.entity.StoreVo;
-
 import com.kkssj.moca.service.StoreService;
 
 @Controller
@@ -40,10 +35,8 @@ public class StoreController {
 	@Inject
 	StoreService storeService;
 	
-	
 	////////////////////////
 	//store
-
  	//처음 상세페이지로 접속, vo 객체로 받기
 	@PostMapping("/stores")
 	public String addStore(@ModelAttribute StoreVo storeVo, Model model){
@@ -130,11 +123,10 @@ public class StoreController {
 	////////////////////////
 	//카페 좋아요
     @PostMapping(value ="/likeStore/{accountId}")
-    public ResponseEntity addLikeStore(@PathVariable("accountId") int accountId, @RequestParam int storeId) throws Exception{
+    public ResponseEntity addLikeStore(@PathVariable("accountId") int accountId, @RequestParam int storeId,Model model) throws Exception{
     	///세션과 pathVari로 받은 accountId 비교
-		AccountVo accountVo = new AccountVo();
-    	accountVo.setAccount_id(1);
-
+		AccountVo accountVo = (AccountVo) model.asMap().get("login");
+		
     	int result = storeService.addLikeStore(storeId, accountVo.getAccount_id());
 		
 		if(result == 1) {

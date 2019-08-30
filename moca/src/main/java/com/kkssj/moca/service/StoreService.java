@@ -73,5 +73,4 @@ public interface StoreService {
 	int deleteFavoriteStore(int storeId, int account_id);
 
 	StoreVo editStoreImg(StoreVo storeVo, MultipartFile[] newFiles, String[] delStoreImgArr);
-
 }

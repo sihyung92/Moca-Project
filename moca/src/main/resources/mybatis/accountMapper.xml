@@ -3,20 +3,20 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kkssj.moca.model.AccountDao">
-  <select id="selectUserByKakaoId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  <select id="selectUserBykakaoId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
   SELECT * FROM ACCOUNT WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'kakao'
   </select>
-  <select id="selectUserByAnotherId" parameterType="map" resultType="com.kkssj.moca.model.entity.AccountVo">
-  SELECT * FROM ACCOUNT WHERE PLATFORMID='id' AND PLATFORMTYPE LIKE 'Another'
+  <select id="selectUserBynaverId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  SELECT * FROM ACCOUNT WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'naver'
   </select>
   <insert id="insertUser" parameterType="com.kkssj.moca.model.entity.AccountVo">
   INSERT INTO ACCOUNT (NICKNAME ,PLATFORMTYPE ,PLATFORMID ,EMAIL ,PROFILEIMAGE ,THUMBNAILIMAGE) VALUES (#{nickname},#{platformType},#{platformId},#{email},#{profileImage},#{thumbnailImage})
   </insert>
-  <update id="updateUserByKakaoId" parameterType="com.kkssj.moca.model.entity.AccountVo" >
-  UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'kakao'
+  <update id="updateUserBykakaoId" parameterType="com.kkssj.moca.model.entity.AccountVo" >
+  UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage}, GENDER=#{gender}, BIRTHDAY=#{birthday}, BARISTA=#{barista} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'kakao'
   </update>
-  <update id="updateUserByAnotherId" parameterType="com.kkssj.moca.model.entity.AccountVo" >
-  UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'Another'
+  <update id="updateUserBynaverId" parameterType="com.kkssj.moca.model.entity.AccountVo" >
+  UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage}, GENDER=#{gender}, BIRTHDAY=#{birthday}, BARISTA=#{barista} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'naver'
   </update>
   <delete id="deleteUser" parameterType="Integer" ></delete>
   <select id="selectFavoriteStoreList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">

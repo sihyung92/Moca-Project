@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.kkssj.moca.controller.TestController;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 

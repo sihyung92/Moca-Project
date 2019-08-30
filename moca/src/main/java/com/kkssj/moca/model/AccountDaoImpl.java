@@ -1,7 +1,6 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.StoreVo;
-import com.kkssj.moca.service.StoreServiceImpl;
 
 @Repository
 public class AccountDaoImpl implements AccountDao {
@@ -27,22 +25,25 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public int insertUser(AccountVo accountVo) throws SQLException{
 		// TODO Auto-generated method stub
-		System.out.println("insert");
-		return sqlSession.insert("account.insertUser", accountVo);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.insertUser", accountVo);
 	}
 
 	@Override
 	public AccountVo selectUser(String platformType, int platformId) throws SQLException{
 		// TODO Auto-generated method stub
-		System.out.println("select");
-		return sqlSession.selectOne("account.selectUserByKakaoId", (Integer)platformId);
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectUserBy"+platformType+"Id", (Integer)platformId);
+	}
+	
+	@Override
+	public AccountVo selectUserByAccountId(int account_id) throws SQLException {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectUserByaccount_id", (Integer)account_id);
 	}
 
 	@Override
-	public int updateUser(AccountVo accountVo) throws SQLException{
+	public int updateUser(String platformType, AccountVo accountVo) throws SQLException{
 		// TODO Auto-generated method stub
-		System.out.println("update");
-		return sqlSession.update("account.updateUserByKakaoId", accountVo);
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateUserBy"+platformType+"Id", accountVo);
 	}
 
 	@Override
@@ -93,6 +94,7 @@ public class AccountDaoImpl implements AccountDao {
 		return sqlSession.insert("com.kkssj.moca.model.AccountDao.deleteFavoriteStore", map);
 	}
 	
+	@Override
 	public List<AccountVo> selectFollowerList(int account_id) throws SQLException {
 		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectFollowerList",account_id);
 	}
@@ -122,6 +124,4 @@ public class AccountDaoImpl implements AccountDao {
 	public AccountVo selectByaccountId(int account_id) {
 		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectByaccountId",account_id);
 	}
-
-
 }

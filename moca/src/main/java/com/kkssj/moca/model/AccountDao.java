@@ -1,7 +1,6 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.kkssj.moca.model.entity.AccountVo;
@@ -12,8 +11,10 @@ public interface AccountDao {
 	int insertUser(AccountVo accountVo) throws SQLException;
 	//read(get)
 	AccountVo selectUser(String platformType, int platformId) throws SQLException;
+	//
+	AccountVo selectUserByAccountId(int account_id) throws SQLException;
 	//update
-	int updateUser(AccountVo accountVo) throws SQLException;
+	int updateUser(String platformType, AccountVo accountVo) throws SQLException;
 	//delete
 	int deleteUser() throws SQLException;
 	
@@ -49,4 +50,6 @@ public interface AccountDao {
 	
 	//해당 account의 정보 불러오기
 	AccountVo selectByaccountId(int account_id) throws SQLException;
+	
+
 }

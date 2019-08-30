@@ -1,33 +1,79 @@
 package com.kkssj.moca.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Date;
 
 public class AccountVo {
 
 	int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp;
-	String nickname, platformType, profileImage, thumbnailImage, accountEmail;
+	String nickname, platformType, profileImage, thumbnailImage;
 	
 	/*email 추가*/
 	String email;
 	
-	public AccountVo() {
+	int gender, barista;
+	Date birthday;
+	
+	public int getGender() {
+		return gender;
 	}
 
-	public AccountVo(int account_id, int followCount, int reviewCount, int platformId, String nickname,
-			String platformType, String profileImage, String thumbnailImage, String email) {
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
+
+	public int getBarista() {
+		return barista;
+	}
+
+	public void setBarista(int barista) {
+		this.barista = barista;
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public AccountVo() {
+	}
+	
+public AccountVo(int account_id, int followCount, int reviewCount, int platformId, int accountLevel, int isMine,
+			int exp, String nickname, String platformType, String profileImage, String thumbnailImage, String email,
+			int gender, int barista, Date birthday) {
 		super();
 		this.account_id = account_id;
 		this.followCount = followCount;
 		this.reviewCount = reviewCount;
 		this.platformId = platformId;
+		this.accountLevel = accountLevel;
+		this.isMine = isMine;
+		this.exp = exp;
 		this.nickname = nickname;
 		this.platformType = platformType;
 		this.profileImage = profileImage;
 		this.thumbnailImage = thumbnailImage;
-		
 		this.email = email;
+		this.gender = gender;
+		this.barista = barista;
+		this.birthday = birthday;
 	}
+
+//	public AccountVo(int account_id, int followCount, int reviewCount, int platformId, String nickname,
+//			String platformType, String profileImage, String thumbnailImage, String email) {
+//		super();
+//		this.account_id = account_id;
+//		this.followCount = followCount;
+//		this.reviewCount = reviewCount;
+//		this.platformId = platformId;
+//		this.nickname = nickname;
+//		this.platformType = platformType;
+//		this.profileImage = profileImage;
+//		this.thumbnailImage = thumbnailImage;
+//		this.email = email;
+//	}
 
 
 	public int getAccount_id() {
@@ -143,20 +189,59 @@ public class AccountVo {
 		this.exp = exp;
 	}
 
-	public String getAccountEmail() {
-		return accountEmail;
-	}
-
-	public void setAccountEmail(String accountEmail) {
-		this.accountEmail = accountEmail;
-	}
-
-
 	@Override
 	public String toString() {
 		return "AccountVo [account_id=" + account_id + ", followCount=" + followCount + ", reviewCount=" + reviewCount
 				+ ", platformId=" + platformId + ", nickname=" + nickname + ", platformType=" + platformType
-				+ ", profileImage=" + profileImage + ", thumbnailImage=" + thumbnailImage + ", email=" + email + "]";
+				+ ", profileImage=" + profileImage + ", thumbnailImage=" + thumbnailImage + ", email=" + email
+				+ ", gender=" + gender + ", birthday=" + birthday + ", barista=" + barista + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
+		result = prime * result + platformId;
+		result = prime * result + ((platformType == null) ? 0 : platformType.hashCode());
+		result = prime * result + ((profileImage == null) ? 0 : profileImage.hashCode());
+		result = prime * result + ((thumbnailImage == null) ? 0 : thumbnailImage.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AccountVo other = (AccountVo) obj;
+		if (nickname == null) {
+			if (other.nickname != null)
+				return false;
+		} else if (!nickname.equals(other.nickname))
+			return false;
+		if (platformId != other.platformId)
+			return false;
+		if (platformType == null) {
+			if (other.platformType != null)
+				return false;
+		} else if (!platformType.equals(other.platformType))
+			return false;
+		if (profileImage == null) {
+			if (other.profileImage != null)
+				return false;
+		} else if (!profileImage.equals(other.profileImage))
+			return false;
+		if (thumbnailImage == null) {
+			if (other.thumbnailImage != null)
+				return false;
+		} else if (!thumbnailImage.equals(other.thumbnailImage))
+			return false;
+		return true;
 	}
 
 }
+

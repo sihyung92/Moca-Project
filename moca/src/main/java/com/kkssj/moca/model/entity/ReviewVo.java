@@ -261,10 +261,4 @@ public class ReviewVo {
 		this.store_id = store_id;
 	}
 
-
-
-	
-
-
-
 }
