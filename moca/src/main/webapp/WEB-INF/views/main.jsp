@@ -126,7 +126,10 @@
 				var length=$(data).length;
 				$(data).each(function(idx,ele){
 					if(ele.storeImg1==null){
+						//console에서 null exception
 						ele.storeImg1='';
+						ele.storeImg2='';
+						ele.storeImg3='';
 					}
 					if(idx<5){
 						$('#storesNearBy_carousel .item:nth-child(1) .item-inner')
@@ -150,6 +153,27 @@
 						+'<img width="300px" height="300px" src="'+ele.storeImg3+'" alt="디폴트이미지소스">'
 						+'</li></a>');	     	
 					}
+					/////임시로 넣어놓음. refactoring대상/////
+			        $('.suggestion #storesNearBy_carousel a li').mouseenter(function(){
+			            var overlay = $(this).children('div');
+			            overlay.show();
+			            var imgs = $(this).children('img');
+			            var i=0;
+			          	//이미지 슬라이드 함수
+			        	(function slideFunction(){
+			        		imgs.hide();
+			        		$(imgs[i]).show();
+			        		if(i==2) i=0; else i++;
+			        		slide = setTimeout(slideFunction, 500);
+			        	})();        
+			        });
+			         
+			        $('#storesNearBy_carousel .suggestion a li').mouseleave(function(){
+			            clearTimeout(slide);
+						$(this).children().hide();
+						var firstImg = $(this).children()[1];
+						$(firstImg).show();
+			        });
 				});
 				
 				if(length==0){
@@ -244,7 +268,7 @@
 			</div>
 		</div>
 	</c:if>
-	<div class="row" id="storesNearBy" style="display:hidden;">
+	<div class="row suggestion" id="storesNearBy" style="display:hidden;">
 		<div class="col-md-12">
 			<h5>주변 추천 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
 		</div> 
@@ -282,6 +306,76 @@
 		  </a>
 	  </div>
 	</div>
+	<c:if test="${not empty trendStores }">
+		<c:set var="length" value="${fn:length(trendStores)}"/>
+ 		<div class="row suggestion">
+			<div class="col-md-12">
+				<h5>지금 유행하는 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
+			</div>
+			<div class="col-md-12 carousel slide" id="trendStores" data-ride="carousel">
+			  <!-- Indicators -->
+			  <ol class="carousel-indicators">
+			    <li data-target="#trendStores" data-slide-to="0" class="active"></li>
+			    <c:if test="${length gt 5}">
+			   	 	<li data-target="#trendStores" data-slide-to="1"></li>
+			    </c:if>
+			    <c:if test="${length gt 10}">
+			    	<li data-target="#trendStores" data-slide-to="2"></li>
+			    </c:if>
+			  </ol>		
+			  <!-- Wrapper for slides -->
+			  <div class="carousel-inner" role="listbox">
+			    <div class="item active">
+			     <ul class="item-inner" style="list-style:none">
+			     	<c:forEach items="${trendStores}" var="bean" begin="0" end="4" > 
+				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
+				     		<div style="width:300px; height:300px; background-color:#ffffff; opacity:0.6; filter: alpha(opacity=60); display:none;"></div>
+				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
+				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
+				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
+				     	</li></a>
+			     	</c:forEach>
+			     </ul>	
+			    </div>
+			    <c:if test="${length gt 5}">
+			    <div class="item">
+			     <ul class="item-inner" style="list-style:none">
+			     	<c:forEach items="${trendStores}" var="bean" begin="5" end="9"> 
+				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
+				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
+				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
+				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
+				     	</li></a>
+			     	</c:forEach> 
+			     </ul>		
+			    </div>
+			    </c:if>     
+			    <c:if test="${length gt 10}">	
+				   <div class="item">		    
+				     <ul class="item-inner" style="list-style:none">
+				     	<c:forEach items="${trendStores}" var="bean" begin="10" end="14"> 
+					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
+					     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
+				     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
+				     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
+					     	</li></a>
+				     	</c:forEach>
+				     </ul>		     
+				    </div> 
+				</c:if> 	  		   
+				  </div>	
+			  <!-- Controls -->
+			  <a class="left carousel-control" href="#trendStores" role="button" data-slide="prev">
+			    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+			    <span class="sr-only">Previous</span>
+			  </a>
+			  <a class="right carousel-control" href="#trendStores" role="button" data-slide="next">
+			    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+			    <span class="sr-only">Next</span>
+			  </a>
+			</div>
+		</div>
+	</c:if>	
 </div>
 </body>
 </html>

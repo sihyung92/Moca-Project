@@ -95,9 +95,14 @@ public class StoreDaoImpl implements StoreDao {
 	} 
 	
 	@Override
-	public List<StoreVo> selectByDistance(Map<String, String> variables) {
-		List<StoreVo> list = sqlSession.selectList("selectByDistance",variables);
+	public List<StoreVo> selectStoresNearBy(Map<String, String> variables) {
+		List<StoreVo> list = sqlSession.selectList("selectStoresNearBy",variables);
 		logger.debug("DAO: 근처 카페 요청 후");
 		return list;
+	}
+
+	@Override
+	public List<StoreVo> selectTrendStoresList(String tagName) {
+		return sqlSession.selectList("selectByReviewTag",tagName);
 	}
 }

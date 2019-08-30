@@ -30,5 +30,7 @@ public interface StoreDao {
 
 	List<StoreVo> selectHitStoresList();
 	
-	List<StoreVo> selectByDistance(Map<String, String> variables);
+	List<StoreVo> selectStoresNearBy(Map<String, String> variables);
+
+	List<StoreVo> selectTrendStoresList(String tagName);
 }

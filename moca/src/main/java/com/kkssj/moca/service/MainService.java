@@ -9,5 +9,7 @@ public interface MainService {
 
 	List<StoreVo> getHitStoresList();
 
-	List<StoreVo> getCafesNearBy(Map<String, String> variables);
+	List<StoreVo> getStoresNearBy(Map<String, String> variables);
+
+	List<StoreVo> getTrendStoresList(String tagName);
 }

@@ -28,7 +28,12 @@ public class MainServiceImpl implements MainService{
 	} 
 	
 	@Override
-	public List<StoreVo> getCafesNearBy(Map<String, String> variables) {
-		return storeDao.selectByDistance(variables);
+	public List<StoreVo> getStoresNearBy(Map<String, String> variables) {
+		return storeDao.selectStoresNearBy(variables);
+	}
+
+	@Override
+	public List<StoreVo> getTrendStoresList(String tagName) {
+		return storeDao.selectTrendStoresList(tagName);
 	}
 }
