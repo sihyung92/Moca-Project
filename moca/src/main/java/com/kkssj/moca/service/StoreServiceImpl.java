@@ -502,4 +502,17 @@ public class StoreServiceImpl implements StoreService{
 		return -1;
 	}
 
+	@Override
+	public StoreVo editStoreImg(StoreVo storeVo, MultipartFile[] newFiles, String[] delStoreImgArr) {
+		//DB에서 삭제된 이미지 제거
+		
+		//파일 추가
+		
+		//추가된 파일 storeVo에 내용 추가
+		
+		//storeVo내용으로 DB 내용 수정
+			
+		return null;
+	}
+
 }

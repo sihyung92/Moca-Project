@@ -1,6 +1,7 @@
 package com.kkssj.moca.controller;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -334,6 +335,40 @@ public class StoreController {
 		
 		//일단 페이지 띄워야 하니까 
 		return "redirect:../stores/"+1;
+	}
+	
+	//리뷰 수정
+	@PostMapping("/storeImg/{store_Id}")
+	@ResponseBody
+	public ResponseEntity editStoreImg(@RequestParam("file") MultipartFile[] newFiles,
+			@RequestParam("delStoreImg") String delStoreImg, @RequestParam("oldStoreImg") String oldStoreImg, StoreVo storeVo) {
+		//세션이 작동했다고 가정
+		String[] delStoreImgArr = delStoreImg.split(",");
+		String[] oldStoreImgArr = oldStoreImg.split(",");
+		if((newFiles.length+delStoreImgArr.length)>3) {
+    		return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+    	}
+		
+		//logger
+		logger.debug(delStoreImg);	
+		logger.debug(oldStoreImg);
+		for (int i = 0; i < newFiles.length; i++) {
+			logger.debug(newFiles[i].getOriginalFilename());
+		}
+		logger.debug(storeVo.toString());	
+		
+		//json으로 수정 내용 전송
+		storeVo = storeService.editStoreImg(storeVo, newFiles, delStoreImgArr);
+		
+		//새롭게 storVo 받기(storeImgList 포함해서)
+		List<ImageVo> imageList = storeService.getStoreImgList(storeVo.getStore_Id());
+		
+		//받는 쪽에서 refresh하게
+		if(storeVo!=null) {
+			return new ResponseEntity<>(storeVo,  HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
 	}
 
 

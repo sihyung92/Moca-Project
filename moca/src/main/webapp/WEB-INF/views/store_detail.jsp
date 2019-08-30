@@ -105,6 +105,28 @@
 		  right: 0;
 		  border-radius: 3px 0 0 3px;
 		}
+		
+		
+		/* 카페 관리자의 사진 수정 */
+		.storeImgGroup  .storeImg{
+	    	display: inline-block;
+	    }
+	    
+	    .storeImgGroup  img{
+	    	width:100px;
+	    	height: 100px;
+			object-fit: cover;
+			overflow: hidden;
+	    }
+	    
+	    .storeImgGroup .StoreImgDeleteSpan{
+	    	position : relative;
+	    	left:-95px;
+	    	top:-30px;
+	    	cursor:pointer;
+	    	background-color:rgb(255,255,255,0.5);
+	    }
+		
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -113,7 +135,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=14"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=11"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
 	<script type="text/javascript">
@@ -128,6 +150,13 @@
 		var favoriteStoreBtn;
 		var storeId;
 		var accountId;
+		
+		var editStoreImgsBtn;
+		var storeImgswModal;
+		var storeImgs;
+		var toBeDeletedStoreImgUrls;
+		var oldStoreImgUrls ="";
+		var storeFiles; //storeImg 수정 모달에서 file input
 
 
 		//나중에 삭제할 테스트 변수
@@ -139,9 +168,13 @@
 			likeStoreBtn = $('#likeStoreBtn');
 			favoriteStoreBtn = $('#favoriteStoreBtn');
 			storeId = $('#storeId').text();
+			editStoreImgsBtn = $('#editStoreImgsBtn');
+			storeImgswModal = $('#storeImgswModal');
+			storeFiles = $('#storeFiles');
+			
 
 			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
-			console.log(accountId);			
+							
 			//리뷰변수 바인딩
 			bindReviewVariable();
 			
@@ -151,24 +184,35 @@
 		    //수정을 눌렀을 때와 입력을 눌렀을 때 파일 입력 개수의 차이
 			$('#files').change(function(){
 			    const target = document.getElementsByName('file');
-			    				
+
+				//이미 리뷰섬네일 그룹이 있을때 > 이미지가 있는 수정
 				if($(this).next().attr('class')=='reviewThumbnailGroup'){
 					fileListDiv = $(this).next();
+
+					//이미지를 추가하는게 처음일때
 					if(fileBuffer.length==0){
+						//내가 이전에 올린 파일의 갯수
 						maxNumForAdd = $(fileListDiv).children().find('.oldThumbnail').filter(':visible').length
 					}
-			    }else{
+			    }else{//리뷰 등록 or 이미지가 없는 리뷰 수정
 			    	$(this).parent().append('<div class="reviewThumbnailGroup"></div>');
 			    	fileListDiv = $(this).next();
+
+			    	//내가 이전에 올린 파일의 갯수
 			    	maxNumForAdd = 0;
 				}
-				
+
+
+				//파일 버퍼에 있는 파일수 + 이전에 올린 파일의 갯수가 10 이상 or  선택을 10개 이상했을때
 				if((fileBuffer.length*1)+maxNumForAdd>10 || (target[0].files.length*1)>10){
 					alert("파일은 10개까지만 등록가능합니다.");
+					return false;
 				}else{
-			        
+			        //파일 버퍼에 선택한 파일을 넣는다.
 			        Array.prototype.push.apply(fileBuffer, target[0].files);
 			        var newFileDiv = '';
+
+			        //선택한 파일의 인덱스와 파일
 			        $.each(target[0].files, function(index, file){
 			            const fileName = file.name;
 			            newFileDiv += '<div class="file newThumbnail reviewThumbnail" style="width:121px">';
@@ -522,7 +566,106 @@
 					
 				}
 			})
-			
+
+			editStoreImgsBtn.click(function(){
+				storeImgswModal.modal("show");
+
+				//삭제될 카페 이미지 주소 초기화
+				toBeDeletedStoreImgUrls = ""
+
+				//파일 버퍼 초기화
+				fileBuffer = [];
+
+				//카페에서 등록된 이미지
+				storeImgs = $('.StoreImg');
+
+				//내용 비워줌
+				$('.storeImgGroup').html("")
+
+				//카페에서 등록한 이미지를 모달로
+				for(var idx=0; idx<storeImgs.size() ; idx++){
+					var oldStoreImg = $('#storeImgTemplate').clone('true');
+					oldStoreImg.removeAttr('id')
+					oldStoreImg.find('img').addClass('oldStoreImg')
+					oldStoreImg.find('img').attr('src', storeImgs[idx].getElementsByTagName('img')[0].src );
+					$('.storeImgGroup').append(oldStoreImg)
+				}
+
+				//기존의 클릭이벤트 제거
+				$('.StoreImgDeleteSpan').unbind();
+				$('.StoreImgDeleteSpan').click(function(){					
+					
+					test = this;
+					//newStoreImg인 경우 
+					if($(this.previousElementSibling).hasClass('newStoreImg')){
+						//fileBuffer에서 제거
+						//fileBuffer에서 제거할 newStoreImg의 index = 제거한 이미지의 index - oldStoreImg의 갯수
+						fileBuffer.splice($(this).parent().index()-$('.oldStoreImg').size(),1);
+					}else{// oldStoreImg인 경우
+						//삭제될 이미지 url에 추가
+						toBeDeletedStoreImgUrls = toBeDeletedStoreImgUrls +","+ this.previousElementSibling.src
+					}
+					
+					//해당 img를 포함하는 div 삭제
+					this.parentElement.remove();					
+					
+				})
+				
+			})
+
+			storeFiles.change(function(){
+				var target = document.getElementById('storeFiles');
+
+				//가지고 온 갯수를 통해 최대 갯수비교
+				var storeImgSize = $('.storeImgGroup .storeImg').size();
+
+				//3개 이상인지 체크
+				if(target.files.length +storeImgSize >3){
+					alert("파일은 3개까지만 등록가능합니다.");
+					return false;
+				}
+
+				//확장자 체크
+				for(var i=0; i<target.files.length ; i++){
+					var fileName = target.files[i].name
+					var fileEx = fileName.slice(fileName.indexOf(".")+1).toLowerCase()
+					
+					//이미지 형식인 경우만 받아 들임
+					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+		                return false;
+		            }
+				}
+
+				//fileBuffer에 추가 
+				Array.prototype.push.apply(fileBuffer, target.files);
+				
+				$.each(target.files, function(index, file){
+					URL.createObjectURL(file)
+					var fileName = file.name;
+					var newStoreImg = $('#storeImgTemplate').clone('true');
+					newStoreImg.find('img').addClass('newStoreImg')
+					newStoreImg.removeAttr('id')
+					newStoreImg.find('img').attr('src', URL.createObjectURL(file));
+					$('.storeImgGroup').append(newStoreImg)
+				})
+				
+			})
+
+			//수정 버튼을 눌렀을때
+			$('#editStoreImgBtn').click(function(){
+				//oldStoreImg
+				var oldStoreImgs = $('.oldStoreImg')
+				for(var i=0 ; i < oldStoreImgs.length; i++){
+					oldStoreImgUrls = oldStoreImgUrls + ","+oldStoreImgs[0].src
+				}
+				
+				//맨 앞에 , 문자 제거
+				toBeDeletedStoreImgUrls = toBeDeletedStoreImgUrls.substring(1);
+				oldStoreImgUrls = oldStoreImgUrls.substring(1);
+				console.log(fileBuffer,toBeDeletedStoreImgUrls )
+				editStoreImg();
+			})
 
 		});
 		/*
@@ -585,6 +728,9 @@
 							</c:if>
 							&nbsp;${storeVo.name}
 						</h1>
+						<c:if test="${storeVo.isManager eq 1}">
+							<span>내가 관리하는 카페 입니다.</span>						
+						</c:if>
 					</div>
 				</div>
 			</div>
@@ -634,6 +780,9 @@
 					</div>
 				</div>
 				<!-- 갖고있는 이미지의 개수만큼  캐러셀 끝-->
+				<c:if test="${storeVo.isManager eq 1}">
+					<button id="editStoreImgsBtn">수정</button>
+				</c:if>
 			</div>
 			<div class="col-md-4">
 				<canvas id="myChart"></canvas>
@@ -1113,6 +1262,50 @@
 	      </div>
 	    </div><!-- /.modal-content -->
 	</div><!-- /.modal -->
+	
+	
+	<c:if test="${storeVo.isManager eq 1}">
+		<!-- 카페 Manager 모달 -->
+		<div class="modal fade" id="storeImgswModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">
+							${storeVo.name} 사진 수정</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" data-role="content">
+						<form id="storeImgForm">
+							<input name="storeId" value=${storeVo.store_Id } style="display:none;" >
+							<input name="managerId" value=${accountVo.account_id } style="display:none;" >
+							<div class="form-group">
+								<label for="picture-file">사진 선택</label>
+								<input multiple="multiple" name="storeFiles" id="storeFiles" type="file"/>
+							</div>
+							<div class="storeImgGroup">
+							
+							</div>
+							<input type="hidden" class="delStoreImg"  name="delStoreImg"/>
+							<input type="hidden" class="oldStoreImg"  name="oldStoreImg"/>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary" id="editStoreImgBtn">수정</button>
+					</div>
+				</div>
+			</div>
+		</div>	
+		
+		<!-- storeImg clone -->
+		<div class="storeImg" id="storeImgTemplate">
+			<img alt="Image">
+			<span class="glyphicon glyphicon-remove StoreImgDeleteSpan" aria-hidden="true"></span>
+		</div>
+						
+	</c:if>
 	<span id="accountId" style="display : none;">${accountVo.account_id }</span>
 </body>
 

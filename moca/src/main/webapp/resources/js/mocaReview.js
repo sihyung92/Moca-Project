@@ -194,7 +194,8 @@ var reviewData2ReviewModal = function(clickedEditBtn){
 	//리뷰 아이디
 	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
 				
-	///사진(나중에 정해지면)
+	//사진
+	
 	console.log(editReviewRow);
 	var reviewImg = editReviewRow.find('.reviewThumbnailGroup').clone();
 	console.log("reviewImg : ",reviewImg);
@@ -337,6 +338,8 @@ var deleteReview = function(review_id) {
 var deleteReviewImg = function(deleteBtn){
 	console.log(deleteBtn);
 	var temp = delThumbnail;
+	
+	//추가해준 이미지가 아니면
 	if($(deleteBtn).prev().attr('src').indexOf('blob')==-1){
 		if(delThumbnail != ""){		
 			delThumbnail = temp+","+$(deleteBtn).prev().attr('src');		
@@ -346,14 +349,25 @@ var deleteReviewImg = function(deleteBtn){
 	}
 	console.log(delThumbnail);
 	
-	var fileIndex = $(deleteBtn).parent().index();	//삭제 버튼을 클릭한 이미지가 몇번째인지 (0부터)
+	//삭제 버튼을 클릭한 이미지가 몇번째인지 (0부터)
+	var fileIndex = $(deleteBtn).parent().index();	
+	
+	//이미 있는 이미지의 갯수가 0 이상이면
     if($(deleteBtn).parent().parent().find('.oldThumbnail').filter(':visible').length>0){
+    	
+    	//더 올릴수 있는 이미지의 갯수를 구함
     	maxNumForAdd = $(deleteBtn).parent().parent().find('.oldThumbnail').filter(':visible').length;
     	maxNumForAdd = maxNumForAdd-1;
+    	
+    	//더 올릴수 있는 파일의 갯수
 	    fileIndex = fileIndex - maxNumForAdd;
 	}
     console.log($(deleteBtn).parent().attr('class'));
+    
+    //내가 새로 추가한 이미지인 경우
     if($(deleteBtn).parent().attr('class')=='file newThumbnail reviewThumbnail'){
+    	
+    	//
     	var hiddenLength = $(deleteBtn).parent().prevAll().find('.newThumbnail').filter(':hidden').length;
     	fileBuffer.splice($('.newThumbnail').filter(':visible').index($(deleteBtn).parent()),1);// 삭제한 파일을 제외한 실제로 추가해야할 정보     		
     }
@@ -564,6 +578,65 @@ var showDetailReviewImg = function(clickedReviewImg){
 var thumbnailUrl2Url = function(thumbnailUrl){
 	var url = thumbnailUrl.split('_thumbnail')
 	return url[0]+url[1];
+}
+
+
+var url2PathFileName = function(imgUrl){
+	return imgUrl.split('.com/')[1]
+}
+
+//카페 이미지 수정
+var editStoreImg = function(){
+	//delete한 썸네일 추가
+	$('.delStoreImg').val(toBeDeletedStoreImgUrls);
+	$('.oldStoreImg').val(oldStoreImgUrls);
+	
+	//파일 추가
+	var form = $('#storeImgForm')[0];
+
+	var storeImgFormData = new FormData(form);
+	
+	storeImgFormData.delete('file');
+	
+	var fileSize = fileBuffer.length;
+	
+	if(fileSize >0){
+		for(var i=0 ; i < fileSize ; i ++){
+			storeImgFormData.append("file",fileBuffer[i]);
+			console.log(i,fileBuffer[i]);
+		}
+	}
+	
+	var storeImgFormObj = $(form).serializeObject();
+	console.log(storeImgFormObj,storeImgFormData);
+	
+
+	//ajax 통신 - post방식으로 추가
+	$.ajax({
+		type: 'POST',
+		url: '/moca/storeImg/'+storeImgFormObj.storeId,
+		enctype : 'multipart/form-data',
+		data: storeImgFormData,
+		dataType : "json",
+		contentType : false,  
+		processData : false,
+		cache : false,
+		timeout : 600000,
+		success: function(storeVo) {
+			console.log('ajax 통신 성공');
+			
+			//파일 수정
+			
+		},
+		error: function(error) {
+			if(error=='Too Many Requests'){				
+				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
+			}else{
+				console.log('ajax 통신 실패', error);
+			}
+		}
+	})
+
 }
 
 
