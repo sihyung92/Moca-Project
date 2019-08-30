@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -37,17 +38,30 @@ public class MainController {
 	
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(HttpSession session, HttpServletResponse response, String x, String y, Model model) {
+	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String x, String y, Model model) {
+		session.invalidate();		//개발 단계 테스트용 라인
+		session=request.getSession();	//개발 단계 테스트용 라인
 		if(x!=null && y!=null) {
 			session.setAttribute("x", x);
 			session.setAttribute("y", y);
 		}else if(session.getAttribute("x") == null|| session.getAttribute("y") == null) {
 			return "geolocation";
 		}
-		
-		model.addAttribute("hitStores", mainService.getHitStoresList());
+	//	List<String> listNames = new ArrayList<String>();
+	//	List<List<StoreVo>> storesList = new ArrayList<List<StoreVo>>();
+		Map<String, String> variables = new HashMap<String, String>();
+		variables.put("x", x );
+		variables.put("y", y);
+		//Hit Stores 추천 
+		model.addAttribute("hitStores", mainService.getHitStoresList(variables));		
+		//Best Stores 추천 
+		model.addAttribute("bestStores", mainService.getBestStoresList());
+		//흑당커피:)
 		model.addAttribute("trendStores", mainService.getTrendStoresList("예쁜"));
+		//최신 리뷰
 		model.addAttribute("recentReviews",mainService.getRecentReviews());
+		//TakeOut Stores 추천
+		model.addAttribute("takeOutStores", mainService.getTakeoutStoresList(variables));
 		return "main";
 	}
 

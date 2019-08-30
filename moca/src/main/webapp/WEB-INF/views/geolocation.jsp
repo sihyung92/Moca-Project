@@ -25,6 +25,7 @@
 		$('.lng').val(lng);
 		$('form').submit();
     };
+
     // Error Callback(에러 메시지 출력)
     function errCall(error) {
     	tryAPIGeolocation();		//구글GeolocationAPI시도
@@ -39,11 +40,7 @@
 				jQuery.post(googleKey, function(success) {
 			        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
 			    }).fail(function(err) {
-			        	switch (err.code) {
-			            case err.PERMISSION_DENIED:
-			            	alert("현재 위치 정보 접근이 차단되었습니다.\n정확한 검색을 원하시면 접근을 허용해주세요.");
-			                break;  
-			        	}  
+			    	$('form').submit();
 			    });
 			}
 		});		

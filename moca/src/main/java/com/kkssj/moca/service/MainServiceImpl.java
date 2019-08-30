@@ -23,14 +23,14 @@ public class MainServiceImpl implements MainService{
 	static Logger logger = LoggerFactory.getLogger(MainService.class);
 
 	@Override
-	public List<StoreVo> getHitStoresList() {
+	public List<StoreVo> getHitStoresList(Map<String, String> variables) {
 		/*
 		 * List<StoreVo> list = storeDao.selectHitStoresList();
 		 * //list.get(1).setStoreImg1("null"); logger.debug(list.get(1).getStoreImg1());
 		 */
-		return storeDao.selectHitStoresList();
-	} 
-	
+		return storeDao.selectHitStoresList(variables);
+	}
+		
 	@Override
 	public List<StoreVo> getStoresNearBy(Map<String, String> variables) {
 		return storeDao.selectStoresNearBy(variables);
@@ -45,5 +45,14 @@ public class MainServiceImpl implements MainService{
 	public List<ReviewVo> getRecentReviews() {
 		return reviewDao.selectRecentReviews();
 	}
-	
+
+	@Override
+	public List<StoreVo> getBestStoresList() {
+		return storeDao.selectBestStoresList();
+	}
+
+	@Override
+	public List<StoreVo> getTakeoutStoresList(Map<String, String> variables) {
+		return storeDao.selectTakeoutStoresList(variables);
+	}
 }
