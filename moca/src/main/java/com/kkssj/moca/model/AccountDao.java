@@ -9,6 +9,7 @@ public interface AccountDao {
 	int insertUser(AccountVo accountVo) throws SQLException;
 	//read(get)
 	AccountVo selectUser(String platformType, int platformId) throws SQLException;
+	AccountVo selectUserByAccountId(int account_id) throws SQLException;
 	//update
 	int updateUser(String platformType, AccountVo accountVo) throws SQLException;
 	//delete

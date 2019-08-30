@@ -137,9 +137,7 @@
                     $('#info-rule-selective').css('height','200px');
                 });
             }
-            
-            console.log('gen'+uiGender+' bir'+uiBirthday+' Bar'+uiBarista);
-            
+                                
             var userName = '${sessionScope.login.nickname}';                
             var thumbnailImg = null;
 
@@ -171,6 +169,8 @@
     	kakaoLogin();
     	naverLogin();
        
+        //설문 버튼 처리
+        
     });
     
     
@@ -274,11 +274,6 @@
         /* 설정정보를 초기화하고 연동을 준비 */
         naverLogin.init();
     }
-    
-    function researchSubmit(){
-        var radio = document.getElementsByName("barista");
-        radio.
-    }
     </script>
 <!-- kss 공통 header -->
 
@@ -309,7 +304,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mypage<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#" class="just-use-user">계정 정보 확인</a></li>
+                    <li><a href="/moca/mypage" class="just-use-user">플로필</a></li>
                     <li><a href="#" class="just-use-user">내 포인트</a></li>
                     <li><a href="#" class="just-use-user">내 리뷰 보기</a></li>
                     <li><a href="#" class="just-use-user">관심 카페 리스트</a></li>

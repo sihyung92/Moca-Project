@@ -9,14 +9,20 @@
   <select id="selectUserBynaverId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
   SELECT * FROM ACCOUNT WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'naver'
   </select>
+  <select id="selectUserByaccount_id" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{account_id}
+  </select>
+  
   <insert id="insertUser" parameterType="com.kkssj.moca.model.entity.AccountVo">
   INSERT INTO ACCOUNT (NICKNAME ,PLATFORMTYPE ,PLATFORMID ,EMAIL ,PROFILEIMAGE ,THUMBNAILIMAGE) VALUES (#{nickname},#{platformType},#{platformId},#{email},#{profileImage},#{thumbnailImage})
   </insert>
+  
   <update id="updateUserBykakaoId" parameterType="com.kkssj.moca.model.entity.AccountVo" >
-  UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'kakao'
+  UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage}, GENDER=#{gender}, BIRTHDAY=#{birthday}, BARISTA=#{barista} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'kakao'
   </update>
   <update id="updateUserBynaverId" parameterType="com.kkssj.moca.model.entity.AccountVo" >
-  UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'naver'
+  UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage}, GENDER=#{gender}, BIRTHDAY=#{birthday}, BARISTA=#{barista} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'naver'
   </update>
+  
   <delete id="deleteUser" parameterType="Integer" ></delete>
 </mapper>

@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class ReviewVo {
 	//REVIEW table
-	private int review_id, accountId, storeId;
+	private int review_id, account_Id, store_Id;
 	private String reviewContent, pictureUrls;
 	private Date writeDate;
 	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
@@ -26,13 +26,13 @@ public class ReviewVo {
 	
 	
 
-	public ReviewVo(int review_id, int accountId, int storeId, String reviewContent, String pictureUrls, Date writeDate,
+	public ReviewVo(int review_id, int account_Id, int store_Id, String reviewContent, String pictureUrls, Date writeDate,
 			int tasteLevel, int priceLevel, int serviceLevel, int moodLevel, int convenienceLevel, double averageLevel,
 			int likeCount, int hateCount, int isLike, String nickName, int followCount, int reviewCount, int isMine) {
 		super();
 		this.review_id = review_id;
-		this.accountId = accountId;
-		this.storeId = storeId;
+		this.account_Id = account_Id;
+		this.store_Id = store_Id;
 		this.reviewContent = reviewContent;
 		this.pictureUrls = pictureUrls;
 		this.writeDate = writeDate;
@@ -61,20 +61,20 @@ public class ReviewVo {
 		this.review_id = review_id;
 	}
 
-	public int getAccountId() {
-		return accountId;
+	public int getAccount_Id() {
+		return account_Id;
 	}
 
-	public void setAccountId(int accountId) {
-		this.accountId = accountId;
+	public void setAccount_Id(int accountId) {
+		this.account_Id = accountId;
 	}
 
-	public int getStoreId() {
-		return storeId;
+	public int getStore_Id() {
+		return store_Id;
 	}
 
-	public void setStoreId(int storeId) {
-		this.storeId = storeId;
+	public void setStore_Id(int storeId) {
+		this.store_Id = storeId;
 	}
 
 	public String getReviewContent() {
@@ -208,7 +208,7 @@ public class ReviewVo {
 
 	@Override
 	public String toString() {
-		return "ReviewVo [review_id=" + review_id + ", accountId=" + accountId + ", storeId=" + storeId
+		return "ReviewVo [review_id=" + review_id + ", account_Id=" + account_Id + ", storeId=" + store_Id
 				+ ", reviewContent=" + reviewContent + ", pictureUrls=" + pictureUrls + ", writeDate=" + writeDate
 				+ ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel
 				+ ", moodLevel=" + moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel="

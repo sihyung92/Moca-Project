@@ -1,14 +1,10 @@
 package com.kkssj.moca.service;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
-
-import org.springframework.ui.Model;
 
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
-
-import java.sql.SQLException;
 
 public interface StoreService {
 	

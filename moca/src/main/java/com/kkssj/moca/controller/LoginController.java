@@ -1,6 +1,7 @@
 package com.kkssj.moca.controller;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.service.AccountService;
+import com.kkssj.moca.service.LogService;
 
 @Controller
 @SessionAttributes("login")
@@ -23,6 +25,8 @@ public class LoginController {
 	@Inject
 	AccountService accountService;
 	
+	@Inject
+	LogService logService;
 	/*------------------------------------------------------------------------------------------------------*/
 	
 	@GetMapping(value = "/naverLogin")
@@ -31,9 +35,9 @@ public class LoginController {
 		return "naverLogin";
 	}
 	
-	@PostMapping(value = "/login/{accountId}")
+	@PostMapping(value = "/login/{account_id}")
 	@ResponseBody
-	public ResponseEntity login(@PathVariable("accountId") int accountId, @RequestBody AccountVo accountVo, Model model){
+	public ResponseEntity login(@PathVariable("account_id") int account_id, @RequestBody AccountVo accountVo, Model model, HttpServletRequest req){
 		AccountVo returnVo = accountService.login(stringFilter(accountVo));
 		
 		if(returnVo==null) {
@@ -45,21 +49,25 @@ public class LoginController {
 		}else {
 			//로그인 시점
 			model.addAttribute("login", returnVo);
-			
+			logService.writeStoreIdKeyWordNone(req, "로그인", returnVo.getAccount_id());
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 	}
 		
 	@PostMapping(value = "logout")
 	@ResponseBody
-	public ResponseEntity logout(Model model) {
+	public ResponseEntity logout(Model model, HttpServletRequest req) {
 
-		if(model.asMap().get("login")==null) {
+		AccountVo check = ((AccountVo)(model.asMap().get("login")));
+		
+		//if(model.asMap().get("login")==null) {
+		if(check==null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}else if(((AccountVo)(model.asMap().get("login"))).getPlatformType()!="NULL_VAL") {
-	
-			model.addAttribute("login",new AccountVo(0, 0, 0, 0, null, "NULL_VAL", null, null, null, 0, 0, null));
+		}else if(check.getPlatformType()!="NULL_VAL") {
+			int account_id=check.getAccount_id();
 			
+			model.addAttribute("login",new AccountVo(0, 0, 0, 0, null, "NULL_VAL", null, null, null, 0, 0, null));
+			logService.writeStoreIdKeyWordNone(req, "로그아웃", account_id);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 

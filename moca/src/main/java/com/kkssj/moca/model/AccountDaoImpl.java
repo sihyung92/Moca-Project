@@ -26,6 +26,12 @@ public class AccountDaoImpl implements AccountDao {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectUserBy"+platformType+"Id", (Integer)platformId);
 	}
+	
+	@Override
+	public AccountVo selectUserByAccountId(int account_id) throws SQLException {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectUserByaccount_id", (Integer)account_id);
+	}
 
 	@Override
 	public int updateUser(String platformType, AccountVo accountVo) throws SQLException{
@@ -39,5 +45,5 @@ public class AccountDaoImpl implements AccountDao {
 		return 0;
 	}
 
-
+	
 }

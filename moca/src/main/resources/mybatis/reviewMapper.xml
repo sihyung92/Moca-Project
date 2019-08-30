@@ -4,13 +4,13 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kkssj.moca.model.ReviewDao">
   <select id="selectAll" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
-	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+	SELECT r.REVIEW_ID, r.ACCOUNT_ID, r.STORE_ID, r.REVIEWCONTENT, r.WRITEDATE, 
 	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
-	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNTID}),0)  "isLike",
+	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNT_ID}),0)  "isLike",
 	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
-	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
-	WHERE r.STOREID = #{STOREID}
-	ORDER BY FIELD(r.ACCOUNTID,#{ACCOUNTID}) DESC, r.LIKECOUNT DESC;
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNT_ID = a.ACCOUNT_ID
+	WHERE r.STORE_ID = #{STORE_ID}
+	ORDER BY FIELD(r.ACCOUNT_ID,#{ACCOUNT_ID}) DESC, r.LIKECOUNT DESC;
   </select>
   
   <select id="selectAllReviewId" resultType="com.kkssj.moca.model.entity.ReviewVo">
@@ -20,7 +20,7 @@
   <select id="selectAllReviewLevel" resultType="com.kkssj.moca.model.entity.ReviewVo">
  	SELECT TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL
 	FROM REVIEW
-	WHERE STOREID = #{STOREID}
+	WHERE STORE_ID = #{STORE_ID}
   </select>
   
   <delete id="deleteReview" parameterType="Integer">
@@ -56,14 +56,14 @@
   </select>
   
   <insert id="insertReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
-  	INSERT INTO REVIEW(ACCOUNTID, STOREID, REVIEWCONTENT, WRITEDATE, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LIKECOUNT,HATECOUNT) 
-  	VALUES(#{accountId}, #{storeId}, #{reviewContent}, NOW(), #{tasteLevel}, #{priceLevel}, #{serviceLevel}, #{moodLevel}, #{convenienceLevel}, #{averageLevel}, 0, 0)
+  	INSERT INTO REVIEW(ACCOUNT_ID, STORE_ID, REVIEWCONTENT, WRITEDATE, TASTELEVEL, PRICELEVEL, SERVICELEVEL, MOODLEVEL, CONVENIENCELEVEL, AVERAGELEVEL, LIKECOUNT,HATECOUNT) 
+  	VALUES(#{ACCOUNT_ID}, #{STORE_ID}, #{reviewContent}, NOW(), #{tasteLevel}, #{priceLevel}, #{serviceLevel}, #{moodLevel}, #{convenienceLevel}, #{averageLevel}, 0, 0)
   </insert>
   <select id="selectAddedOne" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
-  	SELECT r.REVIEW_ID, r.ACCOUNTID, r.STOREID, r.REVIEWCONTENT, r.WRITEDATE, 
+  	SELECT r.REVIEW_ID, r.ACCOUNT_ID, r.STORE_ID, r.REVIEWCONTENT, r.WRITEDATE, 
 	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
 	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
-	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNTID = a.ACCOUNT_ID
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNT_ID = a.ACCOUNT_ID
 	WHERE  a.ACCOUNT_ID = #{id}
 	ORDER BY r.WRITEDATE DESC
 	LIMIT 1;
@@ -71,7 +71,7 @@
   <update id="updateReview" parameterType="com.kkssj.moca.model.entity.ReviewVo">
   	UPDATE REVIEW SET REVIEWCONTENT=#{reviewContent}, TASTELEVEL=#{tasteLevel}, PRICELEVEL=#{priceLevel}, 
   	SERVICELEVEL=#{serviceLevel}, MOODLEVEL= #{moodLevel}, CONVENIENCELEVEL=#{convenienceLevel}, AVERAGELEVEL=#{averageLevel} 
-	WHERE STOREID=#{storeId} AND REVIEW_ID = #{review_id} AND ACCOUNTID=#{accountId}; 
+	WHERE STORE_ID=#{STORE_ID} AND REVIEW_ID = #{review_id} AND ACCOUNT_ID=#{ACCOUNT_ID}; 
   </update>
   
 </mapper>

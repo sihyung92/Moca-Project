@@ -120,7 +120,7 @@ public class StoreController {
 	public ResponseEntity addReview(ReviewVo reviewVo) {
 		
 		//사용자 개정 등록(세션에서 왔다고 가정)
-		reviewVo.setAccountId(1);
+		reviewVo.setAccount_Id(1);
 		
 		reviewVo = storeService.addReview(reviewVo);
 		
@@ -140,7 +140,7 @@ public class StoreController {
 		logger.debug(reviewVo.toString());
 		
 		//세션이 작동했다고 가정
-		reviewVo.setAccountId(1);
+		reviewVo.setAccount_Id(1);
 		
 		//json으로 수정 내용 전송
 		int isEdite = storeService.editReview(reviewVo);

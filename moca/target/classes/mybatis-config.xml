@@ -7,5 +7,6 @@
   	<mapper resource="mybatis/accountMapper.xml"/>
     <mapper resource="mybatis/storeMapper.xml"/>
     <mapper resource="mybatis/reviewMapper.xml"/>
+    <mapper resource="mybatis/logMapper.xml"/>
   </mappers>
 </configuration>

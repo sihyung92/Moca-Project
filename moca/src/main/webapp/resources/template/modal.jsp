@@ -154,7 +154,7 @@
                                 <input type="radio" name="info-rule-agree" id="essentialYes"> 동의합니다
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="info-rule-agree" id="essentialNo"> 동의하지 않습니다 (약관 확장) 
+                                <input type="radio" name="info-rule-agree" checked="checked" id="essentialNo"> 동의하지 않습니다 (약관 확장) 
                             </label>                              
                             <br><br>
                             <div class="custom-width-line"></div><br>
@@ -302,11 +302,11 @@
                                 <input type="radio" name="info-rule-selective-agree" id="selectiveYes"> 동의합니다
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="info-rule-selective-agree" id="selectiveNo"> 동의하지 않습니다 (약관 확장) 
+                                <input type="radio" name="info-rule-selective-agree" checked="checked" id="selectiveNo"> 동의하지 않습니다 (약관 확장) 
                             </label>                              
                         </div>                        
                         
-                        <form id="essential-info"><br>
+                        <form id="essential-info" name="f"><br>
                             <div class="custom-width-line"></div><br>
                             <div class="form-group">
                                 <!-- 카페 관련 업종 확인 -->
@@ -333,8 +333,8 @@
                                 <br><br>
 
                                 <!-- email -->
-                                <label for="exampleInputEmail1">[필수]이메일 주소</label>
-                                <input type="email" class="form-control essential-collect-info" name="email" id="exampleInputEmail1" placeholder="이메일을 입력하세요">
+                                <!--<label for="exampleInputEmail1">[필수]이메일 주소</label>
+                                <input type="email" class="form-control essential-collect-info" name="email" id="email" placeholder="이메일을 입력하세요">-->
                                 
                                 <div id="selective-info">
                                     <br><div class="custom-width-line"></div>
@@ -387,3 +387,60 @@
                 </div>
 			</div>
 		</div>
+    
+    <!-- 설문에 대한 버튼 처리 -->
+    <script type="text/javascript">
+        researchSubmit();
+        
+        function researchSubmit(){
+            $('#research-submit').click(function(){
+                var account_id=''+'${sessionScope.login.account_id}';
+                var barista;
+                var gender;
+                var birthday=''+$('#birthday').val();
+
+                if(document.f.barista[0].checked==true){
+                    barista='2';
+                }
+                if(document.f.barista[1].checked==true){
+                    barista='1';
+                }
+                if(document.f.gender[0].checked==true){
+                    gender='1';
+                }
+                if(document.f.gender[1].checked==true){
+                    gender='2';
+                }
+                var param={
+                    "account_id":account_id,
+                    "barista":barista,
+                    "gender":gender,
+                    "birthday":birthday,
+                }
+                
+                $.ajax({
+                    type: 'post',
+					url: '/moca/research',
+					contentType: "application/json; charset=UTF-8",
+					datatype: "json",
+					data: JSON.stringify(param),
+					error: function(errorMsg) {
+                        
+                        if(barista==null){
+                            alert('카페 종사여부 항목을 체크하지 않았습니다.');
+                        }
+                        if(gender==null){
+                            alert('성별 항목을 체크하지 않았습니다.');
+                        }
+                        if(birthday==''){
+                            alert('생년월일을 작성하지 않았습니다.');
+                        }						
+					},
+					success: function(data) {
+						f5();
+					}
+                    
+                });
+            });
+        }
+    </script>

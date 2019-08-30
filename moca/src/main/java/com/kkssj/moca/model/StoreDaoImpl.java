@@ -41,10 +41,10 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
-	public int insertStoreInfoHistory(int accountId, StoreVo storeVo) throws SQLException {
+	public int insertStoreInfoHistory(int account_Id, StoreVo storeVo) throws SQLException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		//store_id,url,opentime,endtime,wifi,parkinglot,dayoff,tel
-		map.put("ACCOUNT_ID", accountId);
+		map.put("ACCOUNT_ID", account_Id);
 		map.put("STORE_ID", storeVo.getStore_Id());
 		map.put("URL", storeVo.getUrl());
 		map.put("OPENTIME", storeVo.getOpenTime());
