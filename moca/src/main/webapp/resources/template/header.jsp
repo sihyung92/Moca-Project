@@ -51,6 +51,7 @@
             "platformType":"NULL_VAL"
         };
         userInfo = '${sessionScope.login.platformType}';
+        alert(userInfo);
         if(userInfo.isUndefined || userInfo==''){
             userInfo = {
                 "account_id":"0",
@@ -88,7 +89,7 @@
                 "platformType":"VALUE"
             };
         }
-              
+                      
         if(JSON.stringify(info.platformType)=='"NULL_VAL"'){     
             $('.just-use-user').css('display','none');        
         }else if(JSON.stringify(userInfo.platformType)=='"NULL_VAL"'){

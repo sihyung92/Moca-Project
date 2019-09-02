@@ -32,7 +32,4 @@ public class LogServiceImpl implements LogService {
 		}
 		return false;
 	}
-	
-	//그냥 로그 서비스 가져다가 서비스.write(HttpServletRequest,로그구분,키워드,어카운트아이디,스토어아이디) 하면 로그 작성 됩니다.
-		
 }
