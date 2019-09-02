@@ -172,8 +172,6 @@ public class StoreServiceImpl implements StoreService{
 				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReview_id()) {
 					reviewList.get(i).getImageList().add(reviewImageList.get(j));
 					imageListIndex++;
-				}else {
-					break;
 				}
 			}
 		}

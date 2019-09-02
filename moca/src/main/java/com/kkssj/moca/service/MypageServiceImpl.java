@@ -7,9 +7,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kkssj.moca.model.AccountDao;
 import com.kkssj.moca.model.entity.StoreVo;
+import com.kkssj.moca.util.S3Util;
+import com.kkssj.moca.util.UploadFileUtils;
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
@@ -98,12 +101,12 @@ public class MypageServiceImpl implements MypageService{
 	}
 
 	@Override
-	public int editAccount(int accountId) {
-		return 0;
-	}
-
-	@Override
 	public int deleteAccount(int accountId) {
+		try {
+			return accountDao.deleteAccount(accountId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 
@@ -135,6 +138,52 @@ public class MypageServiceImpl implements MypageService{
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+
+	@Override
+	public int editAccount(AccountVo editAccountVo, MultipartFile accountImage) {
+		S3Util s3 = new S3Util();
+    	
+		try {
+			if(accountImage!=null) {
+				//삭제할 image
+				ImageVo DelimageVo = new ImageVo();
+				
+				//db에서 원래 있던 이미지 url select로 받아오기
+				AccountVo OldImgUrlVo = accountDao.selectProfileImageByaccountId(editAccountVo.getAccount_id());
+				if(!OldImgUrlVo.getProfileImage().contains("kakaocdn")) {					
+					DelimageVo.setDelImageVo(OldImgUrlVo.getProfileImage());
+					
+					//s3에서 이미지 삭제 (카카오톡 url이 아닐때)
+					s3.fileDelete(DelimageVo.getPath()+"/"+DelimageVo.getFileName());
+					s3.fileDelete(DelimageVo.getPath()+"/"+DelimageVo.getThumbnailFileName());
+				}
+				
+				//추가할 image
+				ImageVo AddimageVo = new ImageVo();
+				
+				//s3에 이미지 추가 & 썸네일 이미지 추가
+				AddimageVo = UploadFileUtils.uploadFile("account", accountImage.getOriginalFilename(), accountImage.getBytes());
+				AddimageVo.setUrl();
+				AddimageVo.setAccount_id(editAccountVo.getAccount_id());
+				
+				//이미지 추가(update)
+				System.out.println(AddimageVo.getUrl()+":"+AddimageVo.getThumbnailUrl());
+				editAccountVo.setProfileImage(AddimageVo.getUrl());
+				editAccountVo.setThumbnailImage(AddimageVo.getThumbnailUrl());
+			}
+			
+			//updateAccount
+			return accountDao.updateAccount(editAccountVo);
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
+		return 0;
 	}
 
 }

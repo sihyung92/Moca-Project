@@ -121,7 +121,22 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public AccountVo selectByaccountId(int account_id) {
+	public AccountVo selectByaccountId(int account_id) throws SQLException {
 		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectByaccountId",account_id);
+	}
+
+	@Override
+	public int updateAccount(AccountVo editAccountVo) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateAccount",editAccountVo);
+	}
+
+	@Override
+	public AccountVo selectProfileImageByaccountId(int account_id) {
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectProfileImageByaccountId",account_id);
+	}
+
+	@Override
+	public int deleteAccount(int accountId) throws SQLException {
+		return sqlSession.delete("com.kkssj.moca.model.AccountDao.deleteAccount",accountId);
 	}
 }

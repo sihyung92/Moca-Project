@@ -58,4 +58,23 @@
   <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
   	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
   </select>
+  
+  <select id="selectProfileImageByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  	SELECT ACCOUNT_ID,PROFILEIMAGE,THUMBNAILIMAGE FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </select>
+  
+  <update id="updateAccount" parameterType="com.kkssj.moca.model.entity.AccountVo" >
+  	UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}
+  	<if test="profileImage != null">
+	  	, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage}  	
+  	</if>
+  	WHERE ACCOUNT_ID=#{account_id}
+  </update>
+  
+  <update id="deleteAccount" parameterType="Integer">
+  	UPDATE ACCOUNT SET NICKNAME="탈퇴한 회원", FOLLOWCOUNT=0, REVIEWCOUNT=0, PLATFORMTYPE=#{account_id}, 
+  	PLATFORMID=0, EMAIL=null, PROFILEIMAGE=null, THUMBNAILIMAGE=null, 
+  	GENDER=null, BIRTHDAY=null, BARISTA=0, ACCOUNTLEVEL=0, EXP=0 
+  	WHERE ACCOUNT_ID=#{account_id}
+  </update>
 </mapper>

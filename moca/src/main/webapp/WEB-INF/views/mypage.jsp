@@ -448,8 +448,8 @@
 				},
 				error: function(request,status,error) {
 					//타입에 따라서 에러 텍스트 변경
-					if(error='Internal Server Error'){
-						alert('이미 팔로우한 대상입니다');
+					if(error.includes("Locked")){
+						alert('로그인을 해주세요');
 					}
 				}
 			});
@@ -464,6 +464,7 @@
 
 		//회원정보 수정 모달
 		$('#userInfoUpdateBtn').click(function(){
+			$('#userImage').find('img').attr('src', $('#userInfo').find('img').attr('src'));
 			$('#userInfoUpdate').modal("show");
 		});
 
@@ -478,11 +479,38 @@
 		//회원 탈퇴 버튼 클릭시
 		$('#deleteUserBtn').click(function(){
 			if (confirm("정말 탈퇴하시겠습니까??") == true){    //확인
+				
+				
+			    //ajax통신으로 세션에서도 삭제,디비에서도 삭제
+			    $.ajax({
+					type: 'DELETE',
+					url: '/moca/deleteAccount/' + accountId,
+					success: function() {
+						//카카오 삭제
+						Kakao.API.request({
+							url: '/v1/user/unlink',
+							success: function(res) {
+								alert('정상적으로 회원탈퇴 되었습니다. 이용해주셔서 감사합니다.');
+							},
+							fail: function(error) {
+					            alert(JSON.stringify(error));
+					        }
+						});
+						console.log('회원 삭제 성공');
+						window.location.href='/moca/'
+					},
+					error: function() {
+						console.log('회원 삭제 실패')
+						alert("탈퇴 실패")
+					}
+				});
+				
+			    //회원 탈퇴이유도 받았으면 좋겠다 (ver2)
+
+				
 			    console.log("삭제됨");
 			    $('#userInfoUpdate').modal("hide");
-			    //ajax통신으로 세션에서도 삭제,디비에서도 삭제
-			    //회원 탈퇴이유도 받았으면 좋겠다 ()
-			    window.location.href=''
+			    //
 			}else{   //취소
 			    return;
 			}
@@ -490,16 +518,30 @@
 
 		//회원 정보 수정 확인 눌렀을 때 
 		$('#updateBtn').click(function(){
+
+			var form = $('#userInfoUpdateForm')[0];
+
+			var userInfoFormData = new FormData(form);
+
+			userInfoFormData.delete('file');
+			
 			if(isMine==1){
 				$.ajax({
 					type: 'POST',
-					url: '/editAccount/'+accountId,
+					url: '/moca/editAccount/'+accountId,
+					enctype : 'multipart/form-data',
+					data: userInfoFormData,
+					datatype: 'json',
+					contentType : false,
+					processData : false,
 					success: function() {
-						
-						haveLikeInfo =true;
+						$('#userInfo').find('img').attr('src',$('#userImage').find('img').attr('src'));
+						$('#userInfo').find('#nickName').html($('input[name=nickname]').val());
+						//$('#userInfo').find('#email').text($('#userInfo').find('input[name=nickname]').val());
+						console.log('회원정보 수정 성공');
 					},
 					error: function(request,status,error) {
-	
+						console.log('회원정보 수정 실패');
 					}
 				})
 			}
@@ -511,6 +553,7 @@
 	var userImageChange = function(){
 		const userImageUpdateInput = document.getElementById('userImageUpdateInput');
 		var userImage = userImageUpdateInput.files[0];
+		console.log(userImage);
 		const fileName = userImage.name;
 		const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
 	    if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
@@ -518,6 +561,9 @@
 	        resetFile();
 	        return false;
 	    }
+
+		$('#userImage').find('img').attr('src', URL.createObjectURL(userImage));
+		$('#userImage').find('img').css('width','110px').css('height','110px');
 	};
    
 	</script>
@@ -536,7 +582,7 @@
 					<span class="glyphicon glyphicon-cog" id="userInfoUpdateBtn" aria-hidden="true" style="float:right;"></span>
 					</c:if>
 					<br>
-					<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle"><br>
+					<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width:110px; height:110px;"><br>
 					<button id="followBtn" class="btn btn-default" style="display:none;">팔로우</button><br>
 					<span id="nickName">${currentPageAccount.nickname}</span><br>
 					Lv.<span id="accountLevel">${currentPageAccount.accountLevel}</span>
@@ -769,22 +815,27 @@
 			        <h4 class="modal-title">회원 정보 수정</h4>
 		      	</div>
 				<div class="modal-body">
-					<form class="form-horizontal">
+					<form class="form-horizontal" id="userInfoUpdateForm">
+						<input type="hidden" name="account_id" value="${accountVo.account_id}" />
 						<div class="form-group" id="userImage">
+						<!-- 
+						int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp;
+	String nickname, platformType, profileImage, thumbnailImage;
+						 -->
 							<!-- 프로필사진 수정 -->
 							<img alt="basicProfile"
-								src="${currentPageAccount.thumbnailImage}" class="img-circle">
+								src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width: 110px;">
 							<button type="button" id="userImageUpdateBtn" class="btn btn-default" aria-label="Right Align" style="position:relative; left:-35px; top:40px">
 								<span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
 							</button>
-							<input type="file" id="userImageUpdateInput" style="display:none"/>
+							<input type="file" id="userImageUpdateInput" name="userImage" style="display:none"/>
 						</div>
 						<!-- 닉네임 수정 -->
 						<div class="form-group">
 							<label for="nickName" class="col-sm-2 control-label">닉네임
 								: </label>
 								<div class="col-sm-10">
-								<input class="form-control" name="nickName" id="nickName"
+								<input class="form-control" name="nickname" id="nickName"
 								value="${currentPageAccount.nickname}" placeholder="닉네임을 입력해주세요" />
 								</div>
 						</div>
@@ -793,7 +844,7 @@
 							<label for="userEmail" class="col-sm-2 control-label">이메일
 								: </label>
 								<div class="col-sm-10">
-								<input class="form-control" id="userEmail"
+								<input class="form-control" id="email" name="email"
 								value="${currentPageAccount.email}" placeholder="이메일을 입력해주세요" />
 								</div>
 						</div>

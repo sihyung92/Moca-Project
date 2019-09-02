@@ -51,5 +51,14 @@ public interface AccountDao {
 	//해당 account의 정보 불러오기
 	AccountVo selectByaccountId(int account_id) throws SQLException;
 	
+	//해당 account의 정보 수정
+	int updateAccount(AccountVo editAccountVo) throws SQLException;
+	
+	//해당 account의 image 불러오기
+	AccountVo selectProfileImageByaccountId(int account_id) throws SQLException;
+	
+	//해당 account 삭제
+	int deleteAccount(int accountId) throws SQLException;
+	
 
 }

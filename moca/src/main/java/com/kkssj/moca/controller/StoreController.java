@@ -449,13 +449,21 @@ public class StoreController {
 	public String changeCategory(String category, String name) {
 		// 포함되면 해당 카테고리로 변환
 		// 프랜차이즈(카테고리), 애견(카테고리), 스터디(이름), 고양이(카테고리), 만화+놀숲(이름), 보드(카테고리), 룸카페(이름)
+		//테이크아웃: 매머드, 컴포즈커피, 빽다방, 메가커피, 더리터, 커피온리, 더벤티, 쥬씨, 마노핀, 커피식스, 어벤더치
 		String[] categoryCheck = { "커피전문점", "애견", "고양이", "보드" };
 		String[] nameCheck = { "스터디", "만화", "놀숲", "룸카페" };
-
+		String[] takeOutCafe = {"매머드", "컴포즈커피", "빽다방", "메가커피", "더리터", "커피온리", "더벤티", "쥬씨", "마노핀", "커피식스", "어벤더치"};
+		
 		for (int i = 0; i < categoryCheck.length; i++) {
 			if (category.contains(categoryCheck[i])) {
 				if (categoryCheck[i].equals("커피전문점")) {
-					category = "프랜차이즈";
+					String temp = "프랜차이즈";
+					for(int j=0; j<takeOutCafe.length; j++) {
+						if (category.contains(takeOutCafe[i])) {
+							temp+= ">테이크아웃";
+						}
+					}
+					category=temp;
 				} else {
 					category = categoryCheck[i];
 				}

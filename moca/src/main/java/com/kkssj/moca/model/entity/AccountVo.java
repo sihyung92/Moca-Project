@@ -189,12 +189,14 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 		this.exp = exp;
 	}
 
+
 	@Override
 	public String toString() {
 		return "AccountVo [account_id=" + account_id + ", followCount=" + followCount + ", reviewCount=" + reviewCount
-				+ ", platformId=" + platformId + ", nickname=" + nickname + ", platformType=" + platformType
-				+ ", profileImage=" + profileImage + ", thumbnailImage=" + thumbnailImage + ", email=" + email
-				+ ", gender=" + gender + ", birthday=" + birthday + ", barista=" + barista + "]";
+				+ ", platformId=" + platformId + ", accountLevel=" + accountLevel + ", isMine=" + isMine + ", exp="
+				+ exp + ", nickname=" + nickname + ", platformType=" + platformType + ", profileImage=" + profileImage
+				+ ", thumbnailImage=" + thumbnailImage + ", email=" + email + ", gender=" + gender + ", barista="
+				+ barista + ", birthday=" + birthday + "]";
 	}
 
 	@Override

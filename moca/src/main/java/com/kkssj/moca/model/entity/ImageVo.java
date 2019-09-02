@@ -86,6 +86,7 @@ public class ImageVo {
 		}
 		
 	}
+	
 	public void setUrl() {
 		if(this.path.equals("")) {
 			this.url = "https://team-moca.s3.ap-northeast-2.amazonaws.com/"+this.uu_id+"_"+this.originName;
@@ -96,7 +97,6 @@ public class ImageVo {
 		}
 		
 	}
-
 
 	public int getViews() {
 		return views;
