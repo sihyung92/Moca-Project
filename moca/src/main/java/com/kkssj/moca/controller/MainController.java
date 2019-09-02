@@ -40,17 +40,18 @@ public class MainController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String x, String y, Model model) {
-		session.invalidate();		//개발 단계 테스트용 라인
-		session=request.getSession();	//개발 단계 테스트용 라인
-		if(x!=null && y!=null) {
+		//session.invalidate();		//개발 단계 테스트용 라인
+		//session=request.getSession();	//개발 단계 테스트용 라인
+		if(x!=null && y!=null) { 
 			session.setAttribute("x", x);
 			session.setAttribute("y", y);
 		}else if(session.getAttribute("x") == null|| session.getAttribute("y") == null) {
 			return "geolocation";
 		}
+		//세션에서 x, y 좌표 받아 쿼리용 변수 생성
 		Map<String, String> variables = new HashMap<String, String>();
-		variables.put("x", x );
-		variables.put("y", y);
+		variables.put("x", (String)session.getAttribute("x"));
+		variables.put("y", (String)session.getAttribute("y"));
 		
 		//추천 문구 목록
 		List<String> listNames = new ArrayList<String>();
@@ -69,9 +70,16 @@ public class MainController {
 		listNames.add("흑당흑당 카페카페(미구현)");
 		storesList.add(mainService.getTrendStoresList("예쁜"));
 		
-		//takeOut Stores, index : 3
+		//TakeOut Stores, index : 3
 		listNames.add("주변의 테이크아웃 전문점");
 		storesList.add(mainService.getTakeoutStoresList(variables));
+		
+		//Follower's pick Stores
+		//String id=(String)session.getAttribute("id");
+		String id = "48";	//나중에 세션에서 아이디 받게 수정-
+		listNames.add("팔로워가 추천하는 카페");
+		storesList.add(mainService.getFollowersStoresList(id));
+		
 		
 //		//Hit Stores 추천 
 //		model.addAttribute("hitStores", mainService.getHitStoresList(variables));		

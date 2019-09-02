@@ -18,4 +18,6 @@ public interface MainService {
 	List<StoreVo> getBestStoresList();
 	
 	List<StoreVo> getTakeoutStoresList(Map<String, String> variables);
+	
+	List<StoreVo> getFollowersStoresList(String id);
 }
