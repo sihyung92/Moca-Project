@@ -38,4 +38,6 @@ public interface StoreDao {
 	
 	List<StoreVo> selectTakeoutStoresList(Map<String, String> variables);
 	
+	List<StoreVo> selectFollowersStoresList(int id);	
+	
 }

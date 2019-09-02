@@ -60,4 +60,9 @@ public class MainServiceImpl implements MainService{
 	public List<ReviewVo> getBestReviews() {
 		return reviewDao.selectBestReviews();
 	}
+	
+	@Override	
+	public List<StoreVo> getFollowersStoresList(int id) {
+		return storeDao.selectFollowersStoresList(id);
+	}
 }
