@@ -46,7 +46,7 @@
 				console.log(hits[1].storeImg1);		
             }
          }); */
-        $('.suggestion a li').mouseenter(function(){
+        $('.mocaPick a li').mouseenter(function(){
             var overlay = $(this).children('div');
            // overlay.show();
             var imgs = $(this).children('img');
@@ -60,7 +60,7 @@
         	})();        
         });
          
-        $('.suggestion a li').mouseleave(function(){
+        $('.mocaPick a li').mouseleave(function(){
             clearTimeout(slide);
 			$(this).children().hide();
 			var firstImg = $(this).children()[1];
@@ -116,6 +116,8 @@
 			<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 </div>
 <div id="content" class="container-fluid">
+	<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
+	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>
 <!-- 카페 추천 캐러샐 -->
 	<c:forEach items="${storesList}" var="store" varStatus="status">
 		<c:if test="${not empty store}">		
@@ -144,9 +146,9 @@
 				     	<c:forEach items="${store}" var="bean" begin="0" end="4" > 
 					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
 					     		<div style="width:300px; height:300px; background-color:#ffffff; opacity:0.6; filter: alpha(opacity=60); display:none;"></div>
-					     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
+					     		<img style="width:300px; height:300px;" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
+					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
+					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">
 					     	</li></a>
 				     	</c:forEach>
 				     </ul>	
@@ -156,9 +158,9 @@
 				     <ul class="item-inner" style="list-style:none">
 				     	<c:forEach items="${store}" var="bean" begin="5" end="9"> 
 					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-					     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
+					     		<img style="width:300px; height:300px;" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
+					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
+					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">
 					     	</li></a>
 				     	</c:forEach> 
 				     </ul>		
@@ -168,11 +170,11 @@
 					   <div class="item">		    
 					     <ul class="item-inner" style="list-style:none">
 					     	<c:forEach items="${store}" var="bean" begin="10" end="12"> 
-						     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-						     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-					     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-					     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-						     	</li></a>
+						     <a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
+						     	<img style="width:300px; height:300px;" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
+					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
+					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">
+					     	</li></a> 
 					     	</c:forEach>
 					     </ul>		     
 					    </div> 
@@ -200,7 +202,7 @@
 	  	<c:forEach items="${bestReviews }" var="bean">
 			<div class="panel panel-default col-md-12">
 			 <div class="panel-heading">
-			    <h3 class="panel-title"><img src="${bean.thumbnailImage } alt="${bean.nickName }"/>${bean.nickName } ${bean.averageLevel}</h3>
+			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>${bean.nickName } ${bean.averageLevel}</h3>
 			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
 			  </div>
 			  <div class="panel-body">
@@ -221,7 +223,7 @@
 	  	<c:forEach items="${recentReviews }" var="bean">
 			<div class="panel panel-default col-md-12">
 			 <div class="panel-heading">
-			    <h3 class="panel-title"><img src="${bean.thumbnailImage } alt="${bean.nickName }"/>${bean.nickName } ${bean.averageLevel}</h3>
+			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>${bean.nickName } ${bean.averageLevel}</h3>
 			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
 			  </div>
 			  <div class="panel-body">

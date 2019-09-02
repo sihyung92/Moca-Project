@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.StoreVo;
@@ -42,38 +41,67 @@ public class MainController {
 	
 		//세션에서 x, y 좌표 받아 쿼리용 변수 생성
 		Map<String, String> variables = new HashMap<String, String>();
-		variables.put("x", (String)session.getAttribute("x"));
-		variables.put("y", (String)session.getAttribute("y"));
+		if((String)session.getAttribute("x")!="" && (String)session.getAttribute("y")!="") {
+			variables.put("x", (String)session.getAttribute("x"));
+			variables.put("y", (String)session.getAttribute("y"));	
+		}else {
+			variables=null;
+		}
+
+		//세션에서 id 받아오기
+		int id=0;
+		if(session.getAttribute("login")!=null) {
+			id=((AccountVo)session.getAttribute("login")).getAccount_id();
+		}
+		
 		//추천 문구 목록
 		List<String> listNames = new ArrayList<String>();
 		//각 추천 stores들을 출력순으로 삽입할 리스트
 		List<List<StoreVo>> storesList = new ArrayList<List<StoreVo>>();
+		//
+		List<StoreVo> alist = new ArrayList<StoreVo>();
 		
-		//근처 카페 추천
-		listNames.add("근처 카페 추천");
-		storesList.add(mainService.getStoresNearBy(variables));
+		if(variables!=null) {
+			alist = mainService.getStoresNearBy(variables);		//근처 카페 추천
+			if(alist.size()>4) {
+				listNames.add("근처 카페 추천");
+				storesList.add(alist);
+			}
+		}
 		
-		//Hit Stores추천
-		listNames.add("지금 뜨는 카페");
-		storesList.add(mainService.getHitStoresList(variables));
+		alist = mainService.getHitStoresList(variables);	//Hit Stores추천
+		if(alist.size()>4) {
+			listNames.add("지금 뜨는 카페");
+			storesList.add(alist);
+		}
 		
-		//Best Stores추천
-		listNames.add("한주간 베스트 카페");
-		storesList.add(mainService.getBestStoresList());
+		alist = mainService.getBestStoresList();		//Best Stores추천
+		if(alist.size()>4) {			
+			listNames.add("한주간 베스트 카페");
+			storesList.add(alist);
+		} 
 		
-		//Trend Stores
-		listNames.add("흑당흑당 카페카페(미구현)");
-		storesList.add(mainService.getTrendStoresList("예쁜"));
-		 
-		//TakeOut Stores
-		listNames.add("주변의 테이크아웃 전문점");
-		storesList.add(mainService.getTakeoutStoresList(variables));
+		alist = mainService.getTrendStoresList("예쁜");		//Trend Stores
+		if(alist.size()>4) {			
+			listNames.add("흑당흑당 카페카페(미구현)");
+			storesList.add(alist);
+		}
 		
-		//Follower's pick Stores
-		//int id=((AccountVo)session.getAttribute("login")).getAccount_id();
-		int id = 48;
-		listNames.add("팔로워가 추천하는 카페");
-		storesList.add(mainService.getFollowersStoresList(id));
+		if(variables!=null) {
+			alist = mainService.getTakeoutStoresList(variables);		//TakeOut Stores
+			if(alist.size()>4) {			
+				listNames.add("주변의 테이크아웃 전문점");
+				storesList.add(alist);
+			}
+		}		
+		
+		if(id>0) {
+			alist = mainService.getFollowersStoresList(id);		//Follower's pick Stores
+			if(alist.size()>4) {			
+				listNames.add("팔로워가 추천하는 카페");
+				storesList.add(alist);
+			}
+		}		
 		
 		//금주의 인기리뷰
 		model.addAttribute("bestReviews",mainService.getBestReviews());
