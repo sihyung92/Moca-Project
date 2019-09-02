@@ -46,7 +46,7 @@ public class LoginController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else {
 			model.addAttribute("login", returnVo);
-			logService.writeStoreIdKeyWordNone(req, "�α���", returnVo.getAccount_id());
+			logService.writeStoreIdKeyWordNone(req, "로그인", returnVo.getAccount_id());
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 	}
@@ -64,7 +64,7 @@ public class LoginController {
 			int account_id=check.getAccount_id();
 			
 			model.addAttribute("login",new AccountVo(0, 0, 0, 0,0,0,0, null, "NULL_VAL", null, null, null, 0, 0, null));
-			logService.writeStoreIdKeyWordNone(req, "�α׾ƿ�", account_id);
+			logService.writeStoreIdKeyWordNone(req, "로그아웃", account_id);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 

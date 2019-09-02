@@ -200,4 +200,9 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("selectRecentReviews");
 	}
 
+	@Override
+	public List<ReviewVo> selectBestReviews() {
+		return sqlSession.selectList("selectBestReviews");
+	}
+
 }

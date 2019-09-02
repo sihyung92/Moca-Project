@@ -21,7 +21,7 @@ public class ReviewVo {
 	private int isLike;
 	
 	//ACCOUNT table
-	private String nickName;
+	private String nickName, thumbnailImage;
 	private int followCount, reviewCount;
 	
 	//내가 쓴 댓글인지 (table엔 없음)
@@ -65,6 +65,18 @@ public class ReviewVo {
 	public void setReview_id(int review_id) {
 		this.review_id = review_id;
 	}
+
+	public String getThumbnailImage() {
+		return thumbnailImage;
+	}
+
+
+
+	public void setThumbnailImage(String thumbnailImage) {
+		this.thumbnailImage = thumbnailImage;
+	}
+
+
 
 	public String getReviewContent() {
 		return reviewContent;

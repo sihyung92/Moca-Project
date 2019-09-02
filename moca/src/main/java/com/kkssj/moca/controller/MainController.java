@@ -27,20 +27,9 @@ public class MainController {
 	MainService mainService;
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
-	@ResponseBody
-	@RequestMapping(value = "/near", method = RequestMethod.GET)
-	public List<StoreVo> getNearStores(Model model, String x, String y) {
-		Map<String, String> variables = new HashMap<String, String>();
-		variables.put("x", x);
-		variables.put("y", y);
-		List<StoreVo> list = mainService.getStoresNearBy(variables);
-		return list;
-	}
-	
-	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String x, String y, Model model) {
-		session.invalidate();		//개발 단계 테스트용 라인
+		//session.invalidate();		//개발 단계 테스트용 라인
 		session=request.getSession();	//개발 단계 테스트용 라인
 		if(x!=null && y!=null) {
 			session.setAttribute("x", x);
@@ -49,9 +38,9 @@ public class MainController {
 			return "geolocation";
 		}
 		Map<String, String> variables = new HashMap<String, String>();
-		variables.put("x", x );
-		variables.put("y", y);
-		
+		variables.put("x", (String)session.getAttribute("x"));
+		variables.put("y", (String)session.getAttribute("y"));
+		logger.debug("variables : " + variables.toString());
 		//추천 문구 목록
 		List<String> listNames = new ArrayList<String>();
 		//각 추천 stores들을 출력순으로 삽입할 리스트
@@ -73,16 +62,10 @@ public class MainController {
 		listNames.add("주변의 테이크아웃 전문점");
 		storesList.add(mainService.getTakeoutStoresList(variables));
 		
-//		//Hit Stores 추천 
-//		model.addAttribute("hitStores", mainService.getHitStoresList(variables));		
-//		//Best Stores 추천 
-//		model.addAttribute("bestStores", mainService.getBestStoresList());
-//		//흑당커피:)
-//		model.addAttribute("trendStores", mainService.getTrendStoresList("예쁜"));
+		//금주의 인기리뷰
+		model.addAttribute("bestReviews",mainService.getBestReviews());
 //		//최신 리뷰
 		model.addAttribute("recentReviews",mainService.getRecentReviews());
-//		//TakeOut Stores 추천
-//		model.addAttribute("takeOutStores", mainService.getTakeoutStoresList(variables));
 		
 		model.addAttribute("listNames",listNames);
 		model.addAttribute("storesList",storesList);

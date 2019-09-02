@@ -75,7 +75,6 @@
 		$('.lat').val(lat);
 		$('.lng').val(lng);
     };
-    	cafesNearBy();
 
     // Error Callback(에러 메시지 출력)
     function errCall(error) {
@@ -108,89 +107,8 @@
 	    lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
-		cafesNearBy();
 	};
-	
-	function cafesNearBy(){
-	 	$.ajax({
-			url:"near",
-			data : {"x":lng,"y":lat},
-			dataType: "JSON",
-			method: "get",
-			error: function(){
-				$('#storesNearBy').remove();
-				console.log('근처카페추천 비동기 실패했당..');
-			},
-			success: function(data){
-				var length=$(data).length;
-				$(data).each(function(idx,ele){
-					if(ele.storeImg1==null){
-						//console에서 null exception
-						ele.storeImg1='';
-						ele.storeImg2='';
-						ele.storeImg3='';
-					}
-					if(idx<5){
-						$('#storesNearBy_carousel .item:nth-child(1) .item-inner')
-						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;border:black 1px solid;">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg2+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg3+'" alt="디폴트이미지소스">'
-						+'</li></a>');	     
-					}else if(idx<10){
-						$('#storesNearBy_carousel .item:nth-child(2) .item-inner')
-						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;border:black 1px solid;">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg2+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg3+'" alt="디폴트이미지소스">'
-						+'</li></a>');    	
-					}else{
-						$('#storesNearBy_carousel .item:nth-child(3) .item-inner')
-						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;border:black 1px solid;">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg2+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg3+'" alt="디폴트이미지소스">'
-						+'</li></a>');	     	
-					}
-					/////임시로 넣어놓음. refactoring대상/////
-					var slide;
-			        $('.suggestion #storesNearBy_carousel a li').mouseenter(function(){
-			            var overlay = $(this).children('div');
-			            overlay.show();
-			            var imgs = $(this).children('img');
-			            var i=0;
-			          	//이미지 슬라이드 함수
-			        	(function slideFunction(){
-			        		imgs.hide();
-			        		$(imgs[i]).show();
-			        		if(i==2) i=0; else i++;
-			        		slide = setTimeout(slideFunction, 500);
-			        	})();        
-			        });
-			         
-			        $('.suggestion #storesNearBy_carousel a li').mouseleave(function(){
-			            clearTimeout(slide);
-						$(this).children().hide();
-						var firstImg = $(this).children()[1];
-						$(firstImg).show();
-			        });
-				});
-				
-				if(length==0){
-					$('#storesNearBy').remove();
-				}else if(length<5){
-					$('#storesNearBy .carousel-inner>.item').not('.item:first-child').remove();
-					$('#storesNearBy .carousel-indicators li').not('li:first-child').remove();
-					$('#storesNearBy .carousel-control').remove();
-					$('#storesNearBy .cafesNearBy').show()
-				}else if(length<10){
-					$('#storesNearBy .carousel-inner>.item:last-child').remove();
-					$('#storesNearBy .carousel-indicators li:last-child').remove();
-					$('#storesNearBy .cafesNearBy').show()
-				}
-			}
-		});
-	};
+
 	</script>
 </head>
 <body>
@@ -198,258 +116,48 @@
 			<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 </div>
 <div id="content" class="container-fluid">
-<!-- 주변 카페 추천 -->
- 	<div class="row suggestion" id="storesNearBy" style="display:none;">
-		<div class="col-md-12">
-			<h5>주변 추천 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
-		</div> 
-		<div class="col-md-12 carousel slide" id="storesNearBy_carousel" data-ride="carousel" style="height:300px;">
-		 <!-- Indicators -->
-		  <ol class="carousel-indicators">
-		    <li data-target="#storesNearBy_carousel" data-slide-to="0" class="active"></li>
-			<li data-target="#storesNearBy_carousel" data-slide-to="1"></li>
-		    <li data-target="#storesNearBy_carousel" data-slide-to="2"></li>
-		  </ol>
-		
-		 <!-- Wrapper for slides -->
-		  <div class="carousel-inner" role="listbox" >
-		    <div class="item active" style="text-align:center;">
-		     <ul class="item-inner" style="list-style:none; text-align:center;">
-		     </ul>
-		    </div>
-		    <div class="item" style="text-align:center;">
-		     <ul class="item-inner" style="list-style:none; text-align:center;">
-		     </ul>
-		    </div>
-		    <div class="item" style="text-align:center;">
-		     <ul class="item-inner" style="list-style:none; text-align:center;">
-		     </ul>
-		    </div>
-				  </div>	
-			  <!-- Controls -->
-			  <a class="left carousel-control" href="#storesNearBy_carousel" role="button" data-slide="prev">
-			    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-			    <span class="sr-only">Previous</span>
-			  </a>
-			  <a class="right carousel-control" href="#storesNearBy_carousel" role="button" data-slide="next">
-			    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-			    <span class="sr-only">Next</span>
-			  </a>
-			</div>
-		</div>
-<!-- Hit stores 추천 캐러샐 -->
-	<c:if test="${not empty hitStores }">
-		<c:set var="length" value="${fn:length(hitStores)}"/>
- 		<div class="row suggestion">
-			<div class="col-md-12">
-				<h5>지금 뜨는 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
-			</div>
-			<div class="col-md-12 carousel slide" id="hitStores" data-ride="carousel">
-			  <!-- Indicators -->
-			  <ol class="carousel-indicators">
-			    <li data-target="#hitStores" data-slide-to="0" class="active"></li>
-			    <c:if test="${length gt 5}">
-			   	 	<li data-target="#hitStores" data-slide-to="1"></li>
-			    </c:if>
-			    <c:if test="${length gt 10}">
-			    	<li data-target="#hitStores" data-slide-to="2"></li>
-			    </c:if>
-			  </ol>		
-			  <!-- Wrapper for slides -->
-			  <div class="carousel-inner" role="listbox">
-			    <div class="item active">
-			     <ul class="item-inner" style="list-style:none">
-			     	<c:forEach items="${hitStores}" var="bean" begin="0" end="4" > 
-				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-				     		<div style="width:300px; height:300px; background-color:#ffffff; opacity:0.6; filter: alpha(opacity=60); display:none;"></div>
-				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-				     	</li></a>
-			     	</c:forEach>
-			     </ul>	
-			    </div>
-			    <c:if test="${length gt 5}">
-			    <div class="item">
-			     <ul class="item-inner" style="list-style:none">
-			     	<c:forEach items="${hitStores}" var="bean" begin="5" end="9"> 
-				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-				     	</li></a>
-			     	</c:forEach> 
-			     </ul>		
-			    </div>
-			    </c:if>     
-			    <c:if test="${length gt 10}">	
-				   <div class="item">		    
-				     <ul class="item-inner" style="list-style:none">
-				     	<c:forEach items="${hitStores}" var="bean" begin="10" end="12"> 
-					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-					     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-				     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-				     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-					     	</li></a>
-				     	</c:forEach>
-				     </ul>		     
-				    </div> 
-				</c:if> 	  		   
-				  </div>	
-			  <!-- Controls -->
-			  <a class="left carousel-control" href="#hitStores" role="button" data-slide="prev">
-			    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-			    <span class="sr-only">Previous</span>
-			  </a>
-			  <a class="right carousel-control" href="#hitStores" role="button" data-slide="next">
-			    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-			    <span class="sr-only">Next</span>
-			  </a>
-			</div>
-		</div>
-	</c:if>
-<!-- Best stores 추천 캐러샐 -->
-	<c:if test="${not empty bestStores}">
-		<c:set var="length" value="${fn:length(bestStores)}"/>
- 		<div class="row suggestion">
-			<div class="col-md-12">
-				<h5>한주간 베스트 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
-			</div>
-			<div class="col-md-12 carousel slide" id="bestStores" data-ride="carousel">
-			  <!-- Indicators -->
-			  <ol class="carousel-indicators">
-			    <li data-target="#bestStores" data-slide-to="0" class="active"></li>
-			    <c:if test="${length gt 5}">
-			   	 	<li data-target="#bestStores" data-slide-to="1"></li>
-			    </c:if>
-			    <c:if test="${length gt 10}">
-			    	<li data-target="#bestStores" data-slide-to="2"></li>
-			    </c:if>
-			  </ol>		
-			  <!-- Wrapper for slides -->
-			  <div class="carousel-inner" role="listbox">
-			    <div class="item active">
-			     <ul class="item-inner" style="list-style:none">
-			     	<c:forEach items="${bestStores}" var="bean" begin="0" end="4" > 
-				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-				     		<div style="width:300px; height:300px; background-color:#ffffff; opacity:0.6; filter: alpha(opacity=60); display:none;"></div>
-				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-				     	</li></a>
-			     	</c:forEach>
-			     </ul>	
-			    </div>
-			    <c:if test="${length gt 5}">
-			    <div class="item">
-			     <ul class="item-inner" style="list-style:none">
-			     	<c:forEach items="${bestStores}" var="bean" begin="5" end="9"> 
-				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-				     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-				     	</li></a>
-			     	</c:forEach> 
-			     </ul>		
-			    </div>
-			    </c:if>     
-			    <c:if test="${length gt 10}">	
-				   <div class="item">		    
-				     <ul class="item-inner" style="list-style:none">
-				     	<c:forEach items="${bestStores}" var="bean" begin="10" end="14"> 
-					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-					     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-				     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-				     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-					     	</li></a>
-				     	</c:forEach>
-				     </ul>		     
-				    </div> 
-				</c:if> 	  		   
-				  </div>	
-			  <!-- Controls -->
-			  <a class="left carousel-control" href="#bestStores" role="button" data-slide="prev">
-			    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-			    <span class="sr-only">Previous</span>
-			  </a>
-			  <a class="right carousel-control" href="#bestStores" role="button" data-slide="next">
-			    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-			    <span class="sr-only">Next</span>
-			  </a>
-			</div>
-		</div>
-	</c:if>
-<!-- TakeOut stores 추천 캐러샐 -->
-<c:if test="${not empty takeOutStores}">
-	<c:set var="length" value="${fn:length(takeoutStores)}"/>
-		<div class="row suggestion">
-		<div class="col-md-12">
-			<h5>주변의 테이크 아웃 전문점 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
-		</div>
-		<div class="col-md-12 carousel slide" id="takeOutStores" data-ride="carousel">
-		  <!-- Indicators -->
-		  <ol class="carousel-indicators">
-		    <li data-target="#takeOutStores" data-slide-to="0" class="active"></li>
-		    <c:if test="${length gt 5}">
-		   	 	<li data-target="#takeOutStores" data-slide-to="1"></li>
-		    </c:if>
-		    <c:if test="${length gt 10}">
-		    	<li data-target="#takeOutStores" data-slide-to="2"></li>
-		    </c:if>
-		  </ol>		
-		  <!-- Wrapper for slides -->
-		  <div class="carousel-inner" role="listbox">
-		    <div class="item active">
-		     <ul class="item-inner" style="list-style:none">
-		     	<c:forEach items="${takeOutStores}" var="bean" begin="0" end="4" > 
-			     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-			     		<div style="width:300px; height:300px; background-color:#ffffff; opacity:0.6; filter: alpha(opacity=60); display:none;"></div>
-			     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-			     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-			     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-			     	</li></a>
-		     	</c:forEach>
-		     </ul>	
-		    </div>
-		    <c:if test="${length gt 5}">
-		    <div class="item">
-		     <ul class="item-inner" style="list-style:none">
-		     	<c:forEach items="${takeOutStores}" var="bean" begin="5" end="9"> 
-			     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-			     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-			     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-			     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-			     	</li></a>
-		     	</c:forEach> 
-		     </ul>		
-		    </div>
-		    </c:if>     
-		    <c:if test="${length gt 10}">	
-			   <div class="item">		    
-			     <ul class="item-inner" style="list-style:none">
-			     	<c:forEach items="${takeOutStores}" var="bean" begin="10" end="14"> 
-				     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-				     		<img style="width:300px; height:300px;" src="${bean.storeImg1 }" alt="${bean.name }_main1">
-			     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2 }" alt="${bean.name }_main2">
-			     			<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3 }" alt="${bean.name }_main3">
-				     	</li></a>
-			     	</c:forEach>
-			     </ul>		     
-			    </div> 
-			</c:if> 	  		   
-			  </div>	
-		  <!-- Controls -->
-		  <a class="left carousel-control" href="#takeOutStores" role="button" data-slide="prev">
-		    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-		    <span class="sr-only">Previous</span>
-		  </a>
-		  <a class="right carousel-control" href="#takeOutStores" role="button" data-slide="next">
-		    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-		    <span class="sr-only">Next</span>
-		  </a>
-		</div>
+	<c:if test="${not empty bestReviews }">
+	<div class="col-md-12">
+		<h5>금주의 인기리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
 	</div>
-</c:if>
+	<div class="row panel panel-default col-md-12" style="overflow:scroll; height:400px;">
+	  <div class="panel-body">
+	  	<c:forEach items="${bestReviews }" var="bean">
+			<div class="panel panel-default col-md-12">
+			 <div class="panel-heading">
+			    <h3 class="panel-title"><img src="${bean.thumbnailImage } alt="${bean.nickName }"/>${bean.nickName } ${bean.averageLevel}</h3>
+			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
+			  </div>
+			  <div class="panel-body">
+			  	<h4>${bean.reviewContent }</h4>
+			  	<p>${bean.writeDate }</p>
+			  </div>
+			</div>
+		</c:forEach>
+	  </div>
+	</div>
+	</c:if>	
+	<c:if test="${not empty recentReviews }">
+	<div class="col-md-12">
+		<h5>최신 리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
+	</div>
+	<div class="row panel panel-default col-md-12" style="overflow:scroll; height:400px;">
+	  <div class="panel-body">
+	  	<c:forEach items="${recentReviews }" var="bean">
+			<div class="panel panel-default col-md-12">
+			 <div class="panel-heading">
+			    <h3 class="panel-title"><img src="${bean.thumbnailImage } alt="${bean.nickName }"/>${bean.nickName } ${bean.averageLevel}</h3>
+			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
+			  </div>
+			  <div class="panel-body">
+			  	<h4>${bean.reviewContent }</h4>
+			  	<p>${bean.writeDate }</p>
+			  </div>
+			</div>
+		</c:forEach>
+	  </div>
+	</div>
+	</c:if>
 </div>
 </body>
 </html>

@@ -55,4 +55,9 @@ public class MainServiceImpl implements MainService{
 	public List<StoreVo> getTakeoutStoresList(Map<String, String> variables) {
 		return storeDao.selectTakeoutStoresList(variables);
 	}
+
+	@Override
+	public List<ReviewVo> getBestReviews() {
+		return reviewDao.selectBestReviews();
+	}
 }
