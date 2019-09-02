@@ -26,18 +26,7 @@ import com.kkssj.moca.service.MainService;
 public class MainController {
 	@Inject
 	MainService mainService;
-	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
-	
-	@ResponseBody
-	@RequestMapping(value = "/near", method = RequestMethod.GET)
-	public List<StoreVo> getNearStores(Model model, String x, String y) {
-		Map<String, String> variables = new HashMap<String, String>();
-		variables.put("x", x);
-		variables.put("y", y);
-		List<StoreVo> list = mainService.getStoresNearBy(variables);
-		return list;
-	}
-	
+	private static final Logger logger = LoggerFactory.getLogger(MainController.class);	
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String x, String y, Model model) {
@@ -60,6 +49,10 @@ public class MainController {
 		List<String> listNames = new ArrayList<String>();
 		//각 추천 stores들을 출력순으로 삽입할 리스트
 		List<List<StoreVo>> storesList = new ArrayList<List<StoreVo>>();
+		
+		//근처 카페 추천
+		listNames.add("근처 카페 추천");
+		storesList.add(mainService.getStoresNearBy(variables));
 		
 		//Hit Stores추천
 		listNames.add("지금 뜨는 카페");
