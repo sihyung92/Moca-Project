@@ -66,7 +66,7 @@
 			var firstImg = $(this).children()[1];
 			$(firstImg).show();
         });
-    };
+    };//onload() 끝
 	
     //Success Callback(현재 위치 정보 저장)
     var sucCall = function (position) {
@@ -74,7 +74,6 @@
         lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
-    	cafesNearBy();
     };
 
     // Error Callback(에러 메시지 출력)
@@ -108,89 +107,6 @@
 	    lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
-		cafesNearBy();
-	};
-	
-	function cafesNearBy(){
-	 	$.ajax({
-			url:"near",
-			data : {"x":lng,"y":lat},
-			dataType: "JSON",
-			method: "get",
-			error: function(){
-				$('#storesNearBy').remove();
-				console.log('근처카페추천 비동기 실패했당..');
-			},
-			success: function(data){
-				var length=$(data).length;
-				$(data).each(function(idx,ele){
-					if(ele.storeImg1==null){
-						//console에서 null exception
-						ele.storeImg1='';
-						ele.storeImg2='';
-						ele.storeImg3='';
-					}
-					if(idx<5){
-						$('#storesNearBy_carousel .item:nth-child(1) .item-inner')
-						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;border:black 1px solid;">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg2+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg3+'" alt="디폴트이미지소스">'
-						+'</li></a>');	     
-					}else if(idx<10){
-						$('#storesNearBy_carousel .item:nth-child(2) .item-inner')
-						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;border:black 1px solid;">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg2+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg3+'" alt="디폴트이미지소스">'
-						+'</li></a>');    	
-					}else{
-						$('#storesNearBy_carousel .item:nth-child(3) .item-inner')
-						.append('<a href="stores/'+ele.store_Id+'"><li style="float:left; width:300px; height:300px;border:black 1px solid;">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg1+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg2+'" alt="디폴트이미지소스">'
-						+'<img width="300px" height="300px" src="'+ele.storeImg3+'" alt="디폴트이미지소스">'
-						+'</li></a>');	     	
-					}
-					/////임시로 넣어놓음. refactoring대상/////
-					var slide;
-			        $('.suggestion #storesNearBy_carousel a li').mouseenter(function(){
-			            var overlay = $(this).children('div');
-			            overlay.show();
-			            var imgs = $(this).children('img');
-			            var i=0;
-			          	//이미지 슬라이드 함수
-			        	(function slideFunction(){
-			        		imgs.hide();
-			        		$(imgs[i]).show();
-			        		if(i==2) i=0; else i++;
-			        		slide = setTimeout(slideFunction, 500);
-			        	})();        
-			        });
-			         
-			        $('.suggestion #storesNearBy_carousel a li').mouseleave(function(){
-			            clearTimeout(slide);
-						$(this).children().hide();
-						var firstImg = $(this).children()[1];
-						$(firstImg).show();
-			        });
-				});
-				
-				if(length==0){
-					$('#storesNearBy').remove();
-				}else if(length<5){
-					$('#storesNearBy .carousel-inner>.item').not('.item:first-child').remove();
-					$('#storesNearBy .carousel-indicators li').not('li:first-child').remove();
-					$('#storesNearBy .carousel-control').remove();
-					$('#storesNearBy .cafesNearBy').show()
-				}else if(length<10){
-					$('#storesNearBy .carousel-inner>.item:last-child').remove();
-					$('#storesNearBy .carousel-indicators li:last-child').remove();
-					$('#storesNearBy .cafesNearBy').show()
-				}
-			$('#storesNearBy').show();
-			}
-		});
 	};
 	</script>
 </head>
@@ -199,45 +115,6 @@
 			<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 </div>
 <div id="content" class="container-fluid">
-<!-- 주변 카페 추천 -->
- 	<div class="row suggestion" id="storesNearBy" style="display:none;">
-		<div class="col-md-12">
-			<h5>주변 추천 카페 <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
-		</div> 
-		<div class="col-md-12 carousel slide" id="storesNearBy_carousel" data-ride="carousel" style="height:300px;">
-		 <!-- Indicators -->
-		  <ol class="carousel-indicators">
-		    <li data-target="#storesNearBy_carousel" data-slide-to="0" class="active"></li>
-			<li data-target="#storesNearBy_carousel" data-slide-to="1"></li>
-		    <li data-target="#storesNearBy_carousel" data-slide-to="2"></li>
-		  </ol>
-		
-		 <!-- Wrapper for slides -->
-		  <div class="carousel-inner" role="listbox" >
-		    <div class="item active" style="text-align:center;">
-		     <ul class="item-inner" style="list-style:none; text-align:center;">
-		     </ul>
-		    </div>
-		    <div class="item" style="text-align:center;">
-		     <ul class="item-inner" style="list-style:none; text-align:center;">
-		     </ul>
-		    </div>
-		    <div class="item" style="text-align:center;">
-		     <ul class="item-inner" style="list-style:none; text-align:center;">
-		     </ul>
-		    </div>
-				  </div>	
-			  <!-- Controls -->
-			  <a class="left carousel-control" href="#storesNearBy_carousel" role="button" data-slide="prev">
-			    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-			    <span class="sr-only">Previous</span>
-			  </a>
-			  <a class="right carousel-control" href="#storesNearBy_carousel" role="button" data-slide="next">
-			    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-			    <span class="sr-only">Next</span>
-			  </a>
-			</div>
-		</div>
 <!-- 카페 추천 캐러샐 -->
 	<c:forEach items="${storesList}" var="store" varStatus="status">
 		<c:if test="${not empty store}">		
@@ -313,5 +190,6 @@
 			</div>
 		</c:if>
 	</c:forEach>
+</div>
 </body>
 </html>
