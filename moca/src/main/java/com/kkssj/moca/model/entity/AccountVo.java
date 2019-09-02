@@ -204,8 +204,6 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 		result = prime * result + ((nickname == null) ? 0 : nickname.hashCode());
 		result = prime * result + platformId;
 		result = prime * result + ((platformType == null) ? 0 : platformType.hashCode());
-		result = prime * result + ((profileImage == null) ? 0 : profileImage.hashCode());
-		result = prime * result + ((thumbnailImage == null) ? 0 : thumbnailImage.hashCode());
 		return result;
 	}
 
@@ -230,18 +228,10 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 				return false;
 		} else if (!platformType.equals(other.platformType))
 			return false;
-		if (profileImage == null) {
-			if (other.profileImage != null)
-				return false;
-		} else if (!profileImage.equals(other.profileImage))
-			return false;
-		if (thumbnailImage == null) {
-			if (other.thumbnailImage != null)
-				return false;
-		} else if (!thumbnailImage.equals(other.thumbnailImage))
-			return false;
 		return true;
 	}
+
+	
 
 }
 

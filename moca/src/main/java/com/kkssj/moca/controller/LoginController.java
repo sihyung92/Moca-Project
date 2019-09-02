@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.service.AccountService;
 import com.kkssj.moca.service.LogService;
 
 @Controller
-public class LoginController {
+public class LoginController {//@SessionAtrribute?인가 삭제함
 	
 	@Inject
 	AccountService accountService;
@@ -41,9 +40,9 @@ public class LoginController {
 		AccountVo returnVo = accountService.login(stringFilter(accountVo));
 		
 		HttpSession sess = req.getSession();
-
+		
 		if(returnVo==null) {
-			sess.setAttribute("login",new AccountVo(0, 0, 0, 0, 0,0,0,null, "\"NULL_VAL\"", null, null, null, 0, 0, null));
+			sess.setAttribute("login",null);
 			
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else {
@@ -62,11 +61,10 @@ public class LoginController {
 		//if(model.asMap().get("login")==null) {
 		if(check==null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}else if(check.getPlatformType()!="NULL_VAL") {
+		}else if(check.getPlatformType()!=null) {
 			int account_id=check.getAccount_id();
 			
-			//model.addAttribute("login",new AccountVo(0, 0, 0, 0,0,0,0, null, "NULL_VAL", null, null, null, 0, 0, null));
-			sess.setAttribute("login",new AccountVo(0, 0, 0, 0,0,0,0, null, "NULL_VAL", null, null, null, 0, 0, null));
+			sess.setAttribute("login",null);
 			logService.writeStoreIdKeyWordNone(req, "로그아웃", account_id);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {

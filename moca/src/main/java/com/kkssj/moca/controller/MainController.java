@@ -40,7 +40,7 @@ public class MainController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String x, String y, Model model) {
-		session.invalidate();		//개발 단계 테스트용 라인
+		//session.invalidate();		//개발 단계 테스트용 라인
 		session=request.getSession();	//개발 단계 테스트용 라인
 		if(x!=null && y!=null) {
 			session.setAttribute("x", x);

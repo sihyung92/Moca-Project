@@ -29,7 +29,10 @@
 <!-- kakao API -->
     <script type="text/javascript" src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
-    <script type='text/javascript'>    
+    <script type='text/javascript'>
+        
+        var loc='';
+        
     $(document).ready(function(){    	
         //테스트용 코드 자리
         
@@ -47,52 +50,9 @@
         //본코드 (공통)  
         //1. 처음 페이지 접속시 로그인 상태를 확인하여 플로필을 띄워줄지 login 버튼을 띄워줄지.
         var userInfo;
-        var info={
-            "platformType":"NULL_VAL"
-        };
         userInfo = '${sessionScope.login.platformType}';
-        alert(userInfo);
-        if(userInfo.isUndefined || userInfo==''){
-            userInfo = {
-                "account_id":"0",
-                "followCount":"0",
-                "reviewCount":"0",
-                "platformId":"0",
-                "nickname":"",
-                "platformType":"NULL_VAL",
-                "profileImage":"",
-                "thumbnailImage":"",
-                "email":"",
-                "gender":"0",
-                "barista":"",
-                "birthday":""
-            };
-            info = {
-                "account_id":"0",
-                "followCount":"0",
-                "reviewCount":"0",
-                "platformId":"0",
-                "nickname":"",
-                "platformType":"NULL_VAL",
-                "profileImage":"",
-                "thumbnailImage":"",
-                "email":"",
-                "gender":"0",
-                "barista":"",
-                "birthday":""
-            };
-        }else if('${sessionScope.login.platformType}'!='NULL_VAL'){
-            info={
-                "platformType":"VALUE"
-            }
-            userInfo={
-                "platformType":"VALUE"
-            };
-        }
-                      
-        if(JSON.stringify(info.platformType)=='"NULL_VAL"'){     
-            $('.just-use-user').css('display','none');        
-        }else if(JSON.stringify(userInfo.platformType)=='"NULL_VAL"'){
+        
+        if(userInfo==''){
             $('.just-use-user').css('display','none');    
         }else{
            
@@ -275,6 +235,7 @@
         /* 설정정보를 초기화하고 연동을 준비 */
         naverLogin.init();
     }
+ 
     </script>
 <!-- kss 공통 header -->
 
