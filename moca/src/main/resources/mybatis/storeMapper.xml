@@ -88,4 +88,18 @@
 		WHERE rownum<16 ORDER BY rownum
 	 ]]>
   </select> 
+  
+  <update id="updateStoreImg">
+  	UPDATE STORE SET 
+  	<if test="STOREIMG1 != null"> STOREIMG1 = #{STOREIMG1 }	</if> <if test="STOREIMG1 == null"> STOREIMG1 = null </if>
+  	<if test="STOREIMG2 != null"> ,STOREIMG2 = #{STOREIMG2 } </if> <if test="STOREIMG2 == null"> ,STOREIMG2 = null </if>
+  	<if test="STOREIMG3 != null"> ,STOREIMG3 = #{STOREIMG3 } </if> <if test="STOREIMG3 == null"> ,STOREIMG3 = null </if>
+  	 WHERE STORE_ID = ${STORE_ID}
+  </update>
+  <update id="updateStoreLogo">
+  	UPDATE STORE SET LOGOIMG = #{LOGOIMG } WHERE STORE_ID = ${STORE_ID }
+  </update>
+  <select id="selectCategoryByStoreId" parameterType="INTEGER" resultType="java.lang.String">
+	SELECT CATEGORY FROM STORE WHERE STORE_ID = ${STORE_ID }
+  </select> 
 </mapper>

@@ -126,6 +126,26 @@
 	    	cursor:pointer;
 	    	background-color:rgb(255,255,255,0.5);
 	    }
+	    
+	    /* 카페 관리자의 사진 수정 */
+		.storeLogoGroup  .storeImg{
+	    	display: inline-block;
+	    }
+	    
+	    .storeLogoGroup  img{
+	    	width:100px;
+	    	height: 100px;
+			object-fit: cover;
+			overflow: hidden;
+	    }
+	    
+	    .storeLogoGroup .StoreImgDeleteSpan{
+	    	position : relative;
+	    	left:-95px;
+	    	top:-30px;
+	    	cursor:pointer;
+	    	background-color:rgb(255,255,255,0.5);
+	    }
 		
 }
 	</style>
@@ -135,9 +155,9 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=11"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
 	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=11"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
 		var fileBuffer;
@@ -157,6 +177,8 @@
 		var toBeDeletedStoreImgUrls;
 		var oldStoreImgUrls ="";
 		var storeFiles; //storeImg 수정 모달에서 file input
+
+		var toBeDeletedStoreLogoUrl ="";
 
 
 		//나중에 삭제할 테스트 변수
@@ -454,6 +476,76 @@
 					
 				}
 			})
+			
+			$('#showEditStoreLogoBtn').click(function(){
+				$('#storeLogowModal').modal("show");
+
+				toBeDeletedStoreLogoUrl ="";
+
+				//내용 비워줌
+				$('.storeLogoGroup').html("")
+
+				var oldStoreLogo = $('#storeImgTemplate').clone('true');
+				oldStoreLogo.removeAttr('id')
+				oldStoreLogo.find('img').addClass('oldStoreLogo')
+				oldStoreLogo.find('img').attr('src', $('#storeLogo')[0].src );
+				$('.storeLogoGroup').append(oldStoreLogo )
+
+				//기존의 클릭이벤트 제거
+				$('.StoreImgDeleteSpan').unbind();
+				$('.StoreImgDeleteSpan').click(function(){					
+					
+					test = this;
+					//기존 StoreLogo인 경우 
+					if($(this.previousElementSibling).hasClass('oldStoreLogo')){
+						toBeDeletedStoreLogoUrl = this.previousElementSibling.src
+					}
+					
+					//해당 img를 포함하는 div 삭제
+					this.parentElement.remove();					
+					
+				})
+			})
+			
+			$('#storeLogoFile').change(function(){
+				var target = document.getElementById('storeLogoFile');
+				test = target;
+
+				// 저장된 로고에서 변경한 경우
+				if($('.storeLogoGroup').find('img').hasClass('oldStoreLogo')){
+					toBeDeletedStoreLogoUrl = $('.storeLogoGroup').find('img')[0].src
+				}
+
+				//내용 비워줌
+				$('.storeLogoGroup').html("")
+
+				//확장자 체크
+				for(var i=0; i<target.files.length ; i++){
+					var fileName = target.files[i].name
+					var fileEx = fileName.slice(fileName.indexOf(".")+1).toLowerCase()
+					
+					//이미지 형식인 경우만 받아 들임
+					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+		                return false;
+		            }
+				}
+				
+				$.each(target.files, function(index, file){
+					URL.createObjectURL(file)
+					var fileName = file.name;
+					var newStoreLogo = $('#storeImgTemplate').clone('true');
+					newStoreLogo.find('img').addClass('newStoreLogo')
+					newStoreLogo.removeAttr('id')
+					newStoreLogo.find('img').attr('src', URL.createObjectURL(file));
+					$('.storeLogoGroup').append(newStoreLogo)
+				})
+				
+			})
+			
+			$('#editStoreLogoBtn').click(function(){
+				editStoreLogo()
+			})
 
 			editStoreImgsBtn.click(function(){
 				storeImgswModal.modal("show");
@@ -545,7 +637,7 @@
 				//oldStoreImg
 				var oldStoreImgs = $('.oldStoreImg')
 				for(var i=0 ; i < oldStoreImgs.length; i++){
-					oldStoreImgUrls = oldStoreImgUrls + ","+oldStoreImgs[0].src
+					oldStoreImgUrls = oldStoreImgUrls + "," + oldStoreImgs[i].src
 				}
 				
 				//맨 앞에 , 문자 제거
@@ -600,15 +692,17 @@
 						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
 						<h1>
 							<c:if test="${empty storeVo.logoImg}">
-								<img src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">
+								<img id="storeLogo" src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">
 							</c:if>
 							<c:if test="${not empty storeVo.logoImg}">
-								<img src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px;">
+								<img id="storeLogo" src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px;">
 							</c:if>
 							&nbsp;${storeVo.name}
 						</h1>
 						<c:if test="${storeVo.isManager eq 1}">
-							<span>내가 관리하는 카페 입니다.</span>						
+							<button id="showEditStoreLogoBtn">수정</button>
+							<span>내가 관리하는 카페 입니다.</span>	
+												
 						</c:if>
 					</div>
 				</div>
@@ -1166,8 +1260,8 @@
 							<div class="storeImgGroup">
 							
 							</div>
-							<input type="hidden" class="delStoreImg"  name="delStoreImg"/>
-							<input type="hidden" class="oldStoreImg"  name="oldStoreImg"/>
+							<input type="hidden" id="delStoreImg"  name="delStoreImg"/>
+							<input type="hidden" id="oldStoreImg"  name="oldStoreImg"/>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -1177,6 +1271,39 @@
 				</div>
 			</div>
 		</div>	
+		
+		<!-- 카페 로고 모달 -->
+		<div class="modal fade" id="storeLogowModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">
+							${storeVo.name} 사진 로고 수정</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" data-role="content">
+						<form id="storeLogoForm">
+							<input name="storeId" value=${storeVo.store_Id } style="display:none;" >
+							<input name="managerId" value=${accountVo.account_id } style="display:none;" >
+							<div class="form-group">
+								<label for="picture-file">사진 선택</label>
+								<input name="storeLogoFile" id="storeLogoFile" type="file"/>
+							</div>
+							<div class="storeLogoGroup">
+							
+							</div>
+							<input type="hidden" id="delStoreLogo"  name="delStoreLogo"/>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary" id="editStoreLogoBtn">수정</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		
 		<!-- storeImg clone -->
 		<div class="storeImg" id="storeImgTemplate">

@@ -57,3 +57,106 @@ var updateStore = function(store_Id) {
 		}
 	});
 };
+
+//카페 이미지 수정
+var editStoreImg = function(){
+	//delete한 썸네일 추가
+	$('#delStoreImg').val(toBeDeletedStoreImgUrls);
+	$('#oldStoreImg').val(oldStoreImgUrls);
+	
+	//파일 추가
+	var form = $('#storeImgForm')[0];
+
+	var storeImgFormData = new FormData(form);
+	
+	storeImgFormData.delete('file');
+	
+	var fileSize = fileBuffer.length;
+	
+	if(fileSize >0){
+		for(var i=0 ; i < fileSize ; i ++){
+			storeImgFormData.append("storeFiles",fileBuffer[i]);
+			console.log(i,fileBuffer[i]);
+		}
+	}
+	
+	var storeImgFormObj = $(form).serializeObject();
+	console.log(storeImgFormObj,storeImgFormData);
+	
+
+	//ajax 통신 - post방식으로 추가
+	$.ajax({
+		type: 'POST',
+		url: '/moca/storeImg/'+storeImgFormObj.storeId,
+		enctype : 'multipart/form-data',
+		data: storeImgFormData,
+		dataType : "json",
+		contentType : false,  
+		processData : false,
+		cache : false,
+		timeout : 600000,
+		success: function(storeVo) {
+			console.log('ajax 통신 성공');
+			
+			//파일 수정
+			
+		},
+		error: function(error) {
+			if(error=='Too Many Requests'){				
+				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
+			}else{
+				console.log('ajax 통신 실패', error);
+			}
+		}
+	})
+
+}
+
+//카페 이미지 로고 수정
+var editStoreLogo = function(){
+	//delete한 썸네일 추가
+	$('#delStoreLogo').val(toBeDeletedStoreLogoUrl);
+	
+	//파일 추가
+	var form = $('#storeLogoForm')[0];
+
+	var storeImgFormData = new FormData(form);
+	
+	storeImgFormData.delete('file');
+	
+	
+	var storeImgFormObj = $(form).serializeObject();
+	console.log(storeImgFormObj,storeImgFormData);
+	
+	if(storeImgFormObj.delStoreLogo == ""){
+		return false;
+	}
+	
+
+	//ajax 통신 - post방식으로 추가
+	$.ajax({
+		type: 'POST',
+		url: '/moca/storeLogo/'+storeImgFormObj.storeId,
+		enctype : 'multipart/form-data',
+		data: storeImgFormData,
+		dataType : "json",
+		contentType : false,  
+		processData : false,
+		cache : false,
+		timeout : 600000,
+		success: function(storeVo) {
+			console.log('ajax 통신 성공');
+			
+			//새로고침
+			
+		},
+		error: function(error) {
+			if(error=='Too Many Requests'){				
+				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
+			}else{
+				console.log('ajax 통신 실패', error);
+			}
+		}
+	})
+
+}

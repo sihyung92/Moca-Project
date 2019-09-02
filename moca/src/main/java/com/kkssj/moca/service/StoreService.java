@@ -77,5 +77,8 @@ public interface StoreService {
 	int deleteFavoriteStore(int storeId, int account_id);
 
 	//카페 대표 이미지 수정
-	StoreVo editStoreImg(int store_id, MultipartFile[] newFiles, String[] oldStoreImgArr, String[] delStoreImgArr);
+	int editStoreImg(int store_id, MultipartFile[] newFiles, String[] oldStoreImgArr, String[] delStoreImgArr);
+
+	//카페 로고 수정
+	int editStoreLogo(int store_Id, MultipartFile newFiles, String delStoreLogo);
 }

@@ -400,10 +400,10 @@ public class StoreController {
 		return "redirect:../stores/"+1;
 	}
 	
-	//리뷰 수정
+	//카페 대표이미지 수정
 	@PostMapping("/storeImg/{store_Id}")
 	@ResponseBody
-	public ResponseEntity editStoreImg(@RequestParam("file") MultipartFile[] newFiles,
+	public ResponseEntity editStoreImg(@RequestParam("storeFiles") MultipartFile[] newFiles,
 			@RequestParam("delStoreImg") String delStoreImg, @RequestParam("oldStoreImg") String oldStoreImg, 
 			StoreVo storeVo, HttpSession session){
 		
@@ -444,13 +444,48 @@ public class StoreController {
 		logger.debug(storeVo.toString());
 		
 		//json으로 수정 내용 전송
-		storeVo = storeService.editStoreImg(storeVo.getStore_Id(), newFiles, oldStoreImgArr, delStoreImgArr);
-		
-		//새롭게 storVo 받기(storeImgList 포함해서)
-		List<ImageVo> imageList = storeService.getStoreImgList(storeVo.getStore_Id());
+		int result = storeService.editStoreImg(storeVo.getStore_Id(), newFiles, oldStoreImgArr, delStoreImgArr);
 		
 		//받는 쪽에서 refresh하게
-		if(storeVo!=null) {
+		if(result == 1) {
+			return new ResponseEntity<>(storeVo,  HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	//로고 파일 수정
+	@PostMapping("/storeLogo/{store_Id}")
+	@ResponseBody
+	public ResponseEntity editStoreLogo(@RequestParam("storeLogoFile") MultipartFile newFile,
+			@RequestParam("delStoreLogo") String delStoreLogo, 
+			StoreVo storeVo, HttpSession session){
+		
+		
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		///check
+		if(delStoreLogo.equals("")) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		//logger
+		logger.debug(newFile.getOriginalFilename());
+		logger.debug("del : "+delStoreLogo);				
+		logger.debug(storeVo.toString());
+		
+		//json으로 수정 내용 전송
+		int result = storeService.editStoreLogo(storeVo.getStore_Id(), newFile, delStoreLogo);
+		
+		
+		//받는 쪽에서 refresh하게
+		if(result == 1) {
 			return new ResponseEntity<>(storeVo,  HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

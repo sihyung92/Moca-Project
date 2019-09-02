@@ -247,7 +247,58 @@ public class StoreServiceImpl implements StoreService{
 	}
 	
 	@Override
-	public StoreVo editStoreImg(int store_id, MultipartFile[] newFiles, String[] oldStoreImgArr,
+	public int editStoreLogo(int store_Id, MultipartFile newFile, String delStoreLogo) {
+		String uploadPath = "logo";
+		S3Util s3 = new S3Util();
+		
+		//삭제된 이미지 s3에서 파일 삭제
+		if(!delStoreLogo.equals("")) {
+			
+			//프랜차이즈인 경우 or 서버 내부의 기본 이미지인 경우 이미지 삭제하지 않
+			String category = storeDao.selectCategoryByStoreId(store_Id);
+			logger.debug("delStoreLogo : "+delStoreLogo +", category" +category +",!category.contains(\"프랜차이즈\") " +!category.contains("프랜차이즈"));
+			if (!category.contains("프랜차이즈") && !delStoreLogo.contains("/moca/resources/")) {
+				String pathUu_idOriginName = delStoreLogo.split(".com/")[1];
+				String [] pathUu_idOriginName2 = pathUu_idOriginName.split("_");
+				s3.fileDelete(pathUu_idOriginName);	
+				s3.fileDelete(pathUu_idOriginName2[0]+"_thumbnail_"+pathUu_idOriginName2[1]);
+			}
+			
+
+		}
+		
+		
+		logger.debug("originalName: " + newFile.getOriginalFilename());
+		logger.debug("size : " +  newFile.getSize());
+		logger.debug("contentType : " + newFile.getContentType());
+        
+		ImageVo imgaeVo = null;
+        if((newFile.getSize() != 0) && newFile.getContentType().contains("image")) {
+        	
+			try {
+				imgaeVo = UploadFileUtils.uploadFile(uploadPath, newFile.getOriginalFilename(), newFile.getBytes());
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}            	
+        }
+		
+		
+        Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("STORE_ID", store_Id);
+    	map.put("LOGOIMG", imgaeVo.getUrl());
+
+
+		//storeVo내용으로 DB 내용 수정    		
+		return storeDao.updateStoreLogo(map);
+	}
+	
+	@Override
+	public int editStoreImg(int store_id, MultipartFile[] newFiles, String[] oldStoreImgArr,
 			String[] delStoreImgArr) {
 		String uploadPath = "store";
 		S3Util s3 = new S3Util();
@@ -301,21 +352,7 @@ public class StoreServiceImpl implements StoreService{
     	}
 
 		//storeVo내용으로 DB 내용 수정    		
-		int result = storeDao.updateStoreImg(map);
-		
-		if(result ==1) {
-			StoreVo storeVo = new StoreVo();
-			storeVo.setStore_Id((int) map.get("STORE_ID"));
-			storeVo.setStoreImg1((String) map.get("STOREIMG1"));
-			storeVo.setStoreImg2((String)map.get("STOREIMG2"));
-			storeVo.setStoreImg3((String)map.get("STOREIMG3"));
-			System.out.println(storeVo.toString());
-			return storeVo;
-		}else {
-			return null;
-		}
-		
-		
+		return storeDao.updateStoreImg(map);		
 	}
 	
 	
@@ -570,8 +607,7 @@ public class StoreServiceImpl implements StoreService{
 		}
 		return -1;
 	}
-
-
+	
 
 
 }

@@ -94,7 +94,8 @@
         }else if(JSON.stringify(userInfo.platformType)=='"NULL_VAL"'){
             $('.just-use-user').css('display','none');    
         }else{
-           
+
+            /*
             var uiGender = '${sessionScope.login.gender}';
             var uiBirthday = '${sessionScope.login.birthday}';
             var uiBarista = '${sessionScope.login.barista}';
@@ -163,6 +164,7 @@
             $('#profile-icon').css('border-top-right-radius','50% 50%');
             $('#profile-icon').css('border-bottom-left-radius','50% 50%');
             $('#profile-icon').css('border-bottom-right-radius','50% 50%');
+            */
         }
         
         //로그인 기능 처리
