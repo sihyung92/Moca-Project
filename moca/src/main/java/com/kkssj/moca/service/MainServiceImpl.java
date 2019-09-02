@@ -57,7 +57,7 @@ public class MainServiceImpl implements MainService{
 	}
 
 	@Override
-	public List<StoreVo> getFollowersStoresList(String id) {
+	public List<StoreVo> getFollowersStoresList(int id) {
 		return storeDao.selectFollowersStoresList(id);
 	}
 }

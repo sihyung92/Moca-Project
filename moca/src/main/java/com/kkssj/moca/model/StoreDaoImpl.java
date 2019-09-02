@@ -118,7 +118,7 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
-	public List<StoreVo> selectFollowersStoresList(String id) {
+	public List<StoreVo> selectFollowersStoresList(int id) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectFollowersStoresList", id);
 	} 
 }

@@ -88,7 +88,7 @@
 		WHERE rownum<16 ORDER BY rownum
 	 ]]>
   </select> 
-  <select id="selectFollowersStoresList" parameterType="java.lang.String" resultType="com.kkssj.moca.model.entity.StoreVo">
+  <select id="selectFollowersStoresList" parameterType="INTEGER" resultType="com.kkssj.moca.model.entity.StoreVo">
   		SELECT STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, ROADADDRESS, VIEWCNT, AVERAGELEVEL, REVIEWCNT
   		FROM STORE WHERE STORE_ID IN
   		(SELECT STORE_ID FROM REVIEW WHERE ACCOUNT_ID IN (SELECT FOLLOWING FROM FOLLOW WHERE FOLLOWER = #{id}) AND AVERAGELEVEL>=8)
