@@ -407,6 +407,7 @@ public class StoreController {
 			@RequestParam("delStoreImg") String delStoreImg, @RequestParam("oldStoreImg") String oldStoreImg, 
 			StoreVo storeVo, HttpSession session){
 		
+		
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -415,23 +416,35 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
+
+		
+		
 		//세션이 작동했다고 가정
 		String[] delStoreImgArr = delStoreImg.split(",");
 		String[] oldStoreImgArr = oldStoreImg.split(",");
-		if((newFiles.length+delStoreImgArr.length)>3) {
+		
+		//수정한 내용이 없는 경우
+		if(oldStoreImgArr.length ==3 ) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		if((newFiles.length+oldStoreImgArr.length)>3) {
     		return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
     	}
 		
 		//logger
-		logger.debug(delStoreImg);	
-		logger.debug(oldStoreImg);
 		for (int i = 0; i < newFiles.length; i++) {
 			logger.debug(newFiles[i].getOriginalFilename());
 		}
-		logger.debug(storeVo.toString());	
+		for (int i = 0; i < oldStoreImgArr.length; i++) {
+			logger.debug("old : "+oldStoreImgArr[i]);			
+		}
+		for (int i = 0; i < delStoreImgArr.length; i++) {
+			logger.debug("del : "+delStoreImgArr[i]);				
+		}
+		logger.debug(storeVo.toString());
 		
 		//json으로 수정 내용 전송
-		storeVo = storeService.editStoreImg(storeVo, newFiles, delStoreImgArr);
+		storeVo = storeService.editStoreImg(storeVo.getStore_Id(), newFiles, oldStoreImgArr, delStoreImgArr);
 		
 		//새롭게 storVo 받기(storeImgList 포함해서)
 		List<ImageVo> imageList = storeService.getStoreImgList(storeVo.getStore_Id());

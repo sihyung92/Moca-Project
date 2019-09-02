@@ -37,5 +37,7 @@ public interface StoreDao {
 	List<StoreVo> selectBestStoresList();
 	
 	List<StoreVo> selectTakeoutStoresList(Map<String, String> variables);
+
+	int updateStoreImg(Map<String, Object> map);
 	
 }

@@ -247,6 +247,79 @@ public class StoreServiceImpl implements StoreService{
 	}
 	
 	@Override
+	public StoreVo editStoreImg(int store_id, MultipartFile[] newFiles, String[] oldStoreImgArr,
+			String[] delStoreImgArr) {
+		String uploadPath = "store";
+		S3Util s3 = new S3Util();
+		String[] newStoreImgArr = new String[newFiles.length];
+		
+		
+		//삭제된 이미지 s3에서 파일 삭제
+		for (int i = 0; i < delStoreImgArr.length; i++) {
+			if(!delStoreImgArr[i].equals("")) {
+				String pathUu_idOriginName = delStoreImgArr[i].split(".com/")[1];
+				s3.fileDelete(pathUu_idOriginName);				
+			}
+		}
+		
+		//s3에서 파일 추가
+		//S3에 파일 업로드
+		MultipartFile file;
+    	for (int i = 0; i < newFiles.length; i++) {
+
+    		file = newFiles[i];
+    			
+    		logger.debug("originalName: " + file.getOriginalFilename());
+    		logger.debug("size : " +  file.getSize());
+    		logger.debug("contentType : " + file.getContentType());
+            
+            
+            if((file.getSize() != 0) && file.getContentType().contains("image")) {
+            	ImageVo imgaeVo;
+				try {
+					imgaeVo = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
+					newStoreImgArr[i] = imgaeVo.getUrl();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}            	
+            }
+		}
+    	
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("STORE_ID", store_id);
+    	for(int i=0; i<oldStoreImgArr.length; i++) {
+    		map.put("STOREIMG"+(i+1), oldStoreImgArr[i]);
+    		logger.debug("oldStoreImg STOREIMG"+(i+1)+(String)map.get("STOREIMG"+(i+1)));
+    	}
+    	for(int i=oldStoreImgArr.length; i< oldStoreImgArr.length+newStoreImgArr.length; i++) {
+    		map.put("STOREIMG"+(i+1), newStoreImgArr[i-oldStoreImgArr.length]);
+    		logger.debug("newStoreImg STOREIMG"+(i+1)+(String)map.get("STOREIMG"+(i+1)));
+    	}
+
+		//storeVo내용으로 DB 내용 수정    		
+		int result = storeDao.updateStoreImg(map);
+		
+		if(result ==1) {
+			StoreVo storeVo = new StoreVo();
+			storeVo.setStore_Id((int) map.get("STORE_ID"));
+			storeVo.setStoreImg1((String) map.get("STOREIMG1"));
+			storeVo.setStoreImg2((String)map.get("STOREIMG2"));
+			storeVo.setStoreImg3((String)map.get("STOREIMG3"));
+			System.out.println(storeVo.toString());
+			return storeVo;
+		}else {
+			return null;
+		}
+		
+		
+	}
+	
+	
+	@Override
 	public ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails) {
 		try {
 			String uploadPath = "review";
@@ -498,17 +571,7 @@ public class StoreServiceImpl implements StoreService{
 		return -1;
 	}
 
-	@Override
-	public StoreVo editStoreImg(StoreVo storeVo, MultipartFile[] newFiles, String[] delStoreImgArr) {
-		//DB에서 삭제된 이미지 제거
-		
-		//파일 추가
-		
-		//추가된 파일 storeVo에 내용 추가
-		
-		//storeVo내용으로 DB 내용 수정
-			
-		return null;
-	}
+
+
 
 }
