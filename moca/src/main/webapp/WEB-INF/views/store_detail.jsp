@@ -155,9 +155,9 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=11"/>"></script>
 	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=11"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=1"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
 		var fileBuffer;

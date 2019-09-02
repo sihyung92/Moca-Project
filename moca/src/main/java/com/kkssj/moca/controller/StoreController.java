@@ -403,7 +403,7 @@ public class StoreController {
 	//카페 대표이미지 수정
 	@PostMapping("/storeImg/{store_Id}")
 	@ResponseBody
-	public ResponseEntity editStoreImg(@RequestParam("storeFiles") MultipartFile[] newFiles,
+	public ResponseEntity editStoreImg(@RequestParam("newStoreFiles") MultipartFile[] newFiles,
 			@RequestParam("delStoreImg") String delStoreImg, @RequestParam("oldStoreImg") String oldStoreImg, 
 			StoreVo storeVo, HttpSession session){
 		
@@ -417,12 +417,19 @@ public class StoreController {
 		}
 		
 
+		logger.debug(delStoreImg.equals("") +", "+oldStoreImg.equals(""));
 		
-		
-		//세션이 작동했다고 가정
+		//check
 		String[] delStoreImgArr = delStoreImg.split(",");
+		if(delStoreImg.equals("")) {
+			delStoreImgArr = new String[0];
+		}
 		String[] oldStoreImgArr = oldStoreImg.split(",");
+		if(oldStoreImg.equals("")) {
+			oldStoreImgArr = new String[0];
+		}
 		
+		logger.debug(oldStoreImgArr.length +", "+newFiles.length+ ", "+oldStoreImgArr.length);
 		//수정한 내용이 없는 경우
 		if(oldStoreImgArr.length ==3 ) {
 			return new ResponseEntity<>(HttpStatus.OK);

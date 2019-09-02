@@ -75,7 +75,7 @@ var editStoreImg = function(){
 	
 	if(fileSize >0){
 		for(var i=0 ; i < fileSize ; i ++){
-			storeImgFormData.append("storeFiles",fileBuffer[i]);
+			storeImgFormData.append("newStoreFiles",fileBuffer[i]);
 			console.log(i,fileBuffer[i]);
 		}
 	}
@@ -98,7 +98,7 @@ var editStoreImg = function(){
 		success: function(storeVo) {
 			console.log('ajax 통신 성공');
 			
-			//파일 수정
+			location.reload();
 			
 		},
 		error: function(error) {
@@ -147,7 +147,7 @@ var editStoreLogo = function(){
 		success: function(storeVo) {
 			console.log('ajax 통신 성공');
 			
-			//새로고침
+			location.reload();
 			
 		},
 		error: function(error) {

@@ -272,11 +272,15 @@ public class StoreServiceImpl implements StoreService{
 		logger.debug("size : " +  newFile.getSize());
 		logger.debug("contentType : " + newFile.getContentType());
         
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_Id);
 		ImageVo imgaeVo = null;
         if((newFile.getSize() != 0) && newFile.getContentType().contains("image")) {
         	
 			try {
 				imgaeVo = UploadFileUtils.uploadFile(uploadPath, newFile.getOriginalFilename(), newFile.getBytes());
+				
+		    	map.put("LOGOIMG", imgaeVo.getUrl());
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -285,13 +289,9 @@ public class StoreServiceImpl implements StoreService{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}            	
+        }else {
+        	map.put("LOGOIMG", null);
         }
-		
-		
-        Map<String, Object> map = new HashMap<String, Object>();
-    	map.put("STORE_ID", store_Id);
-    	map.put("LOGOIMG", imgaeVo.getUrl());
-
 
 		//storeVo내용으로 DB 내용 수정    		
 		return storeDao.updateStoreLogo(map);
