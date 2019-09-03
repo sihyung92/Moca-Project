@@ -313,6 +313,9 @@
 			
 			//수정 버튼 클릭시
 			editBtn.click(function(){
+				$('.storeLevel').css('display','')
+				$('.level').css('display','none')
+				
 				//파일 버퍼 내용 비우기
 				fileBuffer = [];
 				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
@@ -326,6 +329,8 @@
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
+				;
+				
 				editReview();
 			})
 			
@@ -333,6 +338,9 @@
 				//모달에 있는 데이터 없애고 
 				fileBuffer = [];
 				clearReviewModalData();
+				$('.storeLevel').css('display','none')
+				$('.level').css('display','')
+				
 				reviewModal.find('#saveReviewBtn').css('display','')
 				reviewModal.find('#editReviewBtn').css('display','none')
 				$('#reviewModal').modal("show");		//리뷰 모달창 show
@@ -649,7 +657,17 @@
 				editStoreImg();
 			})
 
+			//평점을 입력 했을때 -> 평점 대로 5가지 점수를 메김
+			$('#level').change(function(){
+				$('.storeLevel').css('display','')
+				$('.level').css('display','none')
+				console.log($('#level').val())
+				$('.storeLevel').find('select').val($('#level').val())
+			})
+
 		});
+
+		
 
 	</script>
 </head>
@@ -1060,7 +1078,7 @@
 							<label for="review-content">후기</label>
 							<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
 						</div>
-						<div class="form-group">
+						<div class="form-group storeLevel level">
 							<label for="level">평점</label>
 							<select id="level" name="level" class="form-control">
 								<option>1</option>
@@ -1075,14 +1093,14 @@
 								<option>10</option>
 							</select>
 						</div>	
-						<div class="form-group">
+						<div class="form-group storeLevel">
 							<label for="taste-level">맛</label>
 							<select id="taste-level" name="tasteLevel" class="form-control">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option selected="selected">5</option>
+								<option>5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
@@ -1090,14 +1108,14 @@
 								<option>10</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-group storeLevel">
 							<label for="price-level">가격</label>
 							<select id="price-level" name="priceLevel" class="form-control">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option selected="selected">5</option>
+								<option>5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
@@ -1105,14 +1123,14 @@
 								<option>10</option>
 							</select>
 						</div>	
-						<div class="form-group">
+						<div class="form-group storeLevel">
 							<label for="service-level">서비스</label>
 							<select id="service-level" name="serviceLevel" class="form-control">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option selected="selected">5</option>
+								<option>5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
@@ -1120,14 +1138,14 @@
 								<option>10</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-group storeLevel">
 							<label for="mood-level">분위기</label>
 							<select id="mood-level" name="moodLevel" class="form-control">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option selected="selected">5</option>
+								<option>5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
@@ -1135,14 +1153,14 @@
 								<option>10</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-group storeLevel">
 							<label for="convenience-level">편의성</label>
 							<select id="convenience-level" name="convenienceLevel" class="form-control">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option selected="selected">5</option>
+								<option>5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
