@@ -1,21 +1,19 @@
 package com.kkssj.moca.controller;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.service.AccountService;
 
 @Controller
-@SessionAttributes("login")
 public class ResearchController {
 	@Inject
 	AccountService accountService;
@@ -24,24 +22,21 @@ public class ResearchController {
 	
 	@PostMapping(value = "/research")
 	@ResponseBody
-	public ResponseEntity researchInsert(@RequestBody AccountVo accountVo, Model model){
+	public ResponseEntity researchInsert(@RequestBody AccountVo accountVo, HttpServletRequest req){
 		AccountVo returnVo = accountService.researchInsert(stringFilter(accountVo));
 		
 		if(accountVo.getBarista()==0||accountVo.getGender()==0||accountVo.getBirthday()==null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else if(returnVo==null) {
-			//model.addAttribute("login",new AccountVo(0, 0, 0, 0, null, "\"NULL_VAL\"", null, null, null, 0, 0, null));
 			
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else {
-			//���� ���� ������Ʈ
-			model.addAttribute("login", returnVo);
+			req.getSession().setAttribute("login", returnVo);
 			
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 	}
 	
-	//�ܼ� ���ڿ� ��Ʈ�� ������ �Լ�
 		public AccountVo stringFilter(AccountVo vo) {
 			if("kakao".equals(vo.getPlatformType())) {
 				AccountVo answer = new AccountVo(vo.getAccount_id(),vo.getFollowCount(),vo.getReviewCount(),vo.getPlatformId(),

@@ -129,7 +129,8 @@
         //로그인 기능 처리
     	kakaoLogin();
     	naverLogin();
-       
+        //회원탈퇴 기능 처리
+        signOut();
         //설문 버튼 처리
         
     });
@@ -210,13 +211,13 @@
                         alert(JSON.stringify(errorMsg));
                         
 				   		Kakao.Auth.logout();
-						f5();
+
+                        f5();
 					},
 					success: function(fromServer) {
-						
 				   		Kakao.Auth.logout();
-                        alert('     ※ 모카를 이용해주셔서 감사합니다! ※\n          다른 계정으로 로그인하려면\n          해당 SNS계정을 로그아웃 해주세요');
-						f5();
+                        alert('     ※ 모카를 이용해주셔서 감사합니다! ');
+						//f5();
 					}
 				});
     }
@@ -234,6 +235,12 @@
 
         /* 설정정보를 초기화하고 연동을 준비 */
         naverLogin.init();
+    }
+        
+    function signOut(){
+        $('#sign-out').click(function(){
+            Kakao.API.request({ url: '/v1/user/unlink', });
+        });
     }
  
     </script>
@@ -310,4 +317,7 @@
 		<jsp:include page="../../resources/template/modal.jsp" flush="true"></jsp:include>
 	</div>
     
+    <div>
+        <button id="sign-out">회원탈퇴</button>
+    </div>
 </nav>
