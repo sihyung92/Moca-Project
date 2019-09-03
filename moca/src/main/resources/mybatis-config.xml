@@ -4,6 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
   <mappers>
+    <mapper resource="mybatis/researchQuestionMapper.xml"/>
     <mapper resource="mybatis/researchMapper.xml"/>
   	<mapper resource="mybatis/accountMapper.xml"/>
     <mapper resource="mybatis/storeMapper.xml"/>

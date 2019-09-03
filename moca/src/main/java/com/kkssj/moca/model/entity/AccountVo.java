@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class AccountVo {
 
-	int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp;
+	int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp, isResearch;
 	String nickname, platformType, profileImage, thumbnailImage;
 	
 	/*email 추가*/
@@ -37,12 +37,20 @@ public class AccountVo {
 		this.birthday = birthday;
 	}
 
+	public int getIsResearch() {
+		return isResearch;
+	}
+
+	public void setIsResearch(int isResearch) {
+		this.isResearch = isResearch;
+	}
 	public AccountVo() {
 	}
 	
+
 public AccountVo(int account_id, int followCount, int reviewCount, int platformId, int accountLevel, int isMine,
 			int exp, String nickname, String platformType, String profileImage, String thumbnailImage, String email,
-			int gender, int barista, Date birthday) {
+			int gender, int barista, Date birthday, int isResearch) {
 		super();
 		this.account_id = account_id;
 		this.followCount = followCount;
@@ -59,6 +67,7 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 		this.gender = gender;
 		this.barista = barista;
 		this.birthday = birthday;
+		this.isResearch = isResearch;
 	}
 
 //	public AccountVo(int account_id, int followCount, int reviewCount, int platformId, String nickname,
@@ -192,9 +201,10 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 	@Override
 	public String toString() {
 		return "AccountVo [account_id=" + account_id + ", followCount=" + followCount + ", reviewCount=" + reviewCount
-				+ ", platformId=" + platformId + ", nickname=" + nickname + ", platformType=" + platformType
+				+ ", platformId=" + platformId + ", accountLevel=" + accountLevel + ", isMine=" + isMine + ", exp="
+				+ exp + ", isResearch=" + isResearch + ", nickname=" + nickname + ", platformType=" + platformType
 				+ ", profileImage=" + profileImage + ", thumbnailImage=" + thumbnailImage + ", email=" + email
-				+ ", gender=" + gender + ", birthday=" + birthday + ", barista=" + barista + "]";
+				+ ", gender=" + gender + ", barista=" + barista + ", birthday=" + birthday + "]";
 	}
 
 	@Override

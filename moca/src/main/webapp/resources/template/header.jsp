@@ -217,7 +217,7 @@
 					success: function(fromServer) {
 				   		Kakao.Auth.logout();
                         alert('     ※ 모카를 이용해주셔서 감사합니다! ');
-						//f5();
+						f5();
 					}
 				});
     }
