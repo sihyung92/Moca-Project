@@ -155,9 +155,9 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=14"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=18"/>"></script>
 	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=14"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=18"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
 		var fileBuffer;
@@ -737,7 +737,7 @@
 											<div class="item <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<img src="<c:url value="${StoreImg.url }" />" alt="..." class="d-block w-100">
-										<div class="carousel-caption">...</div>
+								<div class="carousel-caption">...</div>
 							</div>
 							</c:forEach>
 							</c:if>
@@ -849,6 +849,14 @@
 								</div>
 							</c:if>
 							<div class="reviewer-info col-md-2">
+								<div class="profile-div">
+									<c:if test="${empty reviewVo.thumbnailImage}">
+										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
+									</c:if>
+									<c:if test="${not empty reviewVo.thumbnailImage}">
+										<img class="accountProfile img-circle"  src="<c:url value="${reviewVo.thumbnailImage }" />" alt="profile" style="width:100px;">
+									</c:if>
+								</div>
 								<div class="nickName-div">
 									<label>별명</label>	
 									<span class="reviewer-nickName">${reviewVo.nickName} </span>
@@ -952,17 +960,25 @@
 			<button type="button" class="btn-delete btn btn-default">삭제</button>
 		</div>
 		<div class="reviewer-info col-md-2">
+			<div class="profile-div">
+				<c:if test="${empty accountVo.thumbnailImage}">
+					<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
+				</c:if>
+				<c:if test="${not empty accountVo.thumbnailImage}">
+					<img class="accountProfile img-circle"  src="<c:url value="${accountVo.thumbnailImage }" />" alt="profile" style="width:100px;">
+				</c:if>
+			</div>
 			<div class="nickName-div">
 				<label>별명</label>	
-				<span class="reviewer-nickName">${reviewVo.nickName} </span>
+				<span class="reviewer-nickName">${accountVo.nickname }</span>
 			</div>
 			<div class="follows-div">
 				<label>팔로워 수</label>
-				<span class="reviewer-followers">${reviewVo.followCount}</span>
+				<span class="reviewer-followers">${accountVo.followCount }</span>
 			</div>
 			<div class="reviews-div">
 				<label>리뷰 수</label>
-				<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
+				<span class="reviewer-reviews">${accountVo.reviewCount }</span>
 			</div>
 		</div>
 		<div class="review-info col-md-8">
@@ -1045,13 +1061,28 @@
 							<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
 						</div>
 						<div class="form-group">
+							<label for="level">평점</label>
+							<select id="level" name="level" class="form-control">
+								<option>1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option selected="selected">5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+							</select>
+						</div>	
+						<div class="form-group">
 							<label for="taste-level">맛</label>
 							<select id="taste-level" name="tasteLevel" class="form-control">
 								<option>1</option>
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option>5</option>
+								<option selected="selected">5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
@@ -1066,7 +1097,7 @@
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option>5</option>
+								<option selected="selected">5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
@@ -1081,7 +1112,7 @@
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option>5</option>
+								<option selected="selected">5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
@@ -1096,7 +1127,7 @@
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option>5</option>
+								<option selected="selected">5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>
@@ -1111,7 +1142,7 @@
 								<option>2</option>
 								<option>3</option>
 								<option>4</option>
-								<option>5</option>
+								<option selected="selected">5</option>
 								<option>6</option>
 								<option>7</option>
 								<option>8</option>

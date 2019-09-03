@@ -22,6 +22,7 @@ public class ReviewVo {
 	private int isLike;
 	
 	//ACCOUNT table
+	private String thumbnailImage;
 	private String nickName;
 	private int followCount, reviewCount;
 	
@@ -219,23 +220,37 @@ public class ReviewVo {
 	public void setStoreLogoImg(String storeLogoImg) {
 		this.storeLogoImg = storeLogoImg;
 	}
-	//mypage용도//
-
-
-	@Override
-	public String toString() {
-		return "ReviewVo [review_id=" + review_id + ", account_id=" + account_id + ", store_id=" + store_id
-				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate
-				+ ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel
-				+ ", moodLevel=" + moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel="
-				+ averageLevel + ", likeCount=" + likeCount + ", hateCount=" + hateCount + ", isLike=" + isLike
-				+ ", nickName=" + nickName + ", followCount=" + followCount + ", reviewCount=" + reviewCount
-				+ ", isMine=" + isMine + "]";
+	
+	public String getThumbnailImage() {
+		return thumbnailImage;
 	}
+	public void setThumbnailImage(String thumbnailImage) {
+		this.thumbnailImage = thumbnailImage;
+	}
+	
+	//mypage용도//
+	
+
+
+
+	
+
+
+
+
 
 	//5가지 level을 가지고 소숫점 1자리까지 평점 계산
 	public void calAverageLevel() {
 		this.averageLevel = Math.round(((this.tasteLevel + this.priceLevel + this.serviceLevel + this.moodLevel + this.convenienceLevel)/5.0)*10)/10.0;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "ReviewVo [review_id=" + review_id + ", reviewContent=" + reviewContent + ", thumbnailImage="
+				+ thumbnailImage + ", nickName=" + nickName + ", followCount=" + followCount + ", reviewCount="
+				+ reviewCount + ", isMine=" + isMine + "]";
 	}
 
 

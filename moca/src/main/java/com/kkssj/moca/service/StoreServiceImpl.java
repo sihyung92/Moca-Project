@@ -159,8 +159,8 @@ public class StoreServiceImpl implements StoreService{
 			e.printStackTrace();
 		}
 		
-		logger.debug("reviewImageList size : "+reviewImageList);
-		logger.debug("reviewList size : "+reviewList);
+		logger.debug("reviewImageList size : "+reviewImageList.size());
+		logger.debug("reviewList size : "+reviewList.size());
 		
 		for(int i=0; i<reviewImageList.size(); i++) {
 			reviewImageList.get(i).setUrl(reviewImageList.get(i).getUrl());
@@ -172,20 +172,22 @@ public class StoreServiceImpl implements StoreService{
 			ReviewVo reviewVo = reviewList.get(reviewListIdx);
 			List<ImageVo> tempReviewImageList = new ArrayList<ImageVo>();
 			
+			logger.debug(reviewVo.toString());		
 			while(imageListIdx < reviewImageList.size()) {
 				ImageVo imageVo = reviewImageList.get(imageListIdx);
 	
-				logger.debug(reviewVo.toString());
+				
 				logger.debug(imageVo.toString());
 				if(reviewVo.getReview_id() == imageVo.getReview_id()) {
 					tempReviewImageList.add(imageVo);
 					imageListIdx++;
 					
 				}else {
-					reviewList.get(reviewListIdx).setImageList(tempReviewImageList);
 					break;
 				}
 			}
+			reviewList.get(reviewListIdx).setImageList(tempReviewImageList);
+			System.out.println();
 			
 		}
 		
