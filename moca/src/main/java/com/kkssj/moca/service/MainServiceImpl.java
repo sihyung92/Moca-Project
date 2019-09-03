@@ -1,5 +1,6 @@
 package com.kkssj.moca.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,9 +61,73 @@ public class MainServiceImpl implements MainService{
 	public List<ReviewVo> getBestReviews() {
 		return reviewDao.selectBestReviews();
 	}
-	
+	 
 	@Override	
 	public List<StoreVo> getFollowersStoresList(int id) {
 		return storeDao.selectFollowersStoresList(id);
+	}
+
+	@Override
+	public List<StoreVo> getGoodMoodStoresList(Map<String, String> variables) {
+		List<StoreVo> alist = new ArrayList<StoreVo>();
+		alist = storeDao.selectGoodMoodStoresList(variables);
+		if(variables!=null && alist.size()<5) {
+			variables.put("trial", "2");
+			alist = storeDao.selectGoodMoodStoresList(variables);
+		}
+		if(variables!=null && alist.size()<5) {
+			variables.put("x", null);
+			variables.put("y", null); 
+			alist = storeDao.selectGoodMoodStoresList(variables);
+		}
+		return alist;
+	}
+
+	@Override
+	public List<StoreVo> getGoodTasteStoresList(Map<String, String> variables) {
+		List<StoreVo> alist = new ArrayList<StoreVo>();
+		alist = storeDao.selectGoodTasteStoresList(variables);
+		if(variables!=null && alist.size()<5) {
+			variables.put("trial", "2");
+			alist = storeDao.selectGoodTasteStoresList(variables);
+		}
+		if(variables!=null && alist.size()<5) {
+			variables.put("x", null);
+			variables.put("y", null); 
+			alist = storeDao.selectGoodTasteStoresList(variables);
+		}
+		return alist;
+	}
+
+	@Override
+	public List<StoreVo> getGoodPriceStoresList(Map<String, String> variables) {
+		List<StoreVo> alist = new ArrayList<StoreVo>();
+		alist = storeDao.selectGoodPriceStoresList(variables);
+		if(variables!=null && alist.size()<5) {
+			variables.put("trial", "2");
+			alist = storeDao.selectGoodPriceStoresList(variables);
+		}
+		if(variables!=null && alist.size()<5) {
+			variables.put("x", null);
+			variables.put("y", null); 
+			alist = storeDao.selectGoodPriceStoresList(variables);
+		}
+		return alist;
+	}
+
+	@Override
+	public List<StoreVo> getTagStoresList(Map<String, String> variables) {
+		List<StoreVo> alist = new ArrayList<StoreVo>();
+		alist = storeDao.selectTagStoresList(variables);
+		if(variables!=null && alist.size()<5) {
+			variables.put("trial", "2");
+			alist = storeDao.selectGoodPriceStoresList(variables);
+		}
+		if(variables!=null && alist.size()<5) {
+			variables.put("x", null);
+			variables.put("y", null); 
+			alist = storeDao.selectGoodPriceStoresList(variables);
+		}
+		return alist;
 	}
 }

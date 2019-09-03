@@ -22,4 +22,12 @@ public interface MainService {
 	List<ReviewVo> getBestReviews();
 	
 	List<StoreVo> getFollowersStoresList(int id);
+	
+	List<StoreVo> getGoodMoodStoresList(Map<String, String> variables);
+
+	List<StoreVo> getGoodTasteStoresList(Map<String, String> variables);
+
+	List<StoreVo> getGoodPriceStoresList(Map<String, String> variables);
+
+	List<StoreVo> getTagStoresList(Map<String, String> variables);
 }
