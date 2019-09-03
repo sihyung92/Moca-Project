@@ -52,5 +52,5 @@ public interface ReviewDao {
 
 	List<ImageVo> selectReviewImgListByAccountId(int accountId) throws SQLException;
 
-	
+	int selectAccountIdOfReviewByReviewId(int review_id) throws SQLException;
 }

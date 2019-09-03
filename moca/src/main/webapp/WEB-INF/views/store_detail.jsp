@@ -1079,11 +1079,11 @@
 						<div class="form-group">
 							<label for="tel" class="col-sm-2 control-label">전화번호</label>
 							<div class="col-sm-10">
-								<input type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:substring(storeVo.tel,0,3)}" />
+								<input type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:substring(storeVo.tel,0,fn:indexOf(storeVo.tel, '-'))}" />
 								-
-								<input type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,4,8)}" />
+								<input type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+1,fn:indexOf(storeVo.tel, '-')+5)}" />
 								-
-								<input type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,9,13)}" />
+								<input type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+6,fn:indexOf(storeVo.tel, '-')+10)}" />
 							</div>
 						</div>
 						<div class="form-group">

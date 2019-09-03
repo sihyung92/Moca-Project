@@ -46,6 +46,7 @@ public class MyPageController {
 		
 		
 		AccountVo currentPageAccount = mypageService.getAccountInfo(accountId);
+		currentPageAccount.setLevelName(currentPageAccount.getAccountLevel());
 		model.addAttribute("currentPageAccount",currentPageAccount);
 		logger.debug(currentPageAccount.toString());
 		
@@ -53,6 +54,11 @@ public class MyPageController {
 		if(accountId==accountVo.getAccount_id()) {
 			//isMine을 1로
 			accountVo.setIsMine(1);
+			accountVo.setExp(currentPageAccount.getExp());
+			accountVo.setAccountLevel(currentPageAccount.getAccountLevel());
+			accountVo.setMaxExp();
+			accountVo.setMinExp();
+			logger.debug(accountVo.toString());
 		}else {
 			accountVo.setIsMine(0);
 		}
@@ -301,4 +307,5 @@ public class MyPageController {
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
+	
 }

@@ -1,14 +1,18 @@
 package com.kkssj.moca.model.entity;
 
 import java.sql.Date;
+import java.util.Arrays;
 
 public class AccountVo {
+	
+	//등급별 maxExp
+	int maxExps[] = {0,30,100,300,1000,3000,6000,10000};
 
-	int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp;
-	String nickname, platformType, profileImage, thumbnailImage;
+	private int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp, maxExp, minExp;
+	private String nickname, platformType, profileImage, thumbnailImage, levelName;
 	
 	/*email 추가*/
-	String email;
+	private String email;
 	
 	int gender, barista;
 	Date birthday;
@@ -189,14 +193,69 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 		this.exp = exp;
 	}
 
+	//level에 따른 maxExp구하기
+	public int getMaxExp() {
+		return this.maxExp;
+	}
+
+	public void setMaxExp() {
+		this.maxExp+=maxExps[this.accountLevel];
+		System.out.println("maxExp"+this.maxExp);
+	}
+
+	public String getLevelName() {
+		return this.levelName;
+	}
+	
+	public void setLevelName(int level) {
+		String levelName = null;
+		switch (level) {
+		case 1:
+			levelName = "라이트";
+			break;
+		case 2:
+			levelName = "시나몬";
+			break;
+		case 3:
+			levelName = "미디움";
+			break;
+		case 4:
+			levelName = "하이";
+			break;
+		case 5:
+			levelName = "시티";
+			break;
+		case 6:
+			levelName = "롱시티";
+			break;
+		case 7:
+			levelName = "프렌치";
+			break;
+		case 8:
+			levelName = "이탈리안";
+			break;
+		}
+		this.levelName = levelName;
+	}
+	
+	public int getMinExp() {
+		return this.minExp;
+	}
+
+	public void setMinExp() {
+		this.minExp+=maxExps[this.accountLevel-1];
+		System.out.println("minExp"+this.minExp);
+	}
+	
 
 	@Override
 	public String toString() {
-		return "AccountVo [account_id=" + account_id + ", followCount=" + followCount + ", reviewCount=" + reviewCount
-				+ ", platformId=" + platformId + ", accountLevel=" + accountLevel + ", isMine=" + isMine + ", exp="
-				+ exp + ", nickname=" + nickname + ", platformType=" + platformType + ", profileImage=" + profileImage
-				+ ", thumbnailImage=" + thumbnailImage + ", email=" + email + ", gender=" + gender + ", barista="
-				+ barista + ", birthday=" + birthday + "]";
+		return "AccountVo [maxExps=" + Arrays.toString(maxExps) + ", account_id=" + account_id + ", followCount="
+				+ followCount + ", reviewCount=" + reviewCount + ", platformId=" + platformId + ", accountLevel="
+				+ accountLevel + ", isMine=" + isMine + ", exp=" + exp + ", maxExp=" + maxExp + ", minExp=" + minExp
+				+ ", nickname=" + nickname + ", platformType=" + platformType + ", profileImage=" + profileImage
+				+ ", thumbnailImage=" + thumbnailImage + ", levelName=" + levelName + ", email=" + email + ", gender="
+				+ gender + ", barista=" + barista + ", birthday=" + birthday + "]";
 	}
 
 	@Override

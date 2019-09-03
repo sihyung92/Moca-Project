@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kkssj.moca.model.AccountDao;
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.StoreDao;
+import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
@@ -73,6 +74,19 @@ public class StoreServiceImpl implements StoreService{
 			System.out.println("result : "+result);
 			if(result>0) {
 				int history = storeDao.insertStoreInfoHistory(accountId, storeVo);
+				//가게 수정 하루에 한번만 포인트 지급
+				if(accountDao.selectExpLogByAccountId(accountId, "가게정보수정")==0) {
+					//로그인 exp 증가
+					accountDao.updateAccountExp(accountId, 5);
+					accountDao.insertExpLog(accountId, "가게정보수정", 5);
+					
+					//포인트가 레벨업 할만큼 쌓였는지 검사
+					AccountVo accountVoForExp = accountDao.selectByaccountId(accountId);
+					accountVoForExp.setMaxExp();
+					if(accountVoForExp.getExp() >= accountVoForExp.getMaxExp()) {
+						accountDao.updateAccountlevel(accountId);
+					}
+				}
 				System.out.println("history : "+history);
 			}
 		} catch (SQLException e) {
@@ -147,7 +161,6 @@ public class StoreServiceImpl implements StoreService{
 	
 	@Override
 	public List<ReviewVo> getReviewList(int accountId, int storeId) {
-
 		
 		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
 		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
@@ -228,8 +241,23 @@ public class StoreServiceImpl implements StoreService{
 				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);
 				
+				//리뷰 작성에 대한 exp 적립 및 로그 기록
+				int exp = 10;
+				String classification = "리뷰작성";
+				if(files!=null) {
+					exp += 5;
+					classification="사진리뷰작성";
+				}
+				accountDao.updateAccountExp(reviewVo.getAccount_id(), exp);
+				accountDao.insertExpLog(reviewVo.getAccount_id(), classification, exp);
 				
-				// 방금 입력한 reviewVo를 리턴  
+				//포인트가 레벨업 할만큼 쌓였는지 검사
+				AccountVo accountVo = accountDao.selectByaccountId(reviewVo.getAccount_id());
+				accountVo.setMaxExp();
+				if(accountVo.getExp() >= accountVo.getMaxExp()) {
+					accountDao.updateAccountlevel(reviewVo.getAccount_id());
+				}
+				// 방금 입력한 reviewVo를 리턴
 				return reviewVo;
 			}
 			
@@ -381,11 +409,49 @@ public class StoreServiceImpl implements StoreService{
 		try {
 			reviewDao.insertLikeHate(review_id, accountId, isLike );
 			ReviewVo reviewVo = reviewDao.selectLikeHateCount(review_id);
+			
+			String classification = "리뷰좋아요클릭";
+			int result=0;
+			int likeAccountId = reviewDao.selectAccountIdOfReviewByReviewId(review_id);
+			
 			if(isLike ==1) {
-				return reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()+1) ;
+				result = reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()+1);
+				
+				//자기아이디 자기가 좋아요 누르면 제외
+				if(likeAccountId!=accountId) {
+					//좋아요 받은 사람의 exp도 올려주기
+					accountDao.updateAccountExp(likeAccountId, 3);
+					accountDao.insertExpLog(likeAccountId, "리뷰좋아요받음", 3);
+					
+					//포인트가 레벨업 할만큼 쌓였는지 검사
+					AccountVo accountVo = accountDao.selectByaccountId(likeAccountId);
+					accountVo.setMaxExp();
+					if(accountVo.getExp() >= accountVo.getMaxExp()) {
+						accountDao.updateAccountlevel(likeAccountId);
+					}
+				}
 			}else { 
-				return reviewDao.updateHateCount(review_id, reviewVo.getHateCount()+1) ;
+				classification = "리뷰싫어요클릭";
+				result = reviewDao.updateHateCount(review_id, reviewVo.getHateCount()+1) ;
 			}
+			
+			//자기아이디 자기가 좋아요 누르면 제외
+			if(likeAccountId!=accountId) {
+				//리뷰 작성에 대한 exp 적립 및 로그 기록
+				accountDao.updateAccountExp(accountId, 1);
+				accountDao.insertExpLog(accountId, classification, 1);
+				
+				//포인트가 레벨업 할만큼 쌓였는지 검사
+				AccountVo accountVo = accountDao.selectByaccountId(accountId);
+				accountVo.setMaxExp();
+				if(accountVo.getExp() >= accountVo.getMaxExp()) {
+					accountDao.updateAccountlevel(accountId);
+				}
+			}
+			
+			
+			return result;
+			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -399,14 +465,51 @@ public class StoreServiceImpl implements StoreService{
 		try {
 			reviewDao.deleteLikeHate(review_id, accountId);
 			ReviewVo reviewVo = reviewDao.selectLikeHateCount(review_id);
+			
+			String classification = "리뷰좋아요클릭취소";
+			int result=0;
+			int likeAccountId = reviewDao.selectAccountIdOfReviewByReviewId(review_id);
+			
 			if(isLike ==1) {
-				return reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()-1) ;
+				
+				//자기아이디 자기가 좋아요 취소하면 제외
+				if(likeAccountId!=accountId) {
+					//좋아요 받은 사람의 exp도 올려주기
+					accountDao.updateAccountExp(likeAccountId, -3);
+					accountDao.insertExpLog(likeAccountId, "리뷰좋아요받음취소", -3);
+					
+					//취소된 포인트로 레벨 down을 해야하는지
+					AccountVo accountVo = accountDao.selectByaccountId(likeAccountId);
+					accountVo.setMinExp();
+					if(accountVo.getExp() < accountVo.getMinExp()) {
+						accountDao.updateAccountlevelDown(likeAccountId);
+					}
+				}
+				
+				result = reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()-1);
 			}else { 
-				return reviewDao.updateHateCount(review_id, reviewVo.getHateCount()-1) ;
+				result =  reviewDao.updateHateCount(review_id, reviewVo.getHateCount()-1);
 			}
 			
+			//자기아이디 자기가 좋아요 취소하면 제외
+			if(likeAccountId!=accountId) {
+				//리뷰 작성에 대한 exp 적립 및 로그 기록
+				accountDao.updateAccountExp(accountId, -1);
+				accountDao.insertExpLog(accountId, "리뷰좋아요취소", -1);
+				
+				//취소된 포인트로 레벨 down을 해야하는지
+				AccountVo accountVo = accountDao.selectByaccountId(accountId);
+				accountVo.setMinExp();
+				logger.debug("accountVo.getExp() : "+accountVo.getExp());
+				logger.debug("accountVo.getMinExp() : "+accountVo.getMinExp());
+				if(accountVo.getExp() < accountVo.getMinExp()) {
+					accountDao.updateAccountlevelDown(accountId);
+				}
+			}
+			
+			return result;
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return -1;

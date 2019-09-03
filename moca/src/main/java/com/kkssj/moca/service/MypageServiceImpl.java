@@ -113,6 +113,19 @@ public class MypageServiceImpl implements MypageService{
 	@Override
 	public int addFollow(int follower, int following) {
 		try {
+			if(follower!=following) {
+				//팔로우 받은사람 포인트 up
+				accountDao.updateAccountExp(following, 7);
+				accountDao.insertExpLog(following, "팔로우받음", 7);
+				
+				//포인트가 레벨업 할만큼 쌓였는지 검사
+				AccountVo accountVo = accountDao.selectByaccountId(following);
+				accountVo.setMaxExp();
+				if(accountVo.getExp() >= accountVo.getMaxExp()) {
+					accountDao.updateAccountlevel(following);
+				}
+			}
+			
 			return accountDao.insertFollow(follower,following);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -123,6 +136,20 @@ public class MypageServiceImpl implements MypageService{
 	@Override
 	public int deleteFollow(int follower, int following) {
 		try {
+			
+			if(follower!=following) {
+				//팔로우 취소된 사람 포인트 down
+				accountDao.updateAccountExp(following, -7);
+				accountDao.insertExpLog(following, "팔로우취소됨", -7);
+				
+				//취소된 포인트로 레벨 down을 해야하는지
+				AccountVo accountVo = accountDao.selectByaccountId(following);
+				accountVo.setMinExp();
+				if(accountVo.getExp() < accountVo.getMinExp()) {
+					accountDao.updateAccountlevelDown(following);
+				}
+			}
+			
 			return accountDao.deleteFollow(follower,following);
 		} catch (SQLException e) {
 			e.printStackTrace();

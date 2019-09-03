@@ -27,17 +27,46 @@ public class AccountServiceImpl implements AccountService {
 		
 		try {
 			AccountVo compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());
+			
 			if(compareVo==null) {	//로그인시 카카오로부터 받은 JSON => VO 로 조회한 값이 없다면
 				accountDao.insertUser(accountVo);	//새로이 JSON => VO를 DB에 입력한다.
 				
 				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//입력된 값으로 새로 조회해온다.
-				
 				return compareVo;
 			}else if(compareVo.hashCode()!=accountVo.hashCode()){	//HashCode로 비교한다 / 데이터가 있기는 한데 email이나 변동 가능한 값이 다른지 비교후 다르다면 JSON => VO로 수정한다. 현재 는 작동 안될듯.
 				accountDao.updateUser(accountVo.getPlatformType(),accountVo);
 				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//변경된 값으로 새로 조회해온다.
+				
+				//오늘날짜로 "로그인"이 하나도 없을 경우만
+				if(accountDao.selectExpLogByAccountId(compareVo.getAccount_id(), "로그인")==0) {
+					//로그인 exp 증가
+					accountDao.updateAccountExp(compareVo.getAccount_id(), 2);
+					accountDao.insertExpLog(compareVo.getAccount_id(), "로그인", 2);
+					
+					//포인트가 레벨업 할만큼 쌓였는지 검사
+					AccountVo accountVoForExp = accountDao.selectByaccountId(compareVo.getAccount_id());
+					accountVoForExp.setMaxExp();
+					if(accountVoForExp.getExp() >= accountVoForExp.getMaxExp()) {
+						accountDao.updateAccountlevel(accountVoForExp.getAccount_id());
+					}
+				}
+				
 				return compareVo;
 			}else {	//DB에 데이터도 있으며 값도 다르지 않은 경우 다시 이 DB속 VO(compareVo)를 리턴해준다(이때는 account_id가 제대로 설정된 VO로 받아옴)
+				
+				//오늘날짜로 "로그인"이 하나도 없을 경우만
+				if(accountDao.selectExpLogByAccountId(compareVo.getAccount_id(), "로그인")==0) {
+					//로그인 exp 증가
+					accountDao.updateAccountExp(compareVo.getAccount_id(), 2);
+					accountDao.insertExpLog(compareVo.getAccount_id(), "로그인", 2);
+					
+					//포인트가 레벨업 할만큼 쌓였는지 검사
+					AccountVo accountVoForExp = accountDao.selectByaccountId(compareVo.getAccount_id());
+					accountVoForExp.setMaxExp();
+					if(accountVoForExp.getExp() >= accountVoForExp.getMaxExp()) {
+						accountDao.updateAccountlevel(accountVoForExp.getAccount_id());
+					}
+				}
 				return compareVo;
 			}
 		} catch (SQLException e) {
@@ -70,6 +99,19 @@ public class AccountServiceImpl implements AccountService {
 			System.out.println(vo1.toString());
 			int cnt=accountDao.updateUser(vo1.getPlatformType(), vo1);
 			if(cnt==1) {
+				//"설문조사" 하나도 없을 경우만
+				if(accountDao.selectExpLogByAccountId(account_id, "설문조사")==0) {
+					//로그인 exp 증가
+					accountDao.updateAccountExp(account_id, 30);
+					accountDao.insertExpLog(account_id, "설문조사", 30);
+					
+					//포인트가 레벨업 할만큼 쌓였는지 검사
+					AccountVo accountVoForExp = accountDao.selectByaccountId(account_id);
+					accountVo.setMaxExp();
+					if(accountVoForExp.getExp() >= accountVoForExp.getMaxExp()) {
+						accountDao.updateAccountlevel(account_id);
+					}
+				}
 				return vo1;
 			}
 			

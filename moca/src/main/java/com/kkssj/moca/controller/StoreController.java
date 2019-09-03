@@ -110,20 +110,13 @@ public class StoreController {
 			accountVo = new AccountVo();
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
-		//회원만 가능하게 로그인 기능 구현되면 붙여넣을 것
-		//if(session.getAttribute("login")!==null) {
-			
-		//}
 
 		storeVo.setStore_Id(storeId);
 		logger.debug("storeId : " + storeId + " - updateStore");
 		logger.debug(storeVo.toString());
 
-		// 수정한 사람의 Id가 필요
-		int accountId = 1; // session에서 얻어오기
-
 		// edit store에서 store update, storeinfohistory insert
-		int isSuccess = storeService.editStore(accountId, storeVo);
+		int isSuccess = storeService.editStore(accountVo.getAccount_id(), storeVo);
 
 		if (isSuccess > 0) {
 			// 성공
@@ -457,17 +450,17 @@ public class StoreController {
 		for (int i = 0; i < categoryCheck.length; i++) {
 			if (category.contains(categoryCheck[i])) {
 				if (categoryCheck[i].equals("커피전문점")) {
-					String temp = "프랜차이즈";
-					for(int j=0; j<takeOutCafe.length; j++) {
-						if (category.contains(takeOutCafe[i])) {
-							temp+= ">테이크아웃";
-						}
-					}
-					category=temp;
+					category = "프랜차이즈";
 				} else {
 					category = categoryCheck[i];
 				}
 				break;
+			}
+		}
+		
+		for(int i=0; i<takeOutCafe.length; i++) {
+			if (name.contains(takeOutCafe[i])) {
+				category = "프랜차이즈>테이크아웃";
 			}
 		}
 

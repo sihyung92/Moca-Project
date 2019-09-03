@@ -2,6 +2,7 @@
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
 	<title>Home</title>
@@ -586,6 +587,7 @@
 					<button id="followBtn" class="btn btn-default" style="display:none;">팔로우</button><br>
 					<span id="nickName">${currentPageAccount.nickname}</span><br>
 					Lv.<span id="accountLevel">${currentPageAccount.accountLevel}</span>
+					<span id="levelName">(${currentPageAccount.levelName})</span>
 					<span class="glyphicon glyphicon-question-sign" aria-hidden="true"
 						id="levelGuide" data-toggle="popover" title="등급제도 안내"
 						data-content="8단계의 등급을 설명해요 나중에">
@@ -593,9 +595,9 @@
 					<c:if test="${accountVo.isMine eq 1}">
 					<div class="progress">
 						<div class="progress-bar progress-bar-info" role="progressbar"
-							aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
-							style="width: 20%">
-							20%
+							aria-valuenow="${accountVo.exp}" aria-valuemin="${accountVo.minExp}" aria-valuemax="${accountVo.maxExp}"
+							style="width: ${(accountVo.exp-accountVo.minExp)/(accountVo.maxExp)*100}%">
+							<fmt:formatNumber value="${accountVo.exp/accountVo.maxExp}" type="percent"></fmt:formatNumber>
 						</div>
 					</div>
 					</c:if>

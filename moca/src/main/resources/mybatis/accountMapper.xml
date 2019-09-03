@@ -77,4 +77,26 @@
   	GENDER=null, BIRTHDAY=null, BARISTA=0, ACCOUNTLEVEL=0, EXP=0 
   	WHERE ACCOUNT_ID=#{account_id}
   </update>
+  
+  <update id="updateAccountExp" parameterType="map">
+  	UPDATE ACCOUNT SET EXP=EXP+#{EXP} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  <insert id="insertExpLog" parameterType="map">
+  	INSERT INTO EXPERIENCELOG(ACCOUNT_ID,CLASSIFICATION,EXP) VALUES(#{ACCOUNT_ID},#{CLASSIFICATION},#{EXP});
+  </insert>
+  <update id="updateAccountlevel" parameterType="Integer">
+  	UPDATE ACCOUNT SET ACCOUNTLEVEL=ACCOUNTLEVEL+1 WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  <update id="updateAccountlevelDown" parameterType="Integer">
+  	UPDATE ACCOUNT SET ACCOUNTLEVEL=ACCOUNTLEVEL-1 WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  
+  <select id="selectExpLogByAccountId" parameterType="map" resultType="Integer">
+  	SELECT count(*) FROM EXPERIENCELOG WHERE ACCOUNT_ID=#{ACCOUNT_ID} 
+  	<if test="CLASSIFICATION!='설문조사'">
+  	and DATE(LOGTIME) = DATE(now()) 
+  	</if>
+  	and CLASSIFICATION=#{CLASSIFICATION};
+  </select>
+  
 </mapper>
