@@ -665,7 +665,8 @@ var filesChange = function(){
             const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
             if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
                 alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
-                resetFile();
+                fileBuffer.splice(fileBuffer.length-1, 1);
+                test = fileBuffer;
                 return false;
             }
         });
