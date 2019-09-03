@@ -32,7 +32,9 @@
   	SELECT storeImg1,storeImg2,storeImg3 FROM STORE WHERE store_id=#{STORE_ID}
   </select>
   <select id="selectStoreReviewImgList" parameterType="map" resultType="com.kkssj.moca.model.entity.ImageVo">
-  	SELECT * FROM REVIEWIMAGE WHERE STORE_ID=#{STORE_ID} order by views limit #{LIMIT}
+  	SELECT rs.UU_ID, rs.ACCOUNT_ID, rs.REVIEW_ID, rs.STORE_ID, rs.PATH, rs.ORIGINNAME, r.WRITEDATE 
+	FROM REVIEWIMAGE rs JOIN REVIEW r ON rs.REVIEW_ID = r.REVIEW_ID
+	WHERE rs.STORE_ID=#{STORE_ID} order by r.WRITEDATE DESC limit #{LIMIT}
   </select>
   <insert id="insertOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
   	INSERT INTO STORE(name,kakaoid,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})

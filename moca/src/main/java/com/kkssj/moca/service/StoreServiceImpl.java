@@ -125,6 +125,7 @@ public class StoreServiceImpl implements StoreService{
 			for(int i=0; i<result.size(); i++) {
 				//카트리지 기법
 				result.get(i).setUrl();
+				logger.debug(result.get(i).getOriginName());
 			}
 			if(storeImgUrlMap!=null) {
 				for(int i=0; i<storeImgUrlMap.size(); i++) {
