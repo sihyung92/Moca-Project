@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
@@ -8,19 +9,44 @@
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
 <style type="text/css">
 	.carousel-control {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 3%;
-  font-size: 20px;
-  color: #fff;
-  text-align: center;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-  background-color: rgba(0, 0, 0, 0);
-  filter: alpha(opacity=50);
-  opacity: 0;
-}
+	  position: absolute;
+	  top: 0;
+	  bottom: 0;
+	  left: 0;
+	  width: 3%;
+	  font-size: 20px;
+	  color: #fff;
+	  text-align: center;
+	  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+	  background-color: rgba(0, 0, 0, 0);
+	  filter: alpha(opacity=50);
+	  opacity: 0;
+	}	
+	.mocaPick .item-inner li{
+		float:left;	
+	}
+	.mocaPick img, .overlay{
+		width:300px;
+		height:300px;
+		display:none;
+	}
+	.mocaPick img:nth-child(2){
+		display:block;
+	}
+	.overlay{
+		background-color: rgba(0,0,0,0.5); 
+		position: absolute;
+		z-index: 2;
+		color: white;
+	}
+	.overlay span{
+		color: brown;
+	}
+	.panel-heading img{
+		width:30px;
+		height:30px;
+		border-radius: 50%;
+	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript">
@@ -46,9 +72,9 @@
 				console.log(hits[1].storeImg1);		
             }
          }); */
-        $('.mocaPick a li').mouseenter(function(){
-            var overlay = $(this).children('div');
-           // overlay.show();
+        $('.mocaPick li a').mouseenter(function(){
+            var overlay = $(this).children('.overlay');
+            overlay.show();
             var imgs = $(this).children('img');
             var i=0;
           	//이미지 슬라이드 함수
@@ -60,10 +86,10 @@
         	})();        
         });
          
-        $('.mocaPick a li').mouseleave(function(){
+        $('.mocaPick li a').mouseleave(function(){
             clearTimeout(slide);
 			$(this).children().hide();
-			var firstImg = $(this).children()[1];
+			var firstImg = $(this).children('img')[0];
 			$(firstImg).show();
         });
     };//onload() 끝
@@ -143,25 +169,46 @@
 				  <div class="carousel-inner" role="listbox">
 				    <div class="item active">
 				     <ul class="item-inner" style="list-style:none">
-				     	<c:forEach items="${store}" var="bean" begin="0" end="4" > 
-					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-					     		<div style="width:300px; height:300px; background-color:#ffffff; opacity:0.6; filter: alpha(opacity=60); display:none;"></div>
-					     		<img style="width:300px; height:300px;" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">
-					     	</li></a>
+				     	<c:forEach items="${store}" var="bean" begin="0" end="4" > 					     	
+					     	<li><a href="./stores/${bean.store_Id }">
+					     		<div class="overlay">
+					     			<div>
+						     			<h4>${bean.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${bean.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h5>
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${bean.viewCnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${bean.reviewCnt}
+							     		</h5>
+						     			<h6>${bean.roadAddress}</h6>
+					     			</div>
+					     		</div>
+					     		<img src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
+					     		<img src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
+					     		<img src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">					     	
+					     	</a></li>					     	
 				     	</c:forEach>
 				     </ul>	
 				    </div>
 				    <c:if test="${length gt 5}">
 				    <div class="item">
 				     <ul class="item-inner" style="list-style:none">
-				     	<c:forEach items="${store}" var="bean" begin="5" end="9"> 
-					     	<a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-					     		<img style="width:300px; height:300px;" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">
-					     	</li></a>
+				     	<c:set var="end">9</c:set>
+				     	<c:if test="${length lt 10}"><c:set var="end">${length-1 }</c:set></c:if>
+				     	<c:forEach items="${store}" var="bean" begin="${end-4 }" end="${end }">
+					     	<li><a href="./stores/${bean.store_Id }">
+					     		<div class="overlay">
+					     			<div>
+						     			<h4>${bean.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${bean.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h5>
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${bean.viewCnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${bean.reviewCnt}
+							     		</h5>
+						     			<h6>${bean.roadAddress}</h6>
+					     			</div>
+					     		</div>
+					     		<img src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
+					     		<img src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
+					     		<img src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">					     	
+					     	</a></li>	
 				     	</c:forEach> 
 				     </ul>		
 				    </div>
@@ -169,12 +216,22 @@
 				    <c:if test="${length gt 10}">	
 					   <div class="item">		    
 					     <ul class="item-inner" style="list-style:none">
-					     	<c:forEach items="${store}" var="bean" begin="10" end="12"> 
-						     <a href="./stores/${bean.store_Id }"><li style="float:left; width:300px; height:300px;border:black 1px solid;">
-						     	<img style="width:300px; height:300px;" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
-					     		<img style="width:300px; height:300px; display:none;" src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">
-					     	</li></a> 
+					     	<c:forEach items="${store}" var="bean" begin="${length-5 }" end="${length-1 }"> 
+						     <li><a href="./stores/${bean.store_Id }">
+					     		<div class="overlay">
+					     			<div>
+						     			<h4>${bean.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${bean.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h5>
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${bean.viewCnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${bean.reviewCnt}
+							     		</h5>
+						     			<h6>${bean.roadAddress}</h6>
+					     			</div>
+					     		</div>
+					     		<img src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
+					     		<img src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
+					     		<img src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">					     	
+					     	</a></li>
 					     	</c:forEach>
 					     </ul>		     
 					    </div> 
@@ -193,7 +250,8 @@
 			</div>
 		</c:if>
 	</c:forEach>
-		<c:if test="${not empty bestReviews }">
+<!-- 인기 리뷰 -->
+<c:if test="${not empty bestReviews }">
 	<div class="col-md-12">
 		<h5>금주의 인기리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
 	</div>
@@ -213,8 +271,9 @@
 		</c:forEach>
 	  </div>
 	</div>
-	</c:if>	
-	<c:if test="${not empty recentReviews }">
+</c:if>	
+<!-- 최신 리뷰 -->
+<c:if test="${not empty recentReviews }">
 	<div class="col-md-12">
 		<h5>최신 리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
 	</div>
@@ -227,14 +286,14 @@
 			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
 			  </div>
 			  <div class="panel-body">
-			  	<h4>${bean.reviewContent }</h4>
-			  	<p>${bean.writeDate }</p>
+			 	<p><small>${bean.writeDate }</small></p>
+			  	<h4>${bean.reviewContent }</h4>			  	
 			  </div>
 			</div>
 		</c:forEach>
 	  </div>
 	</div>
-	</c:if>
+</c:if>
 </div>
 </body>
 </html>
