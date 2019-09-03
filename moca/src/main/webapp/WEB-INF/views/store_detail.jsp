@@ -68,7 +68,7 @@
 		  max-width: 1200px;
 		}	
 		#reviewDetailDiv {
-			overflow:hidden;
+		  overflow:hidden;
 		  text-align: center;
 		  background-color: black;
 		  padding: 2px 16px;
@@ -155,9 +155,9 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=11"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=14"/>"></script>
 	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=1"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=14"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
 		var fileBuffer;
@@ -405,8 +405,8 @@
 							likeStoreBtn.addClass('glyphicon-heart')
 							
 						},
-						error: function() {
-
+						error: function(request,status,error) {
+							respondHttpStatus(request.status);
 						}
 					})		
 
@@ -424,8 +424,8 @@
 							likeStoreBtn.addClass('glyphicon-heart-empty')
 							
 						},
-						error: function() {
-
+						error: function(request,status,error) {
+							respondHttpStatus(request.status);
 						}
 					})
 
@@ -449,7 +449,8 @@
 							favoriteStoreBtn.addClass('glyphicon-star')
 							
 						},
-						error: function() {
+						error: function(request,status,error) {
+							respondHttpStatus(request.status);
 						}
 					})
 
@@ -469,7 +470,8 @@
 							favoriteStoreBtn.addClass('glyphicon-star-empty')
 							
 						},
-						error: function() {
+						error: function(request,status,error) {
+							respondHttpStatus(request.status);
 						}
 					})
 

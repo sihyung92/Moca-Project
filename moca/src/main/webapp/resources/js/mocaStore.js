@@ -24,8 +24,9 @@ var updateStore = function(store_Id) {
 		contentType: "application/json; charset=UTF-8",
 		datatype: "json",
 		data: JSON.stringify(param),
-		error: function(errorMsg) {
-			console.log("카페상세정보 수정실패", errorMsg);
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
+			
 		},
 		success: function(data) {
 			console.log("카페상세정보 수정성공");
@@ -101,12 +102,8 @@ var editStoreImg = function(){
 			location.reload();
 			
 		},
-		error: function(error) {
-			if(error=='Too Many Requests'){				
-				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
-			}else{
-				console.log('ajax 통신 실패', error);
-			}
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
 		}
 	})
 
@@ -150,12 +147,8 @@ var editStoreLogo = function(){
 			location.reload();
 			
 		},
-		error: function(error) {
-			if(error=='Too Many Requests'){				
-				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
-			}else{
-				console.log('ajax 통신 실패', error);
-			}
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
 		}
 	})
 
