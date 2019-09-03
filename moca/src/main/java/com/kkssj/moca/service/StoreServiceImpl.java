@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,31 +153,44 @@ public class StoreServiceImpl implements StoreService{
 		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
 		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
 		try {
-			reviewList = reviewDao.selectAll(accountId, storeId);
+			reviewList = reviewDao.selectReviewByStoreId(accountId, storeId);
 			reviewImageList = reviewDao.selectReviewImgListByStoreId(storeId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println("reviewImageList size : "+reviewImageList);
-		System.out.println("reviewList size : "+reviewList);
+		logger.debug("reviewImageList size : "+reviewImageList);
+		logger.debug("reviewList size : "+reviewList);
 		
 		for(int i=0; i<reviewImageList.size(); i++) {
 			reviewImageList.get(i).setUrl(reviewImageList.get(i).getUrl());
 		}
 		
-		int imageListIndex = 0;
-		for (int i = 0; i < reviewList.size(); i++) {
-			reviewList.get(i).setImageList(new ArrayList());
-			for (int j = imageListIndex; j < reviewImageList.size(); j++) {
-				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReview_id()) {
-					reviewList.get(i).getImageList().add(reviewImageList.get(j));
-					imageListIndex++;
+		int reviewListIdx =0;
+		int imageListIdx = 0;
+		for (reviewListIdx = 0; reviewListIdx < reviewList.size(); reviewListIdx++) {
+			ReviewVo reviewVo = reviewList.get(reviewListIdx);
+			List<ImageVo> tempReviewImageList = new ArrayList<ImageVo>();
+			
+			while(imageListIdx < reviewImageList.size()) {
+				ImageVo imageVo = reviewImageList.get(imageListIdx);
+	
+				logger.debug(reviewVo.toString());
+				logger.debug(imageVo.toString());
+				if(reviewVo.getReview_id() == imageVo.getReview_id()) {
+					tempReviewImageList.add(imageVo);
+					imageListIdx++;
+					
 				}else {
+					reviewList.get(reviewListIdx).setImageList(tempReviewImageList);
 					break;
 				}
 			}
+			
 		}
+		
+		reviewList.sort(compLikeCount);
+		reviewList.sort(CompEditable);
 		
 		return reviewList;
 		
@@ -608,6 +622,23 @@ public class StoreServiceImpl implements StoreService{
 		return -1;
 	}
 	
-
-
+	
+	//reviewList에 있는 객체들을 editable의 내림 차순으로 정렬
+	static Comparator<ReviewVo> CompEditable = new Comparator<ReviewVo>() {
+		
+		@Override
+		public int compare(ReviewVo o1, ReviewVo o2) {
+			return o2.getEditable() -o1.getEditable();
+		}
+	};
+	
+	//reviewList에 있는 객체들을 likeCount의 내림 차순으로 정렬
+	static Comparator<ReviewVo> compLikeCount = new Comparator<ReviewVo>() {
+		
+		@Override
+		public int compare(ReviewVo o1, ReviewVo o2) {
+			return o2.getLikeCount() - o1.getLikeCount();
+		}
+	};
+	
 }

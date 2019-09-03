@@ -24,13 +24,13 @@ public class ReviewDaoImpl implements ReviewDao {
   
 	//store 디테일 페이지에서 해당 카페의 review를 가져옴
 	@Override
-	public List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException {
+	public List<ReviewVo> selectReviewByStoreId(int accountId, int storeId) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		logger.debug("storeId : "+storeId);
 		map.put("ACCOUNT_ID", accountId);
 		map.put("STORE_ID", storeId);
 		
-		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAll",map);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewByStoreId",map);
 	}
 	
 	//리뷰 추가

@@ -2,6 +2,7 @@ package com.kkssj.moca.model.entity;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewVo {
 	//REVIEW table
@@ -12,7 +13,7 @@ public class ReviewVo {
 	private double averageLevel;
 	private int likeCount, hateCount;
 	private int editable;
-	private ArrayList<ImageVo> imageList;
+	private List<ImageVo> imageList;
 	
 	//mypage에 store정보 가져오기
 	private String storeName, storeLogoImg;
@@ -194,11 +195,11 @@ public class ReviewVo {
 		this.editable = editable;
 	}
 
-	public ArrayList<ImageVo> getImageList() {
+	public List<ImageVo> getImageList() {
 		return imageList;
 	}
 
-	public void setImageList(ArrayList<ImageVo> imageList) {
+	public void setImageList(List<ImageVo> imageList) {
 		this.imageList = imageList;
 	}
 	

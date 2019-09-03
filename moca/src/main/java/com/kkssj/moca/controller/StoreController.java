@@ -405,7 +405,8 @@ public class StoreController {
         
 		////////////////////////////////
 		//기능		
-		if(storeService.addReview(reviewVo,files) != null) {
+        reviewVo = storeService.addReview(reviewVo,files);
+		if(reviewVo != null) {
 			logger.debug(reviewVo.toString());
 			return new ResponseEntity<>(reviewVo,HttpStatus.OK);
 		}else {
