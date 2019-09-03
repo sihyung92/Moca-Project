@@ -199,7 +199,7 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 	}
 
 	public void setMaxExp() {
-		this.maxExp+=maxExps[this.accountLevel];
+		this.maxExp=maxExps[this.accountLevel];
 		System.out.println("maxExp"+this.maxExp);
 	}
 
@@ -243,7 +243,7 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 	}
 
 	public void setMinExp() {
-		this.minExp+=maxExps[this.accountLevel-1];
+		this.minExp=maxExps[this.accountLevel-1];
 		System.out.println("minExp"+this.minExp);
 	}
 	

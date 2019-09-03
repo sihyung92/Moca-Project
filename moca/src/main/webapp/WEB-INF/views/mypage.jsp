@@ -596,8 +596,8 @@
 					<div class="progress">
 						<div class="progress-bar progress-bar-info" role="progressbar"
 							aria-valuenow="${accountVo.exp}" aria-valuemin="${accountVo.minExp}" aria-valuemax="${accountVo.maxExp}"
-							style="width: ${(accountVo.exp-accountVo.minExp)/(accountVo.maxExp)*100}%">
-							<fmt:formatNumber value="${accountVo.exp/accountVo.maxExp}" type="percent"></fmt:formatNumber>
+							style="width: ${(accountVo.exp-accountVo.minExp)/(accountVo.maxExp-accountVo.minExp)*100}%">
+							<fmt:formatNumber value="${(accountVo.exp-accountVo.minExp)/(accountVo.maxExp-accountVo.minExp)}" type="percent"></fmt:formatNumber>
 						</div>
 					</div>
 					</c:if>
