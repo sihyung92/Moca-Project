@@ -13,7 +13,7 @@
     	//접속 브라우저의 웹 지오로케이션 지원 여부 판단  
         if (navigator.geolocation){             		       
             var options = { timeout: 2000, maximumAge: 3000, enableHighAccuracy: true};	//highAccuracy true: 모바일 기기는 GPS로 위치 정보 확인             
-            navigator.geolocation.getCurrentPosition(sucCall, errCall, options);		//현재 위치 정보 얻기
+            navigator.geolocation.getCurrentPosition(sucCall,  errCall, options);		//현재 위치 정보 얻기
         }
     };
 	

@@ -47,6 +47,31 @@
 		height:30px;
 		border-radius: 50%;
 	}
+	
+	.panel-body .panel-body h3{
+		color: brown;
+	}
+	.panel-heading h3{
+		display : inline-block;
+	}
+	.panel-heading h4{
+		margin-left : 5px;
+		display : inline-block;
+		color: orange;
+	}
+	.review-img-list a{
+		display:inline-block;
+		width:130px;
+		height:130px;
+	}
+	.review-img-list a img{
+		width:120px;
+		height:120px;
+	}
+	#content>.panel-default {
+		overflow : scroll;
+		height : 400px;
+	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript">
@@ -253,19 +278,33 @@
 <!-- 인기 리뷰 -->
 <c:if test="${not empty bestReviews }">
 	<div class="col-md-12">
-		<h5>금주의 인기리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
+		<h5>금주의 인기리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+			<form action="reviewboard/best">
+			  	<input type="submit" class="btn btn-default" value="상세보기"/>
+		  	</form>
+		</h5>
 	</div>
-	<div class="row panel panel-default col-md-12" style="overflow:scroll; height:400px;">
+	<div class="row panel panel-default col-md-12">
 	  <div class="panel-body">
 	  	<c:forEach items="${bestReviews }" var="bean">
 			<div class="panel panel-default col-md-12">
 			 <div class="panel-heading">
-			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>${bean.nickName } ${bean.averageLevel}</h3>
+			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>LV${bean.accountLevel}☕️ ${bean.nickName }</h3><h4>${bean.averageLevel}</h4>
 			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
 			  </div>
 			  <div class="panel-body">
+			  	<h3>${bean.storeName }</h3>
+			 	<p><small>${bean.writeDate }</small></p>
 			  	<h4>${bean.reviewContent }</h4>
-			  	<p>${bean.writeDate }</p>
+				<c:if test="${not empty bean.imageList }">
+			  	<div class="review-img-list">
+			  	<c:forEach items="${bean.imageList }" var="imgList" varStatus="status">			  	
+		  	    <a href="#" class="thumbnail">
+				  	<img src="${imgList.url }" alt="${imgList.originName }">		  	
+			    </a>			  	
+			  	</c:forEach>
+			  	</div>
+			  	</c:if>		  	
 			  </div>
 			</div>
 		</c:forEach>
@@ -275,19 +314,34 @@
 <!-- 최신 리뷰 -->
 <c:if test="${not empty recentReviews }">
 	<div class="col-md-12">
-		<h5>최신 리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
+		<h5>최신 리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+			<form action="reviewboard/recent">
+		  	<input type="submit" class="btn btn-default" value="상세보기"/>
+		  	</form>
+	  	</h5>
 	</div>
-	<div class="row panel panel-default col-md-12" style="overflow:scroll; height:400px;">
+	<div class="row panel panel-default col-md-12">
 	  <div class="panel-body">
+
 	  	<c:forEach items="${recentReviews }" var="bean">
 			<div class="panel panel-default col-md-12">
 			 <div class="panel-heading">
-			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>${bean.nickName } ${bean.averageLevel}</h3>
+			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>LV${bean.accountLevel}☕️ ${bean.nickName } </h3><h4>${bean.averageLevel}</h4>
 			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
 			  </div>
 			  <div class="panel-body">
+			  	<h3>${bean.storeName }</h3>
 			 	<p><small>${bean.writeDate }</small></p>
-			  	<h4>${bean.reviewContent }</h4>			  	
+			  	<h4>${bean.reviewContent }</h4>
+			  	<c:if test="${not empty bean.imageList }">
+			  	<div class="review-img-list">
+			  	<c:forEach items="${bean.imageList }" var="imgList" varStatus="status">
+			  	    <a href="#" class="thumbnail">
+					  	<img src="${imgList.url }" alt="${imgList.originName }">		  	
+				    </a>			  	
+			  	</c:forEach>
+			  	</div>
+			  	</c:if>
 			  </div>
 			</div>
 		</c:forEach>

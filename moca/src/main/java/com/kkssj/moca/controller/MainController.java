@@ -1,5 +1,6 @@
 package com.kkssj.moca.controller;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,21 +15,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
+import com.kkssj.moca.service.BoardService;
 import com.kkssj.moca.service.MainService;
 
 @Controller
 public class MainController {
 	@Inject
 	MainService mainService;
+	@Inject 
+	BoardService boardService;
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);	
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String x, String y, Model model) {
+	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String x, String y, Model model) throws SQLException {
 		//세션에 위치 정보 x, y값 저장 (geolocation 페이지에서 x, y좌표를 받아서 돌아온 경우)
 		//geolocation 페이지에서 x, y좌표 받기 실패한 경우 -> x, y = "";으로 넘어옴
 		if(x!=null && y!=null) { 
@@ -102,12 +108,10 @@ public class MainController {
 				storesList.add(alist);
 			}
 		}		
-		
 		//금주의 인기리뷰
 		model.addAttribute("bestReviews",mainService.getBestReviews());
 		//최신 리뷰 
 		model.addAttribute("recentReviews",mainService.getRecentReviews());
-		
 		model.addAttribute("listNames",listNames);
 		model.addAttribute("storesList",storesList);
 		return "main";
@@ -117,4 +121,18 @@ public class MainController {
 	public String getGeolocation() {
 		return "geolocation";
 	}
+	
+	@RequestMapping(value="/reviewboard/{type}", method = RequestMethod.GET)
+	public String reviewBoard(Model model, @PathVariable String type) throws SQLException {
+		//type이 "recent"면 최근리뷰, "best"면 주간 인기리뷰 
+		List<ReviewVo> alist = null;
+		if(type!=null)
+		alist = boardService.getReviewList(type);
+		
+		//view에서의 검색결과(recent, best)
+		model.addAttribute("type", type);
+		model.addAttribute("alist", alist);
+		return "reviewboard";
+	}
+	
 }

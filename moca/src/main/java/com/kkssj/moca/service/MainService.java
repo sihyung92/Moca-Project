@@ -1,5 +1,6 @@
 package com.kkssj.moca.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ public interface MainService {
 
 	List<StoreVo> getTrendStoresList(String tagName);
 
-	List<ReviewVo> getRecentReviews();
+	List<ReviewVo> getRecentReviews() throws SQLException;
 	
 	List<StoreVo> getHitStoresList(Map<String, String> variables);
 	
@@ -19,7 +20,7 @@ public interface MainService {
 	
 	List<StoreVo> getTakeoutStoresList(Map<String, String> variables);
 
-	List<ReviewVo> getBestReviews();
+	List<ReviewVo> getBestReviews() throws SQLException;
 	
 	List<StoreVo> getFollowersStoresList(int id);
 }

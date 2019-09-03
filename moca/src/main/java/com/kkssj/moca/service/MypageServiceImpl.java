@@ -32,8 +32,6 @@ public class MypageServiceImpl implements MypageService{
 		}
 		return null;
 	}
-	
-	
 
 	@Override
 	public List<AccountVo> getFollowerList(int accountId) {

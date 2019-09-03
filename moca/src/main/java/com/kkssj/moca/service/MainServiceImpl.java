@@ -1,5 +1,7 @@
 package com.kkssj.moca.service;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.StoreDao;
+import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
@@ -41,15 +44,7 @@ public class MainServiceImpl implements MainService{
 		return storeDao.selectTrendStoresList(tagName);
 	}
 
-	@Override
-	public List<ReviewVo> getRecentReviews() {
-		return reviewDao.selectRecentReviews();
-	}
 
-	@Override
-	public List<StoreVo> getBestStoresList() {
-		return storeDao.selectBestStoresList();
-	}
 
 	@Override
 	public List<StoreVo> getTakeoutStoresList(Map<String, String> variables) {
@@ -57,8 +52,41 @@ public class MainServiceImpl implements MainService{
 	}
 
 	@Override
-	public List<ReviewVo> getBestReviews() {
-		return reviewDao.selectBestReviews();
+	public List<StoreVo> getBestStoresList() {
+		
+		return storeDao.selectBestStoresList();
+	}
+	
+	@Override
+	public List<ReviewVo> getRecentReviews() throws SQLException {
+		List<ReviewVo> list = reviewDao.selectRecentReviews();
+		//review ImageList 받아오기
+		ArrayList<ImageVo> reviewImgList;
+		for(ReviewVo reviewVo:list) {
+			//reviewVo에 imageVo의 URL정보 주입
+			reviewImgList = (ArrayList<ImageVo>)reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
+			for(int i=0; i<reviewImgList.size(); i++) {
+				reviewImgList.get(i).setUrl();
+			}
+			reviewVo.setImageList(reviewImgList);
+	   	}
+		return list;
+	}
+	
+	@Override
+	public List<ReviewVo> getBestReviews() throws SQLException {
+		List<ReviewVo> list = reviewDao.selectBestReviews();
+		//review ImageList 받아오기
+		 ArrayList<ImageVo> reviewImgList;
+		for(ReviewVo reviewVo:list) {
+			//reviewVo에 imageVo의 URL정보 주입
+			reviewImgList = (ArrayList<ImageVo>)reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
+			for(int i=0; i<reviewImgList.size(); i++) {
+				reviewImgList.get(i).setUrl();
+			}
+			reviewVo.setImageList(reviewImgList);
+    	}
+		return list;
 	}
 	
 	@Override	
