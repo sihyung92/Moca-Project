@@ -164,8 +164,8 @@
 		var fileListDiv;
 		var removeThumbnailBtn;
 		var newFileDiv;
-		var fileBuffer;
 
+		var methodType;	//ajax 통신에서 메서드 타입
 		var likeStoreBtn;
 		var favoriteStoreBtn;
 		var storeId;
@@ -375,7 +375,9 @@
 				//데이터 값 전송
 				
 			})
-
+			
+			/////////////////////////////
+			//store 대표 이미지 케러셀
 			$('#preReviewImgBtn').click(function(){
 				if(detailImgIdx > 0){
 					detailImgIdx =detailImgIdx-1;
@@ -385,7 +387,6 @@
 				showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
 				
 			})
-
 			$('#nextReviewImgBtn').click(function(){
 				if(detailImgIdx < detailImgsSize-1){
 					detailImgIdx =detailImgIdx+1;
@@ -396,116 +397,88 @@
 			})
 
 			
-			
+			///////////////////////
+			//카페 좋아요
 			likeStoreBtn.click(function(){
+				
 				//좋아요를 누르지 않은 경우
 				if(likeStoreBtn.hasClass('glyphicon-heart-empty')){
-
 					//좋아요 추가
-					$.ajax({
-						type: 'POST',
-						url: '/moca/likeStore/' + accountId,
-						data : {
-							storeId : storeId
-						},
-						success: function() {
-							likeStoreBtn.removeClass('glyphicon-heart-empty')
-							likeStoreBtn.addClass('glyphicon-heart')
-							
-						},
-						error: function(request,status,error) {
-							respondHttpStatus(request.status);
-						}
-					})		
-
-				}else{//좋아요를 누른경우
-
+					methodType = 'POST';
+					
+				}else{//이전에 좋아요를 누른경우
 					//좋아요에서 삭제
-					$.ajax({
-						type: 'DELETE',
-						url: '/moca/likeStore/' + accountId,
-						data : {
-							storeId : storeId
-						},
-						success: function() {
-							likeStoreBtn.removeClass('glyphicon-heart')
-							likeStoreBtn.addClass('glyphicon-heart-empty')
-							
-						},
-						error: function(request,status,error) {
-							respondHttpStatus(request.status);
-						}
-					})
-
+					methodType = 'DELETE';
+					
 				}
+
+				$.ajax({
+					type: methodType,
+					url: '/moca/likeStore/' + accountId,
+					data : {
+						storeId : storeId
+					},
+					success: function() {
+						likeStoreBtn.toggleClass('glyphicon-heart');
+						likeStoreBtn.toggleClass('glyphicon-heart-empty')
+						
+					},
+					error: function(request,status,error) {
+						respondHttpStatus(request.status);
+					}
+				})
 
 			})
 
+			////////////////////////////////
+			//가고 싶은 카페
 			favoriteStoreBtn.click(function(){
-				//즐겨찾기를 누르지 않은 경우
+				//가고 싶은 카페 누르지 않은 경우
 				if(favoriteStoreBtn.hasClass('glyphicon-star-empty')){
-
-					//즐겨 찾기에 추가
-					$.ajax({
-						type: 'POST',
-						url: '/moca/favoriteStore/' + accountId,
-						data : {
-							storeId : storeId
-						},
-						success: function() {
-							favoriteStoreBtn.removeClass('glyphicon-star-empty')
-							favoriteStoreBtn.addClass('glyphicon-star')
-							
-						},
-						error: function(request,status,error) {
-							respondHttpStatus(request.status);
-						}
-					})
-
+					//가고 싶은 카페에 추가
+					methodType = 'POST';
 					
-
-				}else{//즐겨찾기를 누른경우
-
-					//즐겨 찾기에서 삭제
-					$.ajax({
-						type: 'DELETE',
-						url: '/moca/favoriteStore/' + accountId,
-						data : {
-							storeId : storeId
-						},
-						success: function() {
-							favoriteStoreBtn.removeClass('glyphicon-star')
-							favoriteStoreBtn.addClass('glyphicon-star-empty')
-							
-						},
-						error: function(request,status,error) {
-							respondHttpStatus(request.status);
-						}
-					})
-
-					
+				}else{//이전에 가고 싶은 카페를 누를 경우
+					//가고 싶은 카페에서 삭제	
+					methodType = 'DELETE';
+								
 				}
+				$.ajax({
+					type: methodType,
+					url: '/moca/favoriteStore/' + accountId,
+					data : {
+						storeId : storeId
+					},
+					success: function() {
+						favoriteStoreBtn.toggleClass('glyphicon-star')
+						favoriteStoreBtn.toggleClass('glyphicon-star-empty')
+						
+					},
+					error: function(request,status,error) {
+						respondHttpStatus(request.status);
+					}
+				})
 			})
 			
+			//로고 아래에 있는 수정 버튼 클릭시
 			$('#showEditStoreLogoBtn').click(function(){
-				$('#storeLogowModal').modal("show");
-
-				toBeDeletedStoreLogoUrl ="";
+				$('#storeLogowModal').modal("show");		
 
 				//내용 비워줌
 				$('.storeLogoGroup').html("")
+				toBeDeletedStoreLogoUrl ="";
 
+				//섬네일로 사용할 엘리먼트 클론
 				var oldStoreLogo = $('#storeImgTemplate').clone('true');
-				oldStoreLogo.removeAttr('id')
-				oldStoreLogo.find('img').addClass('oldStoreLogo')
+				oldStoreLogo.removeAttr('id');
+				oldStoreLogo.find('img').addClass('oldStoreLogo');
 				oldStoreLogo.find('img').attr('src', $('#storeLogo')[0].src );
-				$('.storeLogoGroup').append(oldStoreLogo )
+				$('.storeLogoGroup').append(oldStoreLogo);
 
-				//기존의 클릭이벤트 제거
+				//기존의 클릭이벤트 재설정
 				$('.StoreImgDeleteSpan').unbind();
 				$('.StoreImgDeleteSpan').click(function(){					
 					
-					test = this;
 					//기존 StoreLogo인 경우 
 					if($(this.previousElementSibling).hasClass('oldStoreLogo')){
 						toBeDeletedStoreLogoUrl = this.previousElementSibling.src
@@ -517,9 +490,9 @@
 				})
 			})
 			
+			//로고 수정을 위한 모달에 있는 파일 선택을 누른경우
 			$('#storeLogoFile').change(function(){
 				var target = document.getElementById('storeLogoFile');
-				test = target;
 
 				// 저장된 로고에서 변경한 경우
 				if($('.storeLogoGroup').find('img').hasClass('oldStoreLogo')){
@@ -553,10 +526,14 @@
 				
 			})
 			
+			//카페 로고 모달에서 수정 버튼 클릭시
 			$('#editStoreLogoBtn').click(function(){
+				//카페 이미지 로고 수정
 				editStoreLogo()
 			})
 
+			
+			//카페 대표 이미지 하단에 있는 수정 버튼 클릭시
 			editStoreImgsBtn.click(function(){
 				storeImgswModal.modal("show");
 
@@ -667,7 +644,50 @@
 
 		});
 
-		
+		//카페 이미지 로고 수정
+		var editStoreLogo = function(){
+			//delete한 썸네일 추가
+			$('#delStoreLogo').val(toBeDeletedStoreLogoUrl);
+			
+			//파일 추가
+			var form = $('#storeLogoForm')[0];
+
+			var storeImgFormData = new FormData(form);
+			
+			storeImgFormData.delete('file');
+			
+			
+			var storeImgFormObj = $(form).serializeObject();
+			console.log(storeImgFormObj,storeImgFormData);
+			
+			if(storeImgFormObj.delStoreLogo == ""){
+				return false;
+			}
+			
+
+			//ajax 통신 - post방식으로 추가
+			$.ajax({
+				type: 'POST',
+				url: '/moca/storeLogo/'+storeImgFormObj.storeId,
+				enctype : 'multipart/form-data',
+				data: storeImgFormData,
+				dataType : "json",
+				contentType : false,  
+				processData : false,
+				cache : false,
+				timeout : 600000,
+				success: function(storeVo) {
+					console.log('ajax 통신 성공');
+					
+					location.reload();
+					
+				},
+				error: function(request,status,error) {
+					respondHttpStatus(request.status);
+				}
+			})
+
+		}
 
 	</script>
 </head>
@@ -692,10 +712,10 @@
 							</c:if>
 						
 							<c:if test="${storeVo.isFavorite eq 0 }">
-								즐겨찾기<span id="favoriteStoreBtn" class="glyphicon glyphicon-star-empty" aria-hidden="true" ></span>	
+								가고 싶은 카페<span id="favoriteStoreBtn" class="glyphicon glyphicon-star-empty" aria-hidden="true" ></span>	
 							</c:if>
 							<c:if test="${storeVo.isFavorite ne 0 }">
-								즐겨찾기<span id="favoriteStoreBtn" class="glyphicon glyphicon-star" aria-hidden="true" ></span>	
+								가고 싶은 카페<span id="favoriteStoreBtn" class="glyphicon glyphicon-star" aria-hidden="true" ></span>	
 							</c:if>					
 						</div>
 
