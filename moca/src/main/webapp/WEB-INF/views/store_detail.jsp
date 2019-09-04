@@ -505,7 +505,7 @@
 				//확장자 체크
 				for(var i=0; i<target.files.length ; i++){
 					var fileName = target.files[i].name
-					var fileEx = fileName.slice(fileName.indexOf(".")+1).toLowerCase()
+					var fileEx = fileName.slice(fileName.lastIndexOf(".")+1).toLowerCase()
 					
 					//이미지 형식인 경우만 받아 들임
 					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
@@ -595,7 +595,7 @@
 				//확장자 체크
 				for(var i=0; i<target.files.length ; i++){
 					var fileName = target.files[i].name
-					var fileEx = fileName.slice(fileName.indexOf(".")+1).toLowerCase()
+					var fileEx = fileName.slice(fileName.lastIndexOf(".")+1).toLowerCase()
 					
 					//이미지 형식인 경우만 받아 들임
 					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){

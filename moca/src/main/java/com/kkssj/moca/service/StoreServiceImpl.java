@@ -307,7 +307,7 @@ public class StoreServiceImpl implements StoreService{
 				String pathUu_idOriginName = delStoreLogo.split(".com/")[1];
 				String [] pathUu_idOriginName2 = pathUu_idOriginName.split("_");
 				s3.fileDelete(pathUu_idOriginName);	
-				s3.fileDelete(pathUu_idOriginName2[0]+"_thumbnail_"+pathUu_idOriginName2[1]);
+				s3.thumbnailFileDelete(pathUu_idOriginName);
 			}
 			
 
@@ -355,7 +355,9 @@ public class StoreServiceImpl implements StoreService{
 		for (int i = 0; i < delStoreImgArr.length; i++) {
 			if(!delStoreImgArr[i].equals("")) {
 				String pathUu_idOriginName = delStoreImgArr[i].split(".com/")[1];
-				s3.fileDelete(pathUu_idOriginName);				
+				String thumbnailPathUu_idOriginName = pathUu_idOriginName;
+				s3.fileDelete(pathUu_idOriginName);		
+				s3.thumbnailFileDelete(pathUu_idOriginName);
 			}
 		}
 		
