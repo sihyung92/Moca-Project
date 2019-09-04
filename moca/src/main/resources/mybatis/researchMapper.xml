@@ -3,5 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kkssj.moca.model.ResearchDao">
-  
+<insert id="insertResearch" parameterType="com.kkssj.moca.model.entity.ResearchVo">
+INSERT INTO RESEARCH (ACCOUNT_ID, ANSWER, CHECKCODE) VALUES (#{account_id}, #{answer}, #{checkcode})
+</insert>
 </mapper>

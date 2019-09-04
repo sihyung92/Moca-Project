@@ -1,5 +1,9 @@
 package com.kkssj.moca.model;
 
-public interface ResearchDao {
+import java.sql.SQLException;
 
+import com.kkssj.moca.model.entity.ResearchVo;
+
+public interface ResearchDao {
+	int insertResearch(ResearchVo research) throws SQLException;
 }

@@ -22,6 +22,11 @@
             width: 300px;
             height: 300px;
         }
+        .forSort{
+            width: 80px;
+            height: 20px;
+        }
+        
     </style>
     
 <!-- naver API -->
@@ -42,6 +47,8 @@
         $('.modal-dialog').css('overflow-y','initial');
         $('.modal-body').css('height','100%');
         $('.modal-body').css('overflow-y','auto');
+        
+        $('.hidden-btn').hide();
         
         $('.close').click(function(event){
             $('.modal').hide();
@@ -130,7 +137,7 @@
     	kakaoLogin();
     	naverLogin();
         //회원탈퇴 기능 처리
-        signOut();
+        //signOut();
         //설문 버튼 처리
         
     });
@@ -316,8 +323,4 @@
     <div id="info-modal">
 		<jsp:include page="../../resources/template/modal.jsp" flush="true"></jsp:include>
 	</div>
-    
-    <div>
-        <button id="sign-out">회원탈퇴</button>
-    </div>
 </nav>

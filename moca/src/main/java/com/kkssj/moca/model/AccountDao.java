@@ -15,6 +15,8 @@ public interface AccountDao {
 	AccountVo selectUserByAccountId(int account_id) throws SQLException;
 	//update
 	int updateUser(String platformType, AccountVo accountVo) throws SQLException;
+	int updateUserForIsResearch(AccountVo accountVo) throws SQLException;
+	
 	//delete
 	int deleteUser() throws SQLException;
 	

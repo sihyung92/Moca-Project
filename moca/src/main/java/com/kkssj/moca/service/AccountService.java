@@ -7,4 +7,6 @@ public interface AccountService {
 	AccountVo login(AccountVo accountVo);
 
 	AccountVo researchInsert(AccountVo stringFilter);
+	
+	boolean updateIsResearch(AccountVo accountVo);
 }

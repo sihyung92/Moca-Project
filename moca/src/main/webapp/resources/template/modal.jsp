@@ -310,7 +310,7 @@
                             </label>                              
                         </div>                        
                         
-                        <form id="essential-info" name="f"><br>
+                        <form action="/moca/research" method="get" id="essential-info" name="f"><br>
                             <div class="custom-width-line"></div><br>
                             <div class="form-group">
                                 <!-- 카페 관련 업종 확인 -->
@@ -360,7 +360,7 @@
 			                                	if(ans!=null){
 			                                		for(int j=0;j<ans.size();j=j+2){	                                   			
                                 %>
-				                                    <label class="radio-inline">
+				                                    <label class="radio-inline forSort">
 						                           		<input class="essential-selective-info" type="radio" name="SQ<%=rqVo.getQuestion_id() %>" id="SQ<%=rqVo.getQuestion_id() %>_<%=q %>" value="<%=q%>"> <%=ans.get(j+1) %>
 						                            </label>
                                 <%
@@ -383,6 +383,7 @@
                                 </div>
                             </div>
                             <button type="button" class="btn btn-default" id="research-submit" >제출</button>
+                            <button type="submit" class="hidden-btn">봣툰</button>
                         </form>
                     </div>
                 
@@ -441,7 +442,8 @@
                         }						
 					},
 					success: function(data) {
-						f5();
+                        $('.hidden-btn').click();
+						//f5();
 					}
                     
                 });
