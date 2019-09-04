@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,8 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public StoreVo getStore(int store_Id, int account_id){
 		try {
+			//store viewcnt 증가
+			storeDao.updateViewcnt(store_Id);
 			return storeDao.selectOne(store_Id, account_id);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -138,6 +141,7 @@ public class StoreServiceImpl implements StoreService{
 			for(int i=0; i<result.size(); i++) {
 				//카트리지 기법
 				result.get(i).setUrl();
+				logger.debug(result.get(i).getOriginName());
 			}
 			if(storeImgUrlMap!=null) {
 				for(int i=0; i<storeImgUrlMap.size(); i++) {
@@ -165,29 +169,45 @@ public class StoreServiceImpl implements StoreService{
 		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
 		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
 		try {
-			reviewList = reviewDao.selectAll(accountId, storeId);
+			reviewList = reviewDao.selectReviewByStoreId(accountId, storeId);
 			reviewImageList = reviewDao.selectReviewImgListByStoreId(storeId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println("reviewImageList size : "+reviewImageList);
-		System.out.println("reviewList size : "+reviewList);
+		logger.debug("reviewImageList size : "+reviewImageList.size());
+		logger.debug("reviewList size : "+reviewList.size());
 		
 		for(int i=0; i<reviewImageList.size(); i++) {
 			reviewImageList.get(i).setUrl(reviewImageList.get(i).getUrl());
 		}
 		
-		int imageListIndex = 0;
-		for (int i = 0; i < reviewList.size(); i++) {
-			reviewList.get(i).setImageList(new ArrayList());
-			for (int j = imageListIndex; j < reviewImageList.size(); j++) {
-				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReview_id()) {
-					reviewList.get(i).getImageList().add(reviewImageList.get(j));
-					imageListIndex++;
+		int reviewListIdx =0;
+		int imageListIdx = 0;
+		for (reviewListIdx = 0; reviewListIdx < reviewList.size(); reviewListIdx++) {
+			ReviewVo reviewVo = reviewList.get(reviewListIdx);
+			List<ImageVo> tempReviewImageList = new ArrayList<ImageVo>();
+			
+			logger.debug(reviewVo.toString());		
+			while(imageListIdx < reviewImageList.size()) {
+				ImageVo imageVo = reviewImageList.get(imageListIdx);
+				
+				logger.debug(imageVo.toString());
+				if(reviewVo.getReview_id() == imageVo.getReview_id()) {
+					tempReviewImageList.add(imageVo);
+					imageListIdx++;
+					
+				}else {
+					break;
 				}
 			}
+			reviewList.get(reviewListIdx).setImageList(tempReviewImageList);
+			System.out.println();
+			
 		}
+		
+		reviewList.sort(compLikeCount);
+		reviewList.sort(CompEditable);
 		
 		return reviewList;
 		
@@ -271,6 +291,116 @@ public class StoreServiceImpl implements StoreService{
 		}
 		return null;
 	}
+	
+	@Override
+	public int editStoreLogo(int store_Id, MultipartFile newFile, String delStoreLogo) {
+		String uploadPath = "logo";
+		S3Util s3 = new S3Util();
+		
+		//삭제된 이미지 s3에서 파일 삭제
+		if(!delStoreLogo.equals("")) {
+			
+			//프랜차이즈인 경우 or 서버 내부의 기본 이미지인 경우 이미지 삭제하지 않
+			String category = storeDao.selectCategoryByStoreId(store_Id);
+			logger.debug("delStoreLogo : "+delStoreLogo +", category" +category +",!category.contains(\"프랜차이즈\") " +!category.contains("프랜차이즈"));
+			if (!category.contains("프랜차이즈") && !delStoreLogo.contains("/moca/resources/")) {
+				String pathUu_idOriginName = delStoreLogo.split(".com/")[1];
+				String [] pathUu_idOriginName2 = pathUu_idOriginName.split("_");
+				s3.fileDelete(pathUu_idOriginName);	
+				s3.fileDelete(pathUu_idOriginName2[0]+"_thumbnail_"+pathUu_idOriginName2[1]);
+			}
+			
+
+		}
+		
+		
+		logger.debug("originalName: " + newFile.getOriginalFilename());
+		logger.debug("size : " +  newFile.getSize());
+		logger.debug("contentType : " + newFile.getContentType());
+        
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_Id);
+		ImageVo imgaeVo = null;
+        if((newFile.getSize() != 0) && newFile.getContentType().contains("image")) {
+        	
+			try {
+				imgaeVo = UploadFileUtils.uploadFile(uploadPath, newFile.getOriginalFilename(), newFile.getBytes());
+				
+		    	map.put("LOGOIMG", imgaeVo.getUrl());
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}            	
+        }else {
+        	map.put("LOGOIMG", null);
+        }
+
+		//storeVo내용으로 DB 내용 수정    		
+		return storeDao.updateStoreLogo(map);
+	}
+	
+	@Override
+	public int editStoreImg(int store_id, MultipartFile[] newFiles, String[] oldStoreImgArr,
+			String[] delStoreImgArr) {
+		String uploadPath = "store";
+		S3Util s3 = new S3Util();
+		String[] newStoreImgArr = new String[newFiles.length];
+		
+		
+		//삭제된 이미지 s3에서 파일 삭제
+		for (int i = 0; i < delStoreImgArr.length; i++) {
+			if(!delStoreImgArr[i].equals("")) {
+				String pathUu_idOriginName = delStoreImgArr[i].split(".com/")[1];
+				s3.fileDelete(pathUu_idOriginName);				
+			}
+		}
+		
+		//s3에서 파일 추가
+		//S3에 파일 업로드
+		MultipartFile file;
+    	for (int i = 0; i < newFiles.length; i++) {
+
+    		file = newFiles[i];
+    			
+    		logger.debug("originalName: " + file.getOriginalFilename());
+    		logger.debug("size : " +  file.getSize());
+    		logger.debug("contentType : " + file.getContentType());
+            
+            
+            if((file.getSize() != 0) && file.getContentType().contains("image")) {
+            	ImageVo imgaeVo;
+				try {
+					imgaeVo = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
+					newStoreImgArr[i] = imgaeVo.getUrl();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}            	
+            }
+		}
+    	
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("STORE_ID", store_id);
+    	for(int i=0; i<oldStoreImgArr.length; i++) {
+    		map.put("STOREIMG"+(i+1), oldStoreImgArr[i]);
+    		logger.debug("oldStoreImg STOREIMG"+(i+1)+(String)map.get("STOREIMG"+(i+1)));
+    	}
+    	for(int i=oldStoreImgArr.length; i< oldStoreImgArr.length+newStoreImgArr.length; i++) {
+    		map.put("STOREIMG"+(i+1), newStoreImgArr[i-oldStoreImgArr.length]);
+    		logger.debug("newStoreImg STOREIMG"+(i+1)+(String)map.get("STOREIMG"+(i+1)));
+    	}
+
+		//storeVo내용으로 DB 내용 수정    		
+		return storeDao.updateStoreImg(map);		
+	}
+	
 	
 	@Override
 	public ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails) {
@@ -598,18 +728,24 @@ public class StoreServiceImpl implements StoreService{
 		}
 		return -1;
 	}
-
-	@Override
-	public StoreVo editStoreImg(StoreVo storeVo, MultipartFile[] newFiles, String[] delStoreImgArr) {
-		//DB에서 삭제된 이미지 제거
+	
+	
+	//reviewList에 있는 객체들을 editable의 내림 차순으로 정렬
+	static Comparator<ReviewVo> CompEditable = new Comparator<ReviewVo>() {
 		
-		//파일 추가
+		@Override
+		public int compare(ReviewVo o1, ReviewVo o2) {
+			return o2.getEditable() -o1.getEditable();
+		}
+	};
+	
+	//reviewList에 있는 객체들을 likeCount의 내림 차순으로 정렬
+	static Comparator<ReviewVo> compLikeCount = new Comparator<ReviewVo>() {
 		
-		//추가된 파일 storeVo에 내용 추가
-		
-		//storeVo내용으로 DB 내용 수정
-			
-		return null;
-	}
-
+		@Override
+		public int compare(ReviewVo o1, ReviewVo o2) {
+			return o2.getLikeCount() - o1.getLikeCount();
+		}
+	};
+	
 }

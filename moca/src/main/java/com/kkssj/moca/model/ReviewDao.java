@@ -8,7 +8,7 @@ import com.kkssj.moca.model.entity.ReviewVo;
 
 public interface ReviewDao {
 
-	List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException;
+	List<ReviewVo> selectReviewByStoreId(int accountId, int storeId) throws SQLException;
 
 	int insertLikeHate(int review_id, int accountId, int isLike) throws SQLException;
 	

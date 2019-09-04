@@ -2,6 +2,7 @@ package com.kkssj.moca.model.entity;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewVo {
 	//REVIEW table
@@ -12,7 +13,7 @@ public class ReviewVo {
 	private double averageLevel;
 	private int likeCount, hateCount;
 	private int editable;
-	private ArrayList<ImageVo> imageList;
+	private List<ImageVo> imageList;
 	
 	//mypage에 store정보 가져오기
 	private String storeName, storeLogoImg;
@@ -21,6 +22,7 @@ public class ReviewVo {
 	private int isLike;
 	
 	//ACCOUNT table
+	private String thumbnailImage;
 	private String nickName;
 	private int followCount, reviewCount;
 	
@@ -194,11 +196,11 @@ public class ReviewVo {
 		this.editable = editable;
 	}
 
-	public ArrayList<ImageVo> getImageList() {
+	public List<ImageVo> getImageList() {
 		return imageList;
 	}
 
-	public void setImageList(ArrayList<ImageVo> imageList) {
+	public void setImageList(List<ImageVo> imageList) {
 		this.imageList = imageList;
 	}
 	
@@ -218,23 +220,37 @@ public class ReviewVo {
 	public void setStoreLogoImg(String storeLogoImg) {
 		this.storeLogoImg = storeLogoImg;
 	}
-	//mypage용도//
-
-
-	@Override
-	public String toString() {
-		return "ReviewVo [review_id=" + review_id + ", account_id=" + account_id + ", store_id=" + store_id
-				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate
-				+ ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel
-				+ ", moodLevel=" + moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel="
-				+ averageLevel + ", likeCount=" + likeCount + ", hateCount=" + hateCount + ", isLike=" + isLike
-				+ ", nickName=" + nickName + ", followCount=" + followCount + ", reviewCount=" + reviewCount
-				+ ", isMine=" + isMine + "]";
+	
+	public String getThumbnailImage() {
+		return thumbnailImage;
 	}
+	public void setThumbnailImage(String thumbnailImage) {
+		this.thumbnailImage = thumbnailImage;
+	}
+	
+	//mypage용도//
+	
+
+
+
+	
+
+
+
+
 
 	//5가지 level을 가지고 소숫점 1자리까지 평점 계산
 	public void calAverageLevel() {
 		this.averageLevel = Math.round(((this.tasteLevel + this.priceLevel + this.serviceLevel + this.moodLevel + this.convenienceLevel)/5.0)*10)/10.0;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "ReviewVo [review_id=" + review_id + ", reviewContent=" + reviewContent + ", thumbnailImage="
+				+ thumbnailImage + ", nickName=" + nickName + ", followCount=" + followCount + ", reviewCount="
+				+ reviewCount + ", isMine=" + isMine + "]";
 	}
 
 

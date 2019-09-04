@@ -115,5 +115,24 @@ public class StoreDaoImpl implements StoreDao {
 	@Override
 	public List<StoreVo> selectTakeoutStoresList(Map<String, String> variables) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTakeoutStoresList", variables);
+	}
+
+	@Override
+	public int updateStoreImg(Map<String, Object> map) {	
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreImg", map);
+	}
+
+	@Override
+	public int updateStoreLogo(Map<String, Object> map) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreLogo", map);
+	}
+
+	@Override
+	public String selectCategoryByStoreId(int store_Id) {
+		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectCategoryByStoreId", store_Id);
+	}
+
+	public int updateViewcnt(int store_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateViewcnt",store_id);
 	} 
 }

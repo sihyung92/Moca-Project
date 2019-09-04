@@ -24,8 +24,9 @@ var updateStore = function(store_Id) {
 		contentType: "application/json; charset=UTF-8",
 		datatype: "json",
 		data: JSON.stringify(param),
-		error: function(errorMsg) {
-			console.log("카페상세정보 수정실패", errorMsg);
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
+			
 		},
 		success: function(data) {
 			console.log("카페상세정보 수정성공");
@@ -57,3 +58,54 @@ var updateStore = function(store_Id) {
 		}
 	});
 };
+
+//카페 이미지 수정
+var editStoreImg = function(){
+	//delete한 썸네일 추가
+	$('#delStoreImg').val(toBeDeletedStoreImgUrls);
+	$('#oldStoreImg').val(oldStoreImgUrls);
+	
+	//파일 추가
+	var form = $('#storeImgForm')[0];
+
+	var storeImgFormData = new FormData(form);
+	
+	storeImgFormData.delete('file');
+	
+	var fileSize = fileBuffer.length;
+	
+	if(fileSize >0){
+		for(var i=0 ; i < fileSize ; i ++){
+			storeImgFormData.append("newStoreFiles",fileBuffer[i]);
+			console.log(i,fileBuffer[i]);
+		}
+	}
+	
+	var storeImgFormObj = $(form).serializeObject();
+	console.log(storeImgFormObj,storeImgFormData);
+	
+
+	//ajax 통신 - post방식으로 추가
+	$.ajax({
+		type: 'POST',
+		url: '/moca/storeImg/'+storeImgFormObj.storeId,
+		enctype : 'multipart/form-data',
+		data: storeImgFormData,
+		dataType : "json",
+		contentType : false,  
+		processData : false,
+		cache : false,
+		timeout : 600000,
+		success: function(storeVo) {
+			console.log('ajax 통신 성공');
+			
+			location.reload();
+			
+		},
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
+		}
+	})
+
+}
+

@@ -3,6 +3,7 @@ package com.kkssj.moca.controller;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
+import com.kkssj.moca.service.LogService;
 import com.kkssj.moca.service.StoreService;
 
 @Controller
@@ -35,7 +37,8 @@ public class StoreController {
 	@Inject
 	StoreService storeService;
 	
-	
+	@Inject
+	LogService logService;
 	
 	////////////////////////
 	//store
@@ -65,19 +68,23 @@ public class StoreController {
 
 	// 리다이렉트로 상세페이지로
 	@GetMapping("/stores/{storeId}")
-	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session){
+	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session, HttpServletRequest req){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
+			//비회원 store view 로그 찍기
+			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}else {
 			logger.debug(accountVo.toString());
+			//회원 store view 로그 찍기
+			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}
 		
-		
-
 		StoreVo storeVo = storeService.getStore(storeId, accountVo.getAccount_id());
 		logger.debug(storeVo.toString());
 
@@ -95,14 +102,16 @@ public class StoreController {
 		//storeImg의 개수에 따라 리뷰 이미지 vo 받아오기
 		model.addAttribute("StoreImgList", storeService.getStoreImgList(storeId));
 		
-		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));
-
+		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));		
+		
 		return "store_detail";
 	}
 	
 	@PutMapping("/stores/{storeId}")
 	public ResponseEntity updateStore(@PathVariable("storeId") int storeId, @RequestBody StoreVo storeVo, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -111,14 +120,23 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 
+		////////////////////////////////
+		//input check
+		
+		
+		
+		////////////////////////////////
+		//logger
 		storeVo.setStore_Id(storeId);
 		logger.debug("storeId : " + storeId + " - updateStore");
 		logger.debug(storeVo.toString());
 
-		// edit store에서 store update, storeinfohistory insert
-		int isSuccess = storeService.editStore(accountVo.getAccount_id(), storeVo);
 
-		if (isSuccess > 0) {
+		////////////////////////////////
+		//기능
+		
+		// edit store에서 store update, storeinfohistory insert
+		if (storeService.editStore(accountVo.getAccount_id(), storeVo) > 0) {
 			// 성공
 			return ResponseEntity.status(HttpStatus.OK).body(storeService.getStoreInfoHistory(storeId));
 		} else {
@@ -128,11 +146,15 @@ public class StoreController {
 
 	}
 	
-	////////////////////////
-	//카페 좋아요
-    @PostMapping(value ="/likeStore/{accountId}")
-    public ResponseEntity addLikeStore(@PathVariable("accountId") int accountId, @RequestParam int storeId,Model model, HttpSession session){
+	//카페 대표이미지 수정
+	@PostMapping("/storeImg/{store_Id}")
+	@ResponseBody
+	public ResponseEntity editStoreImg(@RequestParam("newStoreFiles") MultipartFile[] newFiles,
+			@RequestParam("delStoreImg") String delStoreImg, @RequestParam("oldStoreImg") String oldStoreImg, 
+			StoreVo storeVo, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -141,9 +163,128 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
-    	int result = storeService.addLikeStore(storeId, accountVo.getAccount_id());
+
 		
-		if(result == 1) {
+		////////////////////////////////
+		//input check
+		
+		String[] delStoreImgArr = delStoreImg.split(",");
+		if(delStoreImg.equals("")) {
+			delStoreImgArr = new String[0];
+		}
+		String[] oldStoreImgArr = oldStoreImg.split(",");
+		if(oldStoreImg.equals("")) {
+			oldStoreImgArr = new String[0];
+		}
+		
+		//수정한 내용이 없는 경우
+		if(oldStoreImgArr.length ==3 ) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		if((newFiles.length+oldStoreImgArr.length)>3) {
+    		return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
+    	}
+		for (int i = 0; i < newFiles.length; i++) {
+			if(!newFiles[i].getContentType().contains("image")) {
+				logger.debug("input contenType : " +newFiles[i].getContentType());
+				return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+			}
+		}
+		
+		
+		////////////////////////////////
+		//logger
+		for (int i = 0; i < newFiles.length; i++) {
+			logger.debug(newFiles[i].getOriginalFilename());
+		}
+		for (int i = 0; i < oldStoreImgArr.length; i++) {
+			logger.debug("old : "+oldStoreImgArr[i]);			
+		}
+		for (int i = 0; i < delStoreImgArr.length; i++) {
+			logger.debug("del : "+delStoreImgArr[i]);				
+		}
+		logger.debug(storeVo.toString());
+		
+		
+		
+		////////////////////////////////
+		//기능
+		
+		//이미지 수정
+		if(storeService.editStoreImg(storeVo.getStore_Id(), newFiles, oldStoreImgArr, delStoreImgArr) == 1) {
+			return new ResponseEntity<>(storeVo,  HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	//로고 파일 수정
+	@PostMapping("/storeLogo/{store_Id}")
+	@ResponseBody
+	public ResponseEntity editStoreLogo(@RequestParam("storeLogoFile") MultipartFile newFile,
+			@RequestParam("delStoreLogo") String delStoreLogo, 
+			StoreVo storeVo, HttpSession session){
+		
+		////////////////////////////////
+		//account check
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		////////////////////////////////
+		//input check
+		
+		if(delStoreLogo.equals("")) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		if(!newFile.getContentType().contains("image")) {
+			logger.debug("input contenType : " +newFile.getContentType());
+			return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+		}
+		
+		
+		////////////////////////////////
+		//logger
+		logger.debug(newFile.getOriginalFilename());
+		logger.debug("del : "+delStoreLogo);				
+		logger.debug(storeVo.toString());
+		
+
+		////////////////////////////////
+		//기능
+		
+		//로고 수정
+		if(storeService.editStoreLogo(storeVo.getStore_Id(), newFile, delStoreLogo) == 1) {
+			return new ResponseEntity<>(storeVo,  HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	
+	////////////////////////
+	//카페 좋아요
+    @PostMapping(value ="/likeStore/{accountId}")
+    public ResponseEntity addLikeStore(@PathVariable("accountId") int accountId, @RequestParam int storeId,Model model, HttpSession session){
+		
+		////////////////////////////////
+		//account check
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+			return new ResponseEntity<>(HttpStatus.LOCKED);
+		}
+		
+		
+		////////////////////////////////
+		//기능
+		if(storeService.addLikeStore(storeId, accountVo.getAccount_id()) == 1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -153,6 +294,8 @@ public class StoreController {
     @DeleteMapping(value ="/likeStore/{accountId}")
     public ResponseEntity deleteLikeStore(@PathVariable("accountId") int accountId, @RequestParam int storeId, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -161,9 +304,10 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 
-		int result = storeService.deleteLikeStore(storeId, accountVo.getAccount_id());
 		
-		if(result == 1) {
+		////////////////////////////////
+		//기능
+		if(storeService.deleteLikeStore(storeId, accountVo.getAccount_id()) == 1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -176,6 +320,8 @@ public class StoreController {
     @PostMapping(value ="/favoriteStore/{accountId}")
     public ResponseEntity addFavoriteStore(@PathVariable("accountId") int accountId, @RequestParam int storeId , HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -184,9 +330,10 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 
-    	int result = storeService.addFavoriteStore(storeId, accountVo.getAccount_id());
 		
-		if(result == 1) {
+		////////////////////////////////
+		//기능
+		if(storeService.addFavoriteStore(storeId, accountVo.getAccount_id()) == 1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -196,6 +343,8 @@ public class StoreController {
     @DeleteMapping(value ="/favoriteStore/{accountId}")
     public ResponseEntity deleteFavoriteStore(@PathVariable("accountId") int accountId, @RequestParam int storeId, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -204,9 +353,9 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 
-		int result = storeService.deleteFavoriteStore(storeId, accountVo.getAccount_id());
 		
-		if(result == 1) {
+		////////////////////////////////
+		if(storeService.deleteFavoriteStore(storeId, accountVo.getAccount_id()) == 1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -223,6 +372,8 @@ public class StoreController {
     @PostMapping(value ="/reviews")
     public ResponseEntity addReview(@RequestParam("file") MultipartFile[] files, ReviewVo reviewVo, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -231,18 +382,35 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
+		
+		////////////////////////////////
+		//input check
+		
     	if(files.length>10) {
     		return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
     	}
-        
+    	for (int i = 0; i < files.length; i++) {
+    		if(!files[i].getContentType().contains("image")) {
+    			logger.debug("input contenType : " +files[i].getContentType());
+    			return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    		}
+		}
+    	
+    	
+    	
+		////////////////////////////////
+		//logger
         reviewVo.setAccount_id(accountVo.getAccount_id());
         logger.debug(reviewVo.toString());
 		
         for (int i = 0; i < files.length; i++) {
 			logger.debug(files[i].getName());
 		}
-		reviewVo = storeService.addReview(reviewVo,files);
-		
+        
+        
+		////////////////////////////////
+		//기능		
+        reviewVo = storeService.addReview(reviewVo,files);
 		if(reviewVo != null) {
 			logger.debug(reviewVo.toString());
 			return new ResponseEntity<>(reviewVo,HttpStatus.OK);
@@ -258,6 +426,8 @@ public class StoreController {
 	public ResponseEntity editReview(@RequestParam("file") MultipartFile[] newFiles, 
 			@RequestParam("delThumbnail") String delThumbnails, ReviewVo reviewVo, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -266,25 +436,36 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
+		reviewVo.setAccount_id(accountVo.getAccount_id());
 		
 		String[] delThumbnail = delThumbnails.split(",");
 		if((newFiles.length+delThumbnail.length)>10) {
     		return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
     	}
+		
+		
+		////////////////////////////////
+		//input check
+		for (int i = 0; i < newFiles.length; i++) {
+			if(!newFiles[i].getContentType().contains("image")) {
+				logger.debug("input contenType : " +newFiles[i].getContentType());
+				return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+			}
+		}
+		
+		
+		////////////////////////////////
+		//logger
 		logger.debug(reviewVo.toString());
 		logger.debug(delThumbnails);
-		//세션이 작동했다고 가정
-		reviewVo.setAccount_id(1);
-		
 		for (int i = 0; i < newFiles.length; i++) {
 			logger.debug(newFiles[i].getName());
 		}
 		
-		//json으로 수정 내용 전송
-		reviewVo = storeService.editReview(reviewVo, newFiles, delThumbnails);
 		
-		//받는 쪽에서 refresh하게
-		if(reviewVo!=null) {
+		////////////////////////////////
+		//기능
+		if(storeService.editReview(reviewVo, newFiles, delThumbnails) !=null) {
 			return new ResponseEntity<>(reviewVo, HttpStatus.OK);
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -295,6 +476,8 @@ public class StoreController {
 	@DeleteMapping("/reviews/{review_id}")
 	public ResponseEntity deleteReview(@PathVariable("review_id") int review_id, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -307,9 +490,10 @@ public class StoreController {
 		reviewVo.setAccount_id(accountVo.getAccount_id());
 		reviewVo.setReview_id(review_id);
 		
-		int isDelete = storeService.deleteReview(reviewVo);
 		
-		if(isDelete==1) {			
+		////////////////////////////////
+		//기능
+		if(storeService.deleteReview(reviewVo)==1) {			
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		
@@ -324,6 +508,8 @@ public class StoreController {
 	@PostMapping("/likeHates/{review_id}")
 	public ResponseEntity addLikeHate(@PathVariable("review_id") int review_id, @RequestParam int isLike, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -332,6 +518,9 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
+		
+		////////////////////////////////
+		//기능
 		if(storeService.addLikeHate(review_id, accountVo.getAccount_id(), isLike) ==1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
@@ -347,6 +536,8 @@ public class StoreController {
 	@PutMapping("/likeHates/{review_id}")
 	public ResponseEntity editLikeHate(@PathVariable("review_id") int review_id, @RequestParam int isLike, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -355,6 +546,9 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
+		
+		////////////////////////////////
+		//기능
 		if(storeService.editLikeHate(review_id, accountVo.getAccount_id(), isLike) ==1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
@@ -366,6 +560,8 @@ public class StoreController {
 	@DeleteMapping("/likeHates/{review_id}")
 	public ResponseEntity  deleteLikeHate(@PathVariable("review_id") int review_id, @RequestParam int isLike, HttpSession session){
 		
+		////////////////////////////////
+		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
@@ -374,6 +570,9 @@ public class StoreController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 
+		
+		////////////////////////////////
+		//기능
 		if(storeService.deleteLikeHate(review_id, accountVo.getAccount_id(), isLike) ==1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
@@ -393,49 +592,7 @@ public class StoreController {
 		return "redirect:../stores/"+1;
 	}
 	
-	//리뷰 수정
-	@PostMapping("/storeImg/{store_Id}")
-	@ResponseBody
-	public ResponseEntity editStoreImg(@RequestParam("file") MultipartFile[] newFiles,
-			@RequestParam("delStoreImg") String delStoreImg, @RequestParam("oldStoreImg") String oldStoreImg, 
-			StoreVo storeVo, HttpSession session){
-		
-		AccountVo accountVo = (AccountVo) session.getAttribute("login");
-		
-		//비회원인 경우
-		if(accountVo ==null) {
-			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
-		}
-		
-		//세션이 작동했다고 가정
-		String[] delStoreImgArr = delStoreImg.split(",");
-		String[] oldStoreImgArr = oldStoreImg.split(",");
-		if((newFiles.length+delStoreImgArr.length)>3) {
-    		return new ResponseEntity<>(HttpStatus.TOO_MANY_REQUESTS);
-    	}
-		
-		//logger
-		logger.debug(delStoreImg);	
-		logger.debug(oldStoreImg);
-		for (int i = 0; i < newFiles.length; i++) {
-			logger.debug(newFiles[i].getOriginalFilename());
-		}
-		logger.debug(storeVo.toString());	
-		
-		//json으로 수정 내용 전송
-		storeVo = storeService.editStoreImg(storeVo, newFiles, delStoreImgArr);
-		
-		//새롭게 storVo 받기(storeImgList 포함해서)
-		List<ImageVo> imageList = storeService.getStoreImgList(storeVo.getStore_Id());
-		
-		//받는 쪽에서 refresh하게
-		if(storeVo!=null) {
-			return new ResponseEntity<>(storeVo,  HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		
-	}
+
 	
 
 	

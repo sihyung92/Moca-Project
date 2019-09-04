@@ -37,5 +37,14 @@ public interface StoreDao {
 	List<StoreVo> selectBestStoresList();
 	
 	List<StoreVo> selectTakeoutStoresList(Map<String, String> variables);
+
+	int updateStoreImg(Map<String, Object> map);
+
+	int updateStoreLogo(Map<String, Object> map);
+
+	String selectCategoryByStoreId(int store_Id);
+	
+	//store의 viewcnt 증가
+	int updateViewcnt(int store_id) throws SQLException;
 	
 }

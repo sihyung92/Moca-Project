@@ -94,7 +94,8 @@
         }else if(JSON.stringify(userInfo.platformType)=='"NULL_VAL"'){
             $('.just-use-user').css('display','none');    
         }else{
-           
+
+            /*
             var uiGender = '${sessionScope.login.gender}';
             var uiBirthday = '${sessionScope.login.birthday}';
             var uiBarista = '${sessionScope.login.barista}';
@@ -163,6 +164,7 @@
             $('#profile-icon').css('border-top-right-radius','50% 50%');
             $('#profile-icon').css('border-bottom-left-radius','50% 50%');
             $('#profile-icon').css('border-bottom-right-radius','50% 50%');
+            */
         }
         
         //로그인 기능 처리
@@ -273,6 +275,21 @@
 
         /* 설정정보를 초기화하고 연동을 준비 */
         naverLogin.init();
+    }
+
+    //ajax통신의 error status에 따른 처리
+    var respondHttpStatus = function(status){
+    	if(status==429){ //Too Many Requests(업로드 파일 갯수 초과)		
+			alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
+		}else if(status==415){ //Unsupported Media Type(이미지 파일을 업로드 하지 않았을때)		
+			alert("사진 파일만 업로드 가능합니다.");
+		}else if(status==423){ // Locked(로그인 안된 경우)
+			$('.modal').modal('hide')		
+			alert("로그인 후 이용가능합니다.");
+			$('#Login-Modal').modal('show')
+		}else{
+			console.log('ajax 통신 실패', status);
+		}
     }
     </script>
 <!-- kss 공통 header -->

@@ -3,14 +3,14 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kkssj.moca.model.ReviewDao">
-  <select id="selectAll" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
+  <select id="selectReviewByStoreId" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
 	SELECT r.REVIEW_ID, r.ACCOUNT_ID, (r.ACCOUNT_ID=${ACCOUNT_ID}) 'editable', r.STORE_ID, r.REVIEWCONTENT, r.WRITEDATE, 
 	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
 	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNT_ID}),0)  "isLike",
-	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	a.THUMBNAILIMAGE ,a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
 	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNT_ID = a.ACCOUNT_ID
 	WHERE r.STORE_ID = #{STORE_ID}
-	ORDER BY FIELD(r.ACCOUNT_ID,#{ACCOUNT_ID}) DESC, r.LIKECOUNT DESC;
+	ORDER BY r.REVIEW_ID
   </select>
   
   <select id="selectReviewImgListByStoreId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">

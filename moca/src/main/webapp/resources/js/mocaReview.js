@@ -130,11 +130,7 @@ var saveReview = function(fileBuffer){
 			
 		},
 		error: function(request,status,error) {
-			if(error=='Too Many Requests'){				
-				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
-			}else{
-				console.log('ajax 통신 실패', error);
-			}
+			respondHttpStatus(request.status);
 		}
 	})
 }
@@ -300,12 +296,8 @@ var editReview = function(){
 			delThumbnail = "" //delThumbnail 초기화
 			
 		},
-		error: function(error) {
-			if(error=='Too Many Requests'){				
-				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
-			}else{
-				console.log('ajax 통신 실패', error);
-			}
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
 		}
 	})
 
@@ -339,8 +331,8 @@ var deleteReview = function(review_id) {
 		success: function() {
 			console.log('ajax 통신 성공')
 		},
-		error: function() {
-			console.log('ajax 통신 실패')
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
 			alert("리뷰 삭제 실패")
 		}
 	})
@@ -468,8 +460,8 @@ var addLikeHate = function(reviewId, isLike){
 				hateCount.val(Number(hateCount.val()) + 1);
 			}
 		},
-		error: function() {
-			console.log('ajax 통신 실패')
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
 			alert("좋아요 싫어요 추가 실패")
 		}
 	})
@@ -502,8 +494,8 @@ var changeLikeHate = function(reviewId, isLike){
 			
 
 		},
-		error: function() {
-			console.log('ajax 통신 실패')
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
 			alert("좋아요 싫어요 변경 실패")
 		}
 
@@ -531,8 +523,8 @@ var cancelLikeHate = function(reviewId, isLike){
 			}
 			
 		},
-		error: function() {
-			console.log('ajax 통신 실패')
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
 			alert("취소 실패")
 		}
 
@@ -673,7 +665,8 @@ var filesChange = function(){
             const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
             if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
                 alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
-                resetFile();
+                fileBuffer.splice(fileBuffer.length-1, 1);
+                test = fileBuffer;
                 return false;
             }
         });
@@ -700,59 +693,7 @@ var url2PathFileName = function(imgUrl){
 	return imgUrl.split('.com/')[1]
 }
 
-//카페 이미지 수정
-var editStoreImg = function(){
-	//delete한 썸네일 추가
-	$('.delStoreImg').val(toBeDeletedStoreImgUrls);
-	$('.oldStoreImg').val(oldStoreImgUrls);
-	
-	//파일 추가
-	var form = $('#storeImgForm')[0];
 
-	var storeImgFormData = new FormData(form);
-	
-	storeImgFormData.delete('file');
-	
-	var fileSize = fileBuffer.length;
-	
-	if(fileSize >0){
-		for(var i=0 ; i < fileSize ; i ++){
-			storeImgFormData.append("file",fileBuffer[i]);
-			console.log(i,fileBuffer[i]);
-		}
-	}
-	
-	var storeImgFormObj = $(form).serializeObject();
-	console.log(storeImgFormObj,storeImgFormData);
-	
-
-	//ajax 통신 - post방식으로 추가
-	$.ajax({
-		type: 'POST',
-		url: '/moca/storeImg/'+storeImgFormObj.storeId,
-		enctype : 'multipart/form-data',
-		data: storeImgFormData,
-		dataType : "json",
-		contentType : false,  
-		processData : false,
-		cache : false,
-		timeout : 600000,
-		success: function(storeVo) {
-			console.log('ajax 통신 성공');
-			
-			//파일 수정
-			
-		},
-		error: function(error) {
-			if(error=='Too Many Requests'){				
-				alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
-			}else{
-				console.log('ajax 통신 실패', error);
-			}
-		}
-	})
-
-}
 
 
 
