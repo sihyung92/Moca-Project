@@ -6,4 +6,7 @@
   <insert id="insertLogStoreIdKeyWordNone" parameterType="com.kkssj.moca.model.entity.LogVo">
   INSERT INTO LOG (CLASSIFICATION, LOGTIME, ACCOUNT_ID, IP, ACCESS_LOCATION) VALUES (#{classification},now(),#{account_id},#{ip},#{access_location})
   </insert>
+  <insert id="inserKeywordLog" parameterType="com.kkssj.moca.model.entity.LogVo">
+  	INSERT INTO LOG (CLASSIFICATION, ACCOUNT_ID, IP, ACCESS_LOCATION, KEYWORD) VALUES ('검색어', #{account_id}, #{ip}, #{access_location}, #{keyword})
+  </insert>
 </mapper>

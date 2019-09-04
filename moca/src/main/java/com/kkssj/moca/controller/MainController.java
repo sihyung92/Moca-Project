@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ReviewVo;
@@ -38,22 +39,34 @@ public class MainController {
 	private List<String> tagNames;
 	private Map<String, String> rating = new HashMap<String, String>();
 	
+	
+	//안쓸지도 모르겠다!!
 	@RequestMapping(value="/geolocation", method = RequestMethod.GET)
-	public String getGeolocation() {
-		return "geolocation";
+	public String getGeolocation(HttpSession session, String lat, String lng) {
+		session.removeAttribute("x");
+		session.removeAttribute("y");
+		if(lat ==null || lng ==null) {
+			return "geolocation";
+		}
+		session.setAttribute("x", lng);
+		session.setAttribute("y", lat);
+		return "redirect:/stores";
 	}
+	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String x, String y, Model model) throws SQLException {
+	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String lng, String lat, Model model) throws SQLException {
+		
 		//세션에 위치 정보 x, y값 저장 (geolocation 페이지에서 x, y좌표를 받아서 돌아온 경우)
 		//geolocation 페이지에서 x, y좌표 받기 실패한 경우 -> x, y = "";으로 넘어옴
-		if(x!=null && y!=null) { 
-			session.setAttribute("x", x);
-			session.setAttribute("y", y);
+		if(lng!=null && lat!=null) { 
+			session.setAttribute("x", lng);
+			session.setAttribute("y", lat);
 		//geolocation페이지에서 위치 정보 받아 오기 (메인 페이지 첫 접근 시)
 		}else if(session.getAttribute("x") == null|| session.getAttribute("y") == null) {
 			return "geolocation";
 		}
-	
+		
+		long enterTime = System.currentTimeMillis();
 		//세션에서 x, y 좌표 받아 쿼리용 변수 생성		
 		if((String)session.getAttribute("x")!="" && (String)session.getAttribute("y")!="") {
 			variables.put("x", (String)session.getAttribute("x"));
@@ -132,12 +145,15 @@ public class MainController {
 		model.addAttribute("recentReviews",mainService.getRecentReviews());
 		model.addAttribute("listNames",listNames);
 		model.addAttribute("storesList",storesList);
+		long afterTime = System.currentTimeMillis();
+		logger.debug("main 페이지 로딩에 걸린 시간은 :"+(afterTime-enterTime)/1000D);
 		return "main";
 	}
 	
 	//추천 정보 추가로 받기
 	@RequestMapping("/getmorepicks")
 	public String getMorePicks(HttpSession session,HttpServletResponse response, Model model) {
+		long enterTime = System.currentTimeMillis();
 		//뷰 처리용: 전달할 추천 리스트 이름 목록
 		List<String> listNames = new ArrayList<String>(); 
 		//뷰 처리용: 각 추천 리스트를 담은 리스트
@@ -181,6 +197,8 @@ public class MainController {
 		
 		model.addAttribute("listNames",listNames);
 		model.addAttribute("storesList",storesList);
+		long afterTime = System.currentTimeMillis();
+		logger.debug("추가 추천 데이터 로딩 걸린 시간은 :"+(afterTime-enterTime)/1000D);
 		return "converter"; 
 	}
 	

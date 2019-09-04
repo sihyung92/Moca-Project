@@ -30,7 +30,21 @@
     <script type="text/javascript" src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
     <script type='text/javascript'>    
-    $(document).ready(function(){    	
+    $(document).ready(function(){  
+        //키워드 검사
+		$('#searchBtn').click(function(){
+			var keyword = $('#keyword').val();
+			keyword = keyword.trim();		
+			//검색어가 없거나 태그가 2개 이상일 때,			
+			if(keyword=="" || keyword=="#" || keyword.indexOf('#') != keyword.lastIndexOf('#')){}
+				$('#keyword').val("");
+				$('#keyword').attr('placeholder', '잘못된 키워드 입니다... :(');
+				return false;
+			}else{
+				$(this).parent().submit();
+			}
+		});
+          	
         //테스트용 코드 자리
         
         //미리 설정할 사항들
@@ -294,12 +308,10 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <form class="navbar-form navbar-left" action="stores">
 	        <div class="form-group">
-	          <input type="text" name="keyword" class="form-control" placeholder="Search" size="50">
-	          <input type="hidden" name="x" class="lng"/>
-			  <input type="hidden" name="y" class="lat"/>		
+	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
 			  <input type="hidden" name="filter" value="distance"/>
 	        </div>
-	        <button type="submit" class="btn btn-default">Submit</button>
+	        <button id="searchBtn" type="submit" class="btn btn-default">Submit</button>
 	      </form>
         <ul class="nav navbar-nav navbar-right">
             <li ><a href="#">moca의 카페가 되어주세요!</a></li>

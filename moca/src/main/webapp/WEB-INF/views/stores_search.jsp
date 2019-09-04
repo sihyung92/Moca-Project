@@ -42,8 +42,21 @@
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e63ece9668927d2e8027037f0aeb06b5"></script>
 <script type="text/javascript">
-	var lat,lng;		
+
     window.onload = function () {  
+    	 //키워드 검사
+		$('#searchBtn2').click(function(){
+			var keyword = $('#keyword2').val();
+			keyword = keyword.trim();		
+			//검색어가 없거나 태그가 2개 이상일 때,			
+			if(keyword=="" || keyword=="#" || keyword.indexOf('#') != keyword.lastIndexOf('#')){
+				$('#keyword2').val("");
+				$('#keyword2').attr('placeholder', '잘못된 키워드 입니다... :(');
+				return false;
+			}else{
+				$(this).parent().submit();
+			}
+		});
 //카페 리스트 클릭 이벤트(POST방식으로 디테일 페이지 이동)
         $('.links').click(function(){
            	$(this).children().first().submit();
@@ -84,74 +97,9 @@
 			$('#search form').append('<input type="hidden" name="keyword" value="\'${keyword}\'"/>');
 			$('#search form').submit();
 		});
-		
-//GeoLocation API에서 현재 위치의 위도&경도 얻기
-	    //디폴트 위치 정보 지정(비트캠프 강남 센터! :p) 
-    	lat = 37.4995011;			 //위도
-        lng = 127.0291403;			//경도
-        $('.lat').val(lat);
-		$('.lng').val(lng); 		
-    	//접속 브라우저의 웹 지오로케이션 지원 여부 판단  
-        if (navigator.geolocation){          	       
-            var options = { timeout: 2000, maximumAge: 3000, enableHighAccuracy: true};	//highAccuracy true: 모바일 기기는 GPS로 위치 정보 확인             
-            navigator.geolocation.getCurrentPosition(sucCall, errCall, options);		//현재 위치 정보 얻기
-        }else {
-        	//브라우저가 지오로케이션 지원하지 않을 때
-        	$('#warning_geo strong').html("현재 위치 정보를 지원하지 않는 브라우저 입니다.");          
-        }
+		createMap();
     };//onload 끝-
-    
-  	//Success Callback(현재 위치 정보 저장)
-    var sucCall = function (position) {
-        lat = position.coords.latitude;	    //위도
-        lng = position.coords.longitude;	//경도
-		$('.lat').val(lat);
-		$('.lng').val(lng);
-		$('#warning_geo').html("");
-		createMap();
-    };
-
-    // Error Callback(에러 메시지 출력)
-    function errCall(error) {
-    	tryAPIGeolocation();	//구글GeolocationAPI시도
-    };   
-	
-	var tryAPIGeolocation = function() {
-		$.ajax({
-			url:"moneysaver/googleGeolocation",
-			dataType: "text",
-			method: "post",
-			success: function(googleKey){
-			    jQuery.post(googleKey, function(success) {
-			        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
-			    }).fail(function(err) {
-			        switch (err.code) {
-			            case err.PERMISSION_DENIED:
-			            	$('#warning_geo strong').html("위치 정보 접근 거부 🙄 ...............정....정확한 검색을 위해 허....허용..을..");     
-			                break;
-			            case err.POSITION_UNAVAILABLE:
-			            	$('#warning_geo strong').html("위치 확인이 불가능합니다. 🙄  🙄 ");
-			            	break;
-			            default:	//error.UNKNOWN_ERROR, error.TIMEOUT, default
-			            	$('#warning_geo strong').html("현재 위치 정보 받아오기에 실패했습니다.");            
-			           		break;
-			        } 
-			        createMap();
-					});
-				}
-	     });
-	};
-	
-	//구글GeolocationAPI Success Callback
-	var apiGeolocationSuccess = function(position) {
-		lat = position.coords.latitude;	    //위도
-	    lng = position.coords.longitude;	//경도
-		$('.lat').val(lat);
-		$('.lng').val(lng);
-		$('#warning_geo').html("");
-		createMap();
-	};
-	
+  
 	//카카오 맵 생성(API연결)
 	var createMap = function(){
 	<c:if test="${not empty alist}">	//검색 결과 없으면 지도 만들지말자~~~~
@@ -583,9 +531,7 @@
 	</div>
 	<div id="search">		
 		<form action="stores">
-			<input type="hidden" name="x" class="lng"/>
-			<input type="hidden" name="y" class="lat">
-			키워드는 <input type="text" name="keyword" value="${keyword}"/> 입니당
+			키워드는 <input type="text" name="keyword" id="keyword2" placeholder="Search" value="${keyword}"/> 입니당
 			<div id="filter_sort" class="filter">
 				<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
 				<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
@@ -596,14 +542,11 @@
 			</div>
 			<input type="hidden" name="region" id="region1" disabled="disabled"/>
 			<input type="hidden" name="region" id="region2" disabled="disabled"/>
-			<button type="submit">검색</button><br/>
+			<button id="searchBtn2" type="submit">검색</button><br/>
 			<c:if test="${not empty msg_changedFilter}">원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</c:if>		
 		</form>	
 	</div>
 	<div id="warning_box">
-		<span id="warning_badRequest"><strong>${msg_badRequest }</strong></span><br/>
-		<span id="warning_wrongKeyword"><strong>${msg_wrongKeyword }</strong></span><br/>
-		<span id="warning_keywordEx"><small>${msg_keywordEx }</small></span>
 		<span id="warning_noResult"><c:if test="${alist[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
 	</div>
 	<div id="result_stores">

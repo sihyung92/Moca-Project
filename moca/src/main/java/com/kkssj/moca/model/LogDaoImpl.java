@@ -37,6 +37,11 @@ public class LogDaoImpl implements LogDao{
 		// TODO Auto-generated method stub
 		return sqlSession.insert("com.kkssj.moca.model.logDao.insertLogStoreIdKeyWordNone", logVo);
 	}
+
+	@Override
+	public int insertKeywordLog(LogVo logVo) {
+		return sqlSession.insert("com.kkssj.moca.model.logDao.insertKeywordLog",logVo);		
+	}
 	
 
 
