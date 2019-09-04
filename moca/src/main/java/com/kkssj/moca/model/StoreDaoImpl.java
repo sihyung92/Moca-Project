@@ -123,22 +123,17 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
-	public List<StoreVo> selectGoodMoodStoresList(Map<String, String> variables) {
-		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectGoodMoodStoresList", variables);
-	}
-
-	@Override
-	public List<StoreVo> selectGoodTasteStoresList(Map<String, String> variables) {
-		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectGoodTasteStoresList", variables);
-	}
-
-	@Override
-	public List<StoreVo> selectGoodPriceStoresList(Map<String, String> variables) {
-		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectGoodPriceStoresList", variables);
-	}
-
-	@Override
-	public List<StoreVo> selectTagStoresList(Map<String, String> variables) {
-		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTagStoresList", variables);
+	public List<StoreVo> selectStoresListByTag(Map<String, String> variables) {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoresListByTag", variables);
 	} 
+	
+	@Override
+	public List<StoreVo> selectStoresListByRating(Map<String, String> variables) {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoresListByRating", variables);
+	}
+	
+	@Override
+	public List<String> selectTagNames(){
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTagNames");
+	}
 }

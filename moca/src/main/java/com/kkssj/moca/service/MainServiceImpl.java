@@ -2,6 +2,7 @@ package com.kkssj.moca.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,66 +96,47 @@ public class MainServiceImpl implements MainService{
 	}
 
 	@Override
-	public List<StoreVo> getGoodMoodStoresList(Map<String, String> variables) {
+	public List<StoreVo> getStoresListByTag(Map<String, String> variables) {
 		List<StoreVo> alist = new ArrayList<StoreVo>();
-		alist = storeDao.selectGoodMoodStoresList(variables);
+		Map<String, String> localVariables=new HashMap<String, String>();
+		alist = storeDao.selectStoresListByTag(variables);
 		if(variables!=null && alist.size()<5) {
-			variables.put("trial", "2");
-			alist = storeDao.selectGoodMoodStoresList(variables);
+			localVariables.put("x", variables.get("x"));
+			localVariables.put("y", variables.get("y"));
+			localVariables.put("tag", variables.get("tag"));
+			localVariables.put("extendedSearch", "true");
+			alist = storeDao.selectStoresListByTag(localVariables); 
 		}
 		if(variables!=null && alist.size()<5) {
-			variables.put("x", null);
-			variables.put("y", null); 
-			alist = storeDao.selectGoodMoodStoresList(variables);
+			localVariables.put("x", null);
+			localVariables.put("y", null);
+			alist = storeDao.selectStoresListByTag(localVariables);
 		}
 		return alist;
 	}
 
 	@Override
-	public List<StoreVo> getGoodTasteStoresList(Map<String, String> variables) {
+	public List<StoreVo> getStoresListByRating(Map<String, String> variables) {
 		List<StoreVo> alist = new ArrayList<StoreVo>();
-		alist = storeDao.selectGoodTasteStoresList(variables);
+		Map<String, String> localVariables=new HashMap<String, String>();
+		alist = storeDao.selectStoresListByRating(variables);
 		if(variables!=null && alist.size()<5) {
-			variables.put("trial", "2");
-			alist = storeDao.selectGoodTasteStoresList(variables);
+			localVariables.put("x", variables.get("x"));
+			localVariables.put("y", variables.get("y"));
+			localVariables.put("ratingName", variables.get("ratingName"));
+			localVariables.put("extendedSearch", "true");
+			alist = storeDao.selectStoresListByRating(localVariables);
 		}
 		if(variables!=null && alist.size()<5) {
-			variables.put("x", null);
-			variables.put("y", null); 
-			alist = storeDao.selectGoodTasteStoresList(variables);
+			localVariables.put("x", null);
+			localVariables.put("y", null);
+			alist = storeDao.selectStoresListByRating(localVariables);
 		}
 		return alist;
 	}
-
+	
 	@Override
-	public List<StoreVo> getGoodPriceStoresList(Map<String, String> variables) {
-		List<StoreVo> alist = new ArrayList<StoreVo>();
-		alist = storeDao.selectGoodPriceStoresList(variables);
-		if(variables!=null && alist.size()<5) {
-			variables.put("trial", "2");
-			alist = storeDao.selectGoodPriceStoresList(variables);
-		}
-		if(variables!=null && alist.size()<5) {
-			variables.put("x", null);
-			variables.put("y", null); 
-			alist = storeDao.selectGoodPriceStoresList(variables);
-		}
-		return alist;
-	}
-
-	@Override
-	public List<StoreVo> getTagStoresList(Map<String, String> variables) {
-		List<StoreVo> alist = new ArrayList<StoreVo>();
-		alist = storeDao.selectTagStoresList(variables);
-		if(variables!=null && alist.size()<5) {
-			variables.put("trial", "2");
-			alist = storeDao.selectTagStoresList(variables);
-		}
-		if(variables!=null && alist.size()<5) {
-			variables.put("x", null);
-			variables.put("y", null); 
-			alist = storeDao.selectTagStoresList(variables);
-		}
-		return alist;
+	public List<String> getTagNames() {
+		return storeDao.selectTagNames();
 	}
 }

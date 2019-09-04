@@ -40,12 +40,10 @@ public interface StoreDao {
 	
 	List<StoreVo> selectFollowersStoresList(int id);	
 	
-	List<StoreVo> selectGoodMoodStoresList(Map<String, String> variables);
+	List<StoreVo> selectStoresListByRating(Map<String, String> variables);	
 
-	List<StoreVo> selectGoodTasteStoresList(Map<String, String> variables);
-
-	List<StoreVo> selectGoodPriceStoresList(Map<String, String> variables);
-
-	List<StoreVo> selectTagStoresList(Map<String, String> variables);
+	List<StoreVo> selectStoresListByTag(Map<String, String> variables);
+	
+	List<String> selectTagNames();
 	
 }

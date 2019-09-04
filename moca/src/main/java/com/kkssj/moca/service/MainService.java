@@ -24,11 +24,10 @@ public interface MainService {
 	
 	List<StoreVo> getFollowersStoresList(int id);
 	
-	List<StoreVo> getGoodMoodStoresList(Map<String, String> variables);
+	
+	List<StoreVo> getStoresListByRating(Map<String, String> variables);
 
-	List<StoreVo> getGoodTasteStoresList(Map<String, String> variables);
-
-	List<StoreVo> getGoodPriceStoresList(Map<String, String> variables);
-
-	List<StoreVo> getTagStoresList(Map<String, String> variables);
+	List<StoreVo> getStoresListByTag(Map<String, String> variables);
+	
+	List<String> getTagNames();
 }
