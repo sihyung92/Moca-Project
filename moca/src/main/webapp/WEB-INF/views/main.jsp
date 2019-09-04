@@ -78,6 +78,7 @@
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
 	var slide;
+	var idx=1;
     window.onload = function () { 
     	//디폴트 위치 정보 지정(비트캠프 강남 센터! :p) 
     	lat = 37.4995011;			 //위도
@@ -89,14 +90,7 @@
             var options = { timeout: 2000, maximumAge: 3000, enableHighAccuracy: true};	//highAccuracy true: 모바일 기기는 GPS로 위치 정보 확인             
             navigator.geolocation.getCurrentPosition(sucCall, errCall, options);		//현재 위치 정보 얻기
         }
-         /* $.ajax({
-            url:"hits",
-            dataType: "json",
-        	success: function(data){
-				hits=data;		
-				console.log(hits[1].storeImg1);		
-            }
-         }); */
+        //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
         $('.mocaPick li a').mouseenter(function(){
             var overlay = $(this).children('.overlay');
             overlay.show();
@@ -110,15 +104,56 @@
         		slide = setTimeout(slideFunction, 500);
         	})();        
         });
-         
+        //캐러셀 mouesLeave: 원복
         $('.mocaPick li a').mouseleave(function(){
             clearTimeout(slide);
-			$(this).children().hide();
-			var firstImg = $(this).children('img')[0];
-			$(firstImg).show();
+    		$(this).children().hide();
+    		var firstImg = $(this).children('img')[0];
+    		$(firstImg).show();
         });
-    };//onload() 끝
-	
+		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가		
+        $(window).on("scroll", updateData);
+    };//onload() 끝  
+      
+    //스크롤 이벤트
+    function updateData(){        	
+        	var position = $(window).scrollTop();	//스크롤바 위치로 페이지 위치 판단
+        	var updatePoint = ($(window).height())*3/4;
+            if(position>updatePoint && idx<6){
+            	$(window).off("scroll");
+    			$.ajax({
+    				url:"getmorepicks/"+idx,
+    				dataType:"html",
+    				success:function(data){
+        				idx++;
+        				$('body').append(data);
+        				$(window).on("scroll", updateData);
+        				//캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
+        		        $('.mocaPick li a').mouseenter(function(){
+        		            var overlay = $(this).children('.overlay');
+        		            overlay.show();
+        		            var imgs = $(this).children('img');
+        		            var i=0;
+        		          	//이미지 슬라이드 함수
+        		        	(function slideFunction(){
+        		        		imgs.hide();
+        		        		$(imgs[i]).show();
+        		        		if(i==2) i=0; else i++;
+        		        		slide = setTimeout(slideFunction, 500);
+        		        	})();        
+        		        });
+        		        //캐러셀 mouesLeave: 원복
+        		        $('.mocaPick li a').mouseleave(function(){
+        		            clearTimeout(slide);
+        		    		$(this).children().hide();
+        		    		var firstImg = $(this).children('img')[0];
+        		    		$(firstImg).show();
+        		        });
+    				}
+    			});
+            };
+        };
+        
     //Success Callback(현재 위치 정보 저장)
     var sucCall = function (position) {
         lat = position.coords.latitude;	    //위도
