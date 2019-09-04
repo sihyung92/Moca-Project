@@ -222,11 +222,11 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	reviewModal.find('#review-content').val(editReviewRow.find('.reviewInfo-review-content').text());
 	
 	//평점
-	reviewModal.find('#taste-level').val( editReviewRow.find('.taste-level').text())
-	reviewModal.find('#price-level').val( editReviewRow.find('.price-level').text())
-	reviewModal.find('#service-level').val( editReviewRow.find('.service-level').text())
-	reviewModal.find('#mood-level').val( editReviewRow.find('.mood-level').text())
-	reviewModal.find('#convenience-level').val( editReviewRow.find('.convenience-level').text())
+	$.fn.raty.start(editReviewRow.find('.taste-level').text(), '#taste-level');
+	$.fn.raty.start(editReviewRow.find('.price-level').text(), '#price-level');
+	$.fn.raty.start(editReviewRow.find('.service-level').text(), '#service-level');
+	$.fn.raty.start(editReviewRow.find('.mood-level').text(), '#mood-level');
+	$.fn.raty.start(editReviewRow.find('.convenience-level').text(), '#convenience-level');
 	reviewModal.find('#average-level').val( editReviewRow.find('.average-level').text())
 }
 

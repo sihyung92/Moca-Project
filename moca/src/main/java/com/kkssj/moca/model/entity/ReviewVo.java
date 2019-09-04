@@ -246,11 +246,17 @@ public class ReviewVo {
 
 
 
+
 	@Override
 	public String toString() {
-		return "ReviewVo [review_id=" + review_id + ", reviewContent=" + reviewContent + ", thumbnailImage="
-				+ thumbnailImage + ", nickName=" + nickName + ", followCount=" + followCount + ", reviewCount="
-				+ reviewCount + ", isMine=" + isMine + "]";
+		return "ReviewVo [review_id=" + review_id + ", account_id=" + account_id + ", store_id=" + store_id
+				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate + ", tasteLevel=" + tasteLevel
+				+ ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", moodLevel=" + moodLevel
+				+ ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel + ", likeCount="
+				+ likeCount + ", hateCount=" + hateCount + ", editable=" + editable + ", imageList=" + imageList
+				+ ", storeName=" + storeName + ", storeLogoImg=" + storeLogoImg + ", isLike=" + isLike
+				+ ", thumbnailImage=" + thumbnailImage + ", nickName=" + nickName + ", followCount=" + followCount
+				+ ", reviewCount=" + reviewCount + ", isMine=" + isMine + "]";
 	}
 
 

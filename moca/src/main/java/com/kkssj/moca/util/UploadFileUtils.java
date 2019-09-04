@@ -39,7 +39,6 @@ public class UploadFileUtils {
         String savedName =path+"/"+ uu_id.toString() + "_" + originalName;
         String uploadedFileName =savedName.replace(File.separatorChar, '/');        
         s3.fileUpload(bucketName, uploadedFileName, fileData);  //  추가
-//      s3.fileUpload(bucketName, uploadPath+savedPath+uploadedFileName, fileData);  //  추가 
         
         ///////////////////
         //thumnail
@@ -47,12 +46,6 @@ public class UploadFileUtils {
         uploadedFileName =savedName.replace(File.separatorChar, '/');   
         s3.fileUpload(bucketName, uploadedFileName, makeThumbnail(originalName, fileData));  //  추가 
         
-        
-//        if (MediaUtils.getMediaType(formatName) != null) {
-//        	uploadedFileName = makeThumbnail(uploadPath, savedPath, savedName);
-//        } else {
-//        	uploadedFileName = makeIcon(uploadPath, savedPath, savedName);
-//        }
 
         return new ImageVo(uu_id, path , originalName);
     }

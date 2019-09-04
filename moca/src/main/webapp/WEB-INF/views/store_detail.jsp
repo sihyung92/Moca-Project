@@ -158,6 +158,7 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=18"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=18"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
 		var fileBuffer;
@@ -184,6 +185,8 @@
 		//나중에 삭제할 테스트 변수
 		var test;
 
+		var startLevel;
+
 	
 		$(document).ready(function() {
 			//카페 변수 바인딩
@@ -193,6 +196,38 @@
 			editStoreImgsBtn = $('#editStoreImgsBtn');
 			storeImgswModal = $('#storeImgswModal');
 			storeFiles = $('#storeFiles');
+
+
+			//평점 별
+			$('#level').raty({
+			  scoreName:  'level',
+			  click: function(score){
+				  $.fn.raty.cancel('#level');
+				  $('.storeLevel').css('display','')
+				  $('.level').css('display','none')
+
+				  $.fn.raty.start(score, '#taste-level');
+				  $.fn.raty.start(score, '#price-level');
+				  $.fn.raty.start(score, '#service-level');
+				  $.fn.raty.start(score, '#mood-level');
+				  $.fn.raty.start(score, '#convenience-level');
+			  }
+			});
+ 			$('#taste-level').raty({
+				  scoreName:  'tasteLevel',
+			});
+			$('#price-level').raty({
+				  scoreName:  'priceLevel',
+			});
+			$('#service-level').raty({
+				  scoreName:  'serviceLevel',
+			});
+			$('#mood-level').raty({
+				  scoreName:  'moodLevel',
+			});
+			$('#convenience-level').raty({
+				  scoreName:  'convenienceLevel',
+			}); 
 			
 
 			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
@@ -263,34 +298,8 @@
 			callReviewDataMore();
 			
 			//차트
-			var ctx = document.getElementById('myChart').getContext('2d');
-			var labelVal = [${storeVo.tasteLevel}, ${storeVo.serviceLevel}, ${storeVo.moodLevel}, ${storeVo.priceLevel}, ${storeVo.convenienceLevel}];
-			var myRadarChart = new Chart(ctx, {
-				type: 'radar',
-				data: {
-					labels: ['맛', '서비스', '분위기', '가격', '편의성'],
-					datasets: [{
-						//label: '종합 평가',
-						//		    	backgroundColor: 'rgb(255, 99, 132)',
-						borderColor: 'rgb(255, 99, 132)',
-						pointRadius: 0,
-						lineTension: 0.1,
-						data: labelVal
-					}]
-				},
-				options: {
-					legend: {
-						display: false
-					},
-					scale: {
-						ticks: {
-							suggestedMin: 0,
-							suggestedMax: 10,
-							stepSize: 2
-						}
-					}
-				}
-			});
+			makeStoreLevelChart();
+			
 
 			//storeInfo 참여하기 버튼 클릭시
 			$('#updateStore').click(function() {
@@ -594,6 +603,7 @@
 
 				//확장자 체크
 				for(var i=0; i<target.files.length ; i++){
+					
 					var fileName = target.files[i].name
 					var fileEx = fileName.slice(fileName.lastIndexOf(".")+1).toLowerCase()
 					
@@ -687,6 +697,37 @@
 				}
 			})
 
+		}
+
+		var makeStoreLevelChart = function(){
+			var ctx = document.getElementById('myChart').getContext('2d');
+			var labelVal = [${storeVo.tasteLevel}, ${storeVo.serviceLevel}, ${storeVo.moodLevel}, ${storeVo.priceLevel}, ${storeVo.convenienceLevel}];
+			var myRadarChart = new Chart(ctx, {
+				type: 'radar',
+				data: {
+					labels: ['맛', '서비스', '분위기', '가격', '편의성'],
+					datasets: [{
+						//label: '종합 평가',
+						//		    	backgroundColor: 'rgb(255, 99, 132)',
+						borderColor: 'rgb(255, 99, 132)',
+						pointRadius: 0,
+						lineTension: 0.1,
+						data: labelVal
+					}]
+				},
+				options: {
+					legend: {
+						display: false
+					},
+					scale: {
+						ticks: {
+							suggestedMin: 0,
+							suggestedMax: 5,
+							stepSize: 1
+						}
+					}
+				}
+			});
 		}
 
 	</script>
@@ -1100,93 +1141,27 @@
 						</div>
 						<div class="form-group storeLevel level">
 							<label for="level">평점</label>
-							<select id="level" name="level" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option selected="selected">5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="level"></div>
 						</div>	
 						<div class="form-group storeLevel">
 							<label for="taste-level">맛</label>
-							<select id="taste-level" name="tasteLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="taste-level"></div>
 						</div>
 						<div class="form-group storeLevel">
 							<label for="price-level">가격</label>
-							<select id="price-level" name="priceLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="price-level"></div>
 						</div>	
 						<div class="form-group storeLevel">
 							<label for="service-level">서비스</label>
-							<select id="service-level" name="serviceLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="service-level"></div>
 						</div>
 						<div class="form-group storeLevel">
 							<label for="mood-level">분위기</label>
-							<select id="mood-level" name="moodLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="mood-level"></div>
 						</div>
 						<div class="form-group storeLevel">
 							<label for="convenience-level">편의성</label>
-							<select id="convenience-level" name="convenienceLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="convenience-level"></div>
 						</div>
 
 					</form>
