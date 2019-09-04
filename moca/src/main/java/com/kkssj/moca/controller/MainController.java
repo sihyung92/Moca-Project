@@ -133,7 +133,7 @@ public class MainController {
 	}
 	
 	@RequestMapping("/getmorepicks/1")
-	public String getMorePicks1(HttpSession session, Model model, String idx) {
+	public String getMorePicks1(HttpSession session, Model model) {
 		//뷰 처리용: 전달할 추천 리스트 이름 목록
 		listNames = new ArrayList<String>();
 		//뷰 처리용: 각 추천 리스트를 담은 리스트
@@ -176,7 +176,6 @@ public class MainController {
 		alist = new ArrayList<StoreVo>();
 		
 		logger.debug("데이터 요청 222222222222222222222222222222222222222222222222222222");
-		
 		alist=mainService.getTagStoresList(variables);		//분위기 좋은 카페 리턴
 		if(alist.size()>4) {
 			listNames.add("#혼자가기 좋은 카페");

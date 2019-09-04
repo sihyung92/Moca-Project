@@ -148,12 +148,12 @@ public class MainServiceImpl implements MainService{
 		alist = storeDao.selectTagStoresList(variables);
 		if(variables!=null && alist.size()<5) {
 			variables.put("trial", "2");
-			alist = storeDao.selectGoodPriceStoresList(variables);
+			alist = storeDao.selectTagStoresList(variables);
 		}
 		if(variables!=null && alist.size()<5) {
 			variables.put("x", null);
 			variables.put("y", null); 
-			alist = storeDao.selectGoodPriceStoresList(variables);
+			alist = storeDao.selectTagStoresList(variables);
 		}
 		return alist;
 	}
