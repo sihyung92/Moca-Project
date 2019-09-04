@@ -22,7 +22,7 @@ public class LogServiceImpl implements LogService {
 	@Override
 	public boolean writeStoreIdKeyWordNone(HttpServletRequest req, String classification, int account_id) {
 		// TODO Auto-generated method stub
-		LogVo log = new LogVo(0, account_id, null, classification, req.getRemoteAddr(), null, req.getLocale().getCountry()+"/"+req.getLocale().getDisplayCountry(), null);
+		LogVo log = new LogVo(0, account_id, 0, classification, req.getRemoteAddr(), null, req.getLocale().getCountry()+"/"+req.getLocale().getDisplayCountry(), null);
 		try {
 			logDao.writeStoreIdKeyWordNone(log);
 			return true;
@@ -33,6 +33,22 @@ public class LogServiceImpl implements LogService {
 		return false;
 	}
 	
-	//±×³É ·Î±× ¼­ºñ½º °¡Á®´Ù°¡ ¼­ºñ½º.write(HttpServletRequest,·Î±×±¸ºÐ,Å°¿öµå,¾îÄ«¿îÆ®¾ÆÀÌµð,½ºÅä¾î¾ÆÀÌµð) ÇÏ¸é ·Î±× ÀÛ¼º µË´Ï´Ù.
-		
+	//ï¿½×³ï¿½ ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½.write(HttpServletRequest,ï¿½Î±×±ï¿½ï¿½ï¿½,Å°ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Ä«ï¿½ï¿½Æ®ï¿½ï¿½ï¿½Ìµï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½) ï¿½Ï¸ï¿½ ï¿½Î±ï¿½ ï¿½Û¼ï¿½ ï¿½Ë´Ï´ï¿½.
+	
+	
+	public boolean writeLogStore(HttpServletRequest req, String classification, int store_id, int account_id) {
+		LogVo log;
+		if(account_id==0) {
+			log = new LogVo(0, 0, store_id, classification, req.getRemoteAddr(), null, req.getLocale().getCountry()+"/"+req.getLocale().getDisplayCountry(), null);			
+		}else {
+			log = new LogVo(0, account_id, store_id, classification, req.getRemoteAddr(), null, req.getLocale().getCountry()+"/"+req.getLocale().getDisplayCountry(), null);
+		}
+		try {
+			logDao.insertLogStore(log);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

@@ -38,4 +38,7 @@ public interface StoreDao {
 	
 	List<StoreVo> selectTakeoutStoresList(Map<String, String> variables);
 	
+	//store의 viewcnt 증가
+	int updateViewcnt(int store_id) throws SQLException;
+	
 }

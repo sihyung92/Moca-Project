@@ -3,6 +3,7 @@ package com.kkssj.moca.controller;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
+import com.kkssj.moca.service.LogService;
 import com.kkssj.moca.service.StoreService;
 
 @Controller
@@ -35,7 +37,8 @@ public class StoreController {
 	@Inject
 	StoreService storeService;
 	
-	
+	@Inject
+	LogService logService;
 	
 	////////////////////////
 	//store
@@ -65,19 +68,21 @@ public class StoreController {
 
 	// 리다이렉트로 상세페이지로
 	@GetMapping("/stores/{storeId}")
-	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session){
+	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session, HttpServletRequest req){
 		
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
+			//비회원 store view 로그 찍기
+			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}else {
 			logger.debug(accountVo.toString());
+			//회원 store view 로그 찍기
+			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}
 		
-		
-
 		StoreVo storeVo = storeService.getStore(storeId, accountVo.getAccount_id());
 		logger.debug(storeVo.toString());
 
@@ -95,8 +100,8 @@ public class StoreController {
 		//storeImg의 개수에 따라 리뷰 이미지 vo 받아오기
 		model.addAttribute("StoreImgList", storeService.getStoreImgList(storeId));
 		
-		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));
-
+		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));		
+		
 		return "store_detail";
 	}
 	

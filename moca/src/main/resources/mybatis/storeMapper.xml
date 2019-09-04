@@ -88,4 +88,9 @@
 		WHERE rownum<16 ORDER BY rownum
 	 ]]>
   </select> 
+  
+  
+  <update id="updateViewcnt" parameterType="Integer" >
+  	UPDATE STORE SET VIEWCNT = VIEWCNT+1 WHERE store_id=#{store_Id}
+  </update>
 </mapper>

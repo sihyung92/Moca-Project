@@ -47,6 +47,8 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public StoreVo getStore(int store_Id, int account_id){
 		try {
+			//store viewcnt 증가
+			storeDao.updateViewcnt(store_Id);
 			return storeDao.selectOne(store_Id, account_id);
 		} catch (SQLException e) {
 			e.printStackTrace();
