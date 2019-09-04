@@ -22,7 +22,7 @@ public class LogServiceImpl implements LogService {
 	@Override
 	public boolean writeStoreIdKeyWordNone(HttpServletRequest req, String classification, int account_id) {
 		// TODO Auto-generated method stub
-		LogVo log = new LogVo(0, account_id, null, classification, req.getRemoteAddr(), null, req.getLocale().getCountry()+"/"+req.getLocale().getDisplayCountry(), null);
+		LogVo log = new LogVo(0, account_id, 0, classification, req.getRemoteAddr(), null, req.getLocale().getCountry()+"/"+req.getLocale().getDisplayCountry(), null);
 		try {
 			logDao.writeStoreIdKeyWordNone(log);
 			return true;
@@ -33,5 +33,19 @@ public class LogServiceImpl implements LogService {
 		return false;
 	}
 	
-		
+	public boolean writeLogStore(HttpServletRequest req, String classification, int store_id, int account_id) {
+		LogVo log;
+		if(account_id==0) {
+			log = new LogVo(0, 0, store_id, classification, req.getRemoteAddr(), null, req.getLocale().getCountry()+"/"+req.getLocale().getDisplayCountry(), null);			
+		}else {
+			log = new LogVo(0, account_id, store_id, classification, req.getRemoteAddr(), null, req.getLocale().getCountry()+"/"+req.getLocale().getDisplayCountry(), null);
+		}
+		try {
+			logDao.insertLogStore(log);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

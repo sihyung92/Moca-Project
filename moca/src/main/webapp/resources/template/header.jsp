@@ -37,7 +37,7 @@
         $('#nav-static-height').css('height','60px');
         
         $('.modal-dialog').css('overflow-y','initial');
-        $('.modal-body').css('height','100%');
+       // $('.modal-body').css('height','100%');
         $('.modal-body').css('overflow-y','auto');
         
         $('.close').click(function(event){

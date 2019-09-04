@@ -90,7 +90,6 @@
 		WHERE rownum<16 ORDER BY rownum
 	 ]]>
   </select> 
-  
   <update id="updateStoreImg">
   	UPDATE STORE SET 
   	<if test="STOREIMG1 != null"> STOREIMG1 = #{STOREIMG1 }	</if> <if test="STOREIMG1 == null"> STOREIMG1 = null </if>
@@ -104,4 +103,7 @@
   <select id="selectCategoryByStoreId" parameterType="INTEGER" resultType="java.lang.String">
 	SELECT CATEGORY FROM STORE WHERE STORE_ID = ${STORE_ID }
   </select> 
+  <update id="updateViewcnt" parameterType="Integer" >
+  	UPDATE STORE SET VIEWCNT = VIEWCNT+1 WHERE store_id=#{store_Id}
+  </update>
 </mapper>

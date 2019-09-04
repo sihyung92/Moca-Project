@@ -263,21 +263,25 @@ public class StoreVo {
 	}
 
 	public void setOpenTime2(String openTime2) {
-		DateFormat fommatter = new SimpleDateFormat("HH:mm");
-		try {
-			this.openTime = (Date) fommatter.parse(openTime2);
-		} catch (ParseException e) {
-			e.printStackTrace();
+		if(!openTime2.equals("")) {
+			DateFormat fommatter = new SimpleDateFormat("HH:mm");
+			try {
+				this.openTime = (Date) fommatter.parse(openTime2);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 		}
 		this.openTime2 = openTime2;
 	}
 
 	public void setEndTime2(String endTime2) {
-		DateFormat fommatter = new SimpleDateFormat("HH:mm");
-		try {
-			this.endTime = (Date) fommatter.parse(endTime2);
-		} catch (ParseException e) {
-			e.printStackTrace();
+		if(!endTime2.equals("")) {
+			DateFormat fommatter = new SimpleDateFormat("HH:mm");
+			try {
+				this.endTime = (Date) fommatter.parse(endTime2);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 		}
 		this.endTime2 = endTime2;
 	}

@@ -1,6 +1,9 @@
 package com.kkssj.moca.service;
 
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.kkssj.moca.model.entity.StoreVo;
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ReviewVo;
@@ -15,12 +18,6 @@ public interface MypageService{
 	
 	//해당 account의 내가 쓴 리뷰 가져오기
 	List<ReviewVo> getMyreviewList(int accountId, int sessionId);
-	
-	//해당 account의 회원정보 수정하기
-	int editAccount(int accountId);
-	
-	//해당 account의 회원탈퇴(삭제)
-	int deleteAccount(int accountId);
 
 	//해당 account의 follow신청
 	int addFollow(int follower, int following);
@@ -36,5 +33,11 @@ public interface MypageService{
 
 	//좋아요한 카페 가져오기
 	List<StoreVo> getLikeStoreList(int accountId);
+
+	//해당 account의 회원정보 수정하기
+	int editAccount(AccountVo editAccountVo, MultipartFile accountImage);
+	
+	//해당 account의 회원탈퇴(삭제)
+	int deleteAccount(int accountId);
 
 }

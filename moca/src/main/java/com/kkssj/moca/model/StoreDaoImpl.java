@@ -130,5 +130,9 @@ public class StoreDaoImpl implements StoreDao {
 	@Override
 	public String selectCategoryByStoreId(int store_Id) {
 		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectCategoryByStoreId", store_Id);
+	}
+
+	public int updateViewcnt(int store_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateViewcnt",store_id);
 	} 
 }

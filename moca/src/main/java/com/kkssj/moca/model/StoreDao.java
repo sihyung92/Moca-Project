@@ -44,4 +44,7 @@ public interface StoreDao {
 
 	String selectCategoryByStoreId(int store_Id);
 	
+	//store의 viewcnt 증가
+	int updateViewcnt(int store_id) throws SQLException;
+	
 }

@@ -3,6 +3,7 @@ package com.kkssj.moca.controller;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
+import com.kkssj.moca.service.LogService;
 import com.kkssj.moca.service.StoreService;
 
 @Controller
@@ -35,7 +37,8 @@ public class StoreController {
 	@Inject
 	StoreService storeService;
 	
-	
+	@Inject
+	LogService logService;
 	
 	////////////////////////
 	//store
@@ -65,7 +68,7 @@ public class StoreController {
 
 	// 리다이렉트로 상세페이지로
 	@GetMapping("/stores/{storeId}")
-	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session){
+	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session, HttpServletRequest req){
 		
 		////////////////////////////////
 		//account check
@@ -74,12 +77,14 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
+			//비회원 store view 로그 찍기
+			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}else {
 			logger.debug(accountVo.toString());
+			//회원 store view 로그 찍기
+			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}
 		
-		
-
 		StoreVo storeVo = storeService.getStore(storeId, accountVo.getAccount_id());
 		logger.debug(storeVo.toString());
 
@@ -97,8 +102,8 @@ public class StoreController {
 		//storeImg의 개수에 따라 리뷰 이미지 vo 받아오기
 		model.addAttribute("StoreImgList", storeService.getStoreImgList(storeId));
 		
-		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));
-
+		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));		
+		
 		return "store_detail";
 	}
 	
@@ -594,9 +599,11 @@ public class StoreController {
 	public String changeCategory(String category, String name) {
 		// 포함되면 해당 카테고리로 변환
 		// 프랜차이즈(카테고리), 애견(카테고리), 스터디(이름), 고양이(카테고리), 만화+놀숲(이름), 보드(카테고리), 룸카페(이름)
+		//테이크아웃: 매머드, 컴포즈커피, 빽다방, 메가커피, 더리터, 커피온리, 더벤티, 쥬씨, 마노핀, 커피식스, 어벤더치
 		String[] categoryCheck = { "커피전문점", "애견", "고양이", "보드" };
 		String[] nameCheck = { "스터디", "만화", "놀숲", "룸카페" };
-
+		String[] takeOutCafe = {"매머드", "컴포즈커피", "빽다방", "메가커피", "더리터", "커피온리", "더벤티", "쥬씨", "마노핀", "커피식스", "어벤더치"};
+		
 		for (int i = 0; i < categoryCheck.length; i++) {
 			if (category.contains(categoryCheck[i])) {
 				if (categoryCheck[i].equals("커피전문점")) {
@@ -605,6 +612,12 @@ public class StoreController {
 					category = categoryCheck[i];
 				}
 				break;
+			}
+		}
+		
+		for(int i=0; i<takeOutCafe.length; i++) {
+			if (name.contains(takeOutCafe[i])) {
+				category = "프랜차이즈>테이크아웃";
 			}
 		}
 
