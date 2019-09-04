@@ -95,6 +95,7 @@ public class StoreController {
 
 		model.addAttribute("accountVo", accountVo);
 
+		//리뷰가져오기
 		model.addAttribute("reviewVoList", storeService.getReviewList(accountVo.getAccount_id(), storeId));
 
 		model.addAttribute("storeVo", storeVo);

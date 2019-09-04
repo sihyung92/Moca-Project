@@ -405,6 +405,7 @@ var reviewCnt = function(q,r,n){
 	}
 };
 
+
 //리뷰 내용 더보기
 var callReviewDataMore = function(){
 	var reviewData = $('.more-review-content');
@@ -693,7 +694,52 @@ var url2PathFileName = function(imgUrl){
 	return imgUrl.split('.com/')[1]
 }
 
+//스크롤 맨밑으로 내려갈 때
+var scrollMaxDown = function() {
+    
+    var scrolltop = $(document).scrollTop();
+    var height = $(document).height();
+    var height_win = $(window).height();
+    
+    
+    if (Math.round( $(window).scrollTop()) == $(document).height() - $(window).height()) {
+    	//리뷰를 3개씩 ajax로 불러오기
+    	console.log("맨밑");
+	    moreReviewList();   
+	}  
+};
 
+var moreReviewList = function() {
+	$.ajax({
+		type: 'GET',
+		url: '/moca//' + reviewId,
+		data: {
+			"startNum": startNum
+		},
+		success: function() {
+			console.log('ajax 통신 성공')
+			
+			if(isLike ==1){
+				hateBtn.removeClass('clicked')
+				hateCount.val(Number(hateCount.val()) - 1);
+				likeBtn.addClass('clicked')
+				likeCount.val(Number(likeCount.val()) + 1);
+			}else if( isLike == -1){
+				likeBtn.removeClass('clicked')
+				likeCount.val(Number(likeCount.val()) - 1);
+				hateBtn.addClass('clicked')
+				hateCount.val(Number(hateCount.val()) + 1);
+			}
+			
+
+		},
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
+			alert("좋아요 싫어요 변경 실패")
+		}
+
+	})
+}
 
 
 

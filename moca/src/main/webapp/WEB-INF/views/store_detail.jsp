@@ -274,7 +274,7 @@
 						//		    	backgroundColor: 'rgb(255, 99, 132)',
 						borderColor: 'rgb(255, 99, 132)',
 						pointRadius: 0,
-						lineTension: 0.1,
+						lineTension: 0.2,
 						data: labelVal
 					}]
 				},
@@ -688,6 +688,8 @@
 			})
 
 		}
+
+		$(window).scroll(scrollMaxDown);
 
 	</script>
 </head>

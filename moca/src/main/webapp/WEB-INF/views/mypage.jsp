@@ -448,10 +448,7 @@
 					$('#followBtn').toggleClass('btn-default');
 				},
 				error: function(request,status,error) {
-					//타입에 따라서 에러 텍스트 변경
-					if(error.includes("Locked")){
-						alert('로그인을 해주세요');
-					}
+					respondHttpStatus(request.status);
 				}
 			});
 			
@@ -604,7 +601,6 @@
 				</div>
 			</div>
 			<div class="col-md-3" id="userGraph">
-			
 			</div>
 			<div class="col-md-3" id="userBadge">
 			

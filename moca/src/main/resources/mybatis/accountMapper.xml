@@ -56,7 +56,7 @@
   </delete>
   
   <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
-  	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID} and PLATFORMID!=0
   </select>
   
   <select id="selectProfileImageByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
