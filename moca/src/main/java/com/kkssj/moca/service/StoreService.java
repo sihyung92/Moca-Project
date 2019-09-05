@@ -81,4 +81,6 @@ public interface StoreService {
 
 	//카페 로고 수정
 	int editStoreLogo(int store_Id, MultipartFile newFiles, String delStoreLogo);
+
+	List<String> getTagNameList();
 }

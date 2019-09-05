@@ -317,6 +317,12 @@
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
+				 var tagValues = "";
+				$("input:checkbox[name=tag]:checked").each(function(){
+					tagValues =tagValues+ $(this).val() +",";
+				   
+				});
+				 $('#review-tags').val(tagValues)
 				saveReview(fileBuffer);
 			})
 			
@@ -1163,7 +1169,14 @@
 							<label for="convenience-level">편의성</label>
 							<div id="convenience-level"></div>
 						</div>
-
+						
+						
+						<c:forEach items="${tagNameList}" var="tagName">
+							<label class="checkbox-inline">
+								<input type="checkbox" name="tag" value="<c:out value="${tagName}"/>"><c:out value="${tagName}"/>
+							</label>
+						</c:forEach>
+						<textarea class="form-control" name="tags" id="review-tags" style="display: none;"></textarea>
 					</form>
 				</div>
 				<div class="modal-footer">

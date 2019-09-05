@@ -12,6 +12,7 @@ public class ReviewVo {
 	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
 	private double averageLevel;
 	private int likeCount, hateCount;
+	private String tags;
 	private int editable;
 	private List<ImageVo> imageList;
 	
@@ -28,6 +29,8 @@ public class ReviewVo {
 	
 	//내가 쓴 댓글인지 (table엔 없음)
 	private int isMine;
+	
+	
 	
 	public ReviewVo() {
 	}
@@ -227,16 +230,15 @@ public class ReviewVo {
 	public void setThumbnailImage(String thumbnailImage) {
 		this.thumbnailImage = thumbnailImage;
 	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	
 	
 	//mypage용도//
-	
-
-
-
-	
-
-
-
 
 
 	//5가지 level을 가지고 소숫점 1자리까지 평점 계산
@@ -247,40 +249,29 @@ public class ReviewVo {
 
 
 
+	public int getAccount_id() {
+		return account_id;
+	}
+	public void setAccount_id(int account_id) {
+		this.account_id = account_id;
+	}
+	public int getStore_id() {
+		return store_id;
+	}
+	public void setStore_id(int store_id) {
+		this.store_id = store_id;
+	}
+	
 	@Override
 	public String toString() {
 		return "ReviewVo [review_id=" + review_id + ", account_id=" + account_id + ", store_id=" + store_id
 				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate + ", tasteLevel=" + tasteLevel
 				+ ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", moodLevel=" + moodLevel
 				+ ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel + ", likeCount="
-				+ likeCount + ", hateCount=" + hateCount + ", editable=" + editable + ", imageList=" + imageList
-				+ ", storeName=" + storeName + ", storeLogoImg=" + storeLogoImg + ", isLike=" + isLike
+				+ likeCount + ", hateCount=" + hateCount + ", tags=" + tags + ", editable=" + editable + ", imageList="
+				+ imageList + ", storeName=" + storeName + ", storeLogoImg=" + storeLogoImg + ", isLike=" + isLike
 				+ ", thumbnailImage=" + thumbnailImage + ", nickName=" + nickName + ", followCount=" + followCount
 				+ ", reviewCount=" + reviewCount + ", isMine=" + isMine + "]";
-	}
-
-
-
-	public int getAccount_id() {
-		return account_id;
-	}
-
-
-
-	public void setAccount_id(int account_id) {
-		this.account_id = account_id;
-	}
-
-
-
-	public int getStore_id() {
-		return store_id;
-	}
-
-
-
-	public void setStore_id(int store_id) {
-		this.store_id = store_id;
 	}
 
 }

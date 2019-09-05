@@ -134,5 +134,15 @@ public class StoreDaoImpl implements StoreDao {
 
 	public int updateViewcnt(int store_id) throws SQLException {
 		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateViewcnt",store_id);
+	}
+
+	@Override
+	public List<String> selectTagList() throws SQLException{
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTagList");
+	}
+
+	@Override
+	public int insertTags(Map<String, Object> tagMap) throws SQLException {
+		return sqlSession.insert("com.kkssj.moca.model.StoreDao.insertTags", tagMap);
 	} 
 }

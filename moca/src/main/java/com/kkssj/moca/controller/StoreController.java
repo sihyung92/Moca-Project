@@ -104,6 +104,10 @@ public class StoreController {
 		
 		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));		
 		
+		//tag 가져오기
+		List<String> tagNames = storeService.getTagNameList();
+		model.addAttribute("tagNameList", tagNames);
+		
 		return "store_detail";
 	}
 	

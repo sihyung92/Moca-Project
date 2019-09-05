@@ -46,5 +46,9 @@ public interface StoreDao {
 	
 	//store의 viewcnt 증가
 	int updateViewcnt(int store_id) throws SQLException;
+
+	List<String> selectTagList() throws SQLException;
+
+	int insertTags(Map<String, Object> tagMap) throws SQLException;
 	
 }

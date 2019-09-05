@@ -217,10 +217,13 @@ public class StoreServiceImpl implements StoreService{
 	public ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files) {
 		///
 		String uploadPath = "review";
+		String reviewVoTags =reviewVo.getTags();
 		
 		//평균 점수 계산
 		reviewVo.calAverageLevel();
 		try {
+			
+			
 			//정상적으로 입력되었을때
 			if(reviewDao.insertReview(reviewVo) ==1) {
 				reviewVo = reviewDao.selectAddedOne(reviewVo.getAccount_id());
@@ -260,6 +263,37 @@ public class StoreServiceImpl implements StoreService{
 				storeVo.calAllLevel(list);
 				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);
+				
+				
+				//리뷰의 tag 추가
+				Map<String, Object> tagMap = new HashMap<String, Object>();
+				tagMap.put("REVIEW_ID", reviewVo.getReview_id());
+				tagMap.put("STORE_ID", reviewVo.getStore_id());
+				List<String> tagList =  getTagNameList();
+				String[] tagArray = reviewVoTags.split(",");
+				int tagArrayIdx = 0;
+				String tags ="";
+				String tagValues = "";
+				for (String tag : tagList) {
+					logger.debug(tag +", "+tagArray[tagArrayIdx]);
+					if(tag.equals(tagArray[tagArrayIdx])) {
+						tags += tag +" ,";
+						tagValues += "1 ,";
+						tagArrayIdx++;
+						
+						if(tagArrayIdx == tagArray.length) {
+							break;
+						}
+					}
+				}
+				logger.debug(tags +", "+tagValues);
+				tagMap.put("TAGS", tags.substring(0, tags.length()-2));
+				tagMap.put("TAGVALUES", tagValues.substring(0, tagValues.length()-2));
+				logger.debug(tagMap.get("TAGS") +", "+tagMap.get("TAGVALUES"));
+				int result = storeDao.insertTags(tagMap);
+				logger.debug("storeDao.insertTags(tagMap) result : "+ result );
+				
+				
 				
 				//리뷰 작성에 대한 exp 적립 및 로그 기록
 				int exp = 10;
@@ -749,5 +783,24 @@ public class StoreServiceImpl implements StoreService{
 			return o2.getLikeCount() - o1.getLikeCount();
 		}
 	};
+
+
+	@Override
+	public List<String> getTagNameList() {
+		
+		List<String> tagNameList = null;
+		try {
+			tagNameList = storeDao.selectTagList();
+			//review_id, store_id 제거
+			tagNameList.remove(0);
+			tagNameList.remove(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+		return tagNameList;
+	}
 	
 }
