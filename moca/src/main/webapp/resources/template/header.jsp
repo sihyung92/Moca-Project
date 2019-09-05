@@ -36,7 +36,7 @@
 			var keyword = $('#keyword').val();
 			keyword = keyword.trim();		
 			//검색어가 없거나 태그가 2개 이상일 때,			
-			if(keyword=="" || keyword=="#" || keyword.indexOf('#') != keyword.lastIndexOf('#')){}
+			if(keyword=="" || keyword=="#" || keyword.indexOf('#') != keyword.lastIndexOf('#')){
 				$('#keyword').val("");
 				$('#keyword').attr('placeholder', '잘못된 키워드 입니다... :(');
 				return false;

@@ -63,12 +63,13 @@ public class SearchController {
 		}
 		model.addAttribute("filter", filter);	
 		
+		//키워드 검색 로그 남기기
 		int id=0;
 		if(session.getAttribute("login")!=null) {
 			id =((AccountVo)session.getAttribute("login")).getAccount_id();
 		}		
-		int result = searchService.addKeywordLog(new LogVo(id, request.getRemoteAddr(), keyword, "업데이트해야되"));
-		logger.debug(result+"");
+		searchService.addKeywordLog(new LogVo(id, request.getRemoteAddr(), keyword, "업데이트해야되"));
+
 	//1. 태그 검색(#검색)		
 		if(keyword.contains("#")){										//태그 검색 & 키워드 검색 판별
 			if(!keyword.substring(keyword.indexOf("#")+1).equals("")){		//태그 앞에만 내용이 있으면 키워드 검색으로 처리
