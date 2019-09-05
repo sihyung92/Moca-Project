@@ -32,7 +32,7 @@ public interface StoreService {
 	///////////////////////
 	//review
 	//리뷰 리스트 가져오기
-	List<ReviewVo> getReviewList(int accountId, int storeId);
+	List<ReviewVo> getReviewList(int accountId, int storeId, List<String> tagList);
 	
 	//리뷰 추가
 	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);

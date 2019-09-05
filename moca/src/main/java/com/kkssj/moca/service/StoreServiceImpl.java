@@ -164,10 +164,15 @@ public class StoreServiceImpl implements StoreService{
 	//review
 	
 	@Override
-	public List<ReviewVo> getReviewList(int accountId, int storeId) {
+	public List<ReviewVo> getReviewList(int accountId, int storeId, List<String> tagNameList) {
+		String tagsString ="";
+		for (String tag : tagNameList) {
+			tagsString += tag +",";
+		}
 		
-		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
-		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
+		List<ReviewVo> reviewList = null;
+		List<ImageVo> reviewImageList =null;
+		List<String> tagsList = null;
 		try {
 			reviewList = reviewDao.selectReviewByStoreId(accountId, storeId);
 			reviewImageList = reviewDao.selectReviewImgListByStoreId(storeId);
@@ -277,8 +282,8 @@ public class StoreServiceImpl implements StoreService{
 				for (String tag : tagList) {
 					logger.debug(tag +", "+tagArray[tagArrayIdx]);
 					if(tag.equals(tagArray[tagArrayIdx])) {
-						tags += tag +" ,";
-						tagValues += "1 ,";
+						tags +=  ", "+ tag;
+						tagValues += ", 1";
 						tagArrayIdx++;
 						
 						if(tagArrayIdx == tagArray.length) {
@@ -287,8 +292,14 @@ public class StoreServiceImpl implements StoreService{
 					}
 				}
 				logger.debug(tags +", "+tagValues);
-				tagMap.put("TAGS", tags.substring(0, tags.length()-2));
-				tagMap.put("TAGVALUES", tagValues.substring(0, tagValues.length()-2));
+				if(tags.length() ==0) {
+					tagMap.put("TAGS", "");
+					tagMap.put("TAGVALUES", "");
+				}else {
+					tagMap.put("TAGS", tags.substring(0, tags.length()));
+					tagMap.put("TAGVALUES", tagValues.substring(0, tagValues.length()));
+					
+				}
 				logger.debug(tagMap.get("TAGS") +", "+tagMap.get("TAGVALUES"));
 				int result = storeDao.insertTags(tagMap);
 				logger.debug("storeDao.insertTags(tagMap) result : "+ result );

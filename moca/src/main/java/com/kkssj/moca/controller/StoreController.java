@@ -92,10 +92,12 @@ public class StoreController {
 		if (storeVo.getStore_Id() == 0) {
 			// return "에러페이지";
 		}
+		
+		List<String> tagNameList = storeService.getTagNameList();
 
 		model.addAttribute("accountVo", accountVo);
 
-		model.addAttribute("reviewVoList", storeService.getReviewList(accountVo.getAccount_id(), storeId));
+		model.addAttribute("reviewVoList", storeService.getReviewList(accountVo.getAccount_id(), storeId , tagNameList));
 
 		model.addAttribute("storeVo", storeVo);
 		
@@ -105,8 +107,7 @@ public class StoreController {
 		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));		
 		
 		//tag 가져오기
-		List<String> tagNames = storeService.getTagNameList();
-		model.addAttribute("tagNameList", tagNames);
+		model.addAttribute("tagNameList", tagNameList);
 		
 		return "store_detail";
 	}
