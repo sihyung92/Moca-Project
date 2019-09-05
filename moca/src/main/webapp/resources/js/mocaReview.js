@@ -393,6 +393,7 @@ var deleteReviewImg = function(deleteBtn){
     $(deleteBtn).parent().hide();
 }
 
+
 //리뷰 개수 더보기
 var reviewCnt = function(q,r,n){
 	//먼저 3개만 보여주고 나머지는 더보기 버튼으로 클릭시 +3개씩 보여주기
@@ -401,19 +402,19 @@ var reviewCnt = function(q,r,n){
 			$('.reviewCnt').eq(i).show();
 		}
 		if(3*n==q*3){
-			$('#moreReview').hide();
+			//$('#moreReview').hide();
 		}
 	}else{
 		if(n!=1){
 			for(var i=(n-1)*3; i<((n-1)*3)+r; i++){ //몫*3
 				$('.reviewCnt').eq(i).show();
 			}
-			$('#moreReview').hide();
+			//$('#moreReview').hide();
 		}else{
 			for(var i=0; i<r; i++){ //나머지
 				$('.reviewCnt').eq(i).show();
 			}
-			$('#moreReview').hide();
+			//$('#moreReview').hide();
 		}
 	}
 };
@@ -710,7 +711,6 @@ var url2PathFileName = function(imgUrl){
 //스크롤 맨밑으로 내려갈 때
 var scrollMaxDown = function() {
     
-    var scrolltop = $(document).scrollTop();
     var height = $(document).height();
     var height_win = $(window).height();
     
@@ -737,6 +737,11 @@ var moreReviewList = function(startNum) {
 			console.log('ajax 통신 성공')
 			console.log(reviewVoList);
 			
+			//갖고오는 이미지 length가 3개 미만일 때
+			if(reviewVoList.length<3){
+				$('#moreReview').hide();
+				reviewVoListLength = true;
+			}
 			
 			for(var j=0; j<reviewVoList.length; j++){
 				var alreadyReviewExist = false;
@@ -782,7 +787,6 @@ var moreReviewList = function(startNum) {
 				reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
 				reviewerInfo.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
 				
-				/// label 옆에 input 같은거 추가할 필요가 있음
 				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
 				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
 				
@@ -800,7 +804,7 @@ var moreReviewList = function(startNum) {
 				reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
 				reviewLevel.find('.average-level').text(reviewVo.averageLevel)
 
-				$('.review-content').append(newReview.fadeIn(1000));	//리뷰에 추가
+				$('.review-content').append(newReview.fadeIn(2000));	//리뷰에 추가
 			}
 			
 			//리뷰이미지 모달 바인딩
@@ -811,11 +815,6 @@ var moreReviewList = function(startNum) {
 
 				showDetailReviewImg(this);
 			});
-			
-			//갖고오는 이미지 length가 3개 미만일 때
-			if(reviewVoList.length<3){
-				reviewVoListLength = true;
-			}
 		},
 		error: function(request,status,error) {
 			alert('ajax 통신 실패');

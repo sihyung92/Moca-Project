@@ -300,10 +300,14 @@
 
 			//리뷰 더보기 버튼을 눌렀을 때
 			$('#moreReview').click(function(){
-					callNum += 1;
+				if(reviewVoListLength==true){
+					return false;
+				}
+				scrollMaxDown();
+					/* callNum += 1;
 					//console.log("더보기"+quotient+":"+remainder+":"+callNum);
 					reviewCnt(quotient,remainder,callNum);
-					callReviewDataMore();
+					callReviewDataMore(); */
 			});
 
 			//리뷰 저장 버튼 클릭시
@@ -686,13 +690,13 @@
 			})
 
 		}
-
-		$(window).scroll(function(e){
+		
+		/* $(window).scroll(function(e){
 			if(reviewVoListLength==true){
 				return false;
 			}
 			scrollMaxDown();
-		});
+		}); */
 
 	</script>
 </head>
