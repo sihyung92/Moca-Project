@@ -206,4 +206,16 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAccountIdOfReviewByReviewId",review_id);
 	}
 
+	
+	//리뷰 3개씩 가져오기
+	@Override
+	public List<ReviewVo> selectReviewLimit3ByStoreId(int accountId, int storeId, int startNum) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("STORE_ID", storeId);
+		map.put("STARTNUM", startNum);
+		map.put("ENDNUM", 3);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewLimit3ByStoreId",map);
+	}
+
 }

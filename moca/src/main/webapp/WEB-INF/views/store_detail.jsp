@@ -329,7 +329,6 @@
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
-				;
 				
 				editReview();
 			})
@@ -366,7 +365,6 @@
 			reviewImg.click(function(){
 				//모달 활성화(+초기화)
 				reviewsDetailModal.modal("show");
-				
 
 				//섬네일 url > 원본 url
 				showDetailReviewImg(this);
@@ -689,7 +687,12 @@
 
 		}
 
-		$(window).scroll(scrollMaxDown);
+		$(window).scroll(function(e){
+			if(reviewVoListLength==true){
+				return false;
+			}
+			scrollMaxDown();
+		});
 
 	</script>
 </head>

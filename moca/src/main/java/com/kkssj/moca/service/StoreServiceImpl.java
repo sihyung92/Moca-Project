@@ -162,6 +162,31 @@ public class StoreServiceImpl implements StoreService{
 	
 	////////////////////////////////
 	//review
+
+	@Override
+	public List<ReviewVo> getReviewListLimit3(int accountId, int storeId, int startNum) {
+		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
+		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
+		
+		
+		reviewList = reviewDao.selectReviewLimit3ByStoreId(accountId, storeId, startNum);
+		
+		for(int i=0; i<reviewList.size(); i++) {
+			try {
+				reviewImageList = reviewDao.selectReviewImgListByReviewId(reviewList.get(i).getReview_id());
+				for(int j=0; j<reviewImageList.size(); j++) {
+					reviewImageList.get(j).setUrl();
+				}
+				reviewList.get(i).setImageList(reviewImageList);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//reviewList.sort(CompEditable);
+		
+		return reviewList;
+	}
 	
 	@Override
 	public List<ReviewVo> getReviewList(int accountId, int storeId) {
@@ -747,5 +772,6 @@ public class StoreServiceImpl implements StoreService{
 			return o2.getLikeCount() - o1.getLikeCount();
 		}
 	};
+
 	
 }
