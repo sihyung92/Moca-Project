@@ -162,60 +162,28 @@ public class StoreServiceImpl implements StoreService{
 	
 	////////////////////////////////
 	//review
-	
+
 	@Override
-	public List<ReviewVo> getReviewList(int accountId, int storeId, List<String> tagNameList) {
-		String tagsString ="";
-		for (String tag : tagNameList) {
-			tagsString += tag +",";
-		}
+	public List<ReviewVo> getReviewListLimit(int accountId, int storeId, int startNum, List<String> tagNameList) {
+		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
+		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
 		
-		List<ReviewVo> reviewList = null;
-		List<ImageVo> reviewImageList =null;
-		List<String> tagsList = null;
-		try {
-			reviewList = reviewDao.selectReviewByStoreId(accountId, storeId);
-			reviewImageList = reviewDao.selectReviewImgListByStoreId(storeId);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		
-		logger.debug("reviewImageList size : "+reviewImageList.size());
-		logger.debug("reviewList size : "+reviewList.size());
+		reviewList = reviewDao.selectReviewLimit3ByStoreId(accountId, storeId, startNum);
 		
-		for(int i=0; i<reviewImageList.size(); i++) {
-			reviewImageList.get(i).setUrl(reviewImageList.get(i).getUrl());
-		}
-		
-		int reviewListIdx =0;
-		int imageListIdx = 0;
-		for (reviewListIdx = 0; reviewListIdx < reviewList.size(); reviewListIdx++) {
-			ReviewVo reviewVo = reviewList.get(reviewListIdx);
-			List<ImageVo> tempReviewImageList = new ArrayList<ImageVo>();
-			
-			logger.debug(reviewVo.toString());		
-			while(imageListIdx < reviewImageList.size()) {
-				ImageVo imageVo = reviewImageList.get(imageListIdx);
-				
-				logger.debug(imageVo.toString());
-				if(reviewVo.getReview_id() == imageVo.getReview_id()) {
-					tempReviewImageList.add(imageVo);
-					imageListIdx++;
-					
-				}else {
-					break;
+		for(int i=0; i<reviewList.size(); i++) {
+			try {
+				reviewImageList = reviewDao.selectReviewImgListByReviewId(reviewList.get(i).getReview_id());
+				for(int j=0; j<reviewImageList.size(); j++) {
+					reviewImageList.get(j).setUrl();
 				}
+				reviewList.get(i).setImageList(reviewImageList);
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			reviewList.get(reviewListIdx).setImageList(tempReviewImageList);
-			System.out.println();
-			
 		}
-		
-		reviewList.sort(compLikeCount);
-		reviewList.sort(CompEditable);
-		
+				
 		return reviewList;
-		
 	}
 	
 	@Override
@@ -322,6 +290,10 @@ public class StoreServiceImpl implements StoreService{
 				if(accountVo.getExp() >= accountVo.getMaxExp()) {
 					accountDao.updateAccountlevel(reviewVo.getAccount_id());
 				}
+				
+				//account의 reviewcnt를 증가시켜줌
+				accountDao.updateReviewCount(accountVo.getAccount_id(),1);
+				
 				// 방금 입력한 reviewVo를 리턴
 				return reviewVo;
 			}
@@ -567,7 +539,9 @@ public class StoreServiceImpl implements StoreService{
 				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getFileName());
 				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getThumbnailFileName());
 			}
-	
+			
+			//account의 reviewcnt를 감소시켜줌
+			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);
 			
 			//정상일 경우 return 1
 			return 1;
@@ -794,7 +768,6 @@ public class StoreServiceImpl implements StoreService{
 			return o2.getLikeCount() - o1.getLikeCount();
 		}
 	};
-
 
 	@Override
 	public List<String> getTagNameList() {

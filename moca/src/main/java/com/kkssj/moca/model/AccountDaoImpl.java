@@ -175,4 +175,12 @@ public class AccountDaoImpl implements AccountDao {
 		map.put("CLASSIFICATION", classification);
 		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectExpLogByAccountId",map);
 	}
+
+	@Override
+	public int updateReviewCount(int account_id, int cnt) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ACCOUNT_ID", account_id);
+		map.put("CNT", cnt);
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateReviewCount",map);
+	}
 }

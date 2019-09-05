@@ -155,7 +155,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=18"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=19"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=18"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
@@ -299,7 +299,7 @@
 			
 			//차트
 			makeStoreLevelChart();
-			
+
 
 			//storeInfo 참여하기 버튼 클릭시
 			$('#updateStore').click(function() {
@@ -309,10 +309,14 @@
 
 			//리뷰 더보기 버튼을 눌렀을 때
 			$('#moreReview').click(function(){
-					callNum += 1;
+				if(reviewVoListLength==true){
+					return false;
+				}
+				scrollMaxDown();
+					/* callNum += 1;
 					//console.log("더보기"+quotient+":"+remainder+":"+callNum);
 					reviewCnt(quotient,remainder,callNum);
-					callReviewDataMore();
+					callReviewDataMore(); */
 			});
 
 			//리뷰 저장 버튼 클릭시
@@ -344,7 +348,6 @@
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
-				;
 				
 				editReview();
 			})
@@ -381,7 +384,6 @@
 			reviewImg.click(function(){
 				//모달 활성화(+초기화)
 				reviewsDetailModal.modal("show");
-				
 
 				//섬네일 url > 원본 url
 				showDetailReviewImg(this);
@@ -704,6 +706,13 @@
 			})
 
 		}
+		
+		/* $(window).scroll(function(e){
+			if(reviewVoListLength==true){
+				return false;
+			}
+			scrollMaxDown();
+		}); */
 
 		var makeStoreLevelChart = function(){
 			var ctx = document.getElementById('myChart').getContext('2d');

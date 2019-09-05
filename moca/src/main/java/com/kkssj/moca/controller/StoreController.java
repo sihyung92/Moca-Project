@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
@@ -97,7 +98,8 @@ public class StoreController {
 
 		model.addAttribute("accountVo", accountVo);
 
-		model.addAttribute("reviewVoList", storeService.getReviewList(accountVo.getAccount_id(), storeId , tagNameList));
+		//리뷰가져오기
+		model.addAttribute("reviewVoList", storeService.getReviewListLimit(accountVo.getAccount_id(), storeId, 0, tagNameList));
 
 		model.addAttribute("storeVo", storeVo);
 		
@@ -371,6 +373,25 @@ public class StoreController {
 	
 	////////////////////////
 	//review 
+    
+    //리뷰 3개씩 가져오기
+    @ResponseBody
+    @GetMapping(value ="/storeReviews/{store_id}")
+    public ResponseEntity getReview(@PathVariable("store_id") int store_id, @RequestParam("startNum") int startNum,  HttpSession session){
+    	AccountVo accountVo = (AccountVo) session.getAttribute("login");
+    	
+    	//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+		}
+		
+		List<String> tagNameList = storeService.getTagNameList();
+    	
+    	List<ReviewVo> reviewVoList = storeService.getReviewListLimit(accountVo.getAccount_id(), store_id, startNum , tagNameList);
+    	logger.debug("startNum : "+startNum);
+    	logger.debug(reviewVoList.toString());
+    	return new ResponseEntity<>(reviewVoList,HttpStatus.OK);
+    }
 	
 	//리뷰 입력, 서버에 파일 업로드
     @ResponseBody

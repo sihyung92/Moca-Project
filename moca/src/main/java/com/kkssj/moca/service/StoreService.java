@@ -31,8 +31,8 @@ public interface StoreService {
 	
 	///////////////////////
 	//review
-	//리뷰 리스트 가져오기
-	List<ReviewVo> getReviewList(int accountId, int storeId, List<String> tagList);
+	//리뷰 리스트 n개씩 가져오기
+	List<ReviewVo> getReviewListLimit(int accountId, int storeId, int startNum, List<String> tagList);
 	
 	//리뷰 추가
 	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);

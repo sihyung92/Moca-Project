@@ -48,6 +48,10 @@ var detailImgsSize;
 //회원정보수정 이미지
 var userImage;
 
+//리뷰 3개씩 불러오기 startNum
+var startNum = 0;
+var reviewVoListLength=false;
+
 ////////////////////////////
 //함수부
 
@@ -71,7 +75,7 @@ var bindReviewVariable = function(){
 	remainder = $('.reviewCnt').length%3;
 	
 	//리뷰 상세 보기
-	reviewImg = $('.review-content').find('img');
+	reviewImg = $('.reviewThumbnailGroup').find('img');
 	reviewsDetailModal =$('#reviewsDetailModal');
 	reviewThumbnailGroup = $('#reviewThumbnailGroup');
 	
@@ -125,8 +129,17 @@ var saveReview = function(fileBuffer){
 			addReviewInReviewContent(reviewVo);
 	
 			$('#reviewModal').modal("hide");		//모달창 닫기
+			
+			//리뷰디테일 모달창 바인딩
+			reviewImg = $('.reviewThumbnailGroup').find('img');
+			
+			reviewImg.click(function(){
+				reviewsDetailModal.modal("show");
+
+				showDetailReviewImg(this);
+			});
 		
-			//수정 삭제 버튼 바인딩 해줄것 
+			//수정 삭제 버튼 바인딩 해줄것
 			
 		},
 		error: function(request,status,error) {
@@ -380,6 +393,7 @@ var deleteReviewImg = function(deleteBtn){
     $(deleteBtn).parent().hide();
 }
 
+
 //리뷰 개수 더보기
 var reviewCnt = function(q,r,n){
 	//먼저 3개만 보여주고 나머지는 더보기 버튼으로 클릭시 +3개씩 보여주기
@@ -388,22 +402,23 @@ var reviewCnt = function(q,r,n){
 			$('.reviewCnt').eq(i).show();
 		}
 		if(3*n==q*3){
-			$('#moreReview').hide();
+			//$('#moreReview').hide();
 		}
 	}else{
 		if(n!=1){
 			for(var i=(n-1)*3; i<((n-1)*3)+r; i++){ //몫*3
 				$('.reviewCnt').eq(i).show();
 			}
-			$('#moreReview').hide();
+			//$('#moreReview').hide();
 		}else{
 			for(var i=0; i<r; i++){ //나머지
 				$('.reviewCnt').eq(i).show();
 			}
-			$('#moreReview').hide();
+			//$('#moreReview').hide();
 		}
 	}
 };
+
 
 //리뷰 내용 더보기
 var callReviewDataMore = function(){
@@ -534,7 +549,7 @@ var cancelLikeHate = function(reviewId, isLike){
 
 //리뷰 디테일 이미지를 보여줌
 var showDetailReviewImg = function(clickedReviewImg){
-	$('img').removeClass('clickedImg')
+	$('img').removeClass('clickedImg');
 	//클릭한 이미지에 class 추가	
 	$(clickedReviewImg).addClass('clickedImg');
 	
@@ -693,7 +708,120 @@ var url2PathFileName = function(imgUrl){
 	return imgUrl.split('.com/')[1]
 }
 
+//스크롤 맨밑으로 내려갈 때
+var scrollMaxDown = function() {
+    
+    var height = $(document).height();
+    var height_win = $(window).height();
+    
+    
+    if (Math.round( $(window).scrollTop()) == $(document).height() - $(window).height()) {
+    	//리뷰를 3개씩 ajax로 불러오기
+    	console.log("맨밑");
+    	startNum += 3;
+	    moreReviewList(startNum);
+	    $(window).scrollTop($(document).height() - $(window).height()-100);
+	}  
+};
 
+//리뷰 3개씩 추가
+var moreReviewList = function(startNum) {
+	$.ajax({
+		type: 'GET',
+		url: '/moca/storeReviews/' + storeId,
+		async: false,
+		data: {
+			"startNum": startNum
+		},
+		success: function(reviewVoList) {
+			console.log('ajax 통신 성공')
+			console.log(reviewVoList);
+			
+			//갖고오는 이미지 length가 3개 미만일 때
+			if(reviewVoList.length<3){
+				$('#moreReview').hide();
+				reviewVoListLength = true;
+			}
+			
+			for(var j=0; j<reviewVoList.length; j++){
+				var alreadyReviewExist = false;
+				var reviewVo = reviewVoList[j];
+				for(var i=0; i<$('.review-content').find('.review-id').filter(':even').length; i++){
+					if(reviewVo.review_id==$('.review-content').find('.review-id').filter(':even').eq(i).val()){
+						alreadyReviewExist=true;
+						break;
+					}
+				}
+				if(alreadyReviewExist==true){
+					continue;
+				}
+				
+				var newReview = $('#reviewTemplate').clone(true);
+				newReview.css('display', '');
+				newReview.removeAttr('id')
+				
+				var reviewerInfo = newReview.find('.reviewer-info')
+				var reviewInfo = newReview.find('.review-info')
+				var reviewLevel = newReview.children(".review-level")
+				
+				// 나중에 사진 추가할때 사용
+				var reviewThumbnail = reviewInfo.children('.reviewThumbnailGroup');
+				for(var i=0; i<reviewVo.imageList.length; i++){
+					var oldReviewThumbnail = reviewThumbnail.html();
+					reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail"><img src="'+
+							reviewVo.imageList[i].thumbnailUrl
+							+'" alt="Image" class="img-thumbnail" id="'+
+							reviewVo.imageList[i].uu_id
+							+'"></div>');
+				}
+				
+				if(reviewVo.editable==0){
+					newReview.find('.editDeleteGroup').remove();
+				}
+				
+				newReview.find('.review-id').eq(0).val(''+reviewVo.review_id);
+				newReview.find('.review-id').eq(1).val(''+reviewVo.review_id);
+				
+				reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);
+				reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
+				reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
+				reviewerInfo.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
+				
+				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
+				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
+				
+				var likehateFormGroup = reviewInfo.children('.like-hate')
+				
+				//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
+				likehateFormGroup.find('input').eq(0).val(reviewVo.review_id)
+				likehateFormGroup.find('input').eq(1).val(reviewVo.likeCount)
+				likehateFormGroup.find('input').eq(2).val(reviewVo.hateCount)
+				
+				reviewLevel.find('.taste-level').text(reviewVo.tasteLevel)
+				reviewLevel.find('.price-level').text(reviewVo.priceLevel)
+				reviewLevel.find('.service-level').text(reviewVo.serviceLevel)
+				reviewLevel.find('.mood-level').text(reviewVo.moodLevel)
+				reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
+				reviewLevel.find('.average-level').text(reviewVo.averageLevel)
+
+				$('.review-content').append(newReview.fadeIn(2000));	//리뷰에 추가
+			}
+			
+			//리뷰이미지 모달 바인딩
+			reviewImg = $('.reviewThumbnailGroup').find('img');
+			
+			reviewImg.click(function(){
+				reviewsDetailModal.modal("show");
+
+				showDetailReviewImg(this);
+			});
+		},
+		error: function(request,status,error) {
+			alert('ajax 통신 실패');
+		}
+
+	})
+}
 
 
 
