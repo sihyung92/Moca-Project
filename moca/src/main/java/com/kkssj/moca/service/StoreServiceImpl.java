@@ -182,9 +182,7 @@ public class StoreServiceImpl implements StoreService{
 				e.printStackTrace();
 			}
 		}
-		
-		//reviewList.sort(CompEditable);
-		
+				
 		return reviewList;
 	}
 	
@@ -302,6 +300,10 @@ public class StoreServiceImpl implements StoreService{
 				if(accountVo.getExp() >= accountVo.getMaxExp()) {
 					accountDao.updateAccountlevel(reviewVo.getAccount_id());
 				}
+				
+				//account의 reviewcnt를 증가시켜줌
+				accountDao.updateReviewCount(accountVo.getAccount_id(),1);
+				
 				// 방금 입력한 reviewVo를 리턴
 				return reviewVo;
 			}
@@ -545,7 +547,9 @@ public class StoreServiceImpl implements StoreService{
 				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getFileName());
 				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getThumbnailFileName());
 			}
-	
+			
+			//account의 reviewcnt를 감소시켜줌
+			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);
 			
 			//정상일 경우 return 1
 			return 1;

@@ -75,7 +75,7 @@ var bindReviewVariable = function(){
 	remainder = $('.reviewCnt').length%3;
 	
 	//리뷰 상세 보기
-	reviewImg = $('.review-content').find('img');
+	reviewImg = $('.reviewThumbnailGroup').find('img');
 	reviewsDetailModal =$('#reviewsDetailModal');
 	reviewThumbnailGroup = $('#reviewThumbnailGroup');
 	

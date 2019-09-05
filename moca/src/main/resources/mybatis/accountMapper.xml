@@ -99,4 +99,8 @@
   	and CLASSIFICATION=#{CLASSIFICATION};
   </select>
   
+  <update id="updateReviewCount" parameterType="map">
+  	UPDATE ACCOUNT SET REVIEWCOUNT=REVIEWCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  
 </mapper>

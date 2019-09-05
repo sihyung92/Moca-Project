@@ -75,5 +75,8 @@ public interface AccountDao {
 	
 	//해당 account의 exp log 조회
 	int selectExpLogByAccountId(int accountId, String classification) throws SQLException;
+	
+	//해당 acoount의 reviewcount 증감
+	int updateReviewCount(int account_id, int cnt) throws SQLException;
 
 }
