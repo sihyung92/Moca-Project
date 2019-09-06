@@ -86,7 +86,7 @@
     <select id="selectStoresNearBy" parameterType="Map" resultType="com.kkssj.moca.model.entity.StoreVo">
 	 <![CDATA[
 	 SELECT STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, ROADADDRESS, VIEWCNT, AVERAGELEVEL, REVIEWCNT FROM (SELECT @rownum:=@rownum+1 as rownum, STORE_ID, NAME, STOREIMG1, STOREIMG2, STOREIMG3, ROADADDRESS, VIEWCNT, AVERAGELEVEL, REVIEWCNT, ST_DISTANCE_SPHERE(POINT(XLOCATION, YLOCATION), POINT(#{x}, #{y})) as distance
-	 FROM STORE, (SELECT @ROWNUM:=0) forRN HAVING distance<5000 ORDER BY AVERAGELEVEL) A WHERE rownum<16 ORDER BY rownum;
+	 FROM STORE, (SELECT @ROWNUM:=0) forRN HAVING distance<5000 ORDER BY AVERAGELEVEL DESC) A WHERE rownum<16 ORDER BY rownum;
 	 ]]>
   </select>
   <select id="selectByReviewTag" parameterType="java.lang.String" resultType="com.kkssj.moca.model.entity.StoreVo">

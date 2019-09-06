@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -30,16 +31,25 @@ public class SearchController {
 	
 	@RequestMapping("/re-search")
 	@ResponseBody
-	public List<StoreVo> searchOnTheMap(String filter, String rect, String keyword, Model model){
+	public List<StoreVo> searchOnTheMap(HttpSession session, HttpServletResponse response, String filter, String rect, String x, String y, String keyword, Model model){
 		logger.debug("filter: "+filter+"keyword: "+keyword);
+		logger.debug("rect: "+rect);
 		//카카오 맵 범위 내 재검색
-		List<StoreVo> alist = searchService.getListFromKakaoAPI(keyword, null, "", "", rect, model);	//x, y, region 정보 불필요
+		List<StoreVo> storeList = searchService.getListFromKakaoAPI(keyword, null, (String)session.getAttribute("x"), (String)session.getAttribute("y"), rect, model);	//x, y, region 정보 불필요
+		if(storeList.size()==0) {
+			storeList = searchService.getListFromKakaoAPI(keyword, null, x, y, null, model);
+			for(StoreVo s: storeList) {
+				s.setDistance(null);
+				response.setStatus(418);
+			}
+		}
 		//mocaDB 열람 및 데이터 업데이트
-		for(StoreVo s: alist) s = searchService.getMoreData(s);
+		for(StoreVo s: storeList) s = searchService.getMoreData(s);
 		//정렬 처리
-		if(!filter.equals("distance")) 	alist = searchService.sort(alist, filter); 		//카카오 정렬 디폴트 = 거리순(정렬 처리 불필요)
-		return alist;		
+		if(!filter.equals("distance")) 	storeList = searchService.sort(storeList, filter); 		//카카오 정렬 디폴트 = 거리순(정렬 처리 불필요)
+		return storeList;	
 	}
+	
 	
 	@RequestMapping(value = "/stores", method = RequestMethod.GET)
 	public String search(HttpSession session, HttpServletRequest request, String lng, String lat, String keyword, String filter, String[] region, Model model) throws MalformedURLException {
@@ -67,6 +77,8 @@ public class SearchController {
 		}
 		model.addAttribute("filter", filter);	
 		
+		logger.debug("유저 키워드: "+keyword);
+		
 		//키워드 검색 로그 남기기
 		int id=0;
 		if(session.getAttribute("login")!=null) {
@@ -86,7 +98,7 @@ public class SearchController {
 				variables.put("filter", filter);
 				if(region!=null) variables.put("region",region[0]+" "+region[1]);
 				model.addAttribute("keyword", "#"+keyword);
-				model.addAttribute("alist",searchService.getListByTag(variables));				
+				model.addAttribute("storeList",searchService.getListByTag(variables));				
 				return "stores_search";
 			}			
 		}
@@ -94,25 +106,48 @@ public class SearchController {
 	//2. 키워드 검색: 키워드 검색, #기호 앞에만 내용이 있는 경우
 		keyword=keyword.replace("#", "").trim();
 		//카카오 API 검색 & Selected_Region값 저장
-		List<StoreVo> alist=null;
-		alist = searchService.getListFromKakaoAPI(keyword, region, x, y, null, model); 
+		List<StoreVo> storeList=null;
+		storeList = searchService.getListFromKakaoAPI(keyword, region, x, y, null, model); 
 		
 		//mocaDB 열람 및 데이터 업데이트
-		for(StoreVo s: alist) s = searchService.getMoreData(s);
+		for(StoreVo s: storeList) s = searchService.getMoreData(s);
 		//정렬 처리
-		if(!filter.equals("distance")) 	alist = searchService.sort(alist, filter); 		//카카오 정렬 디폴트 = 거리순(정렬 처리 불필요)
+		if(!filter.equals("distance")) 	storeList = searchService.sort(storeList, filter); 		//카카오 정렬 디폴트 = 거리순(정렬 처리 불필요)
 		if(keyword.startsWith("'") && keyword.endsWith("'")) {
 			keyword=keyword.substring(1, keyword.length()-1);
 		}
 		model.addAttribute("keyword", keyword);
-		model.addAttribute("alist", alist);
-		logger.debug("카카오 검색 총 갯수: "+(alist.size()));
+		model.addAttribute("storeList", storeList);
+		logger.debug("카카오 검색 총 갯수: "+(storeList.size()));
 		
 		//키워드 검색시간
 		long afterTime=System.currentTimeMillis();
 		logger.debug("search controller에서 키워드 검색에 걸린 시간은 : "+String.valueOf((afterTime-enterTime)/1000D)+"초");
 		return "stores_search";
 	}
-	
+
+//지도 내 재검색 시, 거리 근사값 구하기 메소드
+//    private static double distance(double lat1, double lon1, double lat2, double lon2) {
+//        
+//        double theta = lon1 - lon2;
+//        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+//         
+//        dist = Math.acos(dist);
+//        dist = rad2deg(dist);
+//        dist = dist * 60 * 1.1515;
+//        dist = dist * 1609.344;
+//        return (dist);
+//    }
+//     
+// 
+//    // This function converts decimal degrees to radians
+//    private static double deg2rad(double deg) {
+//        return (deg * Math.PI / 180.0);
+//    }
+//     
+//    // This function converts radians to decimal degrees
+//    private static double rad2deg(double rad) {
+//        return (rad * 180 / Math.PI);
+//    }
 }
 

@@ -44,7 +44,7 @@
 <script type="text/javascript">
  	var lat=${y};
  	var lng=${x};
- 	var map, alist;
+ 	var map, overlayList, bounds;
  	var markers = new Array();
     window.onload = function () {  
     	 //키워드 검사
@@ -103,20 +103,21 @@
 
     //리스트 클릭 이벤트
     function toDetail(){
-        var input = $(this).find('.name').val()+" "+$(this).find('.roadAddress').val();
+        //구글에서 리뷰/별점 데이터 받아오기 테스트 중
+	/* var input = $(this).find('.name').val()+" "+$(this).find('.roadAddress').val();
          $.ajax({                
 			url:"https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="+input+"&inputtype=textquery&type=cafe&fields=place_id,name,rating&key=",
 			dataType:"JSON",
 			success:function(data){					
 				console.log(data);
 			} 
-        });
+        }); */
        	$(this).children().first().submit();
     }
   
 	//카카오 맵 생성(API연결)
 	var createMap = function(){
-	<c:if test="${not empty alist}">	//검색 결과 없으면 지도 만들지말자~~~~
+	<c:if test="${not empty storeList}">	//검색 결과 없으면 지도 만들지말자~~~~
 		//1. 카카오 맵 객체 생성
 	    var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
 	    var mapCenter = new kakao.maps.LatLng(lat, lng);//지도의 중심 좌표   = 현재 위치
@@ -139,31 +140,31 @@
 		    zIndex: 3
 		});   		
 
-	 	//3. 검색 결과 alist의 가게들 핀(Marker), 오버레이(팝업 정보 패널) 객체 생성 전처리
-		var bounds = new kakao.maps.LatLngBounds();  //LatLngBounds객체 생성: 좌표가 다른 여러 핀에 대한 맵 바운더리 재설정
 		//자바 List -> 자바스크립트 Array로 변환(x, y, name 정보만) 
-		alist = new Array();
-		<c:forEach items="${requestScope.alist}" var="data">
-			alist.push({'lat':${data.yLocation},'lng':${data.xLocation}, 'store_Id': ${data.store_Id}, 'name':"${data.name}", 'roadAddress': '${data.roadAddress}', 'tel':'${data.tel }', 'tasteLevel':${data.tasteLevel},'priceLevel':${data.priceLevel}, 'serviceLevel':${data.serviceLevel}, 'moodLevel':${data.moodLevel}, 'convenienceLevel':${data.convenienceLevel}, 'logoImg':'${data.logoImg}'});
+		overlayList = new Array();
+		<c:forEach items="${requestScope.storeList}" var="data">
+			overlayList.push({'lat':${data.yLocation},'lng':${data.xLocation}, 'store_Id': ${data.store_Id}, 'name':"${data.name}", 'roadAddress': '${data.roadAddress}', 'tel':'${data.tel }', 'tasteLevel':${data.tasteLevel},'priceLevel':${data.priceLevel}, 'serviceLevel':${data.serviceLevel}, 'moodLevel':${data.moodLevel}, 'convenienceLevel':${data.convenienceLevel}, 'logoImg':'${data.logoImg}'});
 		</c:forEach>
 		
 		var createElements = function(){
+	 		//3. 검색 결과 storeList의 가게들 핀(Marker), 오버레이(팝업 정보 패널) 객체 생성 전처리
+			bounds = new kakao.maps.LatLngBounds();  //LatLngBounds객체 생성: 좌표가 다른 여러 핀에 대한 맵 바운더리 재설정
 			//4. 핀, 오버레이 객체 생성 & 맵 객체에 추가
-			for (var i = 0; i < alist.length ; i++) {
+			for (var i = 0; i < overlayList.length ; i++) {
 				//핀(Marker)객체 생성
-				var position =new kakao.maps.LatLng(alist[i].lat,alist[i].lng);
+				var position =new kakao.maps.LatLng(overlayList[i].lat,overlayList[i].lng);
 				var marker = new kakao.maps.Marker({ position : position, clickable: false});
 				markers[i] = marker;
 				//오버레이 객체 생성
 				var content = '<div class= "overlay" style="background-color:white;width: 300px"><div class ="logo"><img width="70px" height="50px" ';
-				if(alist[i].logoImg=="" || alist[i].logoImg==null){
+				if(overlayList[i].logoImg=="" || overlayList[i].logoImg==null){
 					content+='src="https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/MoCA-logo.png"/>';
 				}else{
-					content+='src="'+alist[i].logoImg+'"/>';					
+					content+='src="'+overlayList[i].logoImg+'"/>';					
 				}
-				content+='</div><div class="top">'+alist[i].name+'</div><div class="center">'+alist[i].roadAddress+'<br/>'+alist[i].tel;	
-				if(alist[i].store_Id){
-					content+='<br/>맛'+alist[i].tasteLevel+' 가격'+alist[i].priceLevel+' 분위기'+alist[i].moodLevel+' 서비스'+alist[i].serviceLevel+' 편의성'+alist[i].convenienceLevel;
+				content+='</div><div class="top">'+overlayList[i].name+'</div><div class="center">'+overlayList[i].roadAddress+'<br/>'+overlayList[i].tel;	
+				if(overlayList[i].store_Id){
+					content+='<br/>맛'+overlayList[i].tasteLevel+' 가격'+overlayList[i].priceLevel+' 분위기'+overlayList[i].moodLevel+' 서비스'+overlayList[i].serviceLevel+' 편의성'+overlayList[i].convenienceLevel;
 				}
 				content+='</div><div class="bottom"></div></div>'; 
 				
@@ -201,48 +202,74 @@
 		//지도 내 재검색 기능
 		$('#map_re-search').click(function(){
 			var location = map.getBounds();
+			var center = map.getCenter();
 			var rect = location.ea +','+ location.la +','+ location.ja +','+ location.ka;		
 			$.ajax({	//비동기로 받아오기
 				url: "re-search",
 				dataType: "json",
-				data: {"filter":"${filter}", "keyword":"${keyword}", "rect": rect},
+				data: {"filter":"${filter}", "keyword":"${keyword}", "rect": rect, "y":center.getLat(), "x": center.getLng()},
+				statusCode: {
+				    418: function(data) {
+					    console.log(data);
+					    data=data.responseJSON;
+					    if(data!=""){
+					    	reload_map(data);
+						    map.setBounds(bounds);	
+						}else{
+							alert("검색 결과 없습니다");	//////여기 수정해야되-------
+						}					    							
+				    }
+				},
 				success: function(data){
-					if(data.length!=0){
-						alist=[];
-						var template = $($('.links')[0]).clone();
-						$('.links').remove();
-						$(data).each(function(idx, ele){			
-							var store = template.clone();				
-							var inputs = $(store.children()[0]).children('input');
-							$(inputs[0]).val(ele.store_Id);
-							$(inputs[1]).val(ele.kakaoId);
-							$(inputs[2]).val(ele.name);
-							$(inputs[3]).val(ele.roadAddress);
-							$(inputs[4]).val(ele.address);
-							$(inputs[5]).val(ele.tel);
-							$(inputs[6]).val(ele.category);
-							$(inputs[7]).val(ele.url);
-							$(inputs[8]).val(ele.xLocation);
-							$(inputs[9]).val(ele.yLocation);
-							var spans = $(store.children()[0]).children('span');
-							$(spans[0]).html("<strong>"+ele.name+"</strong>");
-							$(spans[1]).html("<strong>평점:"+ele.averageLevel+" 리뷰수:"+ele.reviewCnt+" 조회수:"+ele.viewCnt+"</strong>");
-							$(spans[2]).text(ele.distance + ele.roadAddress);
-							$('#result_stores').append(store);
-							alist.push({'lat':ele.yLocation,'lng':ele.xLocation, 'store_Id': ele.store_Id, 'name':ele.name, 'roadAddress': ele.roadAddress, 'tel':ele.tel, 'tasteLevel':ele.tasteLevel,'priceLevel':ele.priceLevel, 'serviceLevel':ele.serviceLevel, 'moodLevel':ele.moodLevel, 'convenienceLevel':ele.convenienceLevel, 'logoImg':ele.logoImg});
-						});
-						$('.links').on("click",toDetail);
-						for(var idx in markers){
-							markers[idx].setMap(null);
-						}				
-						markers=[];	
-						createElements();						 		
-					}					
-				} 
+					reload_map(data);				
+				}
 			});	
-		});		    
+		});		
+
+		function reload_map(data){
+			overlayList=[];
+			var template = $($('.links')[0]).clone();
+			$('.links').remove();
+			$(data).each(function(idx, ele){			
+				var store = template.clone();				
+				var inputs = $(store.children()[0]).children('input');
+				$(inputs[0]).val(ele.store_Id);
+				$(inputs[1]).val(ele.kakaoId);
+				$(inputs[2]).val(ele.name);
+				$(inputs[3]).val(ele.roadAddress);
+				$(inputs[4]).val(ele.address);
+				$(inputs[5]).val(ele.tel);
+				$(inputs[6]).val(ele.category);
+				$(inputs[7]).val(ele.url);
+				$(inputs[8]).val(ele.xLocation);
+				$(inputs[9]).val(ele.yLocation);
+				var spans = $(store.children()[0]).children('span');
+				$(spans[0]).html("<strong>"+ele.name+"</strong>");
+				$(spans[1]).html("<strong>평점:"+ele.averageLevel+" 리뷰수:"+ele.reviewCnt+" 조회수:"+ele.viewCnt+"</strong>");
+				var distance;
+				if(ele.distance>=1000){
+					distance = (ele.distance/1000).toFixed(1)+"km";
+				}else if(ele.distance==null){
+					distance="";
+				}else{
+					distance = ele.distance+"m";
+				}
+				$(spans[2]).text(distance + ele.roadAddress);
+				$('#result_stores').append(store);
+				overlayList.push({'lat':ele.yLocation,'lng':ele.xLocation, 'store_Id': ele.store_Id, 'name':ele.name, 'roadAddress': ele.roadAddress, 'tel':ele.tel, 'tasteLevel':ele.tasteLevel,'priceLevel':ele.priceLevel, 'serviceLevel':ele.serviceLevel, 'moodLevel':ele.moodLevel, 'convenienceLevel':ele.convenienceLevel, 'logoImg':ele.logoImg});
+			});
+			$('.links').on("click",toDetail);
+			for(var idx in markers){
+				markers[idx].setMap(null);
+			}				
+			markers=[];	
+			createElements();			
+		};    
 		</c:if> 		
 	};	
+
+	
+	
 	
 	</script>	
 </head>
@@ -592,11 +619,11 @@
 		</form>	
 	</div>
 	<div id="warning_box">
-		<span id="warning_noResult"><c:if test="${requestScope.alist[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
+		<span id="warning_noResult"><c:if test="${requestScope.storeList[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
 	</div>
 	<div id="result_stores">
 		<span id="warning_changedFilter"><small>${msg_changedFilter}</small></span>
-		<c:forEach items="${requestScope.alist}" var="bean" varStatus="status">
+		<c:forEach items="${requestScope.storeList}" var="bean" varStatus="status">
 			<c:if test="${bean.distance ge 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance/1000}" pattern="#.0km"></fmt:formatNumber></c:if>
 			<c:if test="${bean.distance lt 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance}" pattern="#m"></fmt:formatNumber></c:if>
 			<div class="links">
@@ -616,7 +643,7 @@
 			</div>	
 		</c:forEach>			
 	</div>
-	<c:if test="${not empty requestScope.alist }">
+	<c:if test="${not empty requestScope.storeList }">
 		<div>
 			<div id="map" style="width:500px;height:400px;"></div>
 			<button id="map_re-search" style="display:none">이 지역에서 재검색</button>	

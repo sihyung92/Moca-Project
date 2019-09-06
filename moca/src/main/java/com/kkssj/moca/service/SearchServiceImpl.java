@@ -85,6 +85,8 @@ public class SearchServiceImpl implements SearchService {
 			sort="accuracy";
 		}
 		
+		logger.debug("카카오 검색 키워드: "+query);
+		
 //카카오 API 접속 정보 세팅
 		//URL  category_group_code=CE7&		
 		String url="https://dapi.kakao.com/v2/local/search/keyword.json?category_group_code=CE7&sort={sort}&x={x}&y={y}&query={query}&page={page}";
