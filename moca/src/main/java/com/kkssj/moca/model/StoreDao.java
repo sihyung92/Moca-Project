@@ -48,8 +48,6 @@ public interface StoreDao {
 	int updateViewcnt(int store_id) throws SQLException;
 
 	List<String> selectTagList() throws SQLException;
-
-	int insertTags(Map<String, Object> tagMap) throws SQLException;
 	
 	List<StoreVo> selectFollowersStoresList(int id);	
 	

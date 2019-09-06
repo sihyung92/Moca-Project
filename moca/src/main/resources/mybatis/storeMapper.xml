@@ -185,7 +185,5 @@
   <select id="selectTagList" resultType="String">
   	SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'mocadb' AND TABLE_NAME = 'TAGS'
   </select>
-  <insert id="insertTags">
-  	INSERT INTO TAGS(REVIEW_ID, STORE_ID ${TAGS }) VALUES(${REVIEW_ID }, ${STORE_ID } ${TAGVALUES });
-  </insert>
+
 </mapper>

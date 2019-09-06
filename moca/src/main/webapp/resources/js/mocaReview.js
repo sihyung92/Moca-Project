@@ -211,7 +211,7 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	//store name
 	
 	//마이페이지에서만 제목을 따로 등록해야하기 때문
-	if(reviewModal.find('#reviewModalLabel').html="에 대한 리뷰"){
+	if(reviewModal.find('#reviewModalLabel').html="에 대한 리뷰" && (storeName!=undefined)){
 		reviewModal.find('#reviewModalLabel').html(storeName+"에 대한 리뷰");
 	}
 	
@@ -244,11 +244,11 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	}
 	var tagsCheckbox = reviewModal.find('.tagsCheckbox input');
 	for(var tagCheckboxIdx= 0; tagCheckboxIdx < tagsCheckbox.length; tagCheckboxIdx++){
-		console.log(tagsCheckbox[tagCheckboxIdx].value, tagArr[tagArrIdx]);
-		for(var tagArrIdx=0 ; tagArrIdx < tagArrIdx.length ; tagArrIdx++){
+		
+		for(var tagArrIdx=0 ; tagArrIdx < tagArr.length ; tagArrIdx++){
 			if(tagsCheckbox[tagCheckboxIdx].value == tagArr[tagArrIdx]){
 				$(tagsCheckbox[tagCheckboxIdx]).prop('checked', true);
-				console.log(tagsCheckbox[idx].value);
+				console.log( tagArr[tagArrIdx].value);
 			}	
 		}
 	}
@@ -266,6 +266,7 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 var editReview = function(){
 	//delete한 썸네일 추가
 	$(reviewForm).append('<input type="hidden" name="delThumbnail" value="'+delThumbnail+'"/>');
+	
 	console.log(reviewForm);
 	
 	//파일 추가

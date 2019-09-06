@@ -284,7 +284,7 @@ public class StoreServiceImpl implements StoreService{
 					
 				}
 				logger.debug(tagMap.get("TAGS") +", "+tagMap.get("TAGVALUES"));
-				int result = storeDao.insertTags(tagMap);
+				int result = reviewDao.insertTags(tagMap);
 				logger.debug("storeDao.insertTags(tagMap) result : "+ result );
 				
 				
@@ -322,6 +322,167 @@ public class StoreServiceImpl implements StoreService{
 
 		}
 		return null;
+	}
+	
+	@Override
+	public ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails) {
+		String reviewVoTags =reviewVo.getTags();
+		
+
+		
+		
+		try {
+			String uploadPath = "review";
+			S3Util s3 = new S3Util();
+			
+			System.out.println(delThumbnails.isEmpty());
+			if((delThumbnails.isEmpty())==false) {
+				//delThumnail split ,
+				String[] delThumbnailArray = delThumbnails.split(",");
+				List<ImageVo> delImageVoList = new ArrayList<ImageVo>();
+				
+				//set url
+				for(int i=0; i<delThumbnailArray.length; i++) {
+					ImageVo imageVo = new ImageVo();
+					imageVo.setDelImageVo(delThumbnailArray[i]);
+					imageVo.setStore_id(reviewVo.getStore_id());
+					imageVo.setReview_id(reviewVo.getReview_id());
+					imageVo.setAccount_id(reviewVo.getAccount_id());
+					logger.debug(imageVo.toString());
+					delImageVoList.add(imageVo);
+					//db에서 삭제
+					reviewDao.deleteReviewImage(imageVo);
+				}
+				
+				//aws thumnail도 삭제, 원본이미지도 삭제
+				for (int i = 0; i < delImageVoList.size(); i++) {
+					ImageVo imageVo = delImageVoList.get(i);
+					logger.debug(imageVo.toString());
+					imageVo.setFileName();
+					imageVo.setThumbnailFileName();
+					s3.fileDelete(imageVo.getPath()+"/"+imageVo.getFileName());
+					s3.fileDelete(imageVo.getPath()+"/"+imageVo.getThumbnailFileName());
+				}
+			}
+			
+			//S3에 파일 업로드
+			MultipartFile file;
+	    	for (int i = 0; i < newFiles.length; i++) {
+
+	    		file = newFiles[i];
+	    			
+	    		logger.debug("originalName: " + file.getOriginalFilename());
+	    		logger.debug("size : " +  file.getSize());
+	    		logger.debug("contentType : " + file.getContentType());
+	            
+	            
+	            if((file.getSize() != 0) && file.getContentType().contains("image")) {
+	            	ImageVo imgaeVo = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
+	            	imgaeVo.setReview_id(reviewVo.getReview_id());
+	            	imgaeVo.setStore_id(reviewVo.getStore_id());
+	            	imgaeVo.setAccount_id(reviewVo.getAccount_id());
+	            	
+	            	//db에 이미지 추가
+	            	reviewDao.insertReviewImage(imgaeVo);
+	            }
+			}
+	    	
+	    	//select로 가져와서 imgvo 넣기
+	    	ArrayList<ImageVo> ReviewImgList = (ArrayList<ImageVo>) reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
+	    	for(int i=0; i<ReviewImgList.size(); i++) {
+	    		ReviewImgList.get(i).setUrl();
+	    	}
+	    	reviewVo.setImageList(ReviewImgList);
+			
+			//평균 점수 다시 계산
+			reviewVo.calAverageLevel();
+						
+			//업데이트 된 행의 수를 반환
+			int result = reviewDao.updateReview(reviewVo);
+			
+			//리뷰의 tag 수정
+			Map<String, Object> tagMap = new HashMap<String, Object>();
+			tagMap.put("REVIEW_ID", reviewVo.getReview_id());
+			String setTag = "";
+			List<String> tagList =  getTagNameList();
+			String[] tagArray = reviewVoTags.split(",");
+			int tagArrayIdx = 0;
+			for (String tag : tagList) {
+				logger.debug(tag +", "+tagArray[tagArrayIdx]);
+				setTag +=  ", "+ tag;
+				if(tag.equals(tagArray[tagArrayIdx]) && tagArrayIdx < tagArray.length ) {
+					setTag += "= 1";
+					tagArrayIdx++;
+				}else {
+					setTag += "= 0";
+				}
+			}
+			if(setTag.length() ==0) {
+				setTag = "REVIEW_ID="+reviewVo.getReview_id();
+			}
+			logger.debug(setTag);
+			tagMap.put("SETTAG", setTag);
+			int result2 = reviewDao.updateTags(tagMap);
+			logger.debug("storeDao.updateTags(tagMap) result : "+ result2 );
+			
+			//상점에 대한 평점 동기화
+			if(result>0) {
+				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStore_id());
+				StoreVo storeVo = new StoreVo();
+				storeVo.setStore_Id(reviewVo.getStore_id());
+				storeVo.calAllLevel(list);
+				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
+				storeDao.updateLevel(storeVo);				
+			}
+			
+			return reviewVo;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	//리뷰 삭제
+	@Override
+	public int deleteReview(ReviewVo reviewVo){
+		S3Util s3 = new S3Util();
+		try {
+			//DB에 있는 imageVo list 조회
+			List<ImageVo> imageVoList = reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
+			logger.debug("imageList size = " + imageVoList.size());
+			
+			//review테이블에 있는 row삭제
+			//해당 review_id에 해당하는 reviewImage테이블에 있는 row도  같이 삭제(cascade)
+			int result = reviewDao.deleteReview(reviewVo);
+			logger.debug("delete result = "+ result);
+
+	
+			//반복
+			//imageVo로 s3에 저장된 파일명 생성 > 삭제
+			for (int i = 0; i < imageVoList.size(); i++) {
+				ImageVo imageVo = imageVoList.get(i);
+				logger.debug(imageVo.toString());
+				imageVo.setFileName();
+				imageVo.setThumbnailFileName();
+				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getFileName());
+				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getThumbnailFileName());
+			}
+			
+			//account의 reviewcnt를 감소시켜줌
+			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);
+			
+			//정상일 경우 return 1
+			return 1;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	@Override
@@ -436,136 +597,7 @@ public class StoreServiceImpl implements StoreService{
 	}
 	
 	
-	@Override
-	public ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails) {
-		try {
-			String uploadPath = "review";
-			S3Util s3 = new S3Util();
-			
-			System.out.println(delThumbnails.isEmpty());
-			if((delThumbnails.isEmpty())==false) {
-				//delThumnail split ,
-				String[] delThumbnailArray = delThumbnails.split(",");
-				List<ImageVo> delImageVoList = new ArrayList<ImageVo>();
-				
-				//set url
-				for(int i=0; i<delThumbnailArray.length; i++) {
-					ImageVo imageVo = new ImageVo();
-					imageVo.setDelImageVo(delThumbnailArray[i]);
-					imageVo.setStore_id(reviewVo.getStore_id());
-					imageVo.setReview_id(reviewVo.getReview_id());
-					imageVo.setAccount_id(reviewVo.getAccount_id());
-					logger.debug(imageVo.toString());
-					delImageVoList.add(imageVo);
-					//db에서 삭제
-					reviewDao.deleteReviewImage(imageVo);
-				}
-				
-				//aws thumnail도 삭제, 원본이미지도 삭제
-				for (int i = 0; i < delImageVoList.size(); i++) {
-					ImageVo imageVo = delImageVoList.get(i);
-					logger.debug(imageVo.toString());
-					imageVo.setFileName();
-					imageVo.setThumbnailFileName();
-					s3.fileDelete(imageVo.getPath()+"/"+imageVo.getFileName());
-					s3.fileDelete(imageVo.getPath()+"/"+imageVo.getThumbnailFileName());
-				}
-			}
-			
-			//S3에 파일 업로드
-			MultipartFile file;
-	    	for (int i = 0; i < newFiles.length; i++) {
-
-	    		file = newFiles[i];
-	    			
-	    		logger.debug("originalName: " + file.getOriginalFilename());
-	    		logger.debug("size : " +  file.getSize());
-	    		logger.debug("contentType : " + file.getContentType());
-	            
-	            
-	            if((file.getSize() != 0) && file.getContentType().contains("image")) {
-	            	ImageVo imgaeVo = UploadFileUtils.uploadFile(uploadPath, file.getOriginalFilename(), file.getBytes());
-	            	imgaeVo.setReview_id(reviewVo.getReview_id());
-	            	imgaeVo.setStore_id(reviewVo.getStore_id());
-	            	imgaeVo.setAccount_id(reviewVo.getAccount_id());
-	            	
-	            	//db에 이미지 추가
-	            	reviewDao.insertReviewImage(imgaeVo);
-	            }
-			}
-	    	
-	    	//select로 가져와서 imgvo 넣기
-	    	ArrayList<ImageVo> ReviewImgList = (ArrayList<ImageVo>) reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
-	    	for(int i=0; i<ReviewImgList.size(); i++) {
-	    		ReviewImgList.get(i).setUrl();
-	    	}
-	    	reviewVo.setImageList(ReviewImgList);
-			
-			//평균 점수 다시 계산
-			reviewVo.calAverageLevel();
-						
-			//업데이트 된 행의 수를 반환
-			int result = reviewDao.updateReview(reviewVo);
-			
-			//상점에 대한 평점 동기화
-			if(result>0) {
-				List<ReviewVo> list = reviewDao.selectAllReviewLevel(reviewVo.getStore_id());
-				StoreVo storeVo = new StoreVo();
-				storeVo.setStore_Id(reviewVo.getStore_id());
-				storeVo.calAllLevel(list);
-				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
-				storeDao.updateLevel(storeVo);				
-			}
-			
-			return reviewVo;
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 	
-	//리뷰 삭제
-	@Override
-	public int deleteReview(ReviewVo reviewVo){
-		S3Util s3 = new S3Util();
-		try {
-			//DB에 있는 imageVo list 조회
-			List<ImageVo> imageVoList = reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
-			logger.debug("imageList size = " + imageVoList.size());
-			
-			//review테이블에 있는 row삭제
-			//해당 review_id에 해당하는 reviewImage테이블에 있는 row도  같이 삭제(cascade)
-			int result = reviewDao.deleteReview(reviewVo);
-			logger.debug("delete result = "+ result);
-
-	
-			//반복
-			//imageVo로 s3에 저장된 파일명 생성 > 삭제
-			for (int i = 0; i < imageVoList.size(); i++) {
-				ImageVo imageVo = imageVoList.get(i);
-				logger.debug(imageVo.toString());
-				imageVo.setFileName();
-				imageVo.setThumbnailFileName();
-				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getFileName());
-				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getThumbnailFileName());
-			}
-			
-			//account의 reviewcnt를 감소시켜줌
-			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);
-			
-			//정상일 경우 return 1
-			return 1;
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return -1;
-	}
 	
 	
 	///////////////////////////////

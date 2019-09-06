@@ -61,4 +61,8 @@ public interface ReviewDao {
 	List<ReviewVo> selectReviewLimit3ByStoreId(int accountId, int storeId, int startNum);
 
 	List<Map<String, Object>> selectTagsLimit3ByStoreId(int accountId, int storeId, int startNum);
+
+	int insertTags(Map<String, Object> tagMap);
+
+	int updateTags(Map<String, Object> tagMap);
 }

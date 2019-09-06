@@ -234,4 +234,14 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectTagsLimit3ByStoreId",map);
 	}
 
+	@Override
+	public int insertTags(Map<String, Object> tagMap) {
+		return sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertTags", tagMap);
+	}
+
+	@Override
+	public int updateTags(Map<String, Object> tagMap) {
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateTags", tagMap);
+	}
+
 }

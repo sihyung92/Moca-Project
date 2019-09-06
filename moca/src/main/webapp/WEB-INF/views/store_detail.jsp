@@ -155,7 +155,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=31"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=33"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
@@ -282,7 +282,7 @@
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				 var tagValues = "";
+				var tagValues = "";
 				$("input:checkbox[name=tag]:checked").each(function(){
 					tagValues =tagValues+ $(this).val() +",";
 				   
@@ -309,7 +309,11 @@
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
-				
+				var tagValues = "";
+				$("input:checkbox[name=tag]:checked").each(function(){
+					tagValues =tagValues+ $(this).val() +","; 
+				});
+				 $('#review-tags').val(tagValues)
 				editReview();
 			})
 			

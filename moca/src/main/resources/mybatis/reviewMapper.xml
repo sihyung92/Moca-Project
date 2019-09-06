@@ -145,4 +145,11 @@
 	ORDER BY FIELD(r.ACCOUNT_ID,#{ACCOUNT_ID}) DESC, r.LIKECOUNT DESC, r.REVIEW_ID
 	limit #{STARTNUM}, #{ENDNUM}
   </select>
+  <insert id="insertTags" parameterType="map">
+  	INSERT INTO TAGS(REVIEW_ID, STORE_ID ${TAGS }) VALUES(${REVIEW_ID }, ${STORE_ID } ${TAGVALUES });
+  </insert>
+  <update id="updateTags" parameterType="map">
+ 	UPDATE TAGS SET REVIEW_ID=${REVIEW_ID }  ${SETTAG } WHERE REVIEW_ID = ${REVIEW_ID } 
+  </update>
+  
 </mapper>
