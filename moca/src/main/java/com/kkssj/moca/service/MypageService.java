@@ -17,7 +17,7 @@ public interface MypageService{
 	List<AccountVo> getFollowingList(int accountId);
 	
 	//해당 account의 내가 쓴 리뷰 가져오기
-	List<ReviewVo> getMyreviewList(int accountId, int sessionId);
+	List<ReviewVo> getMyreviewList(int accountId, int sessionId, int startNum);
 
 	//해당 account의 follow신청
 	int addFollow(int follower, int following);

@@ -197,38 +197,7 @@
 			storeImgswModal = $('#storeImgswModal');
 			storeFiles = $('#storeFiles');
 
-
-			//평점 별
-			$('#level').raty({
-			  scoreName:  'level',
-			  click: function(score){
-				  $.fn.raty.cancel('#level');
-				  $('.storeLevel').css('display','')
-				  $('.level').css('display','none')
-
-				  $.fn.raty.start(score, '#taste-level');
-				  $.fn.raty.start(score, '#price-level');
-				  $.fn.raty.start(score, '#service-level');
-				  $.fn.raty.start(score, '#mood-level');
-				  $.fn.raty.start(score, '#convenience-level');
-			  }
-			});
- 			$('#taste-level').raty({
-				  scoreName:  'tasteLevel',
-			});
-			$('#price-level').raty({
-				  scoreName:  'priceLevel',
-			});
-			$('#service-level').raty({
-				  scoreName:  'serviceLevel',
-			});
-			$('#mood-level').raty({
-				  scoreName:  'moodLevel',
-			});
-			$('#convenience-level').raty({
-				  scoreName:  'convenienceLevel',
-			}); 
-			
+			bindRaty();
 
 			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
 							
@@ -308,7 +277,7 @@
 				if(reviewVoListLength==true){
 					return false;
 				}
-				reviewMoreBtnClick();
+				reviewMoreBtnClick("review");
 			});
 
 			//리뷰 저장 버튼 클릭시
@@ -698,13 +667,6 @@
 			})
 
 		}
-		
-		/* $(window).scroll(function(e){
-			if(reviewVoListLength==true){
-				return false;
-			}
-			scrollMaxDown();
-		}); */
 
 		var makeStoreLevelChart = function(){
 			var ctx = document.getElementById('myChart').getContext('2d');

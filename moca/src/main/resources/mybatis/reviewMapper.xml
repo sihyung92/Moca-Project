@@ -104,6 +104,7 @@
 	JOIN STORE s ON r.STORE_ID = s.STORE_ID
 	WHERE r.ACCOUNT_ID = #{ACCOUNT_ID}
 	ORDER BY r.WRITEDATE DESC
+	limit #{STARTNUM}, #{ENDNUM}
   </select>
   
   <select id="selectReviewImgListByAccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">

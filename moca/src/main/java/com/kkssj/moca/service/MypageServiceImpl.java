@@ -69,11 +69,11 @@ public class MypageServiceImpl implements MypageService{
 	}
 
 	@Override
-	public List<ReviewVo> getMyreviewList(int accountId, int sessionId) {
+	public List<ReviewVo> getMyreviewList(int accountId, int sessionId, int startNum) {
 		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
 		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
 		try {
-			reviewList = reviewDao.selectReviewListByAccountId(accountId,sessionId);
+			reviewList = reviewDao.selectReviewListByAccountId(accountId,sessionId,startNum);
 			reviewImageList = reviewDao.selectReviewImgListByAccountId(accountId);
 		} catch (SQLException e) {
 			e.printStackTrace();
