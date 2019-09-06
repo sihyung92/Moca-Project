@@ -2,6 +2,7 @@ package com.kkssj.moca.model;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
@@ -56,4 +57,6 @@ public interface ReviewDao {
 
 	//리뷰 3개씩 불러오기
 	List<ReviewVo> selectReviewLimit3ByStoreId(int accountId, int storeId, int startNum);
+
+	List<Map<String, Object>> selectTagsLimit3ByStoreId(int accountId, int storeId, int startNum);
 }

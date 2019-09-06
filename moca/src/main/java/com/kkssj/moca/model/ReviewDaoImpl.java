@@ -218,4 +218,14 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewLimit3ByStoreId",map);
 	}
 
+	@Override
+	public List<Map<String, Object>> selectTagsLimit3ByStoreId(int accountId, int storeId, int startNum) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("STORE_ID", storeId);
+		map.put("STARTNUM", startNum);
+		map.put("ENDNUM", 3);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectTagsLimit3ByStoreId",map);
+	}
+
 }

@@ -155,9 +155,9 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=19"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=25"/>"></script>
 	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=18"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
@@ -312,11 +312,12 @@
 				if(reviewVoListLength==true){
 					return false;
 				}
+				console.log("click");
 				scrollMaxDown();
-					/* callNum += 1;
-					//console.log("더보기"+quotient+":"+remainder+":"+callNum);
-					reviewCnt(quotient,remainder,callNum);
-					callReviewDataMore(); */
+				/* callNum += 1;
+				console.log("더보기"+quotient+":"+remainder+":"+callNum);
+				reviewCnt(quotient,remainder,callNum);
+				callReviewDataMore(); */
 			});
 
 			//리뷰 저장 버튼 클릭시
@@ -969,7 +970,7 @@
 							<div class="review-info col-md-8"> 
 								<div class="row">
 									<div class="reviewThumbnailGroup">
-										<c:forEach items="${reviewVo.imageList}" var="reviewImg" varStatus="status">
+										<c:forEach items="${reviewVo.imageList}" var="reviewImg">
 											<div class="reviewThumbnail">
 												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
 											</div>
@@ -983,8 +984,15 @@
 									<div class="review-content-div">
 										<label>리뷰 내용</label>
 										<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+										<span class="more-review-content-btn">더보기</span>
 									</div>
-									<span class="more-review-content-btn">더보기</span>
+									<div class="review-tags-div">
+										<c:forEach items="${reviewVo.tagMap}" var="i">
+											<c:if test="${i.value eq 1}">
+												<a class="review-tag" href="/moca/stores?keyword=${i.key }&filter=distance">#${i.key }</a>	
+											</c:if>
+										</c:forEach>
+									</div>
 								</div>
 								<div class="form-group like-hate">
 									<div class="btn-group" data-toggle="buttons">
@@ -1086,8 +1094,11 @@
 				<div class="review-content-div">
 					<label>리뷰 내용</label>
 					<span class="reviewInfo-review-content"></span>
+					<span class="more-review-content-btn">더보기</span>
 				</div>
-				<span class="more-review-content-btn">더보기</span>
+				<div class="review-tags-div">
+
+				</div>
 			</div>
 			<div class="form-group like-hate">
 				<div class="btn-group" data-toggle="buttons">
@@ -1127,6 +1138,9 @@
 			</div>								
 		</div>
 		<br><br><br>
+		
+		<!-- clone할 tag element -->
+		<a class="review-tag" id="review-tag-div" href="#" style="display:none;"></a>	
 	</div>
 	
 	<!-- Modal -->

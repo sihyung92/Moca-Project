@@ -168,16 +168,31 @@ public class StoreServiceImpl implements StoreService{
 		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
 		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
 		
+		List<Map<String, Object>> tagsMapList = new ArrayList<Map<String,Object>>();
+		
+		
 		
 		reviewList = reviewDao.selectReviewLimit3ByStoreId(accountId, storeId, startNum);
+		tagsMapList = reviewDao.selectTagsLimit3ByStoreId(accountId, storeId, startNum);
+		for (Map<String, Object> map : tagsMapList) {
+			String tags = "";
+			for (String tag : tagNameList) {
+				tags += map.get(tag) +",";
+			}
+			logger.debug(tags);
+		}
 		
 		for(int i=0; i<reviewList.size(); i++) {
 			try {
+				//set 리뷰 이미지 리스트
 				reviewImageList = reviewDao.selectReviewImgListByReviewId(reviewList.get(i).getReview_id());
 				for(int j=0; j<reviewImageList.size(); j++) {
 					reviewImageList.get(j).setUrl();
 				}
 				reviewList.get(i).setImageList(reviewImageList);
+				
+				//set 리뷰 태그
+				reviewList.get(i).setTagMap(tagsMapList.get(i));
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}

@@ -101,7 +101,7 @@
             var uiBarista = '${sessionScope.login.barista}';
                         
             //처음 로그인했거나 필수 수집정보가 없을 경우
-            if(uiGender==0 || uiBarista==0 || uiBirthday==null){
+            /* if(uiGender==0 || uiBarista==0 || uiBirthday==null){
               
                 alert('moca에 오신것을 환영합니다!\n\n\n moca를 회원으로 이용하기 위해서는 개인정보 수집 및 처리에 동의해주셔야 원활한 이용이 가능합니다.\n\n\n'
                       +'moca의 모든 서비스를 제공받으시려면 [선택] 정보 제공에 동의해주세요');
@@ -137,7 +137,7 @@
                 $('#selectiveNo').click(function(){
                     $('#info-rule-selective').css('height','200px');
                 });
-            }
+            } */
                                 
             var userName = '${sessionScope.login.nickname}';                
             var thumbnailImg = null;

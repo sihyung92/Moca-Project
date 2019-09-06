@@ -82,6 +82,8 @@ var bindReviewVariable = function(){
 	//파일버퍼 초기화
 	fileBuffer = [];
 	
+	reviewVoListLength=false;
+	
 }
 
 
@@ -711,6 +713,10 @@ var url2PathFileName = function(imgUrl){
 //스크롤 맨밑으로 내려갈 때
 var scrollMaxDown = function() {
     
+	startNum += 3;
+	console.log(startNum);
+	moreReviewList(startNum);
+	/*
     var height = $(document).height();
     var height_win = $(window).height();
     
@@ -721,7 +727,8 @@ var scrollMaxDown = function() {
     	startNum += 3;
 	    moreReviewList(startNum);
 	    $(window).scrollTop($(document).height() - $(window).height()-100);
-	}  
+	} 
+	*/ 
 };
 
 //리뷰 3개씩 추가
@@ -744,8 +751,10 @@ var moreReviewList = function(startNum) {
 			}
 			
 			for(var j=0; j<reviewVoList.length; j++){
+				
 				var alreadyReviewExist = false;
 				var reviewVo = reviewVoList[j];
+				test = reviewVo;
 				for(var i=0; i<$('.review-content').find('.review-id').filter(':even').length; i++){
 					if(reviewVo.review_id==$('.review-content').find('.review-id').filter(':even').eq(i).val()){
 						alreadyReviewExist=true;
@@ -789,6 +798,20 @@ var moreReviewList = function(startNum) {
 				
 				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
 				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
+				for(var key in test.tagMap){
+					if(!key.includes('ID') && (test.tagMap[key] ==1)){
+						var newTag = $('#review-tag-div').clone(true);
+						newTag.css('display','');
+						newTag.removeAttr('id');
+						
+						newTag.text('#'+key)	//값 넣어주기
+						newTag.attr('href', '#')	/// search와 연결
+						
+						newReview.find('.review-tags-div').append(newTag);
+						console.log(newTag);
+					}
+				}
+				
 				
 				var likehateFormGroup = reviewInfo.children('.like-hate')
 				

@@ -3,6 +3,7 @@ package com.kkssj.moca.model.entity;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ReviewVo {
 	//REVIEW table
@@ -15,6 +16,7 @@ public class ReviewVo {
 	private String tags;
 	private int editable;
 	private List<ImageVo> imageList;
+	private Map<String, Object> tagMap;
 	
 	//mypage에 store정보 가져오기
 	private String storeName, storeLogoImg;
@@ -261,7 +263,16 @@ public class ReviewVo {
 	public void setStore_id(int store_id) {
 		this.store_id = store_id;
 	}
-	
+
+	public Map<String, Object> getTagMap() {
+		return tagMap;
+	}
+	public void setTagMap(Map<String, Object> tagMap) {
+		this.tagMap = tagMap;
+	}
+
+
+
 	@Override
 	public String toString() {
 		return "ReviewVo [review_id=" + review_id + ", account_id=" + account_id + ", store_id=" + store_id

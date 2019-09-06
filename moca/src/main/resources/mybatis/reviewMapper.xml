@@ -126,4 +126,12 @@
 	ORDER BY FIELD(r.ACCOUNT_ID,#{ACCOUNT_ID}) DESC, r.LIKECOUNT DESC, r.REVIEW_ID
 	limit #{STARTNUM}, #{ENDNUM}
   </select>
+  <select id="selectTagsLimit3ByStoreId" resultType="map" parameterType="map">
+	SELECT t.* 
+	FROM TAGS t JOIN REVIEW r ON r.REVIEW_ID = t.REVIEW_ID 
+	JOIN  ACCOUNT a ON r.ACCOUNT_ID = a.ACCOUNT_ID
+	WHERE r.STORE_ID = #{STORE_ID}
+	ORDER BY FIELD(r.ACCOUNT_ID,#{ACCOUNT_ID}) DESC, r.LIKECOUNT DESC, r.REVIEW_ID
+	limit #{STARTNUM}, #{ENDNUM}
+  </select>
 </mapper>
