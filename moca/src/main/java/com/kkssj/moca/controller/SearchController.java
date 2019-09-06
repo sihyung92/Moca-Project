@@ -31,10 +31,14 @@ public class SearchController {
 	@RequestMapping("/re-search")
 	@ResponseBody
 	public List<StoreVo> searchOnTheMap(String filter, String rect, String keyword, Model model){
-		String x= "";
-		String y= "";
-		String region[] = null; 
-		return searchService.getListFromKakaoAPI(keyword, region, x, y, rect, model);
+		logger.debug("filter: "+filter+"keyword: "+keyword);
+		//카카오 맵 범위 내 재검색
+		List<StoreVo> alist = searchService.getListFromKakaoAPI(keyword, null, "", "", rect, model);	//x, y, region 정보 불필요
+		//mocaDB 열람 및 데이터 업데이트
+		for(StoreVo s: alist) s = searchService.getMoreData(s);
+		//정렬 처리
+		if(!filter.equals("distance")) 	alist = searchService.sort(alist, filter); 		//카카오 정렬 디폴트 = 거리순(정렬 처리 불필요)
+		return alist;		
 	}
 	
 	@RequestMapping(value = "/stores", method = RequestMethod.GET)

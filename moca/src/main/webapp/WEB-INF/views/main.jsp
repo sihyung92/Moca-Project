@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -83,8 +84,8 @@
         $('.mocaPick li a').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
         $('.mocaPick li a').on("mouseleave", mouseLeave);
-		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가		
-        $(window).on("scroll", updateData);
+		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
+    	$(window).on("scroll", updateData);
     };//onload() 끝  
     
     //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
@@ -111,9 +112,9 @@
      };
        
     //스크롤 이벤트
-    function updateData(){        	
+    function updateData(){     
         	var position = $(window).scrollTop();	//스크롤바 위치로 페이지 위치 판단
-        	var updatePoint = ($(window).height())*3/5;
+        	var updatePoint = $(document).height()*3/5;        	
             if(position>updatePoint){
             	$(window).off("scroll");
     			$.ajax({
