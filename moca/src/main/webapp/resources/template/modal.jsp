@@ -1,5 +1,9 @@
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" import="com.kkssj.moca.model.entity.ResearchQuestionVo"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!-- 필수정보 입력받을 모달 -->
         <div class="modal" id="input-info-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 			<div class="modal-dialog" role="document" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;">
@@ -306,7 +310,7 @@
                             </label>                              
                         </div>                        
                         
-                        <form id="essential-info" name="f"><br>
+                        <form action="/moca/research" method="get" id="essential-info" name="f"><br>
                             <div class="custom-width-line"></div><br>
                             <div class="form-group">
                                 <!-- 카페 관련 업종 확인 -->
@@ -340,45 +344,46 @@
                                     <br><div class="custom-width-line"></div>
                                     <br>
                                     
-                                    <!-- 선호도 질문 1 -->
-                                    <label for="SQ1">선호도 질문 1</label><br>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ1" id="SQ1_1" value="1"> 거의없다
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ1" id="SQ1_2" value="2"> 조금없다
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ1" id="SQ1_1" value="1"> 보통이다
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ1" id="SQ1_2" value="2"> 조금있다
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ1" id="SQ1_2" value="2"> 매우있다
-                                    </label><br><br>
+                                    <!-- 선호도 질문 표현식 사용 -->
+                                <%
+                                    ArrayList alist = (ArrayList)session.getAttribute("arrayList");
+                                	if(alist!=null){
+                                		for(int i=0 ;i< alist.size();i++){
+                                			ResearchQuestionVo rqVo = (ResearchQuestionVo)alist.get(i);
+                                %>
+                                    <div>
+                                    <label for="SQ<%=rqVo.getQuestion_id()%>"><%=rqVo.getQuestion() %></label><br>
+                                <%
+			                                	int q=1;
+			                                if(rqVo.getAnswer()!=null){
+			                                	ArrayList ans = (ArrayList)session.getAttribute("ans"+rqVo.getQuestion_id());
+			                                	if(ans!=null){
+			                                		for(int j=0;j<ans.size();j=j+2){	                                   			
+                                %>
+				                                    <label class="radio-inline forSort">
+						                           		<input class="essential-selective-info" type="radio" name="SQ<%=rqVo.getQuestion_id() %>" id="SQ<%=rqVo.getQuestion_id() %>_<%=q %>" value="<%=q%>"> <%=ans.get(j+1) %>
+						                            </label>
+                                <%
+		                                			q++;
+		                                			}
+			                                    }
+	                             			}else{
+                               						q++;
+                               	%>
+                               				<input type="text" class="essential-selective-info" name="SQ<%=rqVo.getQuestion_id() %>" />
+                               	<%
+			                                }
+			                                    out.print("</div>");
+		                                	}
+                                	}
+                                %>
                                     
-                                    <!-- 선호도 질문 2 -->
-                                    <label for="SQ2">선호도 질문 2</label><br>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ2" id="SQ2_1" value="1"> 거의없다
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ2" id="SQ2_2" value="2"> 조금없다
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ2" id="SQ2_3" value="3"> 보통이다
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ2" id="SQ2_4" value="4"> 조금있다
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input class="essential-selective-info" type="radio" name="SQ2" id="SQ2_5" value="5"> 매우있다
-                                    </label><br><br>
+                                    <br>
                                     
                                 </div>
                             </div>
                             <button type="button" class="btn btn-default" id="research-submit" >제출</button>
+                            <button type="submit" class="hidden-btn">봣툰</button>
                         </form>
                     </div>
                 
@@ -437,7 +442,8 @@
                         }						
 					},
 					success: function(data) {
-						f5();
+                        $('.hidden-btn').click();
+						//f5();
 					}
                     
                 });

@@ -86,7 +86,6 @@ public class AccountServiceImpl implements AccountService {
 		
 		try {
 			AccountVo vo1 = accountDao.selectUserByAccountId(account_id);
-			System.out.println(vo1.toString());
 			if(vo1.getBarista()==0) {
 				vo1.setBarista(barista);
 			}
@@ -96,7 +95,6 @@ public class AccountServiceImpl implements AccountService {
 			if(vo1.getBirthday()==null) {
 				vo1.setBirthday(birthday);
 			}
-			System.out.println(vo1.toString());
 			int cnt=accountDao.updateUser(vo1.getPlatformType(), vo1);
 			if(cnt==1) {
 				//"설문조사" 하나도 없을 경우만
@@ -120,5 +118,19 @@ public class AccountServiceImpl implements AccountService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean updateIsResearch(AccountVo accountVo) {
+		// TODO Auto-generated method stub
+		try {
+			accountVo.setIsResearch(1);
+			accountDao.updateUserForIsResearch(accountVo);
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

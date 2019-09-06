@@ -192,6 +192,8 @@
 			<artifactId>imgscalr-lib</artifactId> 
 			<version>4.2</version> 
 		</dependency>
+		
+		
 		<!-- 트랜잭션 디펜던시!!!!!!!!!!! -->
 		<!-- Test -->
 		<dependency>

@@ -1,9 +1,7 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
-
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
@@ -16,6 +14,7 @@ public interface AccountDao {
 	AccountVo selectUserByAccountId(int account_id) throws SQLException;
 	//update
 	int updateUser(String platformType, AccountVo accountVo) throws SQLException;
+	int updateUserForIsResearch(AccountVo accountVo) throws SQLException;
 	//delete
 	int deleteUser() throws SQLException;
 	

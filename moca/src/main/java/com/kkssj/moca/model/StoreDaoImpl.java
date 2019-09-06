@@ -125,6 +125,7 @@ public class StoreDaoImpl implements StoreDao {
 	@Override
 	public List<StoreVo> selectStoresListByTag(Map<String, String> variables) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoresListByTag", variables);
+	}
     
   @Override
 	public int updateStoreImg(Map<String, Object> map) {	

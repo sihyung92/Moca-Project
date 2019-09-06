@@ -38,7 +38,7 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public AccountVo selectUserByAccountId(int account_id) throws SQLException {
 		// TODO Auto-generated method stub
-		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectUserByaccount_id", (Integer)account_id);
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectByaccountId", (Integer)account_id);
 	}
 
 	@Override
@@ -47,6 +47,12 @@ public class AccountDaoImpl implements AccountDao {
 		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateUserBy"+platformType+"Id", accountVo);
 	}
 
+	@Override
+	public int updateUserForIsResearch(AccountVo accountVo) throws SQLException{
+		// TODO Auto-generated method stub
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateUserForIsResearch", accountVo);
+	}
+	
 	@Override
 	public int deleteUser() throws SQLException{
 		// TODO Auto-generated method stub

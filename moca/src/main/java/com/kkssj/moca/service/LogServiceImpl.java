@@ -48,4 +48,5 @@ public class LogServiceImpl implements LogService {
 		}
 		return false;
 	}
+
 }

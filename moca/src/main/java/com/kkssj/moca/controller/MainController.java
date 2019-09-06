@@ -1,5 +1,4 @@
 package com.kkssj.moca.controller;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,12 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
@@ -38,7 +34,6 @@ public class MainController {
 	private Map<String, String> variables = new HashMap<String, String>();		//DB 처리용: 전달할 변수 목룍	
 	private List<String> tagNames;
 	private Map<String, String> rating = new HashMap<String, String>();
-	
 	
 	//안쓸지도 모르겠다!!
 	@RequestMapping(value="/geolocation", method = RequestMethod.GET)

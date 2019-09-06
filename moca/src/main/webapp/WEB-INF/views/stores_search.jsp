@@ -143,7 +143,7 @@
 		var bounds = new kakao.maps.LatLngBounds();  //LatLngBounds객체 생성: 좌표가 다른 여러 핀에 대한 맵 바운더리 재설정
 		//자바 List -> 자바스크립트 Array로 변환(x, y, name 정보만) 
 		alist = new Array();
-		<c:forEach items="${alist}" var="data">
+		<c:forEach items="${requestScope.alist}" var="data">
 			alist.push({'lat':${data.yLocation},'lng':${data.xLocation}, 'store_Id': ${data.store_Id}, 'name':"${data.name}", 'roadAddress': '${data.roadAddress}', 'tel':'${data.tel }', 'tasteLevel':${data.tasteLevel},'priceLevel':${data.priceLevel}, 'serviceLevel':${data.serviceLevel}, 'moodLevel':${data.moodLevel}, 'convenienceLevel':${data.convenienceLevel}, 'logoImg':'${data.logoImg}'});
 		</c:forEach>
 		
@@ -592,11 +592,11 @@
 		</form>	
 	</div>
 	<div id="warning_box">
-		<span id="warning_noResult"><c:if test="${alist[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
+		<span id="warning_noResult"><c:if test="${requestScope.alist[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
 	</div>
 	<div id="result_stores">
 		<span id="warning_changedFilter"><small>${msg_changedFilter}</small></span>
-		<c:forEach items="${alist}" var="bean" varStatus="status">
+		<c:forEach items="${requestScope.alist}" var="bean" varStatus="status">
 			<c:if test="${bean.distance ge 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance/1000}" pattern="#.0km"></fmt:formatNumber></c:if>
 			<c:if test="${bean.distance lt 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance}" pattern="#m"></fmt:formatNumber></c:if>
 			<div class="links">
@@ -616,7 +616,7 @@
 			</div>	
 		</c:forEach>			
 	</div>
-	<c:if test="${not empty alist }">
+	<c:if test="${not empty requestScope.alist }">
 		<div>
 			<div id="map" style="width:500px;height:400px;"></div>
 			<button id="map_re-search" style="display:none">이 지역에서 재검색</button>	

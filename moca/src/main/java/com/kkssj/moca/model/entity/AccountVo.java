@@ -8,7 +8,7 @@ public class AccountVo {
 	//등급별 maxExp
 	int maxExps[] = {0,30,100,300,1000,3000,6000,10000};
 
-	private int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp, maxExp, minExp;
+	private int account_id, followCount, reviewCount, platformId, accountLevel, isMine, isResearch, exp, maxExp, minExp;
 	private String nickname, platformType, profileImage, thumbnailImage, levelName;
 	
 	/*email 추가*/
@@ -46,7 +46,7 @@ public class AccountVo {
 	
 public AccountVo(int account_id, int followCount, int reviewCount, int platformId, int accountLevel, int isMine,
 			int exp, String nickname, String platformType, String profileImage, String thumbnailImage, String email,
-			int gender, int barista, Date birthday) {
+			int gender, int barista, Date birthday, int isResearch) {
 		super();
 		this.account_id = account_id;
 		this.followCount = followCount;
@@ -63,22 +63,16 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 		this.gender = gender;
 		this.barista = barista;
 		this.birthday = birthday;
+		this.isResearch=isResearch;
 	}
 
-//	public AccountVo(int account_id, int followCount, int reviewCount, int platformId, String nickname,
-//			String platformType, String profileImage, String thumbnailImage, String email) {
-//		super();
-//		this.account_id = account_id;
-//		this.followCount = followCount;
-//		this.reviewCount = reviewCount;
-//		this.platformId = platformId;
-//		this.nickname = nickname;
-//		this.platformType = platformType;
-//		this.profileImage = profileImage;
-//		this.thumbnailImage = thumbnailImage;
-//		this.email = email;
-//	}
-
+	public int getIsResearch() {
+	return isResearch;
+	}
+	
+	public void setIsResearch(int isResearch) {
+		this.isResearch = isResearch;
+	}
 
 	public int getAccount_id() {
 		return account_id;
@@ -305,4 +299,3 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 	}
 
 }
-

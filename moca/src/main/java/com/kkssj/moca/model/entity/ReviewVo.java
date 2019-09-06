@@ -83,20 +83,6 @@ public class ReviewVo {
 		this.accountLevel = accountLevel;
 	}
 
-
-
-	public String getThumbnailImage() {
-		return thumbnailImage;
-	}
-
-
-
-	public void setThumbnailImage(String thumbnailImage) {
-		this.thumbnailImage = thumbnailImage;
-	}
-
-
-
 	public String getReviewContent() {
 		return reviewContent;
 	}
@@ -256,6 +242,7 @@ public class ReviewVo {
 	public void setThumbnailImage(String thumbnailImage) {
 		this.thumbnailImage = thumbnailImage;
 	}
+
 	public String getTags() {
 		return tags;
 	}

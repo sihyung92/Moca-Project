@@ -942,7 +942,7 @@
 									<div class="review-tags-div">
 										<c:forEach items="${reviewVo.tagMap}" var="i">
 											<c:if test="${i.value eq 1}">
-												<a class="review-tag" href="/moca/stores?keyword=${i.key }&filter=distance">#${i.key }</a>	
+												<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
 											</c:if>
 										</c:forEach>
 									</div>

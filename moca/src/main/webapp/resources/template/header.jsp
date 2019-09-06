@@ -7,11 +7,11 @@
     
 <!--//css 설정-->
     <style type="text/css">
-        #Login-Modal .modal-body {
+        .modal .modal-body {
             max-height: 350px;
             overflow-y: auto;
         }
-        .modal-open #Login-Modal{
+        .modal-open .modal{
             overflow-y: hidden;
         }
         .sns-login-btn * {
@@ -22,6 +22,11 @@
             width: 300px;
             height: 300px;
         }
+        .forSort{
+            width: 80px;
+            height: 20px;
+        }
+        
     </style>
     
 <!-- naver API -->
@@ -29,8 +34,13 @@
 <!-- kakao API -->
     <script type="text/javascript" src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
-    <script type='text/javascript'>    
-    $(document).ready(function(){  
+    <script type='text/javascript'>
+        
+        var loc='';
+        
+    $(document).ready(function(){
+        //테스트용 코드 자리
+        
         //키워드 검사
 		$('#searchBtn').click(function(){
 			var keyword = $('#keyword').val();
@@ -44,15 +54,15 @@
 				$(this).parent().submit();
 			}
 		});
-          	
-        //테스트용 코드 자리
         
         //미리 설정할 사항들
         $('#nav-static-height').css('height','60px');
         
         $('.modal-dialog').css('overflow-y','initial');
-       // $('.modal-body').css('height','100%');
+        $('.modal-body').css('height','100%');
         $('.modal-body').css('overflow-y','auto');
+        
+        $('.hidden-btn').hide();
         
         $('.close').click(function(event){
             $('.modal').hide();
@@ -61,61 +71,18 @@
         //본코드 (공통)  
         //1. 처음 페이지 접속시 로그인 상태를 확인하여 플로필을 띄워줄지 login 버튼을 띄워줄지.
         var userInfo;
-        var info={
-            "platformType":"NULL_VAL"
-        };
         userInfo = '${sessionScope.login.platformType}';
-        if(userInfo.isUndefined || userInfo==''){
-            userInfo = {
-                "account_id":"0",
-                "followCount":"0",
-                "reviewCount":"0",
-                "platformId":"0",
-                "nickname":"",
-                "platformType":"NULL_VAL",
-                "profileImage":"",
-                "thumbnailImage":"",
-                "email":"",
-                "gender":"0",
-                "barista":"",
-                "birthday":""
-            };
-            info = {
-                "account_id":"0",
-                "followCount":"0",
-                "reviewCount":"0",
-                "platformId":"0",
-                "nickname":"",
-                "platformType":"NULL_VAL",
-                "profileImage":"",
-                "thumbnailImage":"",
-                "email":"",
-                "gender":"0",
-                "barista":"",
-                "birthday":""
-            };
-        }else if('${sessionScope.login.platformType}'!='NULL_VAL'){
-            info={
-                "platformType":"VALUE"
-            }
-            userInfo={
-                "platformType":"VALUE"
-            };
-        }
-              
-        if(JSON.stringify(info.platformType)=='"NULL_VAL"'){     
-            $('.just-use-user').css('display','none');        
-        }else if(JSON.stringify(userInfo.platformType)=='"NULL_VAL"'){
+        
+        if(userInfo==''){
             $('.just-use-user').css('display','none');    
         }else{
-
-            
+           
             var uiGender = '${sessionScope.login.gender}';
             var uiBirthday = '${sessionScope.login.birthday}';
             var uiBarista = '${sessionScope.login.barista}';
                         
             //처음 로그인했거나 필수 수집정보가 없을 경우
-            /* if(uiGender==0 || uiBarista==0 || uiBirthday==null){
+            if(uiGender==0 || uiBarista==0 || uiBirthday==null){
               
                 alert('moca에 오신것을 환영합니다!\n\n\n moca를 회원으로 이용하기 위해서는 개인정보 수집 및 처리에 동의해주셔야 원활한 이용이 가능합니다.\n\n\n'
                       +'moca의 모든 서비스를 제공받으시려면 [선택] 정보 제공에 동의해주세요');
@@ -151,7 +118,7 @@
                 $('#selectiveNo').click(function(){
                     $('#info-rule-selective').css('height','200px');
                 });
-            } */
+            }
                                 
             var userName = '${sessionScope.login.nickname}';                
             var thumbnailImg = null;
@@ -183,7 +150,8 @@
         //로그인 기능 처리
     	kakaoLogin();
     	naverLogin();
-       
+        //회원탈퇴 기능 처리
+        //signOut();
         //설문 버튼 처리
         
     });
@@ -264,12 +232,12 @@
                         alert(JSON.stringify(errorMsg));
                         
 				   		Kakao.Auth.logout();
-						f5();
+
+                        f5();
 					},
 					success: function(fromServer) {
-						
 				   		Kakao.Auth.logout();
-                        alert('     ※ 모카를 이용해주셔서 감사합니다! ※\n          다른 계정으로 로그인하려면\n          해당 SNS계정을 로그아웃 해주세요');
+                        alert('     ※ 모카를 이용해주셔서 감사합니다! ');
 						f5();
 					}
 				});
@@ -289,6 +257,13 @@
         /* 설정정보를 초기화하고 연동을 준비 */
         naverLogin.init();
     }
+        
+    function signOut(){
+        $('#sign-out').click(function(){
+            Kakao.API.request({ url: '/v1/user/unlink', });
+        });
+    }
+    
 
     //ajax통신의 error status에 따른 처리
     var respondHttpStatus = function(status){
@@ -304,6 +279,7 @@
 			console.log('ajax 통신 실패', status);
 		}
     }
+ 
     </script>
 <!-- kss 공통 header -->
 
@@ -375,5 +351,4 @@
     <div id="info-modal">
 		<jsp:include page="../../resources/template/modal.jsp" flush="true"></jsp:include>
 	</div>
-    
 </nav>

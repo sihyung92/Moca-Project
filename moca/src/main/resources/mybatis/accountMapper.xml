@@ -18,6 +18,9 @@
   <update id="updateUserBynaverId" parameterType="com.kkssj.moca.model.entity.AccountVo" >
   UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage}, GENDER=#{gender}, BIRTHDAY=#{birthday}, BARISTA=#{barista} WHERE PLATFORMID=#{platformId} AND PLATFORMTYPE LIKE 'naver'
   </update>
+  <update id="updateUserForIsResearch" parameterType="com.kkssj.moca.model.entity.AccountVo" >
+  UPDATE ACCOUNT SET ISRESEARCH=${isResearch} WHERE ACCOUNT_ID=${account_id}
+  </update>
   <delete id="deleteUser" parameterType="Integer" ></delete>
   <select id="selectFavoriteStoreList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT  s.STORE_ID, s.NAME, s.ADDRESS, s.AVERAGELEVEL, s.LOGOIMG
@@ -54,10 +57,7 @@
   <delete id="deleteFollow" parameterType="map">
   	delete from FOLLOW where FOLLOWER=#{follower} and FOLLOWING=#{following}
   </delete>
-  
-  <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
-  	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID} and PLATFORMID!=0
-  </select>
+
   
   <select id="selectProfileImageByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
   	SELECT ACCOUNT_ID,PROFILEIMAGE,THUMBNAILIMAGE FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
@@ -103,4 +103,8 @@
   	UPDATE ACCOUNT SET REVIEWCOUNT=REVIEWCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
   </update>
   
+  <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID} and PLATFORMID!=0
+  </select>
+
 </mapper>

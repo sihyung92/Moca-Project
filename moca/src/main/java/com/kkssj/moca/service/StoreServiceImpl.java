@@ -191,8 +191,8 @@ public class StoreServiceImpl implements StoreService{
 				}
 				reviewList.get(i).setImageList(reviewImageList);
 				
-				//set 리뷰 태그
-				reviewList.get(i).setTagMap(tagsMapList.get(i));
+				//set 리뷰 태그 
+				reviewList.get(i).setTagMap(tagsMapList.get(i)); ///에러
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
