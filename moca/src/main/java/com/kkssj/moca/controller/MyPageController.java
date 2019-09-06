@@ -1,5 +1,6 @@
 package com.kkssj.moca.controller;
 
+import java.io.InputStream;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kkssj.moca.model.AccountDao;
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.ReviewVo;
 import com.kkssj.moca.model.entity.StoreVo;
 import com.kkssj.moca.service.MypageService;
 
@@ -50,7 +52,6 @@ public class MyPageController {
 	
 	@GetMapping(value = "/mypage/{accountId}")
 	public String home(@PathVariable("accountId") int accountId, Model model, HttpSession session){
-		
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		AccountVo currentPageAccount = mypageService.getAccountInfo(accountId);
@@ -67,7 +68,6 @@ public class MyPageController {
 		}else {
 			logger.debug(accountVo.toString());
 		}
-		
 		
 		currentPageAccount.setLevelName(currentPageAccount.getAccountLevel());
 		model.addAttribute("currentPageAccount",currentPageAccount);
@@ -93,7 +93,7 @@ public class MyPageController {
 		model.addAttribute("");
 		
 		//해당 account의 내가 쓴 리뷰 가져오기
-		model.addAttribute("reviewVoList", mypageService.getMyreviewList(accountId,accountVo.getAccount_id()));
+		model.addAttribute("reviewVoList", mypageService.getMyreviewList(accountId,accountVo.getAccount_id(),0));
 		
 		
 		//follower목록 가져오기
@@ -102,6 +102,23 @@ public class MyPageController {
 		
 		return "mypage";
 	}
+	
+	@GetMapping("/mypage/reviewMore/{accountId}")
+	public ResponseEntity getReviewMore(@PathVariable("accountId") int accountId, @RequestParam("startNum") int startNum, HttpSession session){
+		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+		}else {
+			logger.debug(accountVo.toString());
+		}
+		
+		//해당 account의 내가 쓴 리뷰 가져오기
+		List<ReviewVo> MyreviewList = mypageService.getMyreviewList(accountId,accountVo.getAccount_id(),startNum);
+		return new ResponseEntity<>(MyreviewList, HttpStatus.OK);
+	}
+	
 	
 	@GetMapping("/favoriteStores/{accountId}")
 	public ResponseEntity getFavoriteStores(@PathVariable("accountId") int accountId, HttpSession session){
@@ -130,7 +147,6 @@ public class MyPageController {
 		}
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
-	
 	@GetMapping("/likeStores/{accountId}")
 	public ResponseEntity getLikeStores(@PathVariable("accountId") int accountId, HttpSession session){
 		

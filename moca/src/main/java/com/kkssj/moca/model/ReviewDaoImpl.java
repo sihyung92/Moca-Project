@@ -182,10 +182,12 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//accountId로 review 가져오기
 	@Override
-	public List<ReviewVo> selectReviewListByAccountId(int accountId,int sessionId) throws SQLException {
+	public List<ReviewVo> selectReviewListByAccountId(int accountId,int sessionId, int startNum) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("ACCOUNT_ID", accountId);
 		map.put("SESSION_ID", sessionId);
+		map.put("STARTNUM", startNum);
+		map.put("ENDNUM", 3);
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewListByAccountId", map);
 	}
 

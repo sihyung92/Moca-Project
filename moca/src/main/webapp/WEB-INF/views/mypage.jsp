@@ -123,6 +123,7 @@
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<script type="text/javascript">
@@ -152,11 +153,15 @@
 	var storeTemplate;
 	
 	$(document).ready(function() { 
+		
 		/////////////////내가 쓴글 관리 시작//////////////
 		//변수 바인딩
 		bindReviewVariable();
 		storeTemplate = $('#storeTemplate')	//변수 바인딩
 
+		//raty
+		bindRaty();
+		
 		//좋아요 또는 싫어요 버튼 클릭시
 		likeHateButton.click(function(){
 			bindLikeHateButtonEvent($(this));
@@ -168,19 +173,16 @@
 		//수정을 눌렀을 때와 입력을 눌렀을 때 파일 입력 개수의 차이
 		$('#files').change(filesChange);
 		
-		//리뷰 3개씩 끊어서 가져오기
-		$('.reviewCnt').hide();
-		reviewCnt(quotient,remainder,callNum);
-		
 		
 		//리뷰 내용 더보기 style 변화
 		callReviewDataMore();
 
 		//리뷰 더보기 버튼을 눌렀을 때
 		$('#moreReview').click(function(){
-				callNum += 1;
-				reviewCnt(quotient,remainder,callNum);
-				callReviewDataMore();
+			if(reviewVoListLength==true){
+				return false;
+			}
+			reviewMoreBtnClick("mypage");
 		});
 		
 		//리뷰 저장 버튼 클릭시
@@ -195,7 +197,8 @@
 			//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
 			var storeName = $(this).parent().parent().find('.reviewer-info').find('.storeName-div').find('.storeName').html();
 			console.log(storeName);
-			reviewData2ReviewModal(this,storeName);
+			
+			reviewData2ReviewModal($(this),storeName);
 			reviewModal.find('#saveReviewBtn').css('display','none')
 			reviewModal.find('#editReviewBtn').css('display','')
 			$('#reviewModal').modal("show");		//리뷰 모달창 show
@@ -742,7 +745,9 @@
 							</c:forEach>
 						</div>
 						<div class="review-footer">
-							<button id="moreReview">더보기</button>
+							<c:if test="${fn:length(reviewVoList) ge 3}">
+								<button id="moreReview">더보기</button>
+							</c:if>
 						</div>
 					</div>
 					<div class="tab-pane fade" id="followerDiv">
@@ -795,7 +800,6 @@
 		<div class="storeLevelDiv col-md-3">
 			평점 : <span class="storeLevel">5.5</span>
 		</div>
-		
 	</div>
 	<!--followDiv  -->
 	<div class="followInfo" id="followInfo">
@@ -860,5 +864,85 @@
 	</div>
 	
 	<jsp:include page="../../resources/template/reviewModal.jsp" flush="true"></jsp:include>
+	
+	
+	<!-- clone할 review element -->
+	<div class="row"  id="reviewTemplate" style="display : none;">
+		<div class="editDeleteGroup btn-group" role="group">
+			<input type="number" style="display: none;" class="review-id" >
+			<input type="number" style="display: none;" class="store-id" >
+			<button type="button" class="btn-edit btn btn-default">수정</button>
+			<button type="button" class="btn-delete btn btn-default">삭제</button>
+		</div>
+		<div class="reviewer-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+			<div class="storeLogo-div">
+				<!-- store logo 이미지 -->
+				<c:if test="${empty reviewVo.storeLogoImg}">
+					<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
+						alt="logo" class="img-circle" style="width: 100px;">
+				</c:if>
+				<c:if test="${not empty reviewVo.storeLogoImg}">
+					<img src="<c:url value="${reviewVo.storeLogoImg }" />" alt="logo"
+						class="img-circle" style="width: 100px;">
+				</c:if>
+			</div>
+			<div class="storeName-div">
+				<!-- store 이름 -->
+				<span class="storeName">${reviewVo.storeName}</span>
+			</div>
+		</div>
+		<div class="review-info col-md-8">
+			<div class="reviewThumbnailGroup">
+			</div>
+			<div class="review-data">
+				<div class="write-date-div">
+					<label>작성일</label>
+					<span class="reviewInfo-write-date"></span>
+				</div>
+				<div class="review-content-div">
+					<label>리뷰 내용</label>
+					<span class="reviewInfo-review-content"></span>
+				</div>
+				<span class="more-review-content-btn">더보기</span>
+			</div>
+			<div class="form-group like-hate">
+				<div class="btn-group" data-toggle="buttons">
+					<input type="number" class="review-id" style="display: none;">
+					<button type="button" class="btn btn-primary like-btn ">좋아요</button>
+					<input type="number" class="like-count" value=0 >
+					<button type="button" class="btn btn-primary hate-btn">싫어요</button>
+					<input type="number" class="hate-count" value=0>
+				</div>
+			</div>
+		</div>
+
+		<div class="review-level col-md-2">
+			<div class="taste-level-div">
+				<label>맛</label>
+				<span class="taste-level"></span>점
+			</div>
+			<div class="price-level-div">
+				<label>가격</label>
+				<span class="price-level"></span>점
+			</div>
+			<div class="service-level-div">
+				<label>서비스</label>
+				<span class="service-level"></span>점
+			</div>
+			<div class="taste-level-div">
+				<label>분위기</label>
+				<span class="mood-level"></span>점
+			</div>
+			<div class="taste-level-div">
+				<label>편의성</label>
+				<span class="convenience-level"></span>점
+			</div>
+			<div class="taste-level-div">
+				<label for="average_level">평균</label>
+				<span class="average-level"></span >점
+			</div>								
+		</div>
+		<br><br><br>
+	</div>
 </body>
 </html>

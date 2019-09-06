@@ -218,9 +218,11 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	
 	//리뷰 아이디
 	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
+	console.log(reviewModal.find('#review_id').val());
 	//스토어아이디
 	reviewModal.find('#storeId').val(editReviewRow.find('.storeId').eq(0).val());
-				
+	console.log(reviewModal.find('#storeId').val());
+	
 	//사진
 	
 	test = editReviewRow;
@@ -240,16 +242,15 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	for(var tagsIdx = 0; tagsIdx < tags.length ; tagsIdx++){
 		tagArr.push(tags[tagsIdx].text.replace('#',''))
 	}
-	var tagArrIdx = 0;
 	var tagsCheckbox = reviewModal.find('.tagsCheckbox input');
-	for(var idx= 0; idx < tagsCheckbox.length; idx++){
-		if(tagsCheckbox[idx].value == tagArr[tagArrIdx]){
-			$(tagsCheckbox[idx]).prop('checked', true);
-			tagArrIdx++;
-			console.log(tagsCheckbox[idx].value);
+	for(var tagCheckboxIdx= 0; tagCheckboxIdx < tagsCheckbox.length; tagCheckboxIdx++){
+		console.log(tagsCheckbox[tagCheckboxIdx].value, tagArr[tagArrIdx]);
+		for(var tagArrIdx=0 ; tagArrIdx < tagArrIdx.length ; tagArrIdx++){
+			if(tagsCheckbox[tagCheckboxIdx].value == tagArr[tagArrIdx]){
+				$(tagsCheckbox[tagCheckboxIdx]).prop('checked', true);
+				console.log(tagsCheckbox[idx].value);
+			}	
 		}
-		
-		
 	}
 	
 	//평점
@@ -411,33 +412,6 @@ var deleteReviewImg = function(deleteBtn){
     
     $(deleteBtn).parent().hide();
 }
-
-
-//리뷰 개수 더보기
-var reviewCnt = function(q,r,n){
-	//먼저 3개만 보여주고 나머지는 더보기 버튼으로 클릭시 +3개씩 보여주기
-	if(3*n<=q*3){
-		for(var i=(n-1)*3; i<3*n; i++){ //몫*3 or 나머지
-			$('.reviewCnt').eq(i).show();
-		}
-		if(3*n==q*3){
-			//$('#moreReview').hide();
-		}
-	}else{
-		if(n!=1){
-			for(var i=(n-1)*3; i<((n-1)*3)+r; i++){ //몫*3
-				$('.reviewCnt').eq(i).show();
-			}
-			//$('#moreReview').hide();
-		}else{
-			for(var i=0; i<r; i++){ //나머지
-				$('.reviewCnt').eq(i).show();
-			}
-			//$('#moreReview').hide();
-		}
-	}
-};
-
 
 //리뷰 내용 더보기
 var callReviewDataMore = function(){
@@ -727,32 +701,25 @@ var url2PathFileName = function(imgUrl){
 	return imgUrl.split('.com/')[1]
 }
 
-//스크롤 맨밑으로 내려갈 때
-var scrollMaxDown = function() {
-    
-	startNum += 3;
-	console.log(startNum);
-	moreReviewList(startNum);
-	/*
-    var height = $(document).height();
-    var height_win = $(window).height();
-    
-    
-    if (Math.round( $(window).scrollTop()) == $(document).height() - $(window).height()) {
-    	//리뷰를 3개씩 ajax로 불러오기
-    	console.log("맨밑");
-    	startNum += 3;
-	    moreReviewList(startNum);
-	    $(window).scrollTop($(document).height() - $(window).height()-100);
-	} 
-	*/ 
+//(리뷰) 더보기 누를때
+var reviewMoreBtnClick = function(callWhere) {
+    startNum += 3;
+    moreReviewList(startNum,callWhere);
 };
 
 //리뷰 3개씩 추가
-var moreReviewList = function(startNum) {
+var moreReviewList = function(startNum,callWhere) {
+	var url="";
+	if(callWhere=="review"){
+		url = '/moca/storeReviews/' +storeId;
+	}else if(callWhere=="mypage"){
+		var id=$(location).attr('pathname').split('/')[$(location).attr('pathname').split('/').length-1];
+		url = '/moca/mypage/reviewMore/' +id;
+	}
+	
 	$.ajax({
 		type: 'GET',
-		url: '/moca/storeReviews/' + storeId,
+		url: url,
 		async: false,
 		data: {
 			"startNum": startNum
@@ -807,11 +774,29 @@ var moreReviewList = function(startNum) {
 				
 				newReview.find('.review-id').eq(0).val(''+reviewVo.review_id);
 				newReview.find('.review-id').eq(1).val(''+reviewVo.review_id);
+				newReview.find('.store-id').eq(0).val(''+reviewVo.store_id);
+				console.log(newReview.find('.review-id').eq(1).val());
+				console.log(newReview.find('.store-id').eq(0).val());
 				
-				reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);
-				reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
-				reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
-				reviewerInfo.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
+				if(url.indexOf('mypage') == -1){
+					//mypage가 아닐때
+					if(reviewVo.thumbnailImage==null){
+						reviewerInfo.find('.accountProfile').attr('src','/moca/resources/imgs/basicProfile.png');
+					}else{
+						reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);					
+					}
+					reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
+					reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
+					reviewerInfo.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
+				}else{
+					//mypage일 때
+					if(reviewVo.storeLogoImg==null){
+						reviewerInfo.find('img').attr('src','/moca/resources/imgs/basicProfile.png');
+					}else{
+						reviewerInfo.find('img').attr('src',reviewVo.storeLogoImg);					
+					}
+					reviewerInfo.find('.storeName').text(reviewVo.storeName); 	//storeName
+				}
 				
 				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
 				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
@@ -844,7 +829,7 @@ var moreReviewList = function(startNum) {
 				reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
 				reviewLevel.find('.average-level').text(reviewVo.averageLevel)
 
-				$('.review-content').append(newReview.fadeIn(2000));	//리뷰에 추가
+				$('.review-content').append(newReview);	//리뷰에 추가
 			}
 			
 			//리뷰이미지 모달 바인딩
@@ -863,6 +848,38 @@ var moreReviewList = function(startNum) {
 	})
 }
 
+var bindRaty = function(){
+	//평점 별
+	$('#level').raty({
+	  scoreName:  'level',
+	  click: function(score){
+		  $.fn.raty.cancel('#level');
+		  $('.storeLevel').css('display','')
+		  $('.level').css('display','none')
+
+		  $.fn.raty.start(score, '#taste-level');
+		  $.fn.raty.start(score, '#price-level');
+		  $.fn.raty.start(score, '#service-level');
+		  $.fn.raty.start(score, '#mood-level');
+		  $.fn.raty.start(score, '#convenience-level');
+	  }
+	});
+		$('#taste-level').raty({
+		  scoreName:  'tasteLevel',
+	});
+	$('#price-level').raty({
+		  scoreName:  'priceLevel',
+	});
+	$('#service-level').raty({
+		  scoreName:  'serviceLevel',
+	});
+	$('#mood-level').raty({
+		  scoreName:  'moodLevel',
+	});
+	$('#convenience-level').raty({
+		  scoreName:  'convenienceLevel',
+	}); 
+}
 
 
 //form 형식의 내용을 js Object 형태로 변경
@@ -876,7 +893,7 @@ jQuery.fn.serializeObject = function() {
                 jQuery.each(arr, function() {
                     obj[this.name] = this.value;
                 });
-            }//if ( arr ) {
+            }
         }
     } catch (e) {
         alert(e.message);

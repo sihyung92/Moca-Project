@@ -155,7 +155,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=29"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=31"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
@@ -197,38 +197,7 @@
 			storeImgswModal = $('#storeImgswModal');
 			storeFiles = $('#storeFiles');
 
-
-			//평점 별
-			$('#level').raty({
-			  scoreName:  'level',
-			  click: function(score){
-				  $.fn.raty.cancel('#level');
-				  $('.storeLevel').css('display','')
-				  $('.level').css('display','none')
-
-				  $.fn.raty.start(score, '#taste-level');
-				  $.fn.raty.start(score, '#price-level');
-				  $.fn.raty.start(score, '#service-level');
-				  $.fn.raty.start(score, '#mood-level');
-				  $.fn.raty.start(score, '#convenience-level');
-			  }
-			});
- 			$('#taste-level').raty({
-				  scoreName:  'tasteLevel',
-			});
-			$('#price-level').raty({
-				  scoreName:  'priceLevel',
-			});
-			$('#service-level').raty({
-				  scoreName:  'serviceLevel',
-			});
-			$('#mood-level').raty({
-				  scoreName:  'moodLevel',
-			});
-			$('#convenience-level').raty({
-				  scoreName:  'convenienceLevel',
-			}); 
-			
+			bindRaty();
 
 			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
 							
@@ -289,10 +258,6 @@
 			likeHateButton.click(function(){
 				bindLikeHateButtonEvent($(this));
 			});
-
-			//리뷰 3개씩 끊어서 가져오기
-			$('.reviewCnt').hide();
-			reviewCnt(quotient,remainder,callNum);
 	         
 			//리뷰 내용 더보기 style 변화
 			callReviewDataMore();
@@ -312,12 +277,7 @@
 				if(reviewVoListLength==true){
 					return false;
 				}
-				console.log("click");
-				scrollMaxDown();
-				/* callNum += 1;
-				console.log("더보기"+quotient+":"+remainder+":"+callNum);
-				reviewCnt(quotient,remainder,callNum);
-				callReviewDataMore(); */
+				reviewMoreBtnClick("review");
 			});
 
 			//리뷰 저장 버튼 클릭시
@@ -707,13 +667,6 @@
 			})
 
 		}
-		
-		/* $(window).scroll(function(e){
-			if(reviewVoListLength==true){
-				return false;
-			}
-			scrollMaxDown();
-		}); */
 
 		var makeStoreLevelChart = function(){
 			var ctx = document.getElementById('myChart').getContext('2d');
@@ -1043,7 +996,9 @@
 					</c:forEach>
 				</div>
 				<div class="review-footer">
+				<c:if test="${fn:length(reviewVoList) ge 3}">
 					<button id="moreReview">더보기</button>
+				</c:if>
 				</div>
 
 			</div>
