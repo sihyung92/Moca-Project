@@ -11,9 +11,4 @@ public class AccountController {
 		
 		return "research";
 	}
-	@GetMapping(value = "mypage")
-	public String mypage() {
-		
-		return "mypage";
-	}
 }

@@ -42,6 +42,11 @@ public class LogDaoImpl implements LogDao{
 	public int insertKeywordLog(LogVo logVo) {
 		return sqlSession.insert("com.kkssj.moca.model.LogDao.insertKeywordLog",logVo);		
 	}
+
+	@Override
+	public int insertLogStore(LogVo logVo) throws SQLException {
+		return sqlSession.insert("com.kkssj.moca.model.logDao.insertLogStore", logVo);
+	}
 	
 
 

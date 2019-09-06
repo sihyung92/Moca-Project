@@ -3,14 +3,14 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kkssj.moca.model.ReviewDao">
-  <select id="selectAll" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
+  <select id="selectReviewByStoreId" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
 	SELECT r.REVIEW_ID, r.ACCOUNT_ID, (r.ACCOUNT_ID=${ACCOUNT_ID}) 'editable', r.STORE_ID, r.REVIEWCONTENT, r.WRITEDATE, 
 	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
 	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNT_ID}),0)  "isLike",
-	a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	a.THUMBNAILIMAGE ,a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
 	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNT_ID = a.ACCOUNT_ID
 	WHERE r.STORE_ID = #{STORE_ID}
-	ORDER BY FIELD(r.ACCOUNT_ID,#{ACCOUNT_ID}) DESC, r.LIKECOUNT DESC;
+	ORDER BY r.REVIEW_ID
   </select>
   
   <select id="selectReviewImgListByStoreId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">
@@ -113,11 +113,36 @@
 	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNT_ID = a.ACCOUNT_ID
 	JOIN STORE s ON r.STORE_ID = s.STORE_ID
 	WHERE r.ACCOUNT_ID = #{ACCOUNT_ID}
-	ORDER BY r.WRITEDATE DESC;
+	ORDER BY r.WRITEDATE DESC
+	limit #{STARTNUM}, #{ENDNUM}
   </select>
   
   <select id="selectReviewImgListByAccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ImageVo">
  	 SELECT uu_id, ACCOUNT_ID, REVIEW_ID, STORE_ID, path, originName, views
- 	  FROM REVIEWIMAGE WHERE ACCOUNT_ID = #{ACCOUNT_ID};
+ 	  FROM REVIEWIMAGE WHERE ACCOUNT_ID = #{ACCOUNT_ID}
+  </select>
+  
+  <select id="selectAccountIdOfReviewByReviewId" parameterType="Integer" resultType="Integer">
+  	SELECT ACCOUNT_ID FROM REVIEW WHERE REVIEW_ID = #{REVIEW_ID}
+  </select>
+  
+  <!-- review 3개씩 가져오기 -->
+  <select id="selectReviewLimit3ByStoreId" resultType="com.kkssj.moca.model.entity.ReviewVo" parameterType="map">
+	SELECT r.REVIEW_ID, r.ACCOUNT_ID, (r.ACCOUNT_ID=#{ACCOUNT_ID}) 'editable', r.STORE_ID, r.REVIEWCONTENT, r.WRITEDATE, 
+	r.TASTELEVEL, r.PRICELEVEL, r.SERVICELEVEL, r.MOODLEVEL, r.CONVENIENCELEVEL, AVERAGELEVEL, r.LIKECOUNT, r.HATECOUNT, 
+	ifnull((SELECT isLike FROM LIKEHATE l WHERE r.review_id = l.review_id AND l.ACCOUNT_ID = #{ACCOUNT_ID}),0) "isLike",
+	a.THUMBNAILIMAGE ,a.NICKNAME, a.FOLLOWCOUNT, a.REVIEWCOUNT
+	FROM REVIEW r JOIN ACCOUNT a ON r.ACCOUNT_ID = a.ACCOUNT_ID
+	WHERE r.STORE_ID = #{STORE_ID}
+	ORDER BY FIELD(r.ACCOUNT_ID,#{ACCOUNT_ID}) DESC, r.LIKECOUNT DESC, r.REVIEW_ID
+	limit #{STARTNUM}, #{ENDNUM}
+  </select>
+  <select id="selectTagsLimit3ByStoreId" resultType="map" parameterType="map">
+	SELECT t.* 
+	FROM TAGS t JOIN REVIEW r ON r.REVIEW_ID = t.REVIEW_ID 
+	JOIN  ACCOUNT a ON r.ACCOUNT_ID = a.ACCOUNT_ID
+	WHERE r.STORE_ID = #{STORE_ID}
+	ORDER BY FIELD(r.ACCOUNT_ID,#{ACCOUNT_ID}) DESC, r.LIKECOUNT DESC, r.REVIEW_ID
+	limit #{STARTNUM}, #{ENDNUM}
   </select>
 </mapper>

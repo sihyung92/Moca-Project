@@ -2,6 +2,7 @@
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
 	<title>Home</title>
@@ -122,6 +123,7 @@
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<script type="text/javascript">
@@ -145,17 +147,21 @@
 	var newFileDiv;
 	var fileBuffer;
 
-	/// 접속자 아이디
-	var id=1;
+	/// mypage 사용자 id(url 주소의 맨 마지막)
+	var id=$(location).attr('pathname').split('/')[$(location).attr('pathname').split('/').length-1];
 
 	var storeTemplate;
 	
 	$(document).ready(function() { 
+		
 		/////////////////내가 쓴글 관리 시작//////////////
 		//변수 바인딩
 		bindReviewVariable();
 		storeTemplate = $('#storeTemplate')	//변수 바인딩
 
+		//raty
+		bindRaty();
+		
 		//좋아요 또는 싫어요 버튼 클릭시
 		likeHateButton.click(function(){
 			bindLikeHateButtonEvent($(this));
@@ -167,19 +173,16 @@
 		//수정을 눌렀을 때와 입력을 눌렀을 때 파일 입력 개수의 차이
 		$('#files').change(filesChange);
 		
-		//리뷰 3개씩 끊어서 가져오기
-		$('.reviewCnt').hide();
-		reviewCnt(quotient,remainder,callNum);
-		
 		
 		//리뷰 내용 더보기 style 변화
 		callReviewDataMore();
 
 		//리뷰 더보기 버튼을 눌렀을 때
 		$('#moreReview').click(function(){
-				callNum += 1;
-				reviewCnt(quotient,remainder,callNum);
-				callReviewDataMore();
+			if(reviewVoListLength==true){
+				return false;
+			}
+			reviewMoreBtnClick("mypage");
 		});
 		
 		//리뷰 저장 버튼 클릭시
@@ -194,7 +197,8 @@
 			//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
 			var storeName = $(this).parent().parent().find('.reviewer-info').find('.storeName-div').find('.storeName').html();
 			console.log(storeName);
-			reviewData2ReviewModal(this,storeName);
+			
+			reviewData2ReviewModal($(this),storeName);
 			reviewModal.find('#saveReviewBtn').css('display','none')
 			reviewModal.find('#editReviewBtn').css('display','')
 			$('#reviewModal').modal("show");		//리뷰 모달창 show
@@ -447,10 +451,7 @@
 					$('#followBtn').toggleClass('btn-default');
 				},
 				error: function(request,status,error) {
-					//타입에 따라서 에러 텍스트 변경
-					if(error='Internal Server Error'){
-						alert('이미 팔로우한 대상입니다');
-					}
+					respondHttpStatus(request.status);
 				}
 			});
 			
@@ -464,6 +465,7 @@
 
 		//회원정보 수정 모달
 		$('#userInfoUpdateBtn').click(function(){
+			$('#userImage').find('img').attr('src', $('#userInfo').find('img').attr('src'));
 			$('#userInfoUpdate').modal("show");
 		});
 
@@ -478,11 +480,38 @@
 		//회원 탈퇴 버튼 클릭시
 		$('#deleteUserBtn').click(function(){
 			if (confirm("정말 탈퇴하시겠습니까??") == true){    //확인
+				
+				
+			    //ajax통신으로 세션에서도 삭제,디비에서도 삭제
+			    $.ajax({
+					type: 'DELETE',
+					url: '/moca/deleteAccount/' + accountId,
+					success: function() {
+						//카카오 삭제
+						Kakao.API.request({
+							url: '/v1/user/unlink',
+							success: function(res) {
+								alert('정상적으로 회원탈퇴 되었습니다. 이용해주셔서 감사합니다.');
+							},
+							fail: function(error) {
+					            alert(JSON.stringify(error));
+					        }
+						});
+						console.log('회원 삭제 성공');
+						window.location.href='/moca/'
+					},
+					error: function() {
+						console.log('회원 삭제 실패')
+						alert("탈퇴 실패")
+					}
+				});
+				
+			    //회원 탈퇴이유도 받았으면 좋겠다 (ver2)
+
+				
 			    console.log("삭제됨");
 			    $('#userInfoUpdate').modal("hide");
-			    //ajax통신으로 세션에서도 삭제,디비에서도 삭제
-			    //회원 탈퇴이유도 받았으면 좋겠다 ()
-			    window.location.href=''
+			    //
 			}else{   //취소
 			    return;
 			}
@@ -490,16 +519,30 @@
 
 		//회원 정보 수정 확인 눌렀을 때 
 		$('#updateBtn').click(function(){
+
+			var form = $('#userInfoUpdateForm')[0];
+
+			var userInfoFormData = new FormData(form);
+
+			userInfoFormData.delete('file');
+			
 			if(isMine==1){
 				$.ajax({
 					type: 'POST',
-					url: '/editAccount/'+accountId,
+					url: '/moca/editAccount/'+accountId,
+					enctype : 'multipart/form-data',
+					data: userInfoFormData,
+					datatype: 'json',
+					contentType : false,
+					processData : false,
 					success: function() {
-						
-						haveLikeInfo =true;
+						$('#userInfo').find('img').attr('src',$('#userImage').find('img').attr('src'));
+						$('#userInfo').find('#nickName').html($('input[name=nickname]').val());
+						//$('#userInfo').find('#email').text($('#userInfo').find('input[name=nickname]').val());
+						console.log('회원정보 수정 성공');
 					},
 					error: function(request,status,error) {
-	
+						console.log('회원정보 수정 실패');
 					}
 				})
 			}
@@ -511,6 +554,7 @@
 	var userImageChange = function(){
 		const userImageUpdateInput = document.getElementById('userImageUpdateInput');
 		var userImage = userImageUpdateInput.files[0];
+		console.log(userImage);
 		const fileName = userImage.name;
 		const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
 	    if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
@@ -518,6 +562,9 @@
 	        resetFile();
 	        return false;
 	    }
+
+		$('#userImage').find('img').attr('src', URL.createObjectURL(userImage));
+		$('#userImage').find('img').css('width','110px').css('height','110px');
 	};
    
 	</script>
@@ -536,10 +583,11 @@
 					<span class="glyphicon glyphicon-cog" id="userInfoUpdateBtn" aria-hidden="true" style="float:right;"></span>
 					</c:if>
 					<br>
-					<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle"><br>
+					<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width:110px; height:110px;"><br>
 					<button id="followBtn" class="btn btn-default" style="display:none;">팔로우</button><br>
 					<span id="nickName">${currentPageAccount.nickname}</span><br>
 					Lv.<span id="accountLevel">${currentPageAccount.accountLevel}</span>
+					<span id="levelName">(${currentPageAccount.levelName})</span>
 					<span class="glyphicon glyphicon-question-sign" aria-hidden="true"
 						id="levelGuide" data-toggle="popover" title="등급제도 안내"
 						data-content="8단계의 등급을 설명해요 나중에">
@@ -547,16 +595,15 @@
 					<c:if test="${accountVo.isMine eq 1}">
 					<div class="progress">
 						<div class="progress-bar progress-bar-info" role="progressbar"
-							aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"
-							style="width: 20%">
-							20%
+							aria-valuenow="${accountVo.exp}" aria-valuemin="${accountVo.minExp}" aria-valuemax="${accountVo.maxExp}"
+							style="width: ${(accountVo.exp-accountVo.minExp)/(accountVo.maxExp-accountVo.minExp)*100}%">
+							<fmt:formatNumber value="${(accountVo.exp-accountVo.minExp)/(accountVo.maxExp-accountVo.minExp)}" type="percent"></fmt:formatNumber>
 						</div>
 					</div>
 					</c:if>
 				</div>
 			</div>
 			<div class="col-md-3" id="userGraph">
-			
 			</div>
 			<div class="col-md-3" id="userBadge">
 			
@@ -698,7 +745,9 @@
 							</c:forEach>
 						</div>
 						<div class="review-footer">
-							<button id="moreReview">더보기</button>
+							<c:if test="${fn:length(reviewVoList) ge 3}">
+								<button id="moreReview">더보기</button>
+							</c:if>
 						</div>
 					</div>
 					<div class="tab-pane fade" id="followerDiv">
@@ -751,7 +800,6 @@
 		<div class="storeLevelDiv col-md-3">
 			평점 : <span class="storeLevel">5.5</span>
 		</div>
-		
 	</div>
 	<!--followDiv  -->
 	<div class="followInfo" id="followInfo">
@@ -769,22 +817,27 @@
 			        <h4 class="modal-title">회원 정보 수정</h4>
 		      	</div>
 				<div class="modal-body">
-					<form class="form-horizontal">
+					<form class="form-horizontal" id="userInfoUpdateForm">
+						<input type="hidden" name="account_id" value="${accountVo.account_id}" />
 						<div class="form-group" id="userImage">
+						<!-- 
+						int account_id, followCount, reviewCount, platformId, accountLevel, isMine, exp;
+	String nickname, platformType, profileImage, thumbnailImage;
+						 -->
 							<!-- 프로필사진 수정 -->
 							<img alt="basicProfile"
-								src="${currentPageAccount.thumbnailImage}" class="img-circle">
+								src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width: 110px;">
 							<button type="button" id="userImageUpdateBtn" class="btn btn-default" aria-label="Right Align" style="position:relative; left:-35px; top:40px">
 								<span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
 							</button>
-							<input type="file" id="userImageUpdateInput" style="display:none"/>
+							<input type="file" id="userImageUpdateInput" name="userImage" style="display:none"/>
 						</div>
 						<!-- 닉네임 수정 -->
 						<div class="form-group">
 							<label for="nickName" class="col-sm-2 control-label">닉네임
 								: </label>
 								<div class="col-sm-10">
-								<input class="form-control" name="nickName" id="nickName"
+								<input class="form-control" name="nickname" id="nickName"
 								value="${currentPageAccount.nickname}" placeholder="닉네임을 입력해주세요" />
 								</div>
 						</div>
@@ -793,8 +846,8 @@
 							<label for="userEmail" class="col-sm-2 control-label">이메일
 								: </label>
 								<div class="col-sm-10">
-								<input class="form-control" id="userEmail"
-								value="${currentPageAccount.accountEmail}" placeholder="이메일을 입력해주세요" />
+								<input class="form-control" id="email" name="email"
+								value="${currentPageAccount.email}" placeholder="이메일을 입력해주세요" />
 								</div>
 						</div>
 					</form>
@@ -811,5 +864,85 @@
 	</div>
 	
 	<jsp:include page="../../resources/template/reviewModal.jsp" flush="true"></jsp:include>
+	
+	
+	<!-- clone할 review element -->
+	<div class="row"  id="reviewTemplate" style="display : none;">
+		<div class="editDeleteGroup btn-group" role="group">
+			<input type="number" style="display: none;" class="review-id" >
+			<input type="number" style="display: none;" class="store-id" >
+			<button type="button" class="btn-edit btn btn-default">수정</button>
+			<button type="button" class="btn-delete btn btn-default">삭제</button>
+		</div>
+		<div class="reviewer-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+			<div class="storeLogo-div">
+				<!-- store logo 이미지 -->
+				<c:if test="${empty reviewVo.storeLogoImg}">
+					<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
+						alt="logo" class="img-circle" style="width: 100px;">
+				</c:if>
+				<c:if test="${not empty reviewVo.storeLogoImg}">
+					<img src="<c:url value="${reviewVo.storeLogoImg }" />" alt="logo"
+						class="img-circle" style="width: 100px;">
+				</c:if>
+			</div>
+			<div class="storeName-div">
+				<!-- store 이름 -->
+				<span class="storeName">${reviewVo.storeName}</span>
+			</div>
+		</div>
+		<div class="review-info col-md-8">
+			<div class="reviewThumbnailGroup">
+			</div>
+			<div class="review-data">
+				<div class="write-date-div">
+					<label>작성일</label>
+					<span class="reviewInfo-write-date"></span>
+				</div>
+				<div class="review-content-div">
+					<label>리뷰 내용</label>
+					<span class="reviewInfo-review-content"></span>
+				</div>
+				<span class="more-review-content-btn">더보기</span>
+			</div>
+			<div class="form-group like-hate">
+				<div class="btn-group" data-toggle="buttons">
+					<input type="number" class="review-id" style="display: none;">
+					<button type="button" class="btn btn-primary like-btn ">좋아요</button>
+					<input type="number" class="like-count" value=0 >
+					<button type="button" class="btn btn-primary hate-btn">싫어요</button>
+					<input type="number" class="hate-count" value=0>
+				</div>
+			</div>
+		</div>
+
+		<div class="review-level col-md-2">
+			<div class="taste-level-div">
+				<label>맛</label>
+				<span class="taste-level"></span>점
+			</div>
+			<div class="price-level-div">
+				<label>가격</label>
+				<span class="price-level"></span>점
+			</div>
+			<div class="service-level-div">
+				<label>서비스</label>
+				<span class="service-level"></span>점
+			</div>
+			<div class="taste-level-div">
+				<label>분위기</label>
+				<span class="mood-level"></span>점
+			</div>
+			<div class="taste-level-div">
+				<label>편의성</label>
+				<span class="convenience-level"></span>점
+			</div>
+			<div class="taste-level-div">
+				<label for="average_level">평균</label>
+				<span class="average-level"></span >점
+			</div>								
+		</div>
+		<br><br><br>
+	</div>
 </body>
 </html>

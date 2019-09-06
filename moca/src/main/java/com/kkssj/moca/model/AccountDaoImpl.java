@@ -1,6 +1,7 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +122,65 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public AccountVo selectByaccountId(int account_id) {
+	public AccountVo selectByaccountId(int account_id) throws SQLException {
 		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectByaccountId",account_id);
+	}
+
+	@Override
+	public int updateAccount(AccountVo editAccountVo) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateAccount",editAccountVo);
+	}
+
+	@Override
+	public AccountVo selectProfileImageByaccountId(int account_id) {
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectProfileImageByaccountId",account_id);
+	}
+
+	@Override
+	public int deleteAccount(int accountId) throws SQLException {
+		return sqlSession.delete("com.kkssj.moca.model.AccountDao.deleteAccount",accountId);
+	}
+
+	@Override
+	public int updateAccountExp(int accountId, int exp) throws SQLException {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("EXP", exp);
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateAccountExp",map);
+	}
+
+	@Override
+	public int insertExpLog(int accountId, String classification, int exp) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("CLASSIFICATION", classification);
+		map.put("EXP", exp);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.insertExpLog",map);
+	}
+
+	@Override
+	public int updateAccountlevel(int accountId) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateAccountlevel",accountId);
+	}
+
+	@Override
+	public int updateAccountlevelDown(int accountId) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateAccountlevelDown",accountId);
+	}
+
+	@Override
+	public int selectExpLogByAccountId(int accountId, String classification) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("CLASSIFICATION", classification);
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectExpLogByAccountId",map);
+	}
+
+	@Override
+	public int updateReviewCount(int account_id, int cnt) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ACCOUNT_ID", account_id);
+		map.put("CNT", cnt);
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateReviewCount",map);
 	}
 }

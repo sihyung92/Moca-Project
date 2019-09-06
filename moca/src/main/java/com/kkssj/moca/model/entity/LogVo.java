@@ -2,14 +2,15 @@ package com.kkssj.moca.model.entity;
 
 import java.sql.Timestamp;
 
-public class LogVo {//���� �ۼ�
+public class LogVo {
 	
 	long seq;
-	int account_id;
-	String classification,ip, keyword, access_location, store_id;
+	int account_id, store_id;
+	String classification,ip, keyword, access_location;
 	Timestamp logtime;
 	public LogVo() {	
 	};
+
 	public LogVo(String ip, String keyword, String access_location) {
 		super();
 		this.ip = ip;
@@ -23,7 +24,8 @@ public class LogVo {//���� �ۼ�
 		this.keyword = keyword;
 		this.access_location = access_location;
 	}	
-	public LogVo(long seq, int account_id, String store_id, String classification, String ip, String keyword,
+
+	public LogVo(long seq, int account_id, int store_id, String classification, String ip, String keyword,
 			String access_location, Timestamp logtime) {
 		super();
 		this.seq = seq;
@@ -47,10 +49,10 @@ public class LogVo {//���� �ۼ�
 	public void setAccount_id(int account_id) {
 		this.account_id = account_id;
 	}
-	public String getStore_id() {
+	public int getStore_id() {
 		return store_id;
 	}
-	public void setStore_id(String store_id) {
+	public void setStore_id(int store_id) {
 		this.store_id = store_id;
 	}
 	public String getClassification() {
@@ -94,7 +96,7 @@ public class LogVo {//���� �ۼ�
 		result = prime * result + ((keyword == null) ? 0 : keyword.hashCode());
 		result = prime * result + ((logtime == null) ? 0 : logtime.hashCode());
 		result = prime * result + (int) (seq ^ (seq >>> 32));
-		result = prime * result + ((store_id == null) ? 0 : store_id.hashCode());
+		result = prime * result + store_id;
 		return result;
 	}
 	@Override
@@ -135,10 +137,7 @@ public class LogVo {//���� �ۼ�
 			return false;
 		if (seq != other.seq)
 			return false;
-		if (store_id == null) {
-			if (other.store_id != null)
-				return false;
-		} else if (!store_id.equals(other.store_id))
+		if (store_id != other.store_id)
 			return false;
 		return true;
 	}

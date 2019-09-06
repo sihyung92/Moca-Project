@@ -31,8 +31,8 @@ public interface StoreService {
 	
 	///////////////////////
 	//review
-	//리뷰 리스트 가져오기
-	List<ReviewVo> getReviewList(int accountId, int storeId);
+	//리뷰 리스트 n개씩 가져오기
+	List<ReviewVo> getReviewListLimit(int accountId, int storeId, int startNum, List<String> tagList);
 	
 	//리뷰 추가
 	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);
@@ -64,13 +64,23 @@ public interface StoreService {
 	//리뷰 이미지 삭제
 	int deleteReviewImage(ImageVo imageVo);
 
+	//카페 좋아요 추가
 	int addLikeStore(int storeId, int account_id);
 
+	//카페 좋아요 취소
 	int deleteLikeStore(int storeId, int account_id);
 
+	//가고싶은 카페 추가
 	int addFavoriteStore(int storeId, int account_id);
 
+	//가고싶은 카페 제거
 	int deleteFavoriteStore(int storeId, int account_id);
 
-	StoreVo editStoreImg(StoreVo storeVo, MultipartFile[] newFiles, String[] delStoreImgArr);
+	//카페 대표 이미지 수정
+	int editStoreImg(int store_id, MultipartFile[] newFiles, String[] oldStoreImgArr, String[] delStoreImgArr);
+
+	//카페 로고 수정
+	int editStoreLogo(int store_Id, MultipartFile newFiles, String delStoreLogo);
+
+	List<String> getTagNameList();
 }

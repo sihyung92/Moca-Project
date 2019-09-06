@@ -2,6 +2,8 @@ package com.kkssj.moca.model.entity;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ReviewVo {
 	//REVIEW table
@@ -11,8 +13,10 @@ public class ReviewVo {
 	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
 	private double averageLevel;
 	private int likeCount, hateCount;
+	private String tags;
 	private int editable;
-	private ArrayList<ImageVo> imageList;
+	private List<ImageVo> imageList;
+	private Map<String, Object> tagMap;
 	
 	//mypage에 store정보 가져오기
 	private String storeName, storeLogoImg;
@@ -21,11 +25,14 @@ public class ReviewVo {
 	private int isLike;
 	
 	//ACCOUNT table
-	private String nickName, thumbnailImage;
+	private String thumbnailImage;
+	private String nickName;
 	private int followCount, reviewCount, accountLevel;
 	
 	//내가 쓴 댓글인지 (table엔 없음)
 	private int isMine;
+	
+	
 	
 	public ReviewVo() {
 	}
@@ -218,11 +225,11 @@ public class ReviewVo {
 		this.editable = editable;
 	}
 
-	public ArrayList<ImageVo> getImageList() {
+	public List<ImageVo> getImageList() {
 		return imageList;
 	}
 
-	public void setImageList(ArrayList<ImageVo> imageList) {
+	public void setImageList(List<ImageVo> imageList) {
 		this.imageList = imageList;
 	}
 	
@@ -242,19 +249,23 @@ public class ReviewVo {
 	public void setStoreLogoImg(String storeLogoImg) {
 		this.storeLogoImg = storeLogoImg;
 	}
+	
+	public String getThumbnailImage() {
+		return thumbnailImage;
+	}
+	public void setThumbnailImage(String thumbnailImage) {
+		this.thumbnailImage = thumbnailImage;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+	
+	
 	//mypage용도//
 
-
-	@Override
-	public String toString() {
-		return "ReviewVo [review_id=" + review_id + ", account_id=" + account_id + ", store_id=" + store_id
-				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate
-				+ ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel
-				+ ", moodLevel=" + moodLevel + ", convenienceLevel=" + convenienceLevel + ", averageLevel="
-				+ averageLevel + ", likeCount=" + likeCount + ", hateCount=" + hateCount + ", isLike=" + isLike
-				+ ", nickName=" + nickName + ", followCount=" + followCount + ", reviewCount=" + reviewCount
-				+ ", isMine=" + isMine + "]";
-	}
 
 	//5가지 level을 가지고 소숫점 1자리까지 평점 계산
 	public void calAverageLevel() {
@@ -263,26 +274,39 @@ public class ReviewVo {
 
 
 
+
 	public int getAccount_id() {
 		return account_id;
 	}
-
-
-
 	public void setAccount_id(int account_id) {
 		this.account_id = account_id;
 	}
-
-
-
 	public int getStore_id() {
 		return store_id;
+	}
+	public void setStore_id(int store_id) {
+		this.store_id = store_id;
+	}
+
+	public Map<String, Object> getTagMap() {
+		return tagMap;
+	}
+	public void setTagMap(Map<String, Object> tagMap) {
+		this.tagMap = tagMap;
 	}
 
 
 
-	public void setStore_id(int store_id) {
-		this.store_id = store_id;
+	@Override
+	public String toString() {
+		return "ReviewVo [review_id=" + review_id + ", account_id=" + account_id + ", store_id=" + store_id
+				+ ", reviewContent=" + reviewContent + ", writeDate=" + writeDate + ", tasteLevel=" + tasteLevel
+				+ ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", moodLevel=" + moodLevel
+				+ ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel + ", likeCount="
+				+ likeCount + ", hateCount=" + hateCount + ", tags=" + tags + ", editable=" + editable + ", imageList="
+				+ imageList + ", storeName=" + storeName + ", storeLogoImg=" + storeLogoImg + ", isLike=" + isLike
+				+ ", thumbnailImage=" + thumbnailImage + ", nickName=" + nickName + ", followCount=" + followCount
+				+ ", reviewCount=" + reviewCount + ", isMine=" + isMine + "]";
 	}
 
 }

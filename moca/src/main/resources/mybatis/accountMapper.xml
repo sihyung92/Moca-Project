@@ -56,6 +56,51 @@
   </delete>
   
   <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
-  	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID} and PLATFORMID!=0
   </select>
+  
+  <select id="selectProfileImageByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
+  	SELECT ACCOUNT_ID,PROFILEIMAGE,THUMBNAILIMAGE FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </select>
+  
+  <update id="updateAccount" parameterType="com.kkssj.moca.model.entity.AccountVo" >
+  	UPDATE ACCOUNT SET NICKNAME=#{nickname}, EMAIL=#{email}
+  	<if test="profileImage != null">
+	  	, PROFILEIMAGE=#{profileImage}, THUMBNAILIMAGE=#{thumbnailImage}  	
+  	</if>
+  	WHERE ACCOUNT_ID=#{account_id}
+  </update>
+  
+  <update id="deleteAccount" parameterType="Integer">
+  	UPDATE ACCOUNT SET NICKNAME="탈퇴한 회원", FOLLOWCOUNT=0, REVIEWCOUNT=0, PLATFORMTYPE=#{account_id}, 
+  	PLATFORMID=0, EMAIL=null, PROFILEIMAGE=null, THUMBNAILIMAGE=null, 
+  	GENDER=null, BIRTHDAY=null, BARISTA=0, ACCOUNTLEVEL=0, EXP=0 
+  	WHERE ACCOUNT_ID=#{account_id}
+  </update>
+  
+  <update id="updateAccountExp" parameterType="map">
+  	UPDATE ACCOUNT SET EXP=EXP+#{EXP} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  <insert id="insertExpLog" parameterType="map">
+  	INSERT INTO EXPERIENCELOG(ACCOUNT_ID,CLASSIFICATION,EXP) VALUES(#{ACCOUNT_ID},#{CLASSIFICATION},#{EXP});
+  </insert>
+  <update id="updateAccountlevel" parameterType="Integer">
+  	UPDATE ACCOUNT SET ACCOUNTLEVEL=ACCOUNTLEVEL+1 WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  <update id="updateAccountlevelDown" parameterType="Integer">
+  	UPDATE ACCOUNT SET ACCOUNTLEVEL=ACCOUNTLEVEL-1 WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  
+  <select id="selectExpLogByAccountId" parameterType="map" resultType="Integer">
+  	SELECT count(*) FROM EXPERIENCELOG WHERE ACCOUNT_ID=#{ACCOUNT_ID} 
+  	<if test="CLASSIFICATION!='설문조사'">
+  	and DATE(LOGTIME) = DATE(now()) 
+  	</if>
+  	and CLASSIFICATION=#{CLASSIFICATION};
+  </select>
+  
+  <update id="updateReviewCount" parameterType="map">
+  	UPDATE ACCOUNT SET REVIEWCOUNT=REVIEWCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  
 </mapper>
