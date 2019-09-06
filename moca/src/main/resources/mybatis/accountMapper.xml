@@ -61,4 +61,7 @@
   <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
   	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID}
   </select>
+  <select id="selectByMultipleQuery" parameterType="java.lang.String" resultType="com.kkssj.moca.model.entity.AccountVo">
+  	SELECT * FROM ACCOUNT WHERE PLATFORMTYPE LIKE ${data}
+  </select>
 </mapper>

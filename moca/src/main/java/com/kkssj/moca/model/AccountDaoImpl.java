@@ -127,7 +127,25 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public AccountVo selectByaccountId(int account_id) {
+	public AccountVo selectByaccountId(int account_id) throws SQLException {
 		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectByaccountId",account_id);
+	}
+
+	@Override
+	public List<AccountVo> selectByMultipleQuery(int[] account_id) throws SQLException {
+		// TODO Auto-generated method stub
+		String preString ="'%' AND( ACCOUNT_ID = ";
+		String foreString =")";
+		
+		String string ="";
+		for (int i=0;i<account_id.length;i++) {
+			string = string + account_id[i];
+			if(i!=account_id.length-1) {
+				string = string +" OR ACCOUNT_id = ";
+			}
+		}
+		string = preString + string + foreString;
+		
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectByMultipleQuery", string);
 	}
 }

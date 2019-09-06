@@ -344,42 +344,10 @@
                                     <br><div class="custom-width-line"></div>
                                     <br>
                                     
-                                    <!-- 선호도 질문 표현식 사용 -->
-                                <%
-                                    ArrayList alist = (ArrayList)session.getAttribute("alist");
-                                	if(alist!=null){
-                                		for(int i=0 ;i< alist.size();i++){
-                                			ResearchQuestionVo rqVo = (ResearchQuestionVo)alist.get(i);
-                                %>
-                                    <div>
-                                    <label for="SQ<%=rqVo.getQuestion_id()%>"><%=rqVo.getQuestion() %></label><br>
-                                <%
-			                                	int q=1;
-			                                if(rqVo.getAnswer()!=null){
-			                                	ArrayList ans = (ArrayList)session.getAttribute("ans"+rqVo.getQuestion_id());
-			                                	if(ans!=null){
-			                                		for(int j=0;j<ans.size();j=j+2){	                                   			
-                                %>
-				                                    <label class="radio-inline forSort">
-						                           		<input class="essential-selective-info" type="radio" name="SQ<%=rqVo.getQuestion_id() %>" id="SQ<%=rqVo.getQuestion_id() %>_<%=q %>" value="<%=q%>"> <%=ans.get(j+1) %>
-						                            </label>
-                                <%
-		                                			q++;
-		                                			}
-			                                    }
-	                             			}else{
-                               						q++;
-                               	%>
-                               				<input type="text" class="essential-selective-info" name="SQ<%=rqVo.getQuestion_id() %>" />
-                               	<%
-			                                }
-			                                    out.print("</div>");
-		                                	}
-                                	}
-                                %>
-                                    
+                                    <div id="HERE">
+                                    </div>
+                                        
                                     <br>
-                                    
                                 </div>
                             </div>
                             <button type="button" class="btn btn-default" id="research-submit" >제출</button>
@@ -449,4 +417,6 @@
                 });
             });
         }
+        
+       
     </script>

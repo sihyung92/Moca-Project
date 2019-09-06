@@ -23,6 +23,7 @@ import com.kkssj.moca.model.entity.ResearchQuestionVo;
 import com.kkssj.moca.service.AccountService;
 import com.kkssj.moca.service.LogService;
 import com.kkssj.moca.service.ResearchQuestionService;
+import com.kkssj.moca.service.ResearchService;
 
 @Controller
 public class LoginController {//@SessionAtrribute?인가 삭제함
@@ -35,6 +36,9 @@ public class LoginController {//@SessionAtrribute?인가 삭제함
 	
 	@Inject
 	ResearchQuestionService researchQuestionService;
+	
+	@Inject
+	ResearchService researchService;
 	/*------------------------------------------------------------------------------------------------------*/
 	
 	@GetMapping(value = "/naverLogin")
@@ -52,7 +56,7 @@ public class LoginController {//@SessionAtrribute?인가 삭제함
 				HttpSession ses=req.getSession();
 				
 				researchQuestionService.getList(ses);
-				ArrayList array = (ArrayList)ses.getAttribute("alist");
+				ArrayList array = (ArrayList)ses.getAttribute("alist");// 설문 리스트를 받아다가 세션에 설정함
 				for(int i=0;i<array.size();i++) {
 					ResearchQuestionVo rqVo = (ResearchQuestionVo)array.get(i);
 					if((rqVo).getAnswer()!=null) {
@@ -62,7 +66,7 @@ public class LoginController {//@SessionAtrribute?인가 삭제함
 						List<String> al = new ArrayList<String>();
 						String ans="";
 						
-						for(int j=1;j<ques.length+1;j++){
+						for(int j=1;j<ques.length+1;j++){ // 설문에 문항 / 답안 인식 부호들을 처리하는 과정
 							if(ques[j-1]=='$'){
 								continue;
 							}else if(ques[j-1]=='_'){

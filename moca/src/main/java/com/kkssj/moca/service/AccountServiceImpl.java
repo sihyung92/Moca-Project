@@ -28,16 +28,22 @@ public class AccountServiceImpl implements AccountService {
 		try {
 			AccountVo compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());
 			if(compareVo==null) {	//로그인시 카카오로부터 받은 JSON => VO 로 조회한 값이 없다면
+				if(accountVo.getProfileImage()==null) {
+					accountVo.setProfileImage("AccountService.java에 원하는 기본 이미지의 URL을 설정하시게");
+					accountVo.setThumbnailImage("/moca/resources/imgs/nonProgileImage.png");
+				}
 				accountDao.insertUser(accountVo);	//새로이 JSON => VO를 DB에 입력한다.
 				
 				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//입력된 값으로 새로 조회해온다.
 				
 				return compareVo;
-			}else if(compareVo.hashCode()!=accountVo.hashCode()){	//HashCode로 비교한다 / 데이터가 있기는 한데 email이나 변동 가능한 값이 다른지 비교후 다르다면 JSON => VO로 수정한다. 현재 는 작동 안될듯.
+			}/*else if(compareVo.hashCode()!=accountVo.hashCode()){	//HashCode로 비교한다 / 데이터가 있기는 한데 email이나 변동 가능한 값이 다른지 비교후 다르다면 JSON => VO로 수정한다. 현재 는 작동 안될듯.
 				accountDao.updateUser(accountVo.getPlatformType(),accountVo);
 				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//변경된 값으로 새로 조회해온다.
 				return compareVo;
-			}else {	//DB에 데이터도 있으며 값도 다르지 않은 경우 다시 이 DB속 VO(compareVo)를 리턴해준다(이때는 account_id가 제대로 설정된 VO로 받아옴)
+				
+				변경된 사항으로 적용 안되도록
+			}*/else {	//DB에 데이터도 있으며 값도 다르지 않은 경우 다시 이 DB속 VO(compareVo)를 리턴해준다(이때는 account_id가 제대로 설정된 VO로 받아옴)
 				return compareVo;
 			}
 		} catch (SQLException e) {
@@ -82,6 +88,7 @@ public class AccountServiceImpl implements AccountService {
 	public boolean updateIsResearch(AccountVo accountVo) {
 		// TODO Auto-generated method stub
 		try {
+			int a = com.kkssj.moca.controller.ResearchController.CURRENT_VAL;
 			accountVo.setIsResearch(1);
 			accountDao.updateUserForIsResearch(accountVo);
 			return true;

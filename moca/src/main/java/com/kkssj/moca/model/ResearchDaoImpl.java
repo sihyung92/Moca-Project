@@ -1,6 +1,9 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -24,6 +27,19 @@ public class ResearchDaoImpl implements ResearchDao {
 		return sqlSession.insert("com.kkssj.moca.model.ResearchDao.insertResearch",research);
 	}
 
-
+	public List selectUsersByNumAndVal(Object[] obj) throws SQLException{
+		Map<String,String> map = new HashMap<String, String>();
+		// int account_id,String value
+		// 홀수번 obj[i] 는 넘버
+		// 짝수번 obj[i+1] 는 해당 값
+		String param = "";
+		for (int i=0;i<obj.length;i=i+2) {
+			param = param + "'%@"+(int)obj[i]+"_#"+(String)obj[i+1]+"!%' AND answer LIKE ";
+		}
+		param = param +"'%'";
+		map.put("string", param);
+		return sqlSession.selectList("com.kkssj.moca.model.ResearchDao.selectResearchByMultipleQuery", map);
+	}
+	
 
 }

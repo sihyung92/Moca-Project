@@ -31,8 +31,8 @@ public class ResearchController {
 	ResearchService researchService;
 	/*------------------------------------------------------------------------------------------------------*/
 
-	final int CNT = 30;
-	final int CURRENT_VAL = 1; // 현재 정상적인 설문을 마친 사람의 값은 1이어야 한다.
+	public static final int CNT = 30;
+	public static final int CURRENT_VAL = 1; // 현재 정상적인 설문을 마친 사람의 값은 1이어야 한다. (DB와 비교)
 	
 	@RequestMapping(value = "/research", method = RequestMethod.GET)
 	public void researchSelectiveInsert(HttpServletRequest req, HttpServletResponse res) {
@@ -40,7 +40,7 @@ public class ResearchController {
 		HttpSession sess = req.getSession();
 		AccountVo user = (AccountVo)sess.getAttribute("login");
 
-		if(user.getIsResearch()!=CURRENT_VAL) {
+		if(user.getIsResearch()!=CURRENT_VAL) { // DB값이 1이 아니라면 최신 설문을 진행한 것이 아니다.
 			ArrayList<String> alist = new ArrayList<String>();
 			try {
 				int idx =0;
@@ -51,11 +51,11 @@ public class ResearchController {
 					}
 				}
 				String intoResearch="";
-				for(int i=0;i<alist.size();i++) {
+				for(int i=0;i<alist.size();i++) { //설문자의 답안에 부호들을 씌우는 과정 @문항번호 #답안 !문항끝
 					intoResearch=intoResearch+"@"+i+"_#"+alist.get(i)+"!";
 				}
 				
-							boolean check = researchService.doResearch(new ResearchVo(0,user.getAccount_id(),1,intoResearch));
+				boolean check = researchService.doResearch(new ResearchVo(0,user.getAccount_id(),1,intoResearch));
 				if(check) {
 					sess.setAttribute("alist", null);
 					for(int i=1;i<CNT;i++) {

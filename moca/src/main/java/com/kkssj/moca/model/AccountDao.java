@@ -52,6 +52,6 @@ public interface AccountDao {
 	
 	//해당 account의 정보 불러오기
 	AccountVo selectByaccountId(int account_id) throws SQLException;
-	
+	List<AccountVo> selectByMultipleQuery(int[] account_id) throws SQLException;
 
 }

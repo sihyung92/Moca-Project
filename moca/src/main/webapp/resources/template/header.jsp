@@ -1,5 +1,7 @@
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" import="com.kkssj.moca.model.entity.ResearchQuestionVo"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -37,11 +39,16 @@
     <script type='text/javascript'>
         
         var loc='';
-        
+        var researchHtml;
     $(document).ready(function(){    	
         //테스트용 코드 자리
         
         //미리 설정할 사항들
+        
+        $('#HERE').replaceWith('<div id="HERE">'+'<%ArrayList alist = (ArrayList)session.getAttribute("alist");if(alist!=null){for(int i=0 ;i< alist.size();i++){ResearchQuestionVo rqVo = (ResearchQuestionVo)alist.get(i);%><div><label for="SQ<%=rqVo.getQuestion_id()%>"><%=rqVo.getQuestion() %></label><br><%int q=1;if(rqVo.getAnswer()!=null){ArrayList ans = (ArrayList)session.getAttribute("ans"+rqVo.getQuestion_id());if(ans!=null){for(int j=0;j<ans.size();j=j+2){%><label class="radio-inline forSort"><input class="essential-selective-info" type="radio" name="SQ<%=rqVo.getQuestion_id() %>" id="SQ<%=rqVo.getQuestion_id() %>_<%=q %>" value="<%=q%>"> <%=ans.get(j+1) %></label><%q++;}}}else{q++;%><input type="text" class="essential-selective-info" name="SQ<%=rqVo.getQuestion_id() %>" /><%}out.print("</div>");}}%>'+'</div id="HERE">');
+        
+        var selectiveInfo = $('#HERE').html();
+        
         $('#nav-static-height').css('height','60px');
         
         $('.modal-dialog').css('overflow-y','initial');
@@ -103,6 +110,8 @@
                 });
                 $('#selectiveNo').click(function(){
                     $('#info-rule-selective').css('height','200px');
+                    $('#selective-info').hide();
+                    $('#HERE').replaceWith('<div id="HERE">'+selectiveInfo+'</div>');
                 });
             }
                                 

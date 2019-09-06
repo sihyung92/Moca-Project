@@ -6,4 +6,8 @@
 <insert id="insertResearch" parameterType="com.kkssj.moca.model.entity.ResearchVo">
 INSERT INTO RESEARCH (ACCOUNT_ID, ANSWER, CHECKCODE) VALUES (#{account_id}, #{answer}, #{checkcode})
 </insert>
+<select id="selectResearchByMultipleQuery" parameterType="map" resultType="Integer">
+SELECT ACCOUNT_id FROM RESEARCH WHERE answer LIKE ${string}
+</select>
+
 </mapper>
