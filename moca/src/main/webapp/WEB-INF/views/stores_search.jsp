@@ -8,6 +8,9 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
+	#searchBar{
+		display: none;
+	}
 	#header{
 		background-color:pink;
 	}
@@ -35,6 +38,14 @@
 	span.seoul{
 		background-color : yellow;
 	}
+	#result_stores{
+		display: inline-block;
+		width: 400px;
+	}
+	#mapContainer{
+		float:right;
+	}
+	
 </style>
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
@@ -602,19 +613,19 @@
 		<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
 	</div>
 	<div id="search">		
-		<form action="stores">
-			키워드는 <input type="text" name="keyword" id="keyword2" placeholder="Search" value="${keyword}"/> 입니당
+		<form class="form-inline" action="stores">
+			<input type="text" name="keyword" class="form-control" id="keyword2" placeholder="Search" value="${keyword}"/>
+			<button id="searchBtn2" class="btn btn-default" type="submit">검색</button><br/>
 			<div id="filter_sort" class="filter">
 				<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
 				<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
 				<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
 				<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}"> checked="checked"</c:if>><span>거리순</span>
 				<!-- 모달 트리거 버튼-->
-				<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#region_modal">지역 필터</button>
+				<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#region_modal">지역 필터</button>
 			</div>
 			<input type="hidden" name="region" id="region1" disabled="disabled"/>
 			<input type="hidden" name="region" id="region2" disabled="disabled"/>
-			<button id="searchBtn2" type="submit">검색</button><br/>
 			<c:if test="${not empty msg_changedFilter}">원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</c:if>		
 		</form>	
 	</div>
@@ -644,7 +655,7 @@
 		</c:forEach>			
 	</div>
 	<c:if test="${not empty requestScope.storeList }">
-		<div>
+		<div id="mapContainer">
 			<div id="map" style="width:500px;height:400px;"></div>
 			<button id="map_re-search" style="display:none">이 지역에서 재검색</button>	
 		</div>			

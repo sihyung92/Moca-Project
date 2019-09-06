@@ -298,7 +298,7 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <form class="navbar-form navbar-left" action="<c:url value="/stores"/>">
+	      <form id="searchBar" class="navbar-form navbar-left" action="<c:url value="/stores"/>">
 	        <div class="form-group">
 	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
 			  <input type="hidden" name="filter" value="distance"/>
