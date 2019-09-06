@@ -51,4 +51,12 @@ public interface StoreDao {
 
 	int insertTags(Map<String, Object> tagMap) throws SQLException;
 	
+	List<StoreVo> selectFollowersStoresList(int id);	
+	
+	List<StoreVo> selectStoresListByRating(Map<String, String> variables);	
+
+	List<StoreVo> selectStoresListByTag(Map<String, String> variables);
+	
+	List<String> selectTagNames();
+	
 }

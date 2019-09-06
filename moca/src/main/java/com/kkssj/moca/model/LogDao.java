@@ -9,7 +9,7 @@ public interface LogDao {
 	int writeStoreIdNone(LogVo logVo) throws SQLException;
 	int writeKeyWordNone(LogVo logVo) throws SQLException;
 	int writeStoreIdKeyWordNone(LogVo logVo) throws SQLException;
-	
+	int insertKeywordLog(LogVo logVo);
 	//스토어뷰에서 accountid가 없을때
 	int insertLogStore(LogVo logVo) throws SQLException;
 }

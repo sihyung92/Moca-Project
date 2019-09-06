@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 
+import com.kkssj.moca.model.LogDao;
 import com.kkssj.moca.model.StoreDao;
+import com.kkssj.moca.model.entity.LogVo;
 import com.kkssj.moca.model.entity.StoreVo;
 import com.kkssj.moca.model.entity.kakaoAPI.KakaoCafeVo;
 import com.kkssj.moca.model.entity.kakaoAPI.Meta;
@@ -27,6 +29,8 @@ import com.kkssj.moca.model.entity.kakaoAPI.Meta;
 public class SearchServiceImpl implements SearchService {
 	@Inject
 	StoreDao storeDao;
+	@Inject
+	LogDao logDao;
 	
 	Logger logger = LoggerFactory.getLogger(SearchService.class);
 	
@@ -162,6 +166,11 @@ public class SearchServiceImpl implements SearchService {
 		//오름차순 처리된 mocaStores를 내림차순으로 alist와 병합
 		for(StoreVo s : mocaStores) alist.add(0, s);
 		return alist;
+	}
+
+	@Override
+	public int addKeywordLog(LogVo logVo) {
+		return logDao.insertKeywordLog(logVo);	
 	}	
 	
 }

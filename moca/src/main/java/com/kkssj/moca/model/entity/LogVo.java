@@ -2,15 +2,29 @@ package com.kkssj.moca.model.entity;
 
 import java.sql.Timestamp;
 
-public class LogVo {//���� �ۼ�
+public class LogVo {
 	
 	long seq;
 	int account_id, store_id;
 	String classification,ip, keyword, access_location;
 	Timestamp logtime;
-	public LogVo() {
-	
+	public LogVo() {	
 	};
+
+	public LogVo(String ip, String keyword, String access_location) {
+		super();
+		this.ip = ip;
+		this.keyword = keyword;
+		this.access_location = access_location;
+	}
+	public LogVo(int account_id, String ip, String keyword, String access_location) {
+		super();
+		this.account_id = account_id;
+		this.ip = ip;
+		this.keyword = keyword;
+		this.access_location = access_location;
+	}	
+
 	public LogVo(long seq, int account_id, int store_id, String classification, String ip, String keyword,
 			String access_location, Timestamp logtime) {
 		super();

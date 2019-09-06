@@ -53,6 +53,8 @@ public interface ReviewDao {
 
 	List<ImageVo> selectReviewImgListByAccountId(int accountId) throws SQLException;
 
+	List<ReviewVo> selectBestReviews();
+  
 	int selectAccountIdOfReviewByReviewId(int review_id) throws SQLException;
 
 	//리뷰 3개씩 불러오기

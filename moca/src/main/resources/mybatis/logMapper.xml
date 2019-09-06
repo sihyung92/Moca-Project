@@ -2,10 +2,22 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kkssj.moca.model.logDao">
+<mapper namespace="com.kkssj.moca.model.LogDao">
   <insert id="insertLogStoreIdKeyWordNone" parameterType="com.kkssj.moca.model.entity.LogVo">
   INSERT INTO LOG (CLASSIFICATION, LOGTIME, ACCOUNT_ID, IP, ACCESS_LOCATION) VALUES (#{classification},now(),#{account_id},#{ip},#{access_location})
   </insert>
+
+  <insert id="insertKeywordLog" parameterType="com.kkssj.moca.model.entity.LogVo">
+  	INSERT INTO LOG (CLASSIFICATION, ACCOUNT_ID, IP, ACCESS_LOCATION, KEYWORD) VALUES ('검색어', 
+  	<if test="account_id!=0">
+  	#{account_id}
+  	</if>
+  	<if test="account_id==0">
+  	null
+  	</if>
+  	, #{ip}, #{access_location}, #{keyword})
+   </insert>
+  
   <insert id="insertLogStore" parameterType="com.kkssj.moca.model.entity.LogVo">
   INSERT INTO LOG (
   <if test="account_id!=0">

@@ -202,12 +202,15 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("selectRecentReviews");
 	}
 
+	@Override
+	public List<ReviewVo> selectBestReviews() {
+		return sqlSession.selectList("selectBestReviews");
+
 	//리뷰아이디로 리뷰 글쓴이가 누구인지 가져오기
 	@Override
 	public int selectAccountIdOfReviewByReviewId(int review_id) throws SQLException {
 		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAccountIdOfReviewByReviewId",review_id);
 	}
-
 	
 	//리뷰 3개씩 가져오기
 	@Override

@@ -27,7 +27,7 @@ public class ReviewVo {
 	//ACCOUNT table
 	private String thumbnailImage;
 	private String nickName;
-	private int followCount, reviewCount;
+	private int followCount, reviewCount, accountLevel;
 	
 	//내가 쓴 댓글인지 (table엔 없음)
 	private int isMine;
@@ -72,6 +72,30 @@ public class ReviewVo {
 	public void setReview_id(int review_id) {
 		this.review_id = review_id;
 	}
+
+	public int getAccountLevel() {
+		return accountLevel;
+	}
+
+
+
+	public void setAccountLevel(int accountLevel) {
+		this.accountLevel = accountLevel;
+	}
+
+
+
+	public String getThumbnailImage() {
+		return thumbnailImage;
+	}
+
+
+
+	public void setThumbnailImage(String thumbnailImage) {
+		this.thumbnailImage = thumbnailImage;
+	}
+
+
 
 	public String getReviewContent() {
 		return reviewContent;

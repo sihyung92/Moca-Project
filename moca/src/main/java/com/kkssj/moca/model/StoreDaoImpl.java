@@ -118,6 +118,15 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
+	public List<StoreVo> selectFollowersStoresList(int id) {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectFollowersStoresList", id);
+	}
+
+	@Override
+	public List<StoreVo> selectStoresListByTag(Map<String, String> variables) {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoresListByTag", variables);
+    
+  @Override
 	public int updateStoreImg(Map<String, Object> map) {	
 		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreImg", map);
 	}
@@ -145,4 +154,14 @@ public class StoreDaoImpl implements StoreDao {
 	public int insertTags(Map<String, Object> tagMap) throws SQLException {
 		return sqlSession.insert("com.kkssj.moca.model.StoreDao.insertTags", tagMap);
 	} 
+	
+	@Override
+	public List<StoreVo> selectStoresListByRating(Map<String, String> variables) {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoresListByRating", variables);
+	}
+	
+	@Override
+	public List<String> selectTagNames(){
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTagNames");
+	}
 }
