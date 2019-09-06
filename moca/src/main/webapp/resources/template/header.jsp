@@ -7,11 +7,11 @@
     
 <!--//css 설정-->
     <style type="text/css">
-        .modal .modal-body {
+        #Login-Modal .modal-body {
             max-height: 350px;
             overflow-y: auto;
         }
-        .modal-open .modal{
+        .modal-open #Login-Modal{
             overflow-y: hidden;
         }
         .sns-login-btn * {
@@ -37,7 +37,7 @@
         $('#nav-static-height').css('height','60px');
         
         $('.modal-dialog').css('overflow-y','initial');
-        $('.modal-body').css('height','100%');
+       // $('.modal-body').css('height','100%');
         $('.modal-body').css('overflow-y','auto');
         
         $('.close').click(function(event){
@@ -94,13 +94,14 @@
         }else if(JSON.stringify(userInfo.platformType)=='"NULL_VAL"'){
             $('.just-use-user').css('display','none');    
         }else{
-           
+
+            
             var uiGender = '${sessionScope.login.gender}';
             var uiBirthday = '${sessionScope.login.birthday}';
             var uiBarista = '${sessionScope.login.barista}';
                         
             //처음 로그인했거나 필수 수집정보가 없을 경우
-            if(uiGender==0 || uiBarista==0 || uiBirthday==null){
+            /* if(uiGender==0 || uiBarista==0 || uiBirthday==null){
               
                 alert('moca에 오신것을 환영합니다!\n\n\n moca를 회원으로 이용하기 위해서는 개인정보 수집 및 처리에 동의해주셔야 원활한 이용이 가능합니다.\n\n\n'
                       +'moca의 모든 서비스를 제공받으시려면 [선택] 정보 제공에 동의해주세요');
@@ -136,7 +137,7 @@
                 $('#selectiveNo').click(function(){
                     $('#info-rule-selective').css('height','200px');
                 });
-            }
+            } */
                                 
             var userName = '${sessionScope.login.nickname}';                
             var thumbnailImg = null;
@@ -273,6 +274,21 @@
 
         /* 설정정보를 초기화하고 연동을 준비 */
         naverLogin.init();
+    }
+
+    //ajax통신의 error status에 따른 처리
+    var respondHttpStatus = function(status){
+    	if(status==429){ //Too Many Requests(업로드 파일 갯수 초과)		
+			alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
+		}else if(status==415){ //Unsupported Media Type(이미지 파일을 업로드 하지 않았을때)		
+			alert("사진 파일만 업로드 가능합니다.");
+		}else if(status==423){ // Locked(로그인 안된 경우)
+			$('.modal').modal('hide')		
+			alert("로그인 후 이용가능합니다.");
+			$('#Login-Modal').modal('show')
+		}else{
+			console.log('ajax 통신 실패', status);
+		}
     }
     </script>
 <!-- kss 공통 header -->

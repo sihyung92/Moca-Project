@@ -24,13 +24,13 @@ public class ReviewDaoImpl implements ReviewDao {
   
 	//store 디테일 페이지에서 해당 카페의 review를 가져옴
 	@Override
-	public List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException {
+	public List<ReviewVo> selectReviewByStoreId(int accountId, int storeId) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		logger.debug("storeId : "+storeId);
 		map.put("ACCOUNT_ID", accountId);
 		map.put("STORE_ID", storeId);
 		
-		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectAll",map);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewByStoreId",map);
 	}
 	
 	//리뷰 추가
@@ -182,10 +182,12 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//accountId로 review 가져오기
 	@Override
-	public List<ReviewVo> selectReviewListByAccountId(int accountId,int sessionId) throws SQLException {
+	public List<ReviewVo> selectReviewListByAccountId(int accountId,int sessionId, int startNum) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("ACCOUNT_ID", accountId);
 		map.put("SESSION_ID", sessionId);
+		map.put("STARTNUM", startNum);
+		map.put("ENDNUM", 3);
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewListByAccountId", map);
 	}
 
@@ -198,6 +200,34 @@ public class ReviewDaoImpl implements ReviewDao {
 	@Override
 	public List<ReviewVo> selectRecentReviews() {
 		return sqlSession.selectList("selectRecentReviews");
+	}
+
+	//리뷰아이디로 리뷰 글쓴이가 누구인지 가져오기
+	@Override
+	public int selectAccountIdOfReviewByReviewId(int review_id) throws SQLException {
+		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAccountIdOfReviewByReviewId",review_id);
+	}
+
+	
+	//리뷰 3개씩 가져오기
+	@Override
+	public List<ReviewVo> selectReviewLimit3ByStoreId(int accountId, int storeId, int startNum) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("STORE_ID", storeId);
+		map.put("STARTNUM", startNum);
+		map.put("ENDNUM", 3);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewLimit3ByStoreId",map);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectTagsLimit3ByStoreId(int accountId, int storeId, int startNum) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("ACCOUNT_ID", accountId);
+		map.put("STORE_ID", storeId);
+		map.put("STARTNUM", startNum);
+		map.put("ENDNUM", 3);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectTagsLimit3ByStoreId",map);
 	}
 
 }

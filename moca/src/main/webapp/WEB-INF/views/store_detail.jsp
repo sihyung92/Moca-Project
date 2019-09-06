@@ -68,7 +68,7 @@
 		  max-width: 1200px;
 		}	
 		#reviewDetailDiv {
-			overflow:hidden;
+		  overflow:hidden;
 		  text-align: center;
 		  background-color: black;
 		  padding: 2px 16px;
@@ -126,6 +126,26 @@
 	    	cursor:pointer;
 	    	background-color:rgb(255,255,255,0.5);
 	    }
+	    
+	    /* 카페 관리자의 사진 수정 */
+		.storeLogoGroup  .storeImg{
+	    	display: inline-block;
+	    }
+	    
+	    .storeLogoGroup  img{
+	    	width:100px;
+	    	height: 100px;
+			object-fit: cover;
+			overflow: hidden;
+	    }
+	    
+	    .storeLogoGroup .StoreImgDeleteSpan{
+	    	position : relative;
+	    	left:-95px;
+	    	top:-30px;
+	    	cursor:pointer;
+	    	background-color:rgb(255,255,255,0.5);
+	    }
 		
 }
 	</style>
@@ -135,17 +155,18 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=11"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=31"/>"></script>
 	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
 		var fileBuffer;
 		var fileListDiv;
 		var removeThumbnailBtn;
 		var newFileDiv;
-		var fileBuffer;
 
+		var methodType;	//ajax 통신에서 메서드 타입
 		var likeStoreBtn;
 		var favoriteStoreBtn;
 		var storeId;
@@ -158,9 +179,13 @@
 		var oldStoreImgUrls ="";
 		var storeFiles; //storeImg 수정 모달에서 file input
 
+		var toBeDeletedStoreLogoUrl ="";
+
 
 		//나중에 삭제할 테스트 변수
 		var test;
+
+		var startLevel;
 
 	
 		$(document).ready(function() {
@@ -171,7 +196,8 @@
 			editStoreImgsBtn = $('#editStoreImgsBtn');
 			storeImgswModal = $('#storeImgswModal');
 			storeFiles = $('#storeFiles');
-			
+
+			bindRaty();
 
 			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
 							
@@ -232,43 +258,13 @@
 			likeHateButton.click(function(){
 				bindLikeHateButtonEvent($(this));
 			});
-
-			//리뷰 3개씩 끊어서 가져오기
-			$('.reviewCnt').hide();
-			reviewCnt(quotient,remainder,callNum);
 	         
 			//리뷰 내용 더보기 style 변화
 			callReviewDataMore();
 			
 			//차트
-			var ctx = document.getElementById('myChart').getContext('2d');
-			var labelVal = [${storeVo.tasteLevel}, ${storeVo.serviceLevel}, ${storeVo.moodLevel}, ${storeVo.priceLevel}, ${storeVo.convenienceLevel}];
-			var myRadarChart = new Chart(ctx, {
-				type: 'radar',
-				data: {
-					labels: ['맛', '서비스', '분위기', '가격', '편의성'],
-					datasets: [{
-						//label: '종합 평가',
-						//		    	backgroundColor: 'rgb(255, 99, 132)',
-						borderColor: 'rgb(255, 99, 132)',
-						pointRadius: 0,
-						lineTension: 0.1,
-						data: labelVal
-					}]
-				},
-				options: {
-					legend: {
-						display: false
-					},
-					scale: {
-						ticks: {
-							suggestedMin: 0,
-							suggestedMax: 10,
-							stepSize: 2
-						}
-					}
-				}
-			});
+			makeStoreLevelChart();
+
 
 			//storeInfo 참여하기 버튼 클릭시
 			$('#updateStore').click(function() {
@@ -278,19 +274,28 @@
 
 			//리뷰 더보기 버튼을 눌렀을 때
 			$('#moreReview').click(function(){
-					callNum += 1;
-					//console.log("더보기"+quotient+":"+remainder+":"+callNum);
-					reviewCnt(quotient,remainder,callNum);
-					callReviewDataMore();
+				if(reviewVoListLength==true){
+					return false;
+				}
+				reviewMoreBtnClick("review");
 			});
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
+				 var tagValues = "";
+				$("input:checkbox[name=tag]:checked").each(function(){
+					tagValues =tagValues+ $(this).val() +",";
+				   
+				});
+				 $('#review-tags').val(tagValues)
 				saveReview(fileBuffer);
 			})
 			
 			//수정 버튼 클릭시
 			editBtn.click(function(){
+				$('.storeLevel').css('display','')
+				$('.level').css('display','none')
+				
 				//파일 버퍼 내용 비우기
 				fileBuffer = [];
 				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
@@ -304,6 +309,7 @@
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
+				
 				editReview();
 			})
 			
@@ -311,6 +317,9 @@
 				//모달에 있는 데이터 없애고 
 				fileBuffer = [];
 				clearReviewModalData();
+				$('.storeLevel').css('display','none')
+				$('.level').css('display','')
+				
 				reviewModal.find('#saveReviewBtn').css('display','')
 				reviewModal.find('#editReviewBtn').css('display','none')
 				$('#reviewModal').modal("show");		//리뷰 모달창 show
@@ -336,7 +345,6 @@
 			reviewImg.click(function(){
 				//모달 활성화(+초기화)
 				reviewsDetailModal.modal("show");
-				
 
 				//섬네일 url > 원본 url
 				showDetailReviewImg(this);
@@ -345,7 +353,9 @@
 				//데이터 값 전송
 				
 			})
-
+			
+			/////////////////////////////
+			//store 대표 이미지 케러셀
 			$('#preReviewImgBtn').click(function(){
 				if(detailImgIdx > 0){
 					detailImgIdx =detailImgIdx-1;
@@ -355,7 +365,6 @@
 				showDetailReviewImg(reviewThumbnailGroup.find('img').eq(detailImgIdx)[0]);
 				
 			})
-
 			$('#nextReviewImgBtn').click(function(){
 				if(detailImgIdx < detailImgsSize-1){
 					detailImgIdx =detailImgIdx+1;
@@ -366,95 +375,143 @@
 			})
 
 			
-			
+			///////////////////////
+			//카페 좋아요
 			likeStoreBtn.click(function(){
+				
 				//좋아요를 누르지 않은 경우
 				if(likeStoreBtn.hasClass('glyphicon-heart-empty')){
-
 					//좋아요 추가
-					$.ajax({
-						type: 'POST',
-						url: '/moca/likeStore/' + accountId,
-						data : {
-							storeId : storeId
-						},
-						success: function() {
-							likeStoreBtn.removeClass('glyphicon-heart-empty')
-							likeStoreBtn.addClass('glyphicon-heart')
-							
-						},
-						error: function() {
-
-						}
-					})		
-
-				}else{//좋아요를 누른경우
-
+					methodType = 'POST';
+					
+				}else{//이전에 좋아요를 누른경우
 					//좋아요에서 삭제
-					$.ajax({
-						type: 'DELETE',
-						url: '/moca/likeStore/' + accountId,
-						data : {
-							storeId : storeId
-						},
-						success: function() {
-							likeStoreBtn.removeClass('glyphicon-heart')
-							likeStoreBtn.addClass('glyphicon-heart-empty')
-							
-						},
-						error: function() {
-
-						}
-					})
-
+					methodType = 'DELETE';
+					
 				}
+
+				$.ajax({
+					type: methodType,
+					url: '/moca/likeStore/' + accountId,
+					data : {
+						storeId : storeId
+					},
+					success: function() {
+						likeStoreBtn.toggleClass('glyphicon-heart');
+						likeStoreBtn.toggleClass('glyphicon-heart-empty')
+						
+					},
+					error: function(request,status,error) {
+						respondHttpStatus(request.status);
+					}
+				})
 
 			})
 
+			////////////////////////////////
+			//가고 싶은 카페
 			favoriteStoreBtn.click(function(){
-				//즐겨찾기를 누르지 않은 경우
+				//가고 싶은 카페 누르지 않은 경우
 				if(favoriteStoreBtn.hasClass('glyphicon-star-empty')){
-
-					//즐겨 찾기에 추가
-					$.ajax({
-						type: 'POST',
-						url: '/moca/favoriteStore/' + accountId,
-						data : {
-							storeId : storeId
-						},
-						success: function() {
-							favoriteStoreBtn.removeClass('glyphicon-star-empty')
-							favoriteStoreBtn.addClass('glyphicon-star')
-							
-						},
-						error: function() {
-						}
-					})
-
+					//가고 싶은 카페에 추가
+					methodType = 'POST';
 					
-
-				}else{//즐겨찾기를 누른경우
-
-					//즐겨 찾기에서 삭제
-					$.ajax({
-						type: 'DELETE',
-						url: '/moca/favoriteStore/' + accountId,
-						data : {
-							storeId : storeId
-						},
-						success: function() {
-							favoriteStoreBtn.removeClass('glyphicon-star')
-							favoriteStoreBtn.addClass('glyphicon-star-empty')
-							
-						},
-						error: function() {
-						}
-					})
-
-					
+				}else{//이전에 가고 싶은 카페를 누를 경우
+					//가고 싶은 카페에서 삭제	
+					methodType = 'DELETE';
+								
 				}
+				$.ajax({
+					type: methodType,
+					url: '/moca/favoriteStore/' + accountId,
+					data : {
+						storeId : storeId
+					},
+					success: function() {
+						favoriteStoreBtn.toggleClass('glyphicon-star')
+						favoriteStoreBtn.toggleClass('glyphicon-star-empty')
+						
+					},
+					error: function(request,status,error) {
+						respondHttpStatus(request.status);
+					}
+				})
+			})
+			
+			//로고 아래에 있는 수정 버튼 클릭시
+			$('#showEditStoreLogoBtn').click(function(){
+				$('#storeLogowModal').modal("show");		
+
+				//내용 비워줌
+				$('.storeLogoGroup').html("")
+				toBeDeletedStoreLogoUrl ="";
+
+				//섬네일로 사용할 엘리먼트 클론
+				var oldStoreLogo = $('#storeImgTemplate').clone('true');
+				oldStoreLogo.removeAttr('id');
+				oldStoreLogo.find('img').addClass('oldStoreLogo');
+				oldStoreLogo.find('img').attr('src', $('#storeLogo')[0].src );
+				$('.storeLogoGroup').append(oldStoreLogo);
+
+				//기존의 클릭이벤트 재설정
+				$('.StoreImgDeleteSpan').unbind();
+				$('.StoreImgDeleteSpan').click(function(){					
+					
+					//기존 StoreLogo인 경우 
+					if($(this.previousElementSibling).hasClass('oldStoreLogo')){
+						toBeDeletedStoreLogoUrl = this.previousElementSibling.src
+					}
+					
+					//해당 img를 포함하는 div 삭제
+					this.parentElement.remove();					
+					
+				})
+			})
+			
+			//로고 수정을 위한 모달에 있는 파일 선택을 누른경우
+			$('#storeLogoFile').change(function(){
+				var target = document.getElementById('storeLogoFile');
+
+				// 저장된 로고에서 변경한 경우
+				if($('.storeLogoGroup').find('img').hasClass('oldStoreLogo')){
+					toBeDeletedStoreLogoUrl = $('.storeLogoGroup').find('img')[0].src
+				}
+
+				//내용 비워줌
+				$('.storeLogoGroup').html("")
+
+				//확장자 체크
+				for(var i=0; i<target.files.length ; i++){
+					var fileName = target.files[i].name
+					var fileEx = fileName.slice(fileName.lastIndexOf(".")+1).toLowerCase()
+					
+					//이미지 형식인 경우만 받아 들임
+					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
+		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+		                return false;
+		            }
+				}
+				
+				$.each(target.files, function(index, file){
+					URL.createObjectURL(file)
+					var fileName = file.name;
+					var newStoreLogo = $('#storeImgTemplate').clone('true');
+					newStoreLogo.find('img').addClass('newStoreLogo')
+					newStoreLogo.removeAttr('id')
+					newStoreLogo.find('img').attr('src', URL.createObjectURL(file));
+					$('.storeLogoGroup').append(newStoreLogo)
+				})
+				
+			})
+			
+			//카페 로고 모달에서 수정 버튼 클릭시
+			$('#editStoreLogoBtn').click(function(){
+				//카페 이미지 로고 수정
+				editStoreLogo()
 			})
 
+			
+			//카페 대표 이미지 하단에 있는 수정 버튼 클릭시
 			editStoreImgsBtn.click(function(){
 				storeImgswModal.modal("show");
 
@@ -515,8 +572,9 @@
 
 				//확장자 체크
 				for(var i=0; i<target.files.length ; i++){
+					
 					var fileName = target.files[i].name
-					var fileEx = fileName.slice(fileName.indexOf(".")+1).toLowerCase()
+					var fileEx = fileName.slice(fileName.lastIndexOf(".")+1).toLowerCase()
 					
 					//이미지 형식인 경우만 받아 들임
 					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
@@ -545,7 +603,7 @@
 				//oldStoreImg
 				var oldStoreImgs = $('.oldStoreImg')
 				for(var i=0 ; i < oldStoreImgs.length; i++){
-					oldStoreImgUrls = oldStoreImgUrls + ","+oldStoreImgs[0].src
+					oldStoreImgUrls = oldStoreImgUrls + "," + oldStoreImgs[i].src
 				}
 				
 				//맨 앞에 , 문자 제거
@@ -555,7 +613,91 @@
 				editStoreImg();
 			})
 
+			//평점을 입력 했을때 -> 평점 대로 5가지 점수를 메김
+			$('#level').change(function(){
+				$('.storeLevel').css('display','')
+				$('.level').css('display','none')
+				console.log($('#level').val())
+				$('.storeLevel').find('select').val($('#level').val())
+			})
+
 		});
+
+		//카페 이미지 로고 수정
+		var editStoreLogo = function(){
+			//delete한 썸네일 추가
+			$('#delStoreLogo').val(toBeDeletedStoreLogoUrl);
+			
+			//파일 추가
+			var form = $('#storeLogoForm')[0];
+
+			var storeImgFormData = new FormData(form);
+			
+			storeImgFormData.delete('file');
+			
+			
+			var storeImgFormObj = $(form).serializeObject();
+			console.log(storeImgFormObj,storeImgFormData);
+			
+			if(storeImgFormObj.delStoreLogo == ""){
+				return false;
+			}
+			
+
+			//ajax 통신 - post방식으로 추가
+			$.ajax({
+				type: 'POST',
+				url: '/moca/storeLogo/'+storeImgFormObj.storeId,
+				enctype : 'multipart/form-data',
+				data: storeImgFormData,
+				dataType : "json",
+				contentType : false,  
+				processData : false,
+				cache : false,
+				timeout : 600000,
+				success: function(storeVo) {
+					console.log('ajax 통신 성공');
+					
+					location.reload();
+					
+				},
+				error: function(request,status,error) {
+					respondHttpStatus(request.status);
+				}
+			})
+
+		}
+
+		var makeStoreLevelChart = function(){
+			var ctx = document.getElementById('myChart').getContext('2d');
+			var labelVal = [${storeVo.tasteLevel}, ${storeVo.serviceLevel}, ${storeVo.moodLevel}, ${storeVo.priceLevel}, ${storeVo.convenienceLevel}];
+			var myRadarChart = new Chart(ctx, {
+				type: 'radar',
+				data: {
+					labels: ['맛', '서비스', '분위기', '가격', '편의성'],
+					datasets: [{
+						//label: '종합 평가',
+						//		    	backgroundColor: 'rgb(255, 99, 132)',
+						borderColor: 'rgb(255, 99, 132)',
+						pointRadius: 0,
+						lineTension: 0.1,
+						data: labelVal
+					}]
+				},
+				options: {
+					legend: {
+						display: false
+					},
+					scale: {
+						ticks: {
+							suggestedMin: 0,
+							suggestedMax: 5,
+							stepSize: 1
+						}
+					}
+				}
+			});
+		}
 
 	</script>
 </head>
@@ -580,10 +722,10 @@
 							</c:if>
 						
 							<c:if test="${storeVo.isFavorite eq 0 }">
-								즐겨찾기<span id="favoriteStoreBtn" class="glyphicon glyphicon-star-empty" aria-hidden="true" ></span>	
+								가고 싶은 카페<span id="favoriteStoreBtn" class="glyphicon glyphicon-star-empty" aria-hidden="true" ></span>	
 							</c:if>
 							<c:if test="${storeVo.isFavorite ne 0 }">
-								즐겨찾기<span id="favoriteStoreBtn" class="glyphicon glyphicon-star" aria-hidden="true" ></span>	
+								가고 싶은 카페<span id="favoriteStoreBtn" class="glyphicon glyphicon-star" aria-hidden="true" ></span>	
 							</c:if>					
 						</div>
 
@@ -600,15 +742,17 @@
 						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
 						<h1>
 							<c:if test="${empty storeVo.logoImg}">
-								<img src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">
+								<img id="storeLogo" src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">
 							</c:if>
 							<c:if test="${not empty storeVo.logoImg}">
-								<img src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px;">
+								<img id="storeLogo" src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px;">
 							</c:if>
 							&nbsp;${storeVo.name}
 						</h1>
 						<c:if test="${storeVo.isManager eq 1}">
-							<span>내가 관리하는 카페 입니다.</span>						
+							<button id="showEditStoreLogoBtn">수정</button>
+							<span>내가 관리하는 카페 입니다.</span>	
+												
 						</c:if>
 					</div>
 				</div>
@@ -641,7 +785,7 @@
 											<div class="item <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<img src="<c:url value="${StoreImg.url }" />" alt="..." class="d-block w-100">
-										<div class="carousel-caption">...</div>
+								<div class="carousel-caption">...</div>
 							</div>
 							</c:forEach>
 							</c:if>
@@ -753,6 +897,14 @@
 								</div>
 							</c:if>
 							<div class="reviewer-info col-md-2">
+								<div class="profile-div">
+									<c:if test="${empty reviewVo.thumbnailImage}">
+										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
+									</c:if>
+									<c:if test="${not empty reviewVo.thumbnailImage}">
+										<img class="accountProfile img-circle"  src="<c:url value="${reviewVo.thumbnailImage }" />" alt="profile" style="width:100px;">
+									</c:if>
+								</div>
 								<div class="nickName-div">
 									<label>별명</label>	
 									<span class="reviewer-nickName">${reviewVo.nickName} </span>
@@ -771,7 +923,7 @@
 							<div class="review-info col-md-8"> 
 								<div class="row">
 									<div class="reviewThumbnailGroup">
-										<c:forEach items="${reviewVo.imageList}" var="reviewImg" varStatus="status">
+										<c:forEach items="${reviewVo.imageList}" var="reviewImg">
 											<div class="reviewThumbnail">
 												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
 											</div>
@@ -785,8 +937,15 @@
 									<div class="review-content-div">
 										<label>리뷰 내용</label>
 										<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+										<span class="more-review-content-btn">더보기</span>
 									</div>
-									<span class="more-review-content-btn">더보기</span>
+									<div class="review-tags-div">
+										<c:forEach items="${reviewVo.tagMap}" var="i">
+											<c:if test="${i.value eq 1}">
+												<a class="review-tag" href="/moca/stores?keyword=${i.key }&filter=distance">#${i.key }</a>	
+											</c:if>
+										</c:forEach>
+									</div>
 								</div>
 								<div class="form-group like-hate">
 									<div class="btn-group" data-toggle="buttons">
@@ -837,7 +996,9 @@
 					</c:forEach>
 				</div>
 				<div class="review-footer">
+				<c:if test="${fn:length(reviewVoList) ge 3}">
 					<button id="moreReview">더보기</button>
+				</c:if>
 				</div>
 
 			</div>
@@ -856,17 +1017,25 @@
 			<button type="button" class="btn-delete btn btn-default">삭제</button>
 		</div>
 		<div class="reviewer-info col-md-2">
+			<div class="profile-div">
+				<c:if test="${empty accountVo.thumbnailImage}">
+					<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
+				</c:if>
+				<c:if test="${not empty accountVo.thumbnailImage}">
+					<img class="accountProfile img-circle"  src="<c:url value="${accountVo.thumbnailImage }" />" alt="profile" style="width:100px;">
+				</c:if>
+			</div>
 			<div class="nickName-div">
 				<label>별명</label>	
-				<span class="reviewer-nickName">${reviewVo.nickName} </span>
+				<span class="reviewer-nickName">${accountVo.nickname }</span>
 			</div>
 			<div class="follows-div">
 				<label>팔로워 수</label>
-				<span class="reviewer-followers">${reviewVo.followCount}</span>
+				<span class="reviewer-followers">${accountVo.followCount }</span>
 			</div>
 			<div class="reviews-div">
 				<label>리뷰 수</label>
-				<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
+				<span class="reviewer-reviews">${accountVo.reviewCount }</span>
 			</div>
 		</div>
 		<div class="review-info col-md-8">
@@ -880,8 +1049,11 @@
 				<div class="review-content-div">
 					<label>리뷰 내용</label>
 					<span class="reviewInfo-review-content"></span>
+					<span class="more-review-content-btn">더보기</span>
 				</div>
-				<span class="more-review-content-btn">더보기</span>
+				<div class="review-tags-div">
+
+				</div>
 			</div>
 			<div class="form-group like-hate">
 				<div class="btn-group" data-toggle="buttons">
@@ -921,6 +1093,9 @@
 			</div>								
 		</div>
 		<br><br><br>
+		
+		<!-- clone할 tag element -->
+		<a class="review-tag" id="review-tag-div" href="#" style="display:none;"></a>	
 	</div>
 	
 	<!-- Modal -->
@@ -948,82 +1123,39 @@
 							<label for="review-content">후기</label>
 							<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
 						</div>
-						<div class="form-group">
-							<label for="taste-level">맛</label>
-							<select id="taste-level" name="tasteLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="price-level">가격</label>
-							<select id="price-level" name="priceLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+						<div class="form-group storeLevel level">
+							<label for="level">평점</label>
+							<div id="level"></div>
 						</div>	
-						<div class="form-group">
+						<div class="form-group storeLevel">
+							<label for="taste-level">맛</label>
+							<div id="taste-level"></div>
+						</div>
+						<div class="form-group storeLevel">
+							<label for="price-level">가격</label>
+							<div id="price-level"></div>
+						</div>	
+						<div class="form-group storeLevel">
 							<label for="service-level">서비스</label>
-							<select id="service-level" name="serviceLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="service-level"></div>
 						</div>
-						<div class="form-group">
+						<div class="form-group storeLevel">
 							<label for="mood-level">분위기</label>
-							<select id="mood-level" name="moodLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="mood-level"></div>
 						</div>
-						<div class="form-group">
+						<div class="form-group storeLevel">
 							<label for="convenience-level">편의성</label>
-							<select id="convenience-level" name="convenienceLevel" class="form-control">
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-								<option>6</option>
-								<option>7</option>
-								<option>8</option>
-								<option>9</option>
-								<option>10</option>
-							</select>
+							<div id="convenience-level"></div>
 						</div>
-
+						
+						<div class="form-group tagsCheckbox">
+							<c:forEach items="${tagNameList}" var="tagName">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="tag" value="<c:out value="${tagName}"/>"><c:out value="${tagName}"/>
+								</label>
+							</c:forEach>
+						</div>
+						<textarea class="form-control" name="tags" id="review-tags" style="display: none;"></textarea>
 					</form>
 				</div>
 				<div class="modal-footer">
@@ -1079,11 +1211,11 @@
 						<div class="form-group">
 							<label for="tel" class="col-sm-2 control-label">전화번호</label>
 							<div class="col-sm-10">
-								<input type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:substring(storeVo.tel,0,3)}" />
+								<input type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:substring(storeVo.tel,0,fn:indexOf(storeVo.tel, '-'))}" />
 								-
-								<input type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,4,8)}" />
+								<input type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+1,fn:indexOf(storeVo.tel, '-')+5)}" />
 								-
-								<input type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,9,13)}" />
+								<input type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+6,fn:indexOf(storeVo.tel, '-')+10)}" />
 							</div>
 						</div>
 						<div class="form-group">
@@ -1166,8 +1298,8 @@
 							<div class="storeImgGroup">
 							
 							</div>
-							<input type="hidden" class="delStoreImg"  name="delStoreImg"/>
-							<input type="hidden" class="oldStoreImg"  name="oldStoreImg"/>
+							<input type="hidden" id="delStoreImg"  name="delStoreImg"/>
+							<input type="hidden" id="oldStoreImg"  name="oldStoreImg"/>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -1177,6 +1309,39 @@
 				</div>
 			</div>
 		</div>	
+		
+		<!-- 카페 로고 모달 -->
+		<div class="modal fade" id="storeLogowModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">
+							${storeVo.name} 사진 로고 수정</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body" data-role="content">
+						<form id="storeLogoForm">
+							<input name="storeId" value=${storeVo.store_Id } style="display:none;" >
+							<input name="managerId" value=${accountVo.account_id } style="display:none;" >
+							<div class="form-group">
+								<label for="picture-file">사진 선택</label>
+								<input name="storeLogoFile" id="storeLogoFile" type="file"/>
+							</div>
+							<div class="storeLogoGroup">
+							
+							</div>
+							<input type="hidden" id="delStoreLogo"  name="delStoreLogo"/>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+						<button type="button" class="btn btn-primary" id="editStoreLogoBtn">수정</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		
 		<!-- storeImg clone -->
 		<div class="storeImg" id="storeImgTemplate">

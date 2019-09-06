@@ -1,6 +1,7 @@
 package com.kkssj.moca.model;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import com.kkssj.moca.model.entity.AccountVo;
@@ -51,5 +52,31 @@ public interface AccountDao {
 	//해당 account의 정보 불러오기
 	AccountVo selectByaccountId(int account_id) throws SQLException;
 	
+	//해당 account의 정보 수정
+	int updateAccount(AccountVo editAccountVo) throws SQLException;
+	
+	//해당 account의 image 불러오기
+	AccountVo selectProfileImageByaccountId(int account_id) throws SQLException;
+	
+	//해당 account 삭제
+	int deleteAccount(int accountId) throws SQLException;
+	
+	//해당 account의 exp 누적
+	int updateAccountExp(int accountId, int exp) throws SQLException;
+	
+	//해당 account의 exp 누적 활동 기록
+	int insertExpLog(int accountId, String classification, int exp) throws SQLException;
+	
+	//해당 account의 level up
+	int updateAccountlevel(int accountId) throws SQLException;
+	
+	//해당 account의 level down
+	int updateAccountlevelDown(int accountId) throws SQLException;
+	
+	//해당 account의 exp log 조회
+	int selectExpLogByAccountId(int accountId, String classification) throws SQLException;
+	
+	//해당 acoount의 reviewcount 증감
+	int updateReviewCount(int account_id, int cnt) throws SQLException;
 
 }

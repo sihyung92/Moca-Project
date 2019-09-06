@@ -72,6 +72,10 @@ public class S3Util implements VariableManagement {
         conn.deleteObject(this.getBucketName(), imgName);
         System.out.println("삭제성공");
     }
+    public void thumbnailFileDelete(String fileName) {
+    	String thumbnailFile = fileName.split("_")[0]+"_thumbnail_"+fileName.split("_")[1];
+    	fileDelete(thumbnailFile);
+    }
 
     // 파일 URL
     public String getFileURL(String bucketName, String fileName) {

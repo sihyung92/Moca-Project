@@ -2,13 +2,14 @@ package com.kkssj.moca.model;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
 public interface ReviewDao {
 
-	List<ReviewVo> selectAll(int accountId, int storeId) throws SQLException;
+	List<ReviewVo> selectReviewByStoreId(int accountId, int storeId) throws SQLException;
 
 	int insertLikeHate(int review_id, int accountId, int isLike) throws SQLException;
 	
@@ -48,9 +49,14 @@ public interface ReviewDao {
 
 	List<ReviewVo> selectRecentReviews();
 
-	List<ReviewVo> selectReviewListByAccountId(int accountId, int sessionId) throws SQLException;
+	List<ReviewVo> selectReviewListByAccountId(int accountId, int sessionId, int startNum) throws SQLException;
 
 	List<ImageVo> selectReviewImgListByAccountId(int accountId) throws SQLException;
 
-	
+	int selectAccountIdOfReviewByReviewId(int review_id) throws SQLException;
+
+	//리뷰 3개씩 불러오기
+	List<ReviewVo> selectReviewLimit3ByStoreId(int accountId, int storeId, int startNum);
+
+	List<Map<String, Object>> selectTagsLimit3ByStoreId(int accountId, int storeId, int startNum);
 }
