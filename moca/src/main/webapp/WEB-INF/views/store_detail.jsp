@@ -155,7 +155,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=19"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=20"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=18"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
@@ -289,10 +289,6 @@
 			likeHateButton.click(function(){
 				bindLikeHateButtonEvent($(this));
 			});
-
-			//리뷰 3개씩 끊어서 가져오기
-			$('.reviewCnt').hide();
-			reviewCnt(quotient,remainder,callNum);
 	         
 			//리뷰 내용 더보기 style 변화
 			callReviewDataMore();
@@ -312,11 +308,7 @@
 				if(reviewVoListLength==true){
 					return false;
 				}
-				scrollMaxDown();
-					/* callNum += 1;
-					//console.log("더보기"+quotient+":"+remainder+":"+callNum);
-					reviewCnt(quotient,remainder,callNum);
-					callReviewDataMore(); */
+				reviewMoreBtnClick();
 			});
 
 			//리뷰 저장 버튼 클릭시
@@ -1035,7 +1027,9 @@
 					</c:forEach>
 				</div>
 				<div class="review-footer">
+				<c:if test="${fn:length(reviewVoList) ge 3}">
 					<button id="moreReview">더보기</button>
+				</c:if>
 				</div>
 
 			</div>

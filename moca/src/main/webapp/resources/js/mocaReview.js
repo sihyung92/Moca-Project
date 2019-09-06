@@ -393,33 +393,6 @@ var deleteReviewImg = function(deleteBtn){
     $(deleteBtn).parent().hide();
 }
 
-
-//리뷰 개수 더보기
-var reviewCnt = function(q,r,n){
-	//먼저 3개만 보여주고 나머지는 더보기 버튼으로 클릭시 +3개씩 보여주기
-	if(3*n<=q*3){
-		for(var i=(n-1)*3; i<3*n; i++){ //몫*3 or 나머지
-			$('.reviewCnt').eq(i).show();
-		}
-		if(3*n==q*3){
-			//$('#moreReview').hide();
-		}
-	}else{
-		if(n!=1){
-			for(var i=(n-1)*3; i<((n-1)*3)+r; i++){ //몫*3
-				$('.reviewCnt').eq(i).show();
-			}
-			//$('#moreReview').hide();
-		}else{
-			for(var i=0; i<r; i++){ //나머지
-				$('.reviewCnt').eq(i).show();
-			}
-			//$('#moreReview').hide();
-		}
-	}
-};
-
-
 //리뷰 내용 더보기
 var callReviewDataMore = function(){
 	var reviewData = $('.more-review-content');
@@ -709,19 +682,9 @@ var url2PathFileName = function(imgUrl){
 }
 
 //스크롤 맨밑으로 내려갈 때
-var scrollMaxDown = function() {
-    
-    var height = $(document).height();
-    var height_win = $(window).height();
-    
-    
-    if (Math.round( $(window).scrollTop()) == $(document).height() - $(window).height()) {
-    	//리뷰를 3개씩 ajax로 불러오기
-    	console.log("맨밑");
-    	startNum += 3;
-	    moreReviewList(startNum);
-	    $(window).scrollTop($(document).height() - $(window).height()-100);
-	}  
+var reviewMoreBtnClick = function() {
+    startNum += 3;
+    moreReviewList(startNum);
 };
 
 //리뷰 3개씩 추가
@@ -782,7 +745,11 @@ var moreReviewList = function(startNum) {
 				newReview.find('.review-id').eq(0).val(''+reviewVo.review_id);
 				newReview.find('.review-id').eq(1).val(''+reviewVo.review_id);
 				
-				reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);
+				if(reviewVo.thumbnailImage==null){
+					reviewerInfo.find('.accountProfile').attr('src','/moca/resources/imgs/basicProfile.png');
+				}else{
+					reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);					
+				}
 				reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 				reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
 				reviewerInfo.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
@@ -804,7 +771,7 @@ var moreReviewList = function(startNum) {
 				reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
 				reviewLevel.find('.average-level').text(reviewVo.averageLevel)
 
-				$('.review-content').append(newReview.fadeIn(2000));	//리뷰에 추가
+				$('.review-content').append(newReview);	//리뷰에 추가
 			}
 			
 			//리뷰이미지 모달 바인딩
@@ -836,7 +803,7 @@ jQuery.fn.serializeObject = function() {
                 jQuery.each(arr, function() {
                     obj[this.name] = this.value;
                 });
-            }//if ( arr ) {
+            }
         }
     } catch (e) {
         alert(e.message);
