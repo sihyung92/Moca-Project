@@ -155,7 +155,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=25"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=29"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
@@ -1193,12 +1193,13 @@
 							<div id="convenience-level"></div>
 						</div>
 						
-						
-						<c:forEach items="${tagNameList}" var="tagName">
-							<label class="checkbox-inline">
-								<input type="checkbox" name="tag" value="<c:out value="${tagName}"/>"><c:out value="${tagName}"/>
-							</label>
-						</c:forEach>
+						<div class="form-group tagsCheckbox">
+							<c:forEach items="${tagNameList}" var="tagName">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="tag" value="<c:out value="${tagName}"/>"><c:out value="${tagName}"/>
+								</label>
+							</c:forEach>
+						</div>
 						<textarea class="form-control" name="tags" id="review-tags" style="display: none;"></textarea>
 					</form>
 				</div>

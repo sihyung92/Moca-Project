@@ -223,10 +223,8 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 				
 	//사진
 	
-	console.log(editReviewRow);
+	test = editReviewRow;
 	var reviewImg = editReviewRow.find('.reviewThumbnailGroup').clone();
-	console.log("reviewImg : ",reviewImg);
-	console.log(reviewImg);
 	reviewModal.find('#files').after(reviewImg);
 	reviewImg.find('.reviewThumbnail img').attr('class','oldThumbnail');
 	$('#reviewModal').find('.reviewThumbnail').append('<span class="glyphicon glyphicon-remove thumbnailDeleteSpan" aria-hidden="true" onclick="deleteReviewImg(this)"></span>');
@@ -235,6 +233,24 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	
 	//리뷰 내용
 	reviewModal.find('#review-content').val(editReviewRow.find('.reviewInfo-review-content').text());
+	
+	//태그
+	var tagArr = []
+	var tags = editReviewRow.find('.review-tags-div .review-tag')
+	for(var tagsIdx = 0; tagsIdx < tags.length ; tagsIdx++){
+		tagArr.push(tags[tagsIdx].text.replace('#',''))
+	}
+	var tagArrIdx = 0;
+	var tagsCheckbox = reviewModal.find('.tagsCheckbox input');
+	for(var idx= 0; idx < tagsCheckbox.length; idx++){
+		if(tagsCheckbox[idx].value == tagArr[tagArrIdx]){
+			$(tagsCheckbox[idx]).prop('checked', true);
+			tagArrIdx++;
+			console.log(tagsCheckbox[idx].value);
+		}
+		
+		
+	}
 	
 	//평점
 	$.fn.raty.start(editReviewRow.find('.taste-level').text(), '#taste-level');
@@ -335,6 +351,7 @@ var clearReviewModalData = function(){
 	reviewModal.find('#convenience-level').val('1')
 	reviewModal.find('#average-level').val('1')
 	
+	reviewModal.find('.tagsCheckbox input').attr('checked', false)
 }
 
 //리뷰 삭제
