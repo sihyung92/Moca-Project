@@ -58,8 +58,11 @@ public class StoreServiceImpl implements StoreService{
 	public StoreVo addStore(StoreVo storeVo){
 		
 		try {
-			storeDao.insertOne(storeVo);
-			storeVo = storeDao.selectByKakaoId(storeVo.getKakaoId());
+			//카카오 아이디로 검색해서 없을 때만 넣어주기
+			if(storeDao.selectAlreadyReviewByKakaoId(storeVo.getKakaoId())==0) {
+				storeDao.insertOne(storeVo);
+			}
+			storeVo = storeDao.selectByKakaoId(storeVo.getKakaoId());				
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

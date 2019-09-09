@@ -40,7 +40,7 @@
 			overflow: hidden;
 	    }
 	    
-	    .storeImgGroup .StoreImgDeleteSpan{
+	    .storeImgGroup .storeImgDeleteSpan{
 	    	position : relative;
 	    	left:-95px;
 	    	top:-30px;
@@ -60,7 +60,7 @@
 			overflow: hidden;
 	    }
 	    
-	    .storeLogoGroup .StoreImgDeleteSpan{
+	    .storeLogoGroup .storeImgDeleteSpan{
 	    	position : relative;
 	    	left:-95px;
 	    	top:-30px;
@@ -380,8 +380,8 @@
 				$('.storeLogoGroup').append(oldStoreLogo);
 
 				//기존의 클릭이벤트 재설정
-				$('.StoreImgDeleteSpan').unbind();
-				$('.StoreImgDeleteSpan').click(function(){					
+				$('.storeImgDeleteSpan').unbind();
+				$('.storeImgDeleteSpan').click(function(){					
 					
 					//기존 StoreLogo인 경우 
 					if($(this.previousElementSibling).hasClass('oldStoreLogo')){
@@ -463,8 +463,8 @@
 				}
 
 				//기존의 클릭이벤트 제거
-				$('.StoreImgDeleteSpan').unbind();
-				$('.StoreImgDeleteSpan').click(function(){					
+				$('.storeImgDeleteSpan').unbind();
+				$('.storeImgDeleteSpan').click(function(){					
 					
 					test = this;
 					//newStoreImg인 경우 
@@ -801,7 +801,8 @@
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				<div class="review-header">
-					<h1>리뷰들</h1>
+					<!-- 리뷰  -->
+					<h1>리뷰</h1>
 					<!-- Button trigger modal -->
 					<button type="button" class="btn btn-primary" data-toggle="modal" id="reviewModalBtn">
 						리뷰 작성
@@ -1071,7 +1072,7 @@
 		<!-- storeImg clone -->
 		<div class="storeImg" id="storeImgTemplate">
 			<img alt="Image">
-			<span class="glyphicon glyphicon-remove StoreImgDeleteSpan" aria-hidden="true"></span>
+			<span class="glyphicon glyphicon-remove storeImgDeleteSpan" aria-hidden="true"></span>
 		</div>
 						
 	</c:if>

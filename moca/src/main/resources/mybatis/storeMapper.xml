@@ -185,5 +185,7 @@
   <select id="selectTagList" resultType="String">
   	SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'mocadb' AND TABLE_NAME = 'TAGS'
   </select>
-
+  <select id="selectAlreadyReviewByKakaoId" parameterType="INTEGER" resultType="INTEGER">
+  	SELECT count(STORE_ID) FROM STORE WHERE KAKAOID=#{id}
+  </select>
 </mapper>

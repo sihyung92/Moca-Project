@@ -57,4 +57,6 @@ public interface StoreDao {
 	
 	List<String> selectTagNames();
 	
+	int selectAlreadyReviewByKakaoId(int kakaoId) throws SQLException;
+	
 }

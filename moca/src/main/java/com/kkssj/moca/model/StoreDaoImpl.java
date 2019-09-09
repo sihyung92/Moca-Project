@@ -160,4 +160,9 @@ public class StoreDaoImpl implements StoreDao {
 	public List<String> selectTagNames(){
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTagNames");
 	}
+
+	@Override
+	public int selectAlreadyReviewByKakaoId(int kakaoId) throws SQLException {
+		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectAlreadyReviewByKakaoId",kakaoId);
+	}
 }
