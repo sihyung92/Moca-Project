@@ -89,7 +89,6 @@ var bindReviewVariable = function(){
 
 //리뷰 저장
 var saveReview = function(fileBuffer){
-	console.log("saveReviewBtn clicked",fileBuffer)
 	var form = $('#reviewForm')[0];
 
 	var reviewFormData = new FormData(form);
@@ -97,17 +96,13 @@ var saveReview = function(fileBuffer){
 	reviewFormData.delete('file');
 	
 	var fileSize = fileBuffer.length;
-	console.log("fileSize"+fileSize);
-	console.log("save",fileBuffer);
 	
 	if(fileSize >0){
 		for(var i=0 ; i < fileSize ; i ++){
 			reviewFormData.append("file",fileBuffer[i]);
-			console.log(i,fileBuffer[i]);
 		}
 	}
 	
-	console.log('formData',reviewFormData.get('file'));
 	
 	$.ajax({
 		type: 'POST',
@@ -124,8 +119,6 @@ var saveReview = function(fileBuffer){
 			
 	    },
 		success: function(reviewVo) {
-			console.log('ajax 통신 성공');
-			console.log(reviewVo);
 			
 			//리뷰 추가(최상단에)
 			addReviewInReviewContent(reviewVo);
@@ -181,6 +174,19 @@ var addReviewInReviewContent = function(reviewVo) {
 	reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
 	reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
 	
+	for(var key in reviewVo.tagMap){
+		if(!key.includes('ID') && (test.tagMap[key] ==1)){
+			var newTag = $('#review-tag-div').clone(true);
+			newTag.css('display','');
+			newTag.removeAttr('id');
+			
+			newTag.text('#'+key)	//값 넣어주기
+			newTag.attr('href', '#')	/// search와 연결
+			
+			newReview.find('.review-tags-div').append(newTag);
+		}
+	}
+	
 	var likehateFormGroup = reviewInfo.children('.like-hate')
 	
 	//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
@@ -211,17 +217,15 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	//store name
 	
 	//마이페이지에서만 제목을 따로 등록해야하기 때문
-	if(reviewModal.find('#reviewModalLabel').html="에 대한 리뷰" && (storeName!=undefined)){
+	if((reviewModal.find('#reviewModalLabel').html().trim()=="에 대한 리뷰") && (storeName!=undefined)){
 		reviewModal.find('#reviewModalLabel').html(storeName+"에 대한 리뷰");
 	}
 	
 	
 	//리뷰 아이디
 	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
-	console.log(reviewModal.find('#review_id').val());
 	//스토어아이디
 	reviewModal.find('#storeId').val(editReviewRow.find('.storeId').eq(0).val());
-	console.log(reviewModal.find('#storeId').val());
 	
 	//사진
 	
@@ -248,7 +252,6 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 		for(var tagArrIdx=0 ; tagArrIdx < tagArr.length ; tagArrIdx++){
 			if(tagsCheckbox[tagCheckboxIdx].value == tagArr[tagArrIdx]){
 				$(tagsCheckbox[tagCheckboxIdx]).prop('checked', true);
-				console.log( tagArr[tagArrIdx].value);
 			}	
 		}
 	}
@@ -267,7 +270,6 @@ var editReview = function(){
 	//delete한 썸네일 추가
 	$(reviewForm).append('<input type="hidden" name="delThumbnail" value="'+delThumbnail+'"/>');
 	
-	console.log(reviewForm);
 	
 	//파일 추가
 	var form = $('#reviewForm')[0];
@@ -285,7 +287,6 @@ var editReview = function(){
 	}
 	
 	reviewFormObj = $(reviewForm).serializeObject();
-	console.log(reviewFormObj.review_id,reviewFormData);
 
 	//ajax 통신 - post방식으로 추가
 	$.ajax({
@@ -300,7 +301,6 @@ var editReview = function(){
 		cache : false,
 		timeout : 600000,
 		success: function(reviewVo) {
-			console.log('ajax 통신 성공',reviewVo.imageList);
 			//리뷰 내용
 			editReviewRow.find('.reviewInfo-review-content').text(reviewFormObj.reviewContent);
 			
@@ -358,7 +358,6 @@ var clearReviewModalData = function(){
 
 //리뷰 삭제
 var deleteReview = function(review_id) {
-	console.log(review_id);
 	$.ajax({
 		type: 'DELETE',
 		url: '/moca/reviews/'+review_id,
@@ -375,7 +374,7 @@ var deleteReview = function(review_id) {
 
 //리뷰 사진 삭제 버튼 클릭시
 var deleteReviewImg = function(deleteBtn){
-	console.log(deleteBtn);
+
 	var temp = delThumbnail;
 	
 	//추가해준 이미지가 아니면
@@ -386,7 +385,6 @@ var deleteReviewImg = function(deleteBtn){
 			delThumbnail = temp+$(deleteBtn).prev().attr('src');		
 		}		
 	}
-	console.log(delThumbnail);
 	
 	//삭제 버튼을 클릭한 이미지가 몇번째인지 (0부터)
 	var fileIndex = $(deleteBtn).parent().index();	
@@ -401,7 +399,6 @@ var deleteReviewImg = function(deleteBtn){
     	//더 올릴수 있는 파일의 갯수
 	    fileIndex = fileIndex - maxNumForAdd;
 	}
-    console.log($(deleteBtn).parent().attr('class'));
     
     //내가 새로 추가한 이미지인 경우
     if($(deleteBtn).parent().attr('class')=='file newThumbnail reviewThumbnail'){
@@ -427,9 +424,7 @@ var callReviewDataMore = function(){
           $(this).addClass('moreData');
           btnMoreReview.show();
           btnMoreReview.on("click",function(){
-       	   console.log("outerHeight"+$( this ).outerHeight());
              $(this).siblings('.review-content-div').find('.more-review-content').toggleClass('moreData').promise().done(function(){
-                  console.log($(this).hasClass("moreData"));
                   if($(this).hasClass("moreData") === false){
                 	  btnMoreReview.text("접기");
                   	$(this).css({ 'height': '100%', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
@@ -613,15 +608,12 @@ var bindLikeHateButtonEvent = function(clickedLikeHateButton){
 			//좋아요 버튼을 눌렀을때 
 			if (likeBtn.hasClass('clicked')) {
 				//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
-				console.log('이전에 좋아요 누른 상태 > 좋아요를 누를때')
 				cancelLikeHate(reviewId, isLike);
 			} else if (hateBtn.hasClass('clicked')) {
 				//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
-				console.log('이전에 싫어요 누른 상태 > 좋아요를 누를때 ')
 				changeLikeHate(reviewId, isLike);
 			} else {
 				//이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 => 좋아요
-				console.log('이전에 아무것도 누르지 않은 상태 > 좋아요 누를때 ');
 				addLikeHate(reviewId,isLike);
 			}
 		} else if (clickedLikeHateButton.hasClass('hate-btn')) {
@@ -630,15 +622,12 @@ var bindLikeHateButtonEvent = function(clickedLikeHateButton){
 			//싫어요 버튼을 눌렀을때 
 			if (likeBtn.hasClass('clicked')) {
 				//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
-				console.log('이전에 좋아요 누른 상태 > 싫어요 누를때 ')
 				changeLikeHate(reviewId, isLike);
 			} else if (hateBtn.hasClass('clicked')) {
 				//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
-				console.log('이전에 싫어요 누른 상태 > 싫어요를 누를때 ')
 				cancelLikeHate(reviewId, isLike);
 			} else {
 				//이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 => 싫어요
-				console.log('이전에 아무것도 누르지 않은 상태 > 싫어요 누를때 ')
 				addLikeHate(reviewId, isLike);
 			}
 		}
@@ -727,12 +716,26 @@ var moreReviewList = function(startNum,callWhere) {
 		},
 		success: function(reviewVoList) {
 			console.log('ajax 통신 성공')
-			console.log(reviewVoList);
 			
 			//갖고오는 이미지 length가 3개 미만일 때
 			if(reviewVoList.length<3){
 				$('#moreReview').hide();
 				reviewVoListLength = true;
+			}
+			
+			
+			test = reviewVoList;
+			//어떤 페이지에서 사용되는지 확인
+			var isStorePage;
+			var isMypage;
+			
+			//storeName의 유무에 따른 페이지 결정
+			if(reviewVoList[0].storeName !=null){
+				isStorePage = false;
+				isMypage = true;
+			}else{
+				isStorePage = true;
+				isMypage = false;
 			}
 			
 			for(var j=0; j<reviewVoList.length; j++){
@@ -755,8 +758,16 @@ var moreReviewList = function(startNum,callWhere) {
 				newReview.removeAttr('id')
 				
 				var reviewerInfo = newReview.find('.reviewer-info')
+				var storeInfo = newReview.find('.store-info')
 				var reviewInfo = newReview.find('.review-info')
 				var reviewLevel = newReview.children(".review-level")
+				
+				if(isStorePage){
+					storeInfo.css('display','none')
+					
+				}else if(isMypage){
+					reviewerInfo.css('display','none')
+				}
 				
 				// 나중에 사진 추가할때 사용
 				var reviewThumbnail = reviewInfo.children('.reviewThumbnailGroup');
@@ -776,11 +787,9 @@ var moreReviewList = function(startNum,callWhere) {
 				newReview.find('.review-id').eq(0).val(''+reviewVo.review_id);
 				newReview.find('.review-id').eq(1).val(''+reviewVo.review_id);
 				newReview.find('.store-id').eq(0).val(''+reviewVo.store_id);
-				console.log(newReview.find('.review-id').eq(1).val());
-				console.log(newReview.find('.store-id').eq(0).val());
 				
-				if(url.indexOf('mypage') == -1){
-					//mypage가 아닐때
+				if(isStorePage){
+					//store 페이지일 때
 					if(reviewVo.thumbnailImage==null){
 						reviewerInfo.find('.accountProfile').attr('src','/moca/resources/imgs/basicProfile.png');
 					}else{
@@ -789,19 +798,19 @@ var moreReviewList = function(startNum,callWhere) {
 					reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 					reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
 					reviewerInfo.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
-				}else{
+				}else if(isMypage){
 					//mypage일 때
 					if(reviewVo.storeLogoImg==null){
-						reviewerInfo.find('img').attr('src','/moca/resources/imgs/basicProfile.png');
+						storeInfo.find('img').attr('src','/moca/resources/imgs/basicProfile.png');
 					}else{
-						reviewerInfo.find('img').attr('src',reviewVo.storeLogoImg);					
+						storeInfo.find('img').attr('src',reviewVo.storeLogoImg);					
 					}
-					reviewerInfo.find('.storeName').text(reviewVo.storeName); 	//storeName
+					storeInfo.find('.storeName').text(reviewVo.storeName); 	//storeName
 				}
 				
 				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
 				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
-				for(var key in test.tagMap){
+				for(var key in reviewVo.tagMap){
 					if(!key.includes('ID') && (test.tagMap[key] ==1)){
 						var newTag = $('#review-tag-div').clone(true);
 						newTag.css('display','');
@@ -811,7 +820,6 @@ var moreReviewList = function(startNum,callWhere) {
 						newTag.attr('href', '#')	/// search와 연결
 						
 						newReview.find('.review-tags-div').append(newTag);
-						console.log(newTag);
 					}
 				}
 				

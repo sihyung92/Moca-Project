@@ -14,6 +14,7 @@ import com.kkssj.moca.model.entity.StoreVo;
 import com.kkssj.moca.util.S3Util;
 import com.kkssj.moca.util.UploadFileUtils;
 import com.kkssj.moca.model.ReviewDao;
+import com.kkssj.moca.model.StoreDao;
 import com.kkssj.moca.model.entity.AccountVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
@@ -25,6 +26,9 @@ public class MypageServiceImpl implements MypageService{
 	
 	@Inject
 	ReviewDao reviewDao;
+	
+	@Inject
+	StoreDao storeDao;
 
 	@Override
 	public List<StoreVo> getFavoriteStoreList(int accountId) {
@@ -211,6 +215,23 @@ public class MypageServiceImpl implements MypageService{
 		}
     	
 		return 0;
+	}
+
+	@Override
+	public List<String> getTagNameList() {
+		List<String> tagNameList = null;
+		try {
+			tagNameList = storeDao.selectTagList();
+			//review_id, store_id 제거
+			tagNameList.remove(0);
+			tagNameList.remove(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+		return tagNameList;
 	}
 
 }

@@ -816,6 +816,7 @@ public class StoreServiceImpl implements StoreService{
 		}
 	};
 
+	//TAGS 테이블에 있는 컬럼을 List 형태로 반환(ID 값 제외)
 	@Override
 	public List<String> getTagNameList() {
 		

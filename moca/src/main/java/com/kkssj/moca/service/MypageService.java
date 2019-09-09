@@ -40,4 +40,6 @@ public interface MypageService{
 	//해당 account의 회원탈퇴(삭제)
 	int deleteAccount(int accountId);
 
+	List<String> getTagNameList();
+
 }

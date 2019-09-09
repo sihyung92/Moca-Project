@@ -101,6 +101,9 @@ public class StoreController {
 		//리뷰가져오기
 		model.addAttribute("reviewVoList", storeService.getReviewListLimit(accountVo.getAccount_id(), storeId, 0, tagNameList));
 
+		//tag 가져오기
+		model.addAttribute("tagNameList", tagNameList);
+				
 		model.addAttribute("storeVo", storeVo);
 		
 		//storeImg의 개수에 따라 리뷰 이미지 vo 받아오기
@@ -108,8 +111,7 @@ public class StoreController {
 		
 		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));		
 		
-		//tag 가져오기
-		model.addAttribute("tagNameList", tagNameList);
+		
 		
 		return "store_detail";
 	}

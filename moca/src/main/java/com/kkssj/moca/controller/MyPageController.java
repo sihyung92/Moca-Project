@@ -86,6 +86,8 @@ public class MyPageController {
 			accountVo.setIsMine(0);
 		}
 		
+		List<String> tagNameList = mypageService.getTagNameList();
+		
 		model.addAttribute("accountVo",accountVo);
 		
 		//해당 account 정보 가져오기 (그래프+배지 포함)
@@ -94,6 +96,9 @@ public class MyPageController {
 		
 		//해당 account의 내가 쓴 리뷰 가져오기
 		model.addAttribute("reviewVoList", mypageService.getMyreviewList(accountId,accountVo.getAccount_id(),0));
+		
+		//tag 가져오기
+		model.addAttribute("tagNameList", tagNameList);
 		
 		
 		//follower목록 가져오기

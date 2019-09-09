@@ -122,7 +122,7 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=3"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -151,8 +151,12 @@
 	var id=$(location).attr('pathname').split('/')[$(location).attr('pathname').split('/').length-1];
 
 	var storeTemplate;
+
+	var tagNameList;
 	
 	$(document).ready(function() { 
+
+		//tagNameList = ${tagNameList};
 		
 		/////////////////내가 쓴글 관리 시작//////////////
 		//변수 바인딩
@@ -196,7 +200,6 @@
 			fileBuffer = [];
 			//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
 			var storeName = $(this).parent().parent().find('.reviewer-info').find('.storeName-div').find('.storeName').html();
-			console.log(storeName);
 			
 			reviewData2ReviewModal($(this),storeName);
 			reviewModal.find('#saveReviewBtn').css('display','none')
@@ -222,7 +225,6 @@
 		deleteBtn.click(function(){
 			var reviewId = $(this).parent().find('.review-id').val();
 			var reviewTodelete = $(this).parent().parent();
-			console.log(reviewTodelete);
 			$('#confirm').modal({ backdrop: 'static', keyboard: false })
 	        .one('click', '#delete', function() {
 	        	reviewTodelete.remove();
@@ -274,7 +276,6 @@
 		<c:forEach items="${followingList}" var="following">
 			followingList.push("${following.account_id}");
 		</c:forEach>
-		console.log(followingList);
 		
 		for ( var i = 0; i < followingList.length; i++) {
 			if(followId==followingList[i]){
@@ -293,12 +294,9 @@
 					type: 'GET',
 					url: '/moca/follower/'+followId,
 					success: function(followerList) {
-						console.log(followerList);
 
-						console.log(followInfoTemplate);
 						for(var i=0; i<followerList.length; i++){
 							followInfoTemplate = $('#followInfo').clone();
-							console.log(followerList[i].thumbnailImage);
 							$(followInfoTemplate).removeAttr('id');
 							onclick="location.href='address'"
 							$(followInfoTemplate).attr('onclick','location.href="'+followerList[i].account_id+'"');
@@ -327,7 +325,6 @@
 
 						for(var i=0; i<followingList.length; i++){
 							followInfoTemplate = $('#followInfo').clone();
-							console.log(followingList[i].thumbnailImage);
 							$(followInfoTemplate).removeAttr('id');
 							$(followInfoTemplate).attr('onclick','location.href="'+followingList[i].account_id+'"');
 							$(followInfoTemplate).find('img').attr('src',followingList[i].thumbnailImage);
@@ -356,8 +353,6 @@
 						haveLikeInfo =true;						
 						for(var idx in likeStoreList){
 							var newStore = $('#storeTemplate').clone(true);
-							test = newStore
-							console.log(test);
 							
 							newStore.css('display', '');
 							newStore.removeAttr('id');
@@ -400,7 +395,6 @@
 							
 							var newStore = $('#storeTemplate').clone(true);
 							test = newStore
-							console.log(test);
 							
 							newStore.css('display', '');
 							newStore.removeAttr('id');
@@ -554,7 +548,6 @@
 	var userImageChange = function(){
 		const userImageUpdateInput = document.getElementById('userImageUpdateInput');
 		var userImage = userImageUpdateInput.files[0];
-		console.log(userImage);
 		const fileName = userImage.name;
 		const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
 	    if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
@@ -646,7 +639,7 @@
 											<button type="button" class="btn-delete btn btn-default">삭제</button>
 										</div>
 									</c:if>
-									<div class="reviewer-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+									<div class="store-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
 										<div class="storeLogo-div">
 											<!-- store logo 이미지 -->
 											<c:if test="${empty reviewVo.storeLogoImg}">
@@ -863,86 +856,7 @@
 		</div>
 	</div>
 	
-	<jsp:include page="../../resources/template/reviewModal.jsp" flush="true"></jsp:include>
-	
-	
-	<!-- clone할 review element -->
-	<div class="row"  id="reviewTemplate" style="display : none;">
-		<div class="editDeleteGroup btn-group" role="group">
-			<input type="number" style="display: none;" class="review-id" >
-			<input type="number" style="display: none;" class="store-id" >
-			<button type="button" class="btn-edit btn btn-default">수정</button>
-			<button type="button" class="btn-delete btn btn-default">삭제</button>
-		</div>
-		<div class="reviewer-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
-			<div class="storeLogo-div">
-				<!-- store logo 이미지 -->
-				<c:if test="${empty reviewVo.storeLogoImg}">
-					<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
-						alt="logo" class="img-circle" style="width: 100px;">
-				</c:if>
-				<c:if test="${not empty reviewVo.storeLogoImg}">
-					<img src="<c:url value="${reviewVo.storeLogoImg }" />" alt="logo"
-						class="img-circle" style="width: 100px;">
-				</c:if>
-			</div>
-			<div class="storeName-div">
-				<!-- store 이름 -->
-				<span class="storeName">${reviewVo.storeName}</span>
-			</div>
-		</div>
-		<div class="review-info col-md-8">
-			<div class="reviewThumbnailGroup">
-			</div>
-			<div class="review-data">
-				<div class="write-date-div">
-					<label>작성일</label>
-					<span class="reviewInfo-write-date"></span>
-				</div>
-				<div class="review-content-div">
-					<label>리뷰 내용</label>
-					<span class="reviewInfo-review-content"></span>
-				</div>
-				<span class="more-review-content-btn">더보기</span>
-			</div>
-			<div class="form-group like-hate">
-				<div class="btn-group" data-toggle="buttons">
-					<input type="number" class="review-id" style="display: none;">
-					<button type="button" class="btn btn-primary like-btn ">좋아요</button>
-					<input type="number" class="like-count" value=0 >
-					<button type="button" class="btn btn-primary hate-btn">싫어요</button>
-					<input type="number" class="hate-count" value=0>
-				</div>
-			</div>
-		</div>
+	<jsp:include page="../../resources/template/reviewElement.jsp" flush="true"></jsp:include>
 
-		<div class="review-level col-md-2">
-			<div class="taste-level-div">
-				<label>맛</label>
-				<span class="taste-level"></span>점
-			</div>
-			<div class="price-level-div">
-				<label>가격</label>
-				<span class="price-level"></span>점
-			</div>
-			<div class="service-level-div">
-				<label>서비스</label>
-				<span class="service-level"></span>점
-			</div>
-			<div class="taste-level-div">
-				<label>분위기</label>
-				<span class="mood-level"></span>점
-			</div>
-			<div class="taste-level-div">
-				<label>편의성</label>
-				<span class="convenience-level"></span>점
-			</div>
-			<div class="taste-level-div">
-				<label for="average_level">평균</label>
-				<span class="average-level"></span >점
-			</div>								
-		</div>
-		<br><br><br>
-	</div>
 </body>
 </html>
