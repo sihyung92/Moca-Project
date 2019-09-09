@@ -20,6 +20,10 @@
 	.links{
 		border: 1px solid purple;
 	}
+	.links img{
+		width: 300px;
+		height: 300px;
+	}
 	.label{
 		background-color: white;
 	}
@@ -38,14 +42,12 @@
 	span.seoul{
 		background-color : yellow;
 	}
-	#result_stores{
-		display: inline-block;
-		width: 400px;
+	.warning{
+		text-align: center;
 	}
-	#mapContainer{
-		float:right;
+	#page{
+		text-align: center;
 	}
-	
 </style>
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
@@ -232,6 +234,9 @@
 				    }
 				},
 				success: function(data){
+					if(data.length==0){
+						$('#warning_noResult').text("검색 결과가 없습니다");
+					}
 					reload_map(data);				
 				}
 			});	
@@ -254,6 +259,7 @@
 				$(inputs[7]).val(ele.url);
 				$(inputs[8]).val(ele.xLocation);
 				$(inputs[9]).val(ele.yLocation);
+				$(store.children()[0]).find('img').attr('src', ele.storeImg1);
 				var spans = $(store.children()[0]).children('span');
 				$(spans[0]).html("<strong>"+ele.name+"</strong>");
 				$(spans[1]).html("<strong>평점:"+ele.averageLevel+" 리뷰수:"+ele.reviewCnt+" 조회수:"+ele.viewCnt+"</strong>");
@@ -263,10 +269,10 @@
 				}else if(ele.distance==null){
 					distance="";
 				}else{
-					distance = ele.distance+"m";
+					distance = (ele.distance*1).toFixed(0)+"m";
 				}
 				$(spans[2]).text(distance + ele.roadAddress);
-				$('#result_stores').append(store);
+				$(store).appendTo('#result_stores').show();
 				overlayList.push({'lat':ele.yLocation,'lng':ele.xLocation, 'store_Id': ele.store_Id, 'name':ele.name, 'roadAddress': ele.roadAddress, 'tel':ele.tel, 'tasteLevel':ele.tasteLevel,'priceLevel':ele.priceLevel, 'serviceLevel':ele.serviceLevel, 'moodLevel':ele.moodLevel, 'convenienceLevel':ele.convenienceLevel, 'logoImg':ele.logoImg});
 			});
 			$('.links').on("click",toDetail);
@@ -277,11 +283,7 @@
 			createElements();			
 		};    
 		</c:if> 		
-	};	
-
-	
-	
-	
+	};		
 	</script>	
 </head>
 <body>
@@ -606,13 +608,14 @@
 <div id="header">
 		<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 </div>
-<div id="content">
-	<br/><br/><br/><br/>
-	<div id="warning_geo">
-		<strong>정확한 검색을 위해 위치 정보 접근을 허용해주세요:)</strong><br/>
-		<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
+<div id="content" class="container-fluid">
+	<div class="warning">
+		<span id="warning_geo">
+			<strong>정확한 검색을 위해 위치 정보 접근을 허용해주세요:)</strong><br/>
+			<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
+		</span>		
 	</div>
-	<div id="search">		
+	<div id="search" class="row" style="background-color:pink">		
 		<form class="form-inline" action="stores">
 			<input type="text" name="keyword" class="form-control" id="keyword2" placeholder="Search" value="${keyword}"/>
 			<button id="searchBtn2" class="btn btn-default" type="submit">검색</button><br/>
@@ -628,38 +631,77 @@
 			<input type="hidden" name="region" id="region2" disabled="disabled"/>
 			<c:if test="${not empty msg_changedFilter}">원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</c:if>		
 		</form>	
+		<br/>
 	</div>
-	<div id="warning_box">
-		<span id="warning_noResult"><c:if test="${requestScope.storeList[0] eq null and wrongKeyword eq null}">검색 결과가 없습니다</c:if></span>
-	</div>
-	<div id="result_stores">
-		<span id="warning_changedFilter"><small>${msg_changedFilter}</small></span>
-		<c:forEach items="${requestScope.storeList}" var="bean" varStatus="status">
-			<c:if test="${bean.distance ge 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance/1000}" pattern="#.0km"></fmt:formatNumber></c:if>
-			<c:if test="${bean.distance lt 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance}" pattern="#m"></fmt:formatNumber></c:if>
-			<div class="links">
-				<form action="stores" method="post">
-					<input type="hidden" name="store_Id" value="${bean.store_Id}">
-					<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
-					<input type="hidden" class="name" name="name" value="${bean.name}"><span><strong>${bean.name }</strong></span><br/>
-					<span><strong>평점:${bean.averageLevel} 리뷰수:${bean.reviewCnt} 조회수:${bean.viewCnt}</strong></span><br/>
-					<input type="hidden" class="roadAddress" name="roadAddress" value="${bean.roadAddress}"><span>${distance} ${bean.roadAddress }</span><br/>
-					<input type="hidden" name="address" value="${bean.address}">
-					<input type="hidden" name="tel" value="${bean.tel}"><span>Tel: ${bean.tel }</span>
-					<input type="hidden" name="category" value="${bean.category}">				
-					<input type="hidden" name="url" value="${bean.url}">
-					<input type="hidden" name="xLocation" value="${bean.xLocation}">
-					<input type="hidden" name="yLocation" value="${bean.yLocation}">	
-				</form>	
+	<div class="row">			
+		<c:if test="${not empty storeList }">
+			<div id="mapContainer" class="col-xs-12 col-md-6" style="background-color:lightblue">
+				<div id="map" style="height:600px;"></div>
+				<button id="map_re-search" style="display:none">이 지역에서 재검색</button>	
+			</div>			
+		</c:if>
+		<div id="result_stores" class="col-xs-12 col-md-6" style="background-color:lavender">
+			<div class="warning">
+				<span id="warning_changedFilter"><small>${msg_changedFilter}</small></span>
+				<span id="warning_noResult"><c:if test="${storeList[0] eq null}">검색 결과가 없습니다</c:if></span>
+			</div>			
+			<div style="display:none" class="links">
+					<form action="stores" method="post">
+						<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}"><br/>
+						<input type="hidden" name="store_Id" value="">
+						<input type="hidden" name="kakaoId" value="">
+						<input type="hidden" class="name" name="name" value=""><span><strong></strong></span><br/>
+						<span><strong></strong></span><br/>
+						<input type="hidden" class="roadAddress" name="roadAddress" value=""><span></span><br/>
+						<input type="hidden" name="address" value="">
+						<input type="hidden" name="tel" value=""><span></span>
+						<input type="hidden" name="category" value="">				
+						<input type="hidden" name="url" value="">
+						<input type="hidden" name="xLocation" value="">
+						<input type="hidden" name="yLocation" value="">	
+					</form>	
 			</div>	
-		</c:forEach>			
-	</div>
-	<c:if test="${not empty requestScope.storeList }">
-		<div id="mapContainer">
-			<div id="map" style="width:500px;height:400px;"></div>
-			<button id="map_re-search" style="display:none">이 지역에서 재검색</button>	
-		</div>			
-	</c:if>
+			<c:forEach items="${storeList}" var="bean" varStatus="status">
+				<c:if test="${bean.distance ge 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance/1000}" pattern="#.0km"></fmt:formatNumber></c:if>
+				<c:if test="${bean.distance lt 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance}" pattern="#m"></fmt:formatNumber></c:if>
+				<div class="links" class="col-xs-12 col-md-3">
+					<form action="stores" method="post">
+						<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}"><br/>
+						<input type="hidden" name="store_Id" value="${bean.store_Id}">
+						<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
+						<input type="hidden" class="name" name="name" value="${bean.name}"><span><strong>${bean.name }</strong></span><br/>
+						<span><strong>평점:${bean.averageLevel} 리뷰수:${bean.reviewCnt} 조회수:${bean.viewCnt}</strong></span><br/>
+						<input type="hidden" class="roadAddress" name="roadAddress" value="${bean.roadAddress}"><span>${distance} ${bean.roadAddress }</span><br/>
+						<input type="hidden" name="address" value="${bean.address}">
+						<input type="hidden" name="tel" value="${bean.tel}"><span>Tel: ${bean.tel }</span>
+						<input type="hidden" name="category" value="${bean.category}">				
+						<input type="hidden" name="url" value="${bean.url}">
+						<input type="hidden" name="xLocation" value="${bean.xLocation}">
+						<input type="hidden" name="yLocation" value="${bean.yLocation}">	
+					</form>	
+				</div>	
+			</c:forEach>
+			<nav id="page" aria-label="Page navigation">
+			  <ul class="pagination">
+			    <li>
+			      <a href="#" aria-label="Previous">
+			        <span aria-hidden="true">&laquo;</span>
+			      </a>
+			    </li>
+			    <li><a href="#">1</a></li>
+			    <li><a href="#">2</a></li>
+			    <li><a href="#">3</a></li>
+			    <li><a href="#">4</a></li>
+			    <li><a href="#">5</a></li>
+			    <li>
+			      <a href="#" aria-label="Next">
+			        <span aria-hidden="true">&raquo;</span>
+			      </a>
+			    </li>
+			  </ul>
+			</nav>					
+		</div>		
+	</div>			
 </div>
 </body>
 </html>

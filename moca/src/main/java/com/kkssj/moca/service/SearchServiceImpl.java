@@ -35,8 +35,14 @@ public class SearchServiceImpl implements SearchService {
 	Logger logger = LoggerFactory.getLogger(SearchService.class);
 	
 	@Override
-	public List<StoreVo> getListByTag(Map<String, String> variables) {		
-		return storeDao.selectListByTag(variables);
+	public List<StoreVo> getListByTag(Map<String, Object> variables) {		
+		List<StoreVo> alist=storeDao.selectListByTag(variables);
+		for(StoreVo s: alist) {
+			if(s.getStoreImg1()==null) {
+				s.setStoreImg1(s.getStoreImg2());
+			}
+		}
+		return alist; 
 	}	
 
 	@Override
@@ -55,7 +61,12 @@ public class SearchServiceImpl implements SearchService {
 			currentVo.setServiceLevel(tempVo.getServiceLevel());
 			currentVo.setPriceLevel(tempVo.getPriceLevel());
 			currentVo.setAverageLevel(tempVo.getAverageLevel());
-			currentVo.setLogoImg(tempVo.getLogoImg());			
+			currentVo.setLogoImg(tempVo.getLogoImg());	
+			if(tempVo.getStoreImg1()!=null) {
+				currentVo.setStoreImg1(tempVo.getStoreImg1());
+			}else{
+				currentVo.setStoreImg1(tempVo.getStoreImg2());
+			}	
 		}		
 		return currentVo;
 	}

@@ -34,20 +34,37 @@ public class SearchController {
 	public List<StoreVo> searchOnTheMap(HttpSession session, HttpServletResponse response, String filter, String rect, String x, String y, String keyword, Model model){
 		logger.debug("filter: "+filter+"keyword: "+keyword);
 		logger.debug("rect: "+rect);
-		//카카오 맵 범위 내 재검색
-		List<StoreVo> storeList = searchService.getListFromKakaoAPI(keyword, null, (String)session.getAttribute("x"), (String)session.getAttribute("y"), rect, model);	//x, y, region 정보 불필요
-		if(storeList.size()==0) {
-			storeList = searchService.getListFromKakaoAPI(keyword, null, x, y, null, model);
-			for(StoreVo s: storeList) {
-				s.setDistance(null);
+		List<StoreVo> storeList=null;
+		
+		if(keyword.contains("#")) {
+			//태그 검색 재검색
+			if(!keyword.substring(keyword.indexOf("#")+1).equals("")){		//태그 앞에만 내용이 있으면 키워드 검색으로 처리
+				keyword=keyword.substring(keyword.indexOf("#")+1).trim();
+				keyword=keyword.replace(" ", "");
+				Map<String, Object> variables = new HashMap<String, Object>();
+				variables.put("keyword", keyword);
+				variables.put("x", x);
+				variables.put("y", y);
+				variables.put("filter", filter);
+				variables.put("rect", rect.split(","));
+				storeList=searchService.getListByTag(variables);
+			}
+		}else {			
+			//카카오 맵 범위 내 재검색
+			storeList = searchService.getListFromKakaoAPI(keyword, null, (String)session.getAttribute("x"), (String)session.getAttribute("y"), rect, model);	//x, y, region 정보 불필요
+			if(storeList.size()==0) {
+				storeList = searchService.getListFromKakaoAPI(keyword, null, x, y, null, model);
+				for(StoreVo s: storeList) {
+					s.setDistance(null);
+				}
 				response.setStatus(418);
 			}
+			//mocaDB 열람 및 데이터 업데이트
+			for(StoreVo s: storeList) s = searchService.getMoreData(s);
+			//정렬 처리
+			if(!filter.equals("distance")) 	storeList = searchService.sort(storeList, filter); 		//카카오 정렬 디폴트 = 거리순(정렬 처리 불필요)
 		}
-		//mocaDB 열람 및 데이터 업데이트
-		for(StoreVo s: storeList) s = searchService.getMoreData(s);
-		//정렬 처리
-		if(!filter.equals("distance")) 	storeList = searchService.sort(storeList, filter); 		//카카오 정렬 디폴트 = 거리순(정렬 처리 불필요)
-		return storeList;	
+		return storeList;
 	}
 	
 	
@@ -91,7 +108,7 @@ public class SearchController {
 			if(!keyword.substring(keyword.indexOf("#")+1).equals("")){		//태그 앞에만 내용이 있으면 키워드 검색으로 처리
 				keyword=keyword.substring(keyword.indexOf("#")+1).trim();
 				keyword=keyword.replace(" ", "");
-				Map<String, String> variables = new HashMap<String, String>();
+				Map<String, Object> variables = new HashMap<String, Object>();
 				variables.put("keyword", keyword);
 				variables.put("x", x);
 				variables.put("y", y);
