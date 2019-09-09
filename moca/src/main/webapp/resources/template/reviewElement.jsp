@@ -147,7 +147,7 @@
 			<span class="reviewer-reviews">${accountVo.reviewCount }</span>
 		</div>
 	</div>
-	<div class="store-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+	<div class="store-info col-md-2" style="cursor:pointer;">
 		<div class="storeLogo-div">
 			<!-- store logo 이미지 -->
 			<img src="<c:url value="/resources/imgs/logoDefault.png"/>"	alt="logo" class="img-circle" style="width: 100px;">

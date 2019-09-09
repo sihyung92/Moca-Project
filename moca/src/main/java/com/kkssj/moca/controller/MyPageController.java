@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -35,14 +37,16 @@ public class MyPageController {
 	private static final Logger logger = LoggerFactory.getLogger(MyPageController.class);
 
 	@GetMapping(value = "/mypage")
-	public String myHome(HttpSession session){
+	public String myHome(HttpSession session, HttpServletResponse response, Model model){
 		
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
 		//비회원인 경우
 		if(accountVo ==null) {
+			model.addAttribute("accountId", 0);
 			///어디로 보낼지는 회의를 거쳐서
-			return "redirect:/mypage/0";
+			response.setStatus(423);
+			return "mypage";
 		}
 
 		logger.debug(accountVo.toString());
@@ -51,22 +55,21 @@ public class MyPageController {
 	}
 	
 	@GetMapping(value = "/mypage/{accountId}")
-	public String home(@PathVariable("accountId") int accountId, Model model, HttpSession session){
+	public String home(@PathVariable("accountId") int accountId, Model model, HttpSession session, HttpServletResponse response){
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
+		
+		//비회원인 경우
+		if(accountVo ==null) {
+			accountVo = new AccountVo();
+		}else {
+			logger.debug(accountVo.toString());
+		}
 		
 		AccountVo currentPageAccount = mypageService.getAccountInfo(accountId);
 		//탈퇴한 회원이거나 DB에 없는 회원번호를 호출했을 때
 		if(currentPageAccount==null) {
 			//오류페이지로(현재는 메인페이지로 이동)
 			return "redirect:/";
-		}
-		
-		//비회원인 경우
-		if(accountVo ==null) {
-			accountVo = new AccountVo();
-			return "mypage";
-		}else {
-			logger.debug(accountVo.toString());
 		}
 		
 		currentPageAccount.setLevelName(currentPageAccount.getAccountLevel());

@@ -1,8 +1,11 @@
 package com.kkssj.moca.controller;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -92,6 +95,8 @@ public class LoginController {//@SessionAtrribute?인가 삭제함
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}else {
 			sess.setAttribute("login", returnVo);
+			sess.setAttribute("viewCntIsAdded",null);
+			
 			logService.writeStoreIdKeyWordNone(req, "로그인", returnVo.getAccount_id());
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
@@ -110,6 +115,7 @@ public class LoginController {//@SessionAtrribute?인가 삭제함
 			int account_id=check.getAccount_id();
 			
 			sess.setAttribute("login",null);
+			sess.setAttribute("viewCntIsAdded",null);
 			logService.writeStoreIdKeyWordNone(req, "로그아웃", account_id);
 			return new ResponseEntity<>(HttpStatus.OK);
 		}else {

@@ -3,11 +3,13 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page errorPage="error.jsp" %>
 <html>
 <head>
 	<title>Home</title>
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css"/>" />
 	<style type="text/css">
 		#userInfo, #followInfo{
 			margin:20px auto;
@@ -25,81 +27,6 @@
 		.followInfo{
 			text-align: center;
 			margin-right: 3rem;
-		}
-		
-		/* br태그 대신 margin */
-		.reviewCnt{
-			margin-bottom: 2em;
-		}
-		
-		/* 리뷰 내용 더보기 */
-		.review-data{overflow:hidden;}
-     	.review-data .more-review-content.hidden{
-	         white-space:nowrap;
-	         word-wrap:normal;
-	         width:90%;
-	         overflow:hidden;
-	         text-overflow: ellipsis;
-	         float:left;
-	      }
-	    .more-review-content-btn{display:none;white-space:nowrap;float:right;}
-	    
-	    .reviewThumbnailGroup .reviewThumbnail{
-	    	display: inline-block;
-	    }
-	    
-	    .reviewThumbnailGroup img{
-	    	width:100px;
-	    	height: 100px;
-			object-fit: cover;
-			overflow: hidden;
-	    }
-	    
-	    .modal-content {
-		  position: relative;
-		  background-color: #fefefe;
-		  margin: auto;
-		  padding: 0;
-		  width: 90%;
-		  max-width: 1200px;
-		}	
-		#reviewDetailDiv {
-			overflow:hidden;
-		  text-align: center;
-		  background-color: black;
-		  padding: 2px 16px;
-		  color: white;
-		}
-		#reviewThumbnailGroup{
-			text-align: center;
-			background-color: black;
-			padding: 2px 16px;
-			color: white;
-		}
-		#reviewThumbnailGroup .clickedImg {
-	    	border: 5px solid red;
-	    }
-	    /* Next & previous buttons */
-		#preReviewImgBtn,
-		#nextReviewImgBtn {
-		  cursor: pointer;
-		  position: absolute;
-		  top: 50%;
-		  width: auto;
-		  padding: 16px;
-		  margin-top: -50px;
-		  font-weight: bold;
-		  font-size: 20px;
-		  transition: 0.6s ease;
-		  border-radius: 0 3px 3px 0;
-		  user-select: none;
-		  -webkit-user-select: none;
-		}
-		
-		/* Position the "next button" to the right */
-		#nextReviewImgBtn{
-		  right: 0;
-		  border-radius: 3px 0 0 3px;
 		}
 		
 		/*글리피콘 사이즈*/
@@ -122,7 +49,7 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=3"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=7"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -155,8 +82,15 @@
 	var tagNameList;
 	
 	$(document).ready(function() { 
+		if(accountId==0 && id=="mypage"){
+			respondHttpStatus(423);
+		}
 
-		//tagNameList = ${tagNameList};
+		$('#Login-Modal').on('hidden.bs.modal', function () {
+			if(accountId==0 && id=="mypage"){
+				respondHttpStatus(423);
+			}
+		});
 		
 		/////////////////내가 쓴글 관리 시작//////////////
 		//변수 바인딩
@@ -198,12 +132,13 @@
 		editBtn.click(function(){
 			//파일 버퍼 내용 비우기
 			fileBuffer = [];
+			
 			//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
-			var storeName = $(this).parent().parent().find('.reviewer-info').find('.storeName-div').find('.storeName').html();
+			var storeName = $(this).parent().parent().find('.store-info .storeName-div .storeName').html();
 			
 			reviewData2ReviewModal($(this),storeName);
-			reviewModal.find('#saveReviewBtn').css('display','none')
-			reviewModal.find('#editReviewBtn').css('display','')
+			
+			transReviewEditMode();
 			$('#reviewModal').modal("show");		//리뷰 모달창 show
 						
 		})
@@ -846,10 +781,8 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-danger"
-						id="deleteUserBtn" style="float: left;">회원탈퇴</button>
-					<button type="button" id="updateBtn" data-dismiss="modal" class="btn btn-primary"
-						>수정</button>
+					<button type="button" class="btn btn-danger" id="deleteUserBtn" style="float: left;">회원탈퇴</button>
+					<button type="button" id="updateBtn" data-dismiss="modal" class="btn btn-primary">수정</button>
 					<button type="button" data-dismiss="modal" class="btn">취소</button>
 				</div>
 			</div>

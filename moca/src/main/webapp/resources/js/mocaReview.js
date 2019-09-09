@@ -228,8 +228,6 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	reviewModal.find('#storeId').val(editReviewRow.find('.storeId').eq(0).val());
 	
 	//사진
-	
-	test = editReviewRow;
 	var reviewImg = editReviewRow.find('.reviewThumbnailGroup').clone();
 	reviewModal.find('#files').after(reviewImg);
 	reviewImg.find('.reviewThumbnail img').attr('class','oldThumbnail');
@@ -793,8 +791,13 @@ var moreReviewList = function(startNum,callWhere) {
 					if(reviewVo.thumbnailImage==null){
 						reviewerInfo.find('.accountProfile').attr('src','/moca/resources/imgs/basicProfile.png');
 					}else{
-						reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);					
+						reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);
 					}
+					//마이페이지로 이동
+					reviewerInfo.attr('onclick',"location.href='/moca/mypage/"+reviewVo.account_id+"'");
+					reviewerInfo.css('cursor','pointer');
+					
+					
 					reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 					reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
 					reviewerInfo.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
@@ -803,8 +806,14 @@ var moreReviewList = function(startNum,callWhere) {
 					if(reviewVo.storeLogoImg==null){
 						storeInfo.find('img').attr('src','/moca/resources/imgs/basicProfile.png');
 					}else{
-						storeInfo.find('img').attr('src',reviewVo.storeLogoImg);					
+						storeInfo.find('img').attr('src',reviewVo.storeLogoImg);
 					}
+					
+					//store 페이지로 이동
+					storeInfo.attr('onclick',"location.href='/moca/stores/"+reviewVo.store_id+"'");
+					storeInfo.css('cursor','pointer');
+					
+					
 					storeInfo.find('.storeName').text(reviewVo.storeName); 	//storeName
 				}
 				
@@ -888,6 +897,22 @@ var bindRaty = function(){
 	$('#convenience-level').raty({
 		  scoreName:  'convenienceLevel',
 	}); 
+}
+
+var transReviewEditMode = function(){
+	$('.storeLevel').css('display','')
+	$('.level').css('display','none')
+	
+	reviewModal.find('#saveReviewBtn').css('display','none')
+	reviewModal.find('#editReviewBtn').css('display','')
+}
+
+var transReviewAddMode = function(){
+	$('.storeLevel').css('display','none')
+	$('.level').css('display','')
+	
+	reviewModal.find('#saveReviewBtn').css('display','');
+	reviewModal.find('#editReviewBtn').css('display','none');
 }
 
 

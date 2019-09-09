@@ -1,6 +1,9 @@
 package com.kkssj.moca.controller;
 
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -75,16 +78,44 @@ public class StoreController {
 		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
+		//store Log 찍혔는지 확인
+		//storeview 찍기 위한 session (storeId당 30분)
+		if(session.getAttribute("viewCntIsAdded")==null) {
+			session.setAttribute("viewCntIsAdded",new HashMap<Integer, Long>());
+		}
+		
+		boolean addStroeView = true;
+		Map<Integer,Long> viewCntIsAdded = (Map<Integer, Long>) session.getAttribute("viewCntIsAdded");
+		
+		if(viewCntIsAdded.get(storeId)==null) {
+			viewCntIsAdded.put(storeId, System.currentTimeMillis());
+			addStroeView = false;
+		}else {
+			long currentTime = System.currentTimeMillis();
+			long timeDiff = viewCntIsAdded.get(storeId);
+			if(currentTime-timeDiff>(1000*60*30)) {
+				addStroeView = false;
+				viewCntIsAdded.put(storeId, System.currentTimeMillis());
+			}
+		}
+		
+		logger.debug(storeId+":"+viewCntIsAdded);
+	
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
 			//비회원 store view 로그 찍기
+			if(addStroeView==false)
 			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}else {
 			logger.debug(accountVo.toString());
 			//회원 store view 로그 찍기
+			if(addStroeView==false)
 			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}
+		
+		
+
 		
 		StoreVo storeVo = storeService.getStore(storeId, accountVo.getAccount_id());
 		logger.debug(storeVo.toString());
