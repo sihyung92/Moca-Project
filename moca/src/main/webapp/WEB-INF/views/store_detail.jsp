@@ -2,15 +2,14 @@
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <!DOCTYPE html>
 <html>
-
 <head>
 	<meta charset="utf-8">
 	<title>moca</title>
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css"/>" />
 	<style type="text/css">
 		#likeFavoriteDiv{
 			text-align: right;
@@ -28,84 +27,6 @@
 			object-fit: cover;
 			overflow: hidden;
 		}
-		
-		/* br태그 대신 margin */
-		.reviewCnt{
-			margin-bottom: 2em;
-		}
-		
-		/* 리뷰 내용 더보기 */
-		.review-data{overflow:hidden;}
-     	.review-data .more-review-content.hidden{
-	         white-space:nowrap;
-	         word-wrap:normal;
-	         width:90%;
-	         overflow:hidden;
-	         text-overflow: ellipsis;
-	         float:left;
-	      }
-	    .more-review-content-btn{display:none;white-space:nowrap;float:right;}
-	    
-	    .reviewThumbnailGroup .reviewThumbnail{
-	    	display: inline-block;
-	    }
-	    
-	    .reviewThumbnailGroup img{
-	    	width:100px;
-	    	height: 100px;
-			object-fit: cover;
-			overflow: hidden;
-	    }
-	    
-	    
-	    
-	    .modal-content {
-		  position: relative;
-		  background-color: #fefefe;
-		  margin: auto;
-		  padding: 0;
-		  width: 90%;
-		  max-width: 1200px;
-		}	
-		#reviewDetailDiv {
-		  overflow:hidden;
-		  text-align: center;
-		  background-color: black;
-		  padding: 2px 16px;
-		  color: white;
-		}
-		#reviewThumbnailGroup{
-			text-align: center;
-			background-color: black;
-			padding: 2px 16px;
-			color: white;
-		}
-		#reviewThumbnailGroup .clickedImg {
-	    	border: 5px solid red;
-	    }
-	    /* Next & previous buttons */
-		#preReviewImgBtn,
-		#nextReviewImgBtn {
-		  cursor: pointer;
-		  position: absolute;
-		  top: 50%;
-		  width: auto;
-		  padding: 16px;
-		  margin-top: -50px;
-		  font-weight: bold;
-		  font-size: 20px;
-		  transition: 0.6s ease;
-		  border-radius: 0 3px 3px 0;
-		  user-select: none;
-		  -webkit-user-select: none;
-		}
-		
-		/* Position the "next button" to the right */
-		#nextReviewImgBtn{
-		  right: 0;
-		  border-radius: 3px 0 0 3px;
-		}
-		
 		
 		/* 카페 관리자의 사진 수정 */
 		.storeImgGroup  .storeImg{
@@ -155,7 +76,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=31"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=32"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
@@ -187,6 +108,11 @@
 
 		var startLevel;
 
+		$(document).ready(function() { 
+			$(document).error(function(){
+				console.log("오류");
+			}); 
+        }); 
 	
 		$(document).ready(function() {
 			//카페 변수 바인딩
@@ -742,10 +668,10 @@
 						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
 						<h1>
 							<c:if test="${empty storeVo.logoImg}">
-								<img id="storeLogo" src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">
+								<img id="storeLogo" src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px; height:100px;">
 							</c:if>
 							<c:if test="${not empty storeVo.logoImg}">
-								<img id="storeLogo" src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px;">
+								<img id="storeLogo" src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px; height:100px;">
 							</c:if>
 							&nbsp;${storeVo.name}
 						</h1>
@@ -896,7 +822,7 @@
 									<button type="button" class="btn-delete btn btn-default">삭제</button>
 								</div>
 							</c:if>
-							<div class="reviewer-info col-md-2">
+							<div class="reviewer-info col-md-2" onclick="location.href='/moca/mypage/${reviewVo.account_id}'" style="cursor:pointer;">
 								<div class="profile-div">
 									<c:if test="${empty reviewVo.thumbnailImage}">
 										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">

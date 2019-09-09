@@ -783,8 +783,13 @@ var moreReviewList = function(startNum,callWhere) {
 					if(reviewVo.thumbnailImage==null){
 						reviewerInfo.find('.accountProfile').attr('src','/moca/resources/imgs/basicProfile.png');
 					}else{
-						reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);					
+						reviewerInfo.find('.accountProfile').attr('src',reviewVo.thumbnailImage);
+						reviewerInfo.attr('onclick',"location.href='/moca/mypage/"+reviewVo.account_id+"'");
+						reviewerInfo.css('cursor','pointer');
 					}
+					//onclick="location.href='/moca/mypage/${reviewVo.account_id}'" style="cursor:pointer;"
+					
+					
 					reviewerInfo.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 					reviewerInfo.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
 					reviewerInfo.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
@@ -793,7 +798,9 @@ var moreReviewList = function(startNum,callWhere) {
 					if(reviewVo.storeLogoImg==null){
 						reviewerInfo.find('img').attr('src','/moca/resources/imgs/basicProfile.png');
 					}else{
-						reviewerInfo.find('img').attr('src',reviewVo.storeLogoImg);					
+						reviewerInfo.find('img').attr('src',reviewVo.storeLogoImg);
+						reviewerInfo.attr('onclick',"location.href='/moca/stores/"+reviewVo.store_id+"'");
+						reviewerInfo.css('cursor','pointer');
 					}
 					reviewerInfo.find('.storeName').text(reviewVo.storeName); 	//storeName
 				}

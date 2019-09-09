@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.kkssj.moca.model.LogDao;
+import com.kkssj.moca.model.StoreDao;
 import com.kkssj.moca.model.entity.LogVo;
 
 @Service
@@ -18,6 +19,9 @@ public class LogServiceImpl implements LogService {
 	
 	@Inject
 	LogDao logDao;
+	
+	@Inject
+	StoreDao storeDao;
 
 	@Override
 	public boolean writeStoreIdKeyWordNone(HttpServletRequest req, String classification, int account_id) {
@@ -42,6 +46,7 @@ public class LogServiceImpl implements LogService {
 		}
 		try {
 			logDao.insertLogStore(log);
+			storeDao.updateViewcnt(store_id);
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
