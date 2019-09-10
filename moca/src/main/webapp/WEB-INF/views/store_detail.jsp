@@ -7,10 +7,14 @@
 <head>
 	<meta charset="utf-8">
 	<title>moca</title>
+	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css"/>" />
 	<style type="text/css">
+		body{
+			font-family: 'Noto Sans KR', sans-serif;
+		}
 		#likeFavoriteDiv{
 			text-align: right;
 		}
@@ -40,7 +44,7 @@
 			overflow: hidden;
 	    }
 	    
-	    .storeImgGroup .StoreImgDeleteSpan{
+	    .storeImgGroup .storeImgDeleteSpan{
 	    	position : relative;
 	    	left:-95px;
 	    	top:-30px;
@@ -60,14 +64,45 @@
 			overflow: hidden;
 	    }
 	    
-	    .storeLogoGroup .StoreImgDeleteSpan{
+	    .storeLogoGroup .storeImgDeleteSpan{
 	    	position : relative;
 	    	left:-95px;
 	    	top:-30px;
 	    	cursor:pointer;
 	    	background-color:rgb(255,255,255,0.5);
 	    }
-		
+	    
+	    .levelGroup{
+	    	margin:20px auto;
+	    	text-align: center;
+	    	width:100%;
+	    }
+		.levelGroup tr{
+			width:100%;
+			height:30px;
+			line-height: 30px;
+		}
+		.levelGroup td{
+			width:20%;
+		}
+		.review-header{
+			background-color: #fffff5;
+			padding: 20px;
+			border-radius: 10px 20px;
+			margin: 10px 0px;
+		}
+		#overAllLevel{
+			text-align: center;
+			height: 100%;
+		}
+		.overAllLevel-left{
+			margin-top: 30px;
+		}
+		#reviewModalBtn{
+			text-align: center;
+			margin: 30px auto;
+			width:50%;
+		}
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -372,8 +407,8 @@
 				$('.storeLogoGroup').append(oldStoreLogo);
 
 				//기존의 클릭이벤트 재설정
-				$('.StoreImgDeleteSpan').unbind();
-				$('.StoreImgDeleteSpan').click(function(){					
+				$('.storeImgDeleteSpan').unbind();
+				$('.storeImgDeleteSpan').click(function(){					
 					
 					//기존 StoreLogo인 경우 
 					if($(this.previousElementSibling).hasClass('oldStoreLogo')){
@@ -455,8 +490,8 @@
 				}
 
 				//기존의 클릭이벤트 제거
-				$('.StoreImgDeleteSpan').unbind();
-				$('.StoreImgDeleteSpan').click(function(){					
+				$('.storeImgDeleteSpan').unbind();
+				$('.storeImgDeleteSpan').click(function(){					
 					
 					test = this;
 					//newStoreImg인 경우 
@@ -536,6 +571,63 @@
 				$('.level').css('display','none')
 				$('.storeLevel').find('select').val($('#level').val())
 			})
+
+			//스토어 review 전체 평균 별점
+			 $('#store-level').raty({
+				  readOnly:  true,
+				  size:       24,
+				  starHalf:   'star-half-big.png',
+				  starOff:    'star-off-big.png',
+				  starOn:     'star-on-big.png',
+				  start: 4 //데이터 시작 값
+			 });
+
+			//스토어 5개의 막대바
+			new Chart(document.getElementById("bar-chart-horizontal"), {
+			    type: 'horizontalBar',
+			    data: {
+			      labels: ["5", "4", "3", "2", "1"],
+			      datasets: [
+			        {
+			          backgroundColor: ["#C6A153", "#C6A153","#C6A153","#C6A153","#C6A153"],
+			          borderWidth : 0,
+			          data: [7,4,2,3,1]
+			        }
+			      ]
+			    },
+			    options: {
+			      legend: { display: false },
+			      scales: {
+			    	    xAxes: [
+			    	      {
+			    	    	ticks: {
+			    	    		beginAtZero: true,
+			                    display: false
+			                },
+			    	        gridLines: {
+			    	        	 color: 'rgba(0,0,0,0)'
+			    	        }
+			    	      }
+			    	    ],
+			    	    yAxes: [
+			    	      {
+			    	        gridLines: {
+			    	          color: 'rgba(0,0,0,0)'
+			    	        },
+			    	        ticks: {
+			    	          beginAtZero: true
+			    	        }
+			    	      }
+			    	    ]
+			    	  },
+			      title: {
+			        display: true,
+			      },
+			      gridLines: {
+			          display: false
+			      }
+			    }
+			});
 
 		});
 
@@ -792,14 +884,46 @@
 		</div>
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
+				<h1>리뷰</h1>
 				<div class="review-header">
-					<h1>리뷰들</h1>
-					<!-- Button trigger modal -->
-					<button type="button" class="btn btn-primary" data-toggle="modal" id="reviewModalBtn">
-						리뷰 작성
-					</button>
-					<br><br>
+					<!-- 리뷰  -->
+					<div id="overAllLevel">
+						<!-- 스토어 전체 리뷰 평점 -->
+						<div class="row">
+							<div class="col-md-6 overAllLevel-left">
+								<span>종합 평점</span>
+								<h3>${storeVo.averageLevel}</h3>
+								<div id="store-level"></div>
+								<table class="levelGroup">
+								<tr>
+									<td><span><b>맛</b></span></td>
+									<td><span><b>가격</b></span></td>
+									<td><span><b>분위기</b></span></td>
+									<td><span><b>서비스</b></span></td>
+									<td><span><b>편의성</b></span></td>
+								</tr>
+								<tr>
+									<td><span>${storeVo.tasteLevel}</span></td>
+									<td><span>${storeVo.priceLevel}</span></td>
+									<td><span>${storeVo.moodLevel}</span></td>
+									<td><span>${storeVo.serviceLevel}</span></td>
+									<td><span>${storeVo.convenienceLevel}</span></td>
+								</tr>
+								</table>
+							</div>
+							<div class="col-md-6">
+								<canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
+							</div>
+						</div>						
+					</div>
 				</div>
+				<!-- Button trigger modal -->
+				<div class="row text-center">
+				<button type="button" class="btn btn-default" data-toggle="modal" id="reviewModalBtn">
+					리뷰 작성
+				</button>
+				</div>
+				<br><br>
 				<div class="review-content">
 					<!-- js로 리뷰 수만큼 추가 할 것  -->
 					<c:forEach items="${reviewVoList }" var="reviewVo">
@@ -1063,7 +1187,7 @@
 		<!-- storeImg clone -->
 		<div class="storeImg" id="storeImgTemplate">
 			<img alt="Image">
-			<span class="glyphicon glyphicon-remove StoreImgDeleteSpan" aria-hidden="true"></span>
+			<span class="glyphicon glyphicon-remove storeImgDeleteSpan" aria-hidden="true"></span>
 		</div>
 						
 	</c:if>

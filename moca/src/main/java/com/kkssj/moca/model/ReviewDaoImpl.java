@@ -253,5 +253,14 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("ENDNUM", 3);
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectTagsLimit3ByAccountId",map);
 	}
+	
+	public double selectAverageLevelByReviewId(int review_id) throws SQLException {
+		System.out.println(review_id);
+		
+		double result = sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAverageLevelByReviewId",review_id); 
+		System.out.println(result);
+		return result;
+
+	}
 
 }

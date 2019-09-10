@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class SearchController {
 	
 	@RequestMapping(value = "/stores", method = RequestMethod.GET)
 	public String search(HttpSession session, HttpServletRequest request, String lng, String lat, String keyword, String filter, String[] region, Model model) throws MalformedURLException {
+
 		long enterTime=System.currentTimeMillis();
 		//세션에 위치 정보 x, y값 저장 (geolocation 페이지에서 x, y좌표를 받아서 돌아온 경우)
 		//geolocation 페이지에서 x, y좌표 받기 실패한 경우 -> x, y = "";으로 넘어옴

@@ -67,4 +67,7 @@ public interface ReviewDao {
 	int updateTags(Map<String, Object> tagMap) throws SQLException;
 
 	List<Map<String, Object>> selectTagsLimit3ByAccountId(int targetAccountId, int startNum) throws SQLException;
+	
+	//평균점수 불러오기
+	double selectAverageLevelByReviewId(int review_id) throws SQLException;
 }

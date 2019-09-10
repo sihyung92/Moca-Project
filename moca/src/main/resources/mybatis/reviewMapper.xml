@@ -160,4 +160,8 @@
 	limit #{STARTNUM}, #{ENDNUM}
   </select>
   
+  <select id="selectAverageLevelByReviewId" parameterType="Integer" resultType="Double">
+  	SELECT AVERAGELEVEL FROM REVIEW WHERE REVIEW_ID = #{REVIEW_ID}
+  </select>
+  
 </mapper>
