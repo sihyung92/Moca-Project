@@ -101,6 +101,10 @@ public class MypageServiceImpl implements MypageService{
 				}
 				reviewList.get(i).setImageList(reviewImageList);
 				
+				//tag list에서 tag값만 내용만 사용
+				tagsMapList.get(i).remove("REVIEW_ID");
+				tagsMapList.get(i).remove("STORE_ID");
+				
 				//set 리뷰 태그 
 				reviewList.get(i).setTagMap(tagsMapList.get(i)); ///에러
 			} catch (SQLException e) {

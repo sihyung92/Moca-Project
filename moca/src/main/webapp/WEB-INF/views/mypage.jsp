@@ -144,7 +144,11 @@
 		})
 		
 		//리뷰 수정 버튼 클릭시
-		editReviewBtn.click(editReview);
+		editReviewBtn.click(function(){
+			tagCheckboxData2Tags();
+
+			editReview();
+		})
 		
 		reviewModalBtn.click(function(){
 			//모달에 있는 데이터 없애고 
@@ -567,7 +571,7 @@
 								<div class="row reviewCnt">
 									<c:if test="${reviewVo.editable eq 1}">
 										<div class="editDeleteGroup btn-group" role="group">
-											<input name="storeId" class="storeId" value=${reviewVo.store_id} style="display: none;">
+											<input name="storeId" class="storeId" value="${reviewVo.store_id}" style="display: none;">
 											<input type="number" class="review-id"
 												value=${reviewVo.review_id } style="display: none;">
 											<button type="button" class="btn-edit btn btn-default">수정</button>

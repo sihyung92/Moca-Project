@@ -201,6 +201,8 @@ var addReviewInReviewContent = function(reviewVo) {
 //리뷰 데이터를 리뷰 모달로 이동 (수정 때 사용)
 var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	clearReviewModalData();
+	
+	clickedEditBtn = clickedEditBtn;
 
 	reviewModal.modal("show");		//리뷰 모달창 show
 
