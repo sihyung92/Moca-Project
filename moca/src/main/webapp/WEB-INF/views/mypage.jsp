@@ -609,10 +609,16 @@
 													<label>작성일</label> <span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
 												</div>
 												<div class="review-content-div">
-													<label>리뷰 내용</label> <span
-														class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+													<label>리뷰 내용</label> <span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+													<span class="more-review-content-btn">더보기</span>
 												</div>
-												<span class="more-review-content-btn">더보기</span>
+												<div class="review-tags-div">
+													<c:forEach items="${reviewVo.tagMap}" var="i">
+														<c:if test="${i.value eq 1}">
+															<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
+														</c:if>
+													</c:forEach>
+												</div>
 											</div>
 											<div class="form-group like-hate">
 												<div class="btn-group" data-toggle="buttons">
