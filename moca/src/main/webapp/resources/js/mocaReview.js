@@ -144,6 +144,7 @@ var saveReview = function(fileBuffer){
 }
 
 var addReviewInReviewContent = function(reviewVo) {
+	test = reviewVo;
 	var newReview = $('#reviewTemplate').clone(true);
 	newReview.css('display', '');
 	newReview.removeAttr('id')
@@ -175,17 +176,16 @@ var addReviewInReviewContent = function(reviewVo) {
 	reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
 	reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
 	
-	for(var key in reviewVo.tagMap){
-		if(!key.includes('ID') && (test.tagMap[key] ==1)){
-			var newTag = $('#review-tag-div').clone(true);
-			newTag.css('display','');
-			newTag.removeAttr('id');
+	for(var tagIdx in reviewVo.tags.split(',')){
+		var newTag = $('#review-tag-div').clone(true);
+		newTag.css('display','');
+		newTag.removeAttr('id');
+		
+		newTag.text('#'+reviewVo.tags.split(',')[tagIdx])	//값 넣어주기
+		newTag.attr('href', '#')	/// search와 연결
 			
-			newTag.text('#'+key)	//값 넣어주기
-			newTag.attr('href', '#')	/// search와 연결
-			
-			newReview.find('.review-tags-div').append(newTag);
-		}
+		newReview.find('.review-tags-div').append(newTag);
+
 	}
 	
 	var likehateFormGroup = reviewInfo.children('.like-hate')
@@ -299,8 +299,6 @@ var editReview = function(){
 		cache : false,
 		timeout : 600000,
 		success: function(reviewVo) {
-			//리뷰 내용
-			editReviewRow.find('.reviewInfo-review-content').text(reviewFormObj.reviewContent);
 			
 			// 나중에 사진 추가할때 사용
 			var reviewThumbnail = editReviewRow.find('.reviewThumbnailGroup');
@@ -312,6 +310,23 @@ var editReview = function(){
 						+'" alt="Image" class="img-thumbnail" id="'+
 						reviewVo.imageList[i].uu_id
 						+'"></div>');
+			}
+			
+			
+			//리뷰 내용
+			editReviewRow.find('.reviewInfo-review-content').text(reviewFormObj.reviewContent);
+			
+			//태그
+			editReviewRow.find('.review-tags-div').text('');
+			for(var tagIdx in reviewVo.tags.split(',')){
+				var newTag = $('#review-tag-div').clone(true);
+				newTag.css('display','');
+				newTag.removeAttr('id');
+				
+				newTag.text('#'+reviewVo.tags.split(',')[tagIdx])	//값 넣어주기
+				newTag.attr('href', '#')	/// search와 연결
+				
+				editReviewRow.find('.review-tags-div').append(newTag);
 			}
 			
 			//평점
@@ -727,6 +742,7 @@ var moreReviewList = function(startNum,callWhere) {
 			"startNum": startNum
 		},
 		success: function(reviewVoList) {
+			
 			console.log('ajax 통신 성공')
 			
 			//갖고오는 이미지 length가 3개 미만일 때

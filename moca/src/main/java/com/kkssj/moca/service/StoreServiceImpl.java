@@ -289,6 +289,7 @@ public class StoreServiceImpl implements StoreService{
 				logger.debug(tagMap.get("TAGS") +" : "+tagMap.get("TAGVALUES"));
 				int result = reviewDao.insertTags(tagMap);
 				logger.debug("storeDao.insertTags(tagMap) result : "+ result );
+				reviewVo.setTags(reviewVoTags);
 				
 				
 				//리뷰 작성에 대한 exp 적립 및 로그 기록
@@ -405,7 +406,7 @@ public class StoreServiceImpl implements StoreService{
 			tagMap.put("REVIEW_ID", reviewVo.getReview_id());
 			String setTag = "";
 			List<String> tagList =  getTagNameList();
-			String[] tagArray = reviewVoTags.split(",");
+			String[] tagArray = (reviewVoTags+",없음").split(",");
 			int tagArrayIdx = 0;
 			for (String tag : tagList) {
 				logger.debug(tag +", "+tagArray[tagArrayIdx]);
