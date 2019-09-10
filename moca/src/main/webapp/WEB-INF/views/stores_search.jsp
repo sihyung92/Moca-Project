@@ -21,6 +21,8 @@
 		border: 1px solid purple;
 	}
 	.links img{
+		display : inline-block;
+		margin : 0 auto;
 		width: 300px;
 		height: 300px;
 	}
@@ -57,7 +59,7 @@
 <script type="text/javascript">
  	var lat=${y};
  	var lng=${x};
- 	var map, overlayList, bounds;
+ 	var map, overlayList, bounds, pageNum;
  	var markers = new Array();
     window.onload = function () {  
     	 //키워드 검사
@@ -112,6 +114,8 @@
 			$('#search form').submit();
 		});
 		createMap();
+		var totalCount = $('.links').size()-1; //총 가게수, paging 함수내에서 인덱스로 활용되기때문에 -1
+		paging(totalCount, 1);
     };//onload 끝-
 
     //리스트 클릭 이벤트
@@ -163,6 +167,7 @@
 	 		//3. 검색 결과 storeList의 가게들 핀(Marker), 오버레이(팝업 정보 패널) 객체 생성 전처리
 			bounds = new kakao.maps.LatLngBounds();  //LatLngBounds객체 생성: 좌표가 다른 여러 핀에 대한 맵 바운더리 재설정
 			//4. 핀, 오버레이 객체 생성 & 맵 객체에 추가
+			markers=[];
 			for (var i = 0; i < overlayList.length ; i++) {
 				//핀(Marker)객체 생성
 				var position =new kakao.maps.LatLng(overlayList[i].lat,overlayList[i].lng);
@@ -198,7 +203,6 @@
 				        overlay.close();
 			        });
 		   		})(marker, overlay);
-			marker.setMap(map);	//맵 객체에 생성한 마커 등록
 			bounds.extend(position);	//LatLngBounds객체에 핀의 위치 등록
 			}	//for문 끝-
 		};
@@ -209,8 +213,7 @@
 		//맵 중심 좌표 변경 이벤트
 	//	$('#map').css({'position':'relative','z-index':0});
 		kakao.maps.event.addListener(map, 'center_changed', function() {
-		    $('#map_re-search').show().css({'position':'relative','top':'-380px','left':'185px','z-index':2});
-			
+		    $('#map_re-search').show().css({'position':'relative','top':'-30px','left':'310px','z-index':2});
 		});
 		//지도 내 재검색 기능
 		$('#map_re-search').click(function(){
@@ -227,6 +230,7 @@
 					    data=data.responseJSON;
 					    if(data!=""){
 					    	reload_map(data);
+							paging(data.length, 1);
 						    map.setBounds(bounds);	
 						}else{
 							alert("검색 결과 없습니다");	//////여기 수정해야되-------
@@ -237,7 +241,8 @@
 					if(data.length==0){
 						$('#warning_noResult').text("검색 결과가 없습니다");
 					}
-					reload_map(data);				
+					reload_map(data);
+					paging(data.length, 1);
 				}
 			});	
 		});		
@@ -247,7 +252,8 @@
 			var template = $($('.links')[0]).clone();
 			$('.links').remove();
 			$(data).each(function(idx, ele){			
-				var store = template.clone();				
+				var store = template.clone();
+				$(store).addClass('page-'+idx);
 				var inputs = $(store.children()[0]).children('input');
 				$(inputs[0]).val(ele.store_Id);
 				$(inputs[1]).val(ele.kakaoId);
@@ -259,7 +265,9 @@
 				$(inputs[7]).val(ele.url);
 				$(inputs[8]).val(ele.xLocation);
 				$(inputs[9]).val(ele.yLocation);
-				$(store.children()[0]).find('img').attr('src', ele.storeImg1);
+				$(store.children()[0]).find('img').attr('alt', ele.name + '대표이미지');
+				if(ele.storeImg1)
+					$(store.children()[0]).find('img').attr('src', ele.storeImg1);
 				var spans = $(store.children()[0]).children('span');
 				$(spans[0]).html("<strong>"+ele.name+"</strong>");
 				$(spans[1]).html("<strong>평점:"+ele.averageLevel+" 리뷰수:"+ele.reviewCnt+" 조회수:"+ele.viewCnt+"</strong>");
@@ -273,17 +281,105 @@
 				}
 				$(spans[2]).text(distance + ele.roadAddress);
 				$(store).appendTo('#result_stores').show();
+				$('#page').appendTo('#result_stores');
 				overlayList.push({'lat':ele.yLocation,'lng':ele.xLocation, 'store_Id': ele.store_Id, 'name':ele.name, 'roadAddress': ele.roadAddress, 'tel':ele.tel, 'tasteLevel':ele.tasteLevel,'priceLevel':ele.priceLevel, 'serviceLevel':ele.serviceLevel, 'moodLevel':ele.moodLevel, 'convenienceLevel':ele.convenienceLevel, 'logoImg':ele.logoImg});
 			});
 			$('.links').on("click",toDetail);
-			for(var idx in markers){
-				markers[idx].setMap(null);
-			}				
-			markers=[];	
+			setMarkers(null);
+			
 			createElements();			
 		};    
-		</c:if> 		
-	};		
+		</c:if>
+	};
+	
+	function setMarkers(map) {
+	    for (var i = 0; i < markers.length; i++) {
+	        markers[i].setMap(map);
+	    }            
+	}
+	//paging 함수 , class 명 page-n
+	function paging(totalCount,currentPage){
+		$('.links').hide();
+		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).remove();
+		console.log('paging 시작, count는 '+totalCount);
+		var countList = 10;
+		var countPage = 10;
+		var totalPage = Math.floor(totalCount / countList); //총 페이지 수
+		var startPage = (Math.floor((currentPage - 1)/10)) * 10 +1; //시작페이지
+		
+		var endPage =  startPage + countPage - 1; //마지막페이지
+		console.log('paging 도중, totalPage='+totalPage+' start='+startPage+' end='+endPage)
+		if (totalCount % countList > 0) {
+		    totalPage++;
+		}
+		
+		if (endPage > totalPage) {
+		    endPage = totalPage;
+		}
+		
+		for (var i = startPage; i <= endPage; i++) {
+			if(i==startPage)
+				$('.pagination>li:last').before('<li class="page-'+i+' active"><a>'+i+'</a></li>');
+			else
+				$('.pagination>li:last').before('<li class="page-'+i+'"><a>'+i+'</a></li>');
+		}
+		
+		var goPage = function(){
+			if(!pageNum)
+				pageNum = $(this).children('a').text();
+			$('.pagination>li').removeClass('active');
+			$('li.page-'+pageNum).addClass('active');
+			var divPage= 'page-'+pageNum;
+			console.log('page 클릭 이벤트, 페이지 넘버:'+pageNum+' divPage : '+divPage);
+			$('.links').hide();
+			setMarkers(null);
+			for(var i = (pageNum*countList)-countList; i <= pageNum*countList-1; i++){
+				if(i==totalCount)break;
+				console.log('i count : '+ i);
+				$('div.page-'+i).show();
+				console.log('i번째 markers의 index : '+markers[i]);
+				markers[i].setMap(map);
+			}
+			var prev = $('.pagination>li:first');
+			var next = $('.pagination>li:last');
+			
+			var clickPrev=function(){
+				pageNum = $('.pagination>li.active>a').text();
+				pageNum--;
+				goPage();
+				
+			}
+			
+			var clickNext=function(){
+				pageNum = $('.pagination>li.active>a').text();
+				pageNum++;
+				goPage();
+			}
+			
+			if(pageNum==1){
+				prev.addClass('disabled');
+				prev.off('click');
+			}else{
+				prev.removeClass('disabled');
+				prev.off('click').click(clickPrev);
+			}
+			
+			if(pageNum==endPage){
+				next.addClass('disabled');
+				next.off('click');
+			}else{
+				next.removeClass('disabled');
+				next.off('click').click(clickNext);
+				
+			}	
+			pageNum=null;
+		}
+		
+		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).on("click",goPage);
+		
+		$('.pagination>li:nth-child(2)').click();
+	};
+	
 	</script>	
 </head>
 <body>
@@ -645,9 +741,9 @@
 				<span id="warning_changedFilter"><small>${msg_changedFilter}</small></span>
 				<span id="warning_noResult"><c:if test="${storeList[0] eq null}">검색 결과가 없습니다</c:if></span>
 			</div>			
-			<div style="display:none" class="links">
+			<div style="display:none" class="links col-xs-6 col-md-6">
 					<form action="stores" method="post">
-						<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}"><br/>
+						<img alt="대표 이미지" src="resources/imgs/storeImgDefault.png"><br/>
 						<input type="hidden" name="store_Id" value="">
 						<input type="hidden" name="kakaoId" value="">
 						<input type="hidden" class="name" name="name" value=""><span><strong></strong></span><br/>
@@ -660,13 +756,14 @@
 						<input type="hidden" name="xLocation" value="">
 						<input type="hidden" name="yLocation" value="">	
 					</form>	
-			</div>	
+			</div>
+			<div class= row>	
 			<c:forEach items="${storeList}" var="bean" varStatus="status">
 				<c:if test="${bean.distance ge 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance/1000}" pattern="#.0km"></fmt:formatNumber></c:if>
 				<c:if test="${bean.distance lt 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance}" pattern="#m"></fmt:formatNumber></c:if>
-				<div class="links" class="col-xs-12 col-md-3">
+				<div class="links col-xs-6 col-md-6 page-${status.index }">
 					<form action="stores" method="post">
-						<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}"><br/>
+						<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">resources/imgs/storeImgDefault.png</c:if>"/><br/>
 						<input type="hidden" name="store_Id" value="${bean.store_Id}">
 						<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
 						<input type="hidden" class="name" name="name" value="${bean.name}"><span><strong>${bean.name }</strong></span><br/>
@@ -681,20 +778,16 @@
 					</form>	
 				</div>	
 			</c:forEach>
+			</div>
 			<nav id="page" aria-label="Page navigation">
 			  <ul class="pagination">
 			    <li>
-			      <a href="#" aria-label="Previous">
+			      <a aria-label="Previous">
 			        <span aria-hidden="true">&laquo;</span>
 			      </a>
 			    </li>
-			    <li><a href="#">1</a></li>
-			    <li><a href="#">2</a></li>
-			    <li><a href="#">3</a></li>
-			    <li><a href="#">4</a></li>
-			    <li><a href="#">5</a></li>
 			    <li>
-			      <a href="#" aria-label="Next">
+			      <a aria-label="Next">
 			        <span aria-hidden="true">&raquo;</span>
 			      </a>
 			    </li>
