@@ -168,8 +168,9 @@
 			<div class="review-content-div">
 				<label>리뷰 내용</label>
 				<span class="reviewInfo-review-content"></span>
+				<span class="more-review-content-btn">더보기</span>
 			</div>
-			<span class="more-review-content-btn">더보기</span>
+			<div class="review-tags-div"></div>
 		</div>
 		<div class="form-group like-hate">
 			<div class="btn-group" data-toggle="buttons">

@@ -702,19 +702,21 @@ var moreReviewList = function(startNum,callWhere) {
 	var isStorePage = false;
 	var isMypage = false;
 	
-	//storeName의 유무에 따른 페이지 결정
+	var url="";
+	
+	//moreReviewList 함수 호출 위치에 따른 페이지 결정
 	if(callWhere =='mypage'){
 		isMypage = true;
 	}else if(callWhere =='store'){
 		isStorePage = true;
 	}
 	
-	var url="";
-	if(callWhere=="review"){
-		url = '/moca/storeReviews/' +storeId;
-	}else if(callWhere=="mypage"){
+	
+	if(isStorePage){
+		url = '/moca/storeReviews/' + storeId;
+	}else if(isMypage){
 		var id=$(location).attr('pathname').split('/')[$(location).attr('pathname').split('/').length-1];
-		url = '/moca/mypage/reviewMore/' +id;
+		url = '/moca/mypage/reviewMore/' + id;
 	}
 	
 	$.ajax({
@@ -733,13 +735,14 @@ var moreReviewList = function(startNum,callWhere) {
 				reviewVoListLength = true;
 			}
 			
-			test =reviewVoList;
 			
 			
 			for(var j=0; j<reviewVoList.length; j++){
 				
 				var alreadyReviewExist = false;
 				var reviewVo = reviewVoList[j];
+				
+				//마지막 리뷰인지 check
 				for(var i=0; i<$('.review-content').find('.review-id').filter(':even').length; i++){
 					if(reviewVo.review_id==$('.review-content').find('.review-id').filter(':even').eq(i).val()){
 						alreadyReviewExist=true;
@@ -749,6 +752,7 @@ var moreReviewList = function(startNum,callWhere) {
 				if(alreadyReviewExist==true){
 					continue;
 				}
+				
 				
 				var newReview = $('#reviewTemplate').clone(true);
 				newReview.css('display', '');
@@ -781,9 +785,7 @@ var moreReviewList = function(startNum,callWhere) {
 					newReview.find('.editDeleteGroup').remove();
 				}
 				
-				newReview.find('.review-id').eq(0).val(''+reviewVo.review_id);
-				newReview.find('.review-id').eq(1).val(''+reviewVo.review_id);
-				newReview.find('.store-id').eq(0).val(''+reviewVo.store_id);
+				newReview.find('.review-id').val(''+reviewVo.review_id);
 				
 				if(isStorePage){
 					//store 페이지일 때
@@ -819,7 +821,7 @@ var moreReviewList = function(startNum,callWhere) {
 				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
 				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
 				for(var key in reviewVo.tagMap){
-					if(!key.includes('ID') && (test.tagMap[key] ==1)){
+					if(reviewVo.tagMap[key] ==1){
 						var newTag = $('#review-tag-div').clone(true);
 						newTag.css('display','');
 						newTag.removeAttr('id');

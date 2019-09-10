@@ -76,7 +76,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=35"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=36"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
@@ -203,7 +203,7 @@
 				if(reviewVoListLength==true){
 					return false;
 				}
-				reviewMoreBtnClick("review");
+				reviewMoreBtnClick('store');
 			});
 
 			//리뷰 저장 버튼 클릭시
