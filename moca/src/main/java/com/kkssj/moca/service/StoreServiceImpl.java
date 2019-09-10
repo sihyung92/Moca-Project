@@ -237,6 +237,7 @@ public class StoreServiceImpl implements StoreService{
 		            }
 
 				}
+		    	
 		    	//select로 가져와서 imgvo 넣기
 		    	ArrayList<ImageVo> ReviewImgList = (ArrayList<ImageVo>) reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
 		    	for(int i=0; i<ReviewImgList.size(); i++) {
@@ -253,6 +254,12 @@ public class StoreServiceImpl implements StoreService{
 				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);
 				
+				//카페에 대한 levelCnt 추가
+				double averageLevel = storeVo.getAverageLevel();
+				
+				String levelCntColumn = setLevelCntColumn(averageLevel);
+				logger.debug("LevelCntColumn : "+levelCntColumn);
+				storeDao.updateLevelCnt(storeVo.getStore_Id(), levelCntColumn, 1);
 				
 				//리뷰의 tag 추가
 				Map<String, Object> tagMap = new HashMap<String, Object>();
@@ -329,12 +336,12 @@ public class StoreServiceImpl implements StoreService{
 	public ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails) {
 		String reviewVoTags =reviewVo.getTags();
 		
-
-		
-		
 		try {
 			String uploadPath = "review";
 			S3Util s3 = new S3Util();
+			
+			//리뷰의 평점이 바뀌었는지 확인하기 위해 업데이트 되기 전 리뷰 레벨 확인
+			double beforeAveragelevel = reviewDao.selectAverageLevelByReviewId(reviewVo.getReview_id());
 			
 			System.out.println(delThumbnails.isEmpty());
 			if((delThumbnails.isEmpty())==false) {
@@ -433,7 +440,17 @@ public class StoreServiceImpl implements StoreService{
 				storeVo.setStore_Id(reviewVo.getStore_id());
 				storeVo.calAllLevel(list);
 				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
-				storeDao.updateLevel(storeVo);				
+				storeDao.updateLevel(storeVo);		
+				
+				
+				//카페에 대한 levelCnt 수정
+				String levelCntColumn = setLevelCntColumn(reviewVo.getAverageLevel());
+				String BeforelevelCntColumn = setLevelCntColumn(beforeAveragelevel);
+				if(!(BeforelevelCntColumn.equals(levelCntColumn))) {
+					storeDao.updateLevelCnt(storeVo.getStore_Id(), BeforelevelCntColumn, -1);
+					logger.debug("LevelCntColumn : "+levelCntColumn);
+					storeDao.updateLevelCnt(storeVo.getStore_Id(), levelCntColumn, 1);
+				}
 			}
 			
 			return reviewVo;
@@ -453,6 +470,7 @@ public class StoreServiceImpl implements StoreService{
 	public int deleteReview(ReviewVo reviewVo){
 		S3Util s3 = new S3Util();
 		try {
+			
 			//DB에 있는 imageVo list 조회
 			List<ImageVo> imageVoList = reviewDao.selectReviewImgListByReviewId(reviewVo.getReview_id());
 			logger.debug("imageList size = " + imageVoList.size());
@@ -476,6 +494,11 @@ public class StoreServiceImpl implements StoreService{
 			
 			//account의 reviewcnt를 감소시켜줌
 			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);
+			
+			//카페에 대한 levelCnt 수정(삭제)
+			double beforeAveragelevel = reviewDao.selectAverageLevelByReviewId(reviewVo.getReview_id());
+			String BeforelevelCntColumn = setLevelCntColumn(beforeAveragelevel);
+			storeDao.updateLevelCnt(reviewVo.getStore_id(), BeforelevelCntColumn, -1);
 			
 			//정상일 경우 return 1
 			return 1;
@@ -834,6 +857,27 @@ public class StoreServiceImpl implements StoreService{
 		
 
 		return tagNameList;
+	}
+	
+	//카페에 대한 levelCnt 추가
+	public String setLevelCntColumn(double averageLevel) {
+		String levelCntColumn ="";
+		
+		logger.debug("averageLevel : "+averageLevel);
+		if(averageLevel>=4.2) {
+			levelCntColumn = "LEVEL5CNT";
+		}else if(averageLevel>=3.4) {
+			levelCntColumn = "LEVEL4CNT";
+		}else if(averageLevel>=2.6) {
+			levelCntColumn = "LEVEL3CNT";
+		}else if(averageLevel>=1.8) {
+			levelCntColumn = "LEVEL2CNT";
+		}else if(averageLevel>=0.0) {
+			levelCntColumn = "LEVEL1CNT";
+		}
+		
+		return levelCntColumn;
+		
 	}
 	
 }

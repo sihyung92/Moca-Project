@@ -165,4 +165,13 @@ public class StoreDaoImpl implements StoreDao {
 	public int selectAlreadyReviewByKakaoId(int kakaoId) throws SQLException {
 		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectAlreadyReviewByKakaoId",kakaoId);
 	}
+
+	@Override
+	public int updateLevelCnt(int storeId, String levelCntColumn, int addCntNum) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", storeId);
+		map.put("LEVELCNTCOLUMN", levelCntColumn);
+		map.put("ADDCNTNUM", addCntNum);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLevelCnt",map);
+	}
 }

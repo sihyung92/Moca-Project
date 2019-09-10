@@ -244,4 +244,9 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateTags", tagMap);
 	}
 
+	@Override
+	public double selectAverageLevelByReviewId(int review_id) throws SQLException {
+		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAverageLevelByReviewId",review_id);
+	}
+
 }

@@ -15,6 +15,7 @@ public class StoreVo {
 	private double tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel, averageLevel;
 	private Date openTime,endTime;
 	private String openTime2,endTime2;
+	private int level1Cnt, level2Cnt, level3Cnt, level4Cnt, level5Cnt;
 	
 	//LIKEHATE table
 	private int isLike, isFavorite, isManager;
@@ -423,7 +424,50 @@ public class StoreVo {
 				+ ", isFavorite=" + isFavorite + ", isManager=" + isManager + "]";
 	}
 
+	//각각 점수에 따른 리뷰가 몇 개 있는 지
+	public int getLevel1Cnt() {
+		return level1Cnt;
+	}
 
+	public void setLevel1Cnt(int level1Cnt) {
+		this.level1Cnt = level1Cnt;
+	}
+
+	public int getLevel2Cnt() {
+		return level2Cnt;
+	}
+
+	public void setLevel2Cnt(int level2Cnt) {
+		this.level2Cnt = level2Cnt;
+	}
+
+	public int getLevel3Cnt() {
+		return level3Cnt;
+	}
+
+	public void setLevel3Cnt(int level3Cnt) {
+		this.level3Cnt = level3Cnt;
+	}
+
+	public int getLevel4Cnt() {
+		return level4Cnt;
+	}
+
+	public void setLevel4Cnt(int level4Cnt) {
+		this.level4Cnt = level4Cnt;
+	}
+
+	public int getLevel5Cnt() {
+		return level5Cnt;
+	}
+
+	public void setLevel5Cnt(int level5Cnt) {
+		this.level5Cnt = level5Cnt;
+	}
+
+
+	
+	
 
 }
 

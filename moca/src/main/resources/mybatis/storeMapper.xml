@@ -188,4 +188,8 @@
   <select id="selectAlreadyReviewByKakaoId" parameterType="INTEGER" resultType="INTEGER">
   	SELECT count(STORE_ID) FROM STORE WHERE KAKAOID=#{id}
   </select>
+  
+  <update id="updateLevelCnt" parameterType="map">
+  	UPDATE STORE SET ${LEVELCNTCOLUMN} = ${LEVELCNTCOLUMN}+#{ADDCNTNUM} WHERE store_id=#{STORE_ID}
+  </update>
 </mapper>

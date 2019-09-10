@@ -152,4 +152,8 @@
  	UPDATE TAGS SET REVIEW_ID=${REVIEW_ID }  ${SETTAG } WHERE REVIEW_ID = ${REVIEW_ID } 
   </update>
   
+  <select id="selectAverageLevelByReviewId" parameterType="Integer" resultType="Double">
+  	SELECT AVERAGELEVEL FROM REVIEW WHERE REVIEW_ID = #{REVIEW_ID}
+  </select>
+  
 </mapper>
