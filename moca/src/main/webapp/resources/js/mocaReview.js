@@ -176,17 +176,8 @@ var addReviewInReviewContent = function(reviewVo) {
 	reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
 	reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
 	
-	for(var tagIdx in reviewVo.tags.split(',')){
-		var newTag = $('#review-tag-div').clone(true);
-		newTag.css('display','');
-		newTag.removeAttr('id');
-		
-		newTag.text('#'+reviewVo.tags.split(',')[tagIdx])	//값 넣어주기
-		newTag.attr('href', '#')	/// search와 연결
-			
-		newReview.find('.review-tags-div').append(newTag);
-
-	}
+	//태그를 리뷰에 추가
+	addTag2Review(reviewVo, newReview);	
 	
 	var likehateFormGroup = reviewInfo.children('.like-hate')
 	
@@ -317,17 +308,8 @@ var editReview = function(){
 			editReviewRow.find('.reviewInfo-review-content').text(reviewFormObj.reviewContent);
 			
 			//태그
-			editReviewRow.find('.review-tags-div').text('');
-			for(var tagIdx in reviewVo.tags.split(',')){
-				var newTag = $('#review-tag-div').clone(true);
-				newTag.css('display','');
-				newTag.removeAttr('id');
-				
-				newTag.text('#'+reviewVo.tags.split(',')[tagIdx])	//값 넣어주기
-				newTag.attr('href', '#')	/// search와 연결
-				
-				editReviewRow.find('.review-tags-div').append(newTag);
-			}
+			editReviewRow.find('.review-tags-div').text('');		
+			addTag2Review(reviewVo, editReviewRow);
 			
 			//평점
 			editReviewRow.find('.taste-level').text(reviewFormObj.tasteLevel);
@@ -742,6 +724,7 @@ var moreReviewList = function(startNum,callWhere) {
 			"startNum": startNum
 		},
 		success: function(reviewVoList) {
+			test = reviewVoList;
 			
 			console.log('ajax 통신 성공')
 			
@@ -834,21 +817,11 @@ var moreReviewList = function(startNum,callWhere) {
 					storeInfo.find('.storeName').text(reviewVo.storeName); 	//storeName
 				}
 				
-				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString())
-				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent)
-				for(var key in reviewVo.tagMap){
-					if(reviewVo.tagMap[key] ==1){
-						var newTag = $('#review-tag-div').clone(true);
-						newTag.css('display','');
-						newTag.removeAttr('id');
-						
-						newTag.text('#'+key)	//값 넣어주기
-						newTag.attr('href', '#')	/// search와 연결
-						
-						newReview.find('.review-tags-div').append(newTag);
-					}
-				}
+				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString());
+				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent);
 				
+				//태그를 리뷰에 추가
+				addTag2Review(reviewVo, newReview);				
 				
 				var likehateFormGroup = reviewInfo.children('.like-hate')
 				
@@ -939,6 +912,23 @@ var tagCheckboxData2Tags = function(){
 		tagValues =tagValues+ $(this).val() +","; 
 	});
 	 $('#review-tags').val(tagValues.slice(0,-1));
+}
+
+//reviewVo에 담긴 tag 내용을 선택된 reviewRow에 추가
+var addTag2Review = function(reviewVo, selectedReview){
+	var reviewTagsArr = reviewVo.tags.split(',')
+	for(var tagIdx in reviewTagsArr){
+		if(reviewTagsArr[tagIdx] !=""){
+			var newTag = $('#review-tag-div').clone(true);
+			newTag.css('display','');
+			newTag.removeAttr('id');
+			
+			newTag.text('#'+reviewTagsArr[tagIdx])	//값 넣어주기
+			newTag.attr('href', '#')	/// search와 연결
+			
+			selectedReview.find('.review-tags-div').append(newTag);			
+		}
+	}
 }
 
 

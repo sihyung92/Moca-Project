@@ -192,7 +192,8 @@ public class StoreServiceImpl implements StoreService{
 				tagsMapList.get(i).remove("STORE_ID");
 				
 				//set 리뷰 태그 
-				reviewList.get(i).setTagMap(tagsMapList.get(i)); ///에러
+				reviewList.get(i).setTagMap(tagsMapList.get(i)); 
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
