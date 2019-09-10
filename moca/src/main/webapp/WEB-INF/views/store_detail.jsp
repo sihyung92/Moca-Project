@@ -243,8 +243,12 @@
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				tagCheckboxData2Tags();
-				saveReview(fileBuffer);
+				if(isCheckLevel()){
+					tagCheckboxData2Tags();
+					saveReview(fileBuffer);
+				}else{
+					alert("별점을 입력해주세요 ^0^")
+				}
 			})
 			
 			//수정 버튼 클릭시
@@ -273,6 +277,8 @@
 				//모달에 있는 데이터 없애고 
 				fileBuffer = [];
 				clearReviewModalData();
+
+				initReviewLevel();
 
 				transReviewAddMode();
 

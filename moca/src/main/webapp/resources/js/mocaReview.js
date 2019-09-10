@@ -144,7 +144,6 @@ var saveReview = function(fileBuffer){
 }
 
 var addReviewInReviewContent = function(reviewVo) {
-	test = reviewVo;
 	var newReview = $('#reviewTemplate').clone(true);
 	newReview.css('display', '');
 	newReview.removeAttr('id')
@@ -201,14 +200,11 @@ var addReviewInReviewContent = function(reviewVo) {
 //리뷰 데이터를 리뷰 모달로 이동 (수정 때 사용)
 var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	clearReviewModalData();
-	
-	clickedEditBtn = clickedEditBtn;
 
 	reviewModal.modal("show");		//리뷰 모달창 show
 
 	editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
 
-	//store name
 	
 	//마이페이지에서만 제목을 따로 등록해야하기 때문
 	if((reviewModal.find('#reviewModalLabel').html().trim()=="에 대한 리뷰") && (storeName!=undefined)){
@@ -219,7 +215,7 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 	//리뷰 아이디
 	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
 	//스토어아이디
-	reviewModal.find('#storeId').val(editReviewRow.find('.storeId').eq(0).val());
+	reviewModal.find('#storeId').val(editReviewRow.find('.store-id').eq(0).val());
 	
 	//사진
 	var reviewImg = editReviewRow.find('.reviewThumbnailGroup').clone();
@@ -726,8 +722,7 @@ var moreReviewList = function(startNum,callWhere) {
 			"startNum": startNum
 		},
 		success: function(reviewVoList) {
-			test = reviewVoList;
-			
+	
 			console.log('ajax 통신 성공')
 			
 			//갖고오는 이미지 length가 3개 미만일 때
@@ -786,7 +781,8 @@ var moreReviewList = function(startNum,callWhere) {
 					newReview.find('.editDeleteGroup').remove();
 				}
 				
-				newReview.find('.review-id').val(''+reviewVo.review_id);
+				newReview.find('.editDeleteGroup .store-id').val(reviewVo.store_id);
+				newReview.find('.editDeleteGroup .review-id').val(reviewVo.review_id);
 				
 				if(isStorePage){
 					//store 페이지일 때
@@ -862,33 +858,42 @@ var bindRaty = function(){
 	//평점 별
 	$('#level').raty({
 	  scoreName:  'level',
+	  start :0,
 	  click: function(score){
 		  $.fn.raty.cancel('#level');
 		  $('.storeLevel').css('display','')
 		  $('.level').css('display','none')
-
-		  $.fn.raty.start(score, '#taste-level');
-		  $.fn.raty.start(score, '#price-level');
-		  $.fn.raty.start(score, '#service-level');
-		  $.fn.raty.start(score, '#mood-level');
-		  $.fn.raty.start(score, '#convenience-level');
+		  
+		  initReviewLevel(score);
 	  }
 	});
-		$('#taste-level').raty({
-		  scoreName:  'tasteLevel',
+		
+	$('#taste-level').raty({
+		  scoreName:  'tasteLevel'
 	});
 	$('#price-level').raty({
-		  scoreName:  'priceLevel',
+		  scoreName:  'priceLevel'
 	});
 	$('#service-level').raty({
-		  scoreName:  'serviceLevel',
+		  scoreName:  'serviceLevel'
 	});
 	$('#mood-level').raty({
-		  scoreName:  'moodLevel',
+		  scoreName:  'moodLevel'
 	});
 	$('#convenience-level').raty({
-		  scoreName:  'convenienceLevel',
+		  scoreName:  'convenienceLevel'
 	}); 
+	
+	initReviewLevel(0);
+}
+
+var initReviewLevel = function(level){
+	$.fn.raty.start(level, '#level');
+	$.fn.raty.start(level, '#taste-level');
+	$.fn.raty.start(level, '#price-level');
+	$.fn.raty.start(level, '#service-level');
+	$.fn.raty.start(level, '#mood-level');
+	$.fn.raty.start(level, '#convenience-level');
 }
 
 var transReviewEditMode = function(){
@@ -931,6 +936,18 @@ var addTag2Review = function(reviewVo, selectedReview){
 			selectedReview.find('.review-tags-div').append(newTag);			
 		}
 	}
+}
+
+var isCheckLevel = function(){
+	var isCheck =true;
+	if($('#level-score').val() ==""){ isCheck=false}
+	if($('#taste-level-score').val() ==""){ isCheck=false}
+	if($('#price-level-score').val() ==""){ isCheck=false}
+	if($('#service-level-score').val() ==""){ isCheck=false}
+	if($('#mood-level-score').val() ==""){ isCheck=false}
+	if($('#convenience-level-score').val() ==""){ isCheck=false}
+	
+	return isCheck;
 }
 
 
