@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -160,9 +161,8 @@ public class StoreServiceImpl implements StoreService{
 	
 	////////////////////////////////
 	//review
-
 	@Override
-	public List<ReviewVo> getReviewListLimit(int accountId, int storeId, int startNum, List<String> tagNameList) {
+	public List<ReviewVo> getReviewListLimit(int myAccountId, int targetStoreId, int startNum) {
 		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
 		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
 		
@@ -170,15 +170,13 @@ public class StoreServiceImpl implements StoreService{
 		
 		
 		
-		reviewList = reviewDao.selectReviewLimit3ByStoreId(accountId, storeId, startNum);
-		tagsMapList = reviewDao.selectTagsLimit3ByStoreId(accountId, storeId, startNum);
-		for (Map<String, Object> map : tagsMapList) {
-			String tags = "";
-			for (String tag : tagNameList) {
-				tags += map.get(tag) +",";
-			}
-			logger.debug(tags);
+		try {
+			reviewList = reviewDao.selectReviewLimit3ByStoreId(myAccountId, targetStoreId, startNum);
+			tagsMapList = reviewDao.selectTagsLimit3ByStoreId(myAccountId, targetStoreId, startNum);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 		}
+
 		
 		for(int i=0; i<reviewList.size(); i++) {
 			try {
@@ -204,6 +202,9 @@ public class StoreServiceImpl implements StoreService{
 		///
 		String uploadPath = "review";
 		String reviewVoTags =reviewVo.getTags();
+		
+		
+		
 		
 		//평균 점수 계산
 		reviewVo.calAverageLevel();
@@ -249,7 +250,7 @@ public class StoreServiceImpl implements StoreService{
 				storeVo.calAllLevel(list);
 				logger.debug("평점 동기화 된 StoreVo : "+storeVo.toString());
 				storeDao.updateLevel(storeVo);
-				
+			
 				
 				//리뷰의 tag 추가
 				Map<String, Object> tagMap = new HashMap<String, Object>();
@@ -272,7 +273,7 @@ public class StoreServiceImpl implements StoreService{
 						}
 					}
 				}
-				logger.debug(tags +", "+tagValues);
+				
 				if(tags.length() ==0) {
 					tagMap.put("TAGS", "");
 					tagMap.put("TAGVALUES", "");
@@ -281,10 +282,9 @@ public class StoreServiceImpl implements StoreService{
 					tagMap.put("TAGVALUES", tagValues.substring(0, tagValues.length()));
 					
 				}
-				logger.debug(tagMap.get("TAGS") +", "+tagMap.get("TAGVALUES"));
+				logger.debug(tagMap.get("TAGS") +" : "+tagMap.get("TAGVALUES"));
 				int result = reviewDao.insertTags(tagMap);
 				logger.debug("storeDao.insertTags(tagMap) result : "+ result );
-				
 				
 				
 				//리뷰 작성에 대한 exp 적립 및 로그 기록
@@ -325,9 +325,7 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails) {
 		String reviewVoTags =reviewVo.getTags();
-		
-
-		
+	
 		
 		try {
 			String uploadPath = "review";

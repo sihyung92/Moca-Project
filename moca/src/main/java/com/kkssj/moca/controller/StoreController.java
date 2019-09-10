@@ -84,6 +84,9 @@ public class StoreController {
 			session.setAttribute("viewCntIsAdded",new HashMap<Integer, Long>());
 		}
 		
+		
+		////////////////////////////////
+		//store log
 		boolean addStroeView = true;
 		Map<Integer,Long> viewCntIsAdded = (Map<Integer, Long>) session.getAttribute("viewCntIsAdded");
 		
@@ -98,8 +101,6 @@ public class StoreController {
 				viewCntIsAdded.put(storeId, System.currentTimeMillis());
 			}
 		}
-		
-		logger.debug(storeId+":"+viewCntIsAdded);
 	
 		//비회원인 경우
 		if(accountVo ==null) {
@@ -120,7 +121,7 @@ public class StoreController {
 		StoreVo storeVo = storeService.getStore(storeId, accountVo.getAccount_id());
 		logger.debug(storeVo.toString());
 
-		// 이때 storeVo에 store_id 값이 없으면 해당페이지 없다는 view 리턴
+		/// 이때 storeVo에 store_id 값이 없으면 해당페이지 없다는 view 리턴
 		if (storeVo.getStore_Id() == 0) {
 			// return "에러페이지";
 		}
@@ -130,7 +131,7 @@ public class StoreController {
 		model.addAttribute("accountVo", accountVo);
 
 		//리뷰가져오기
-		model.addAttribute("reviewVoList", storeService.getReviewListLimit(accountVo.getAccount_id(), storeId, 0, tagNameList));
+		model.addAttribute("reviewVoList", storeService.getReviewListLimit(accountVo.getAccount_id(), storeId, 0));
 
 		//tag 가져오기
 		model.addAttribute("tagNameList", tagNameList);
@@ -416,10 +417,8 @@ public class StoreController {
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
 		}
-		
-		List<String> tagNameList = storeService.getTagNameList();
     	
-    	List<ReviewVo> reviewVoList = storeService.getReviewListLimit(accountVo.getAccount_id(), store_id, startNum , tagNameList);
+    	List<ReviewVo> reviewVoList = storeService.getReviewListLimit(accountVo.getAccount_id(), store_id, startNum);
     	logger.debug("startNum : "+startNum);
     	logger.debug(reviewVoList.toString());
     	return new ResponseEntity<>(reviewVoList,HttpStatus.OK);
@@ -464,7 +463,6 @@ public class StoreController {
         for (int i = 0; i < files.length; i++) {
 			logger.debug(files[i].getName());
 		}
-        
         
 		////////////////////////////////
 		//기능		

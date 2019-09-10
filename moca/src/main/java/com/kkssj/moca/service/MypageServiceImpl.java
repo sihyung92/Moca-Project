@@ -3,9 +3,12 @@ package com.kkssj.moca.service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +24,9 @@ import com.kkssj.moca.model.entity.ReviewVo;
 
 @Service
 public class MypageServiceImpl implements MypageService{
+	
+	private static final Logger logger = LoggerFactory.getLogger(MypageServiceImpl.class);
+	
 	@Inject
 	AccountDao accountDao;	
 	
@@ -70,34 +76,38 @@ public class MypageServiceImpl implements MypageService{
 		return null;
 	}
 
+
 	@Override
-	public List<ReviewVo> getMyreviewList(int accountId, int sessionId, int startNum) {
+	public List<ReviewVo> getMyReviewListLimit(int myAccountId, int targetAccountId, int startNum) {
 		List<ReviewVo> reviewList = new ArrayList<ReviewVo>();
 		List<ImageVo> reviewImageList = new ArrayList<ImageVo>();
+		
+		List<Map<String, Object>> tagsMapList = new ArrayList<Map<String,Object>>();
+		
 		try {
-			reviewList = reviewDao.selectReviewListByAccountId(accountId,sessionId,startNum);
-			reviewImageList = reviewDao.selectReviewImgListByAccountId(accountId);
+			reviewList = reviewDao.selectReviewListByAccountId(targetAccountId,myAccountId,startNum);
+			tagsMapList = reviewDao.selectTagsLimit3ByAccountId(targetAccountId, startNum);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println("reviewImageList size : "+reviewImageList);
-		System.out.println("reviewList size : "+reviewList);
 		
-		for(int i=0; i<reviewImageList.size(); i++) {
-			reviewImageList.get(i).setUrl("");
-		}
-		
-		int imageListIndex = 0;
-		for (int i = 0; i < reviewList.size(); i++) {
-			reviewList.get(i).setImageList(new ArrayList());
-			for (int j = imageListIndex; j < reviewImageList.size(); j++) {
-				if(reviewList.get(i).getReview_id()==reviewImageList.get(j).getReview_id()) {
-					reviewList.get(i).getImageList().add(reviewImageList.get(j));
-					imageListIndex++;
+		for(int i=0; i<reviewList.size(); i++) {
+			try {
+				//set 리뷰 이미지 리스트
+				reviewImageList = reviewDao.selectReviewImgListByReviewId(reviewList.get(i).getReview_id());
+				for(int j=0; j<reviewImageList.size(); j++) {
+					reviewImageList.get(j).setUrl();
 				}
+				reviewList.get(i).setImageList(reviewImageList);
+				
+				//set 리뷰 태그 
+				reviewList.get(i).setTagMap(tagsMapList.get(i)); ///에러
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
+				
 		return reviewList;
 		
 	}
@@ -233,5 +243,7 @@ public class MypageServiceImpl implements MypageService{
 
 		return tagNameList;
 	}
+
+
 
 }

@@ -98,7 +98,7 @@ public class MyPageController {
 		model.addAttribute("");
 		
 		//해당 account의 내가 쓴 리뷰 가져오기
-		model.addAttribute("reviewVoList", mypageService.getMyreviewList(accountId,accountVo.getAccount_id(),0));
+		model.addAttribute("reviewVoList", mypageService.getMyReviewListLimit(accountVo.getAccount_id(), accountId, 0));
 		
 		//tag 가져오기
 		model.addAttribute("tagNameList", tagNameList);
@@ -123,7 +123,7 @@ public class MyPageController {
 		}
 		
 		//해당 account의 내가 쓴 리뷰 가져오기
-		List<ReviewVo> MyreviewList = mypageService.getMyreviewList(accountId,accountVo.getAccount_id(),startNum);
+		List<ReviewVo> MyreviewList = mypageService.getMyReviewListLimit(accountVo.getAccount_id(), accountId, startNum);
 		return new ResponseEntity<>(MyreviewList, HttpStatus.OK);
 	}
 	

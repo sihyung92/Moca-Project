@@ -151,6 +151,7 @@ var addReviewInReviewContent = function(reviewVo) {
 	var reviewerInfo = newReview.find('.reviewer-info')
 	var reviewInfo = newReview.find('.review-info')
 	var reviewLevel = newReview.children(".review-level")
+	newReview.find('.store-info').css('display','none');
 	
 	// 나중에 사진 추가할때 사용
 	var reviewThumbnail = reviewInfo.children('.reviewThumbnailGroup');
@@ -291,7 +292,6 @@ var editReview = function(){
 		type: 'POST',
 		url: '/moca/reviews/'+reviewFormObj.review_id,
 		enctype : 'multipart/form-data',
-//		data: reviewFormObj,
 		data: reviewFormData,
 		dataType : "json",
 		contentType : false,  
@@ -697,6 +697,18 @@ var reviewMoreBtnClick = function(callWhere) {
 
 //리뷰 3개씩 추가
 var moreReviewList = function(startNum,callWhere) {
+
+	//어떤 페이지에서 사용되는지 확인
+	var isStorePage = false;
+	var isMypage = false;
+	
+	//storeName의 유무에 따른 페이지 결정
+	if(callWhere =='mypage'){
+		isMypage = true;
+	}else if(callWhere =='store'){
+		isStorePage = true;
+	}
+	
 	var url="";
 	if(callWhere=="review"){
 		url = '/moca/storeReviews/' +storeId;
@@ -721,26 +733,13 @@ var moreReviewList = function(startNum,callWhere) {
 				reviewVoListLength = true;
 			}
 			
+			test =reviewVoList;
 			
-			test = reviewVoList;
-			//어떤 페이지에서 사용되는지 확인
-			var isStorePage;
-			var isMypage;
-			
-			//storeName의 유무에 따른 페이지 결정
-			if(reviewVoList[0].storeName !=null){
-				isStorePage = false;
-				isMypage = true;
-			}else{
-				isStorePage = true;
-				isMypage = false;
-			}
 			
 			for(var j=0; j<reviewVoList.length; j++){
 				
 				var alreadyReviewExist = false;
 				var reviewVo = reviewVoList[j];
-				test = reviewVo;
 				for(var i=0; i<$('.review-content').find('.review-id').filter(':even').length; i++){
 					if(reviewVo.review_id==$('.review-content').find('.review-id').filter(':even').eq(i).val()){
 						alreadyReviewExist=true;
@@ -913,6 +912,15 @@ var transReviewAddMode = function(){
 	
 	reviewModal.find('#saveReviewBtn').css('display','');
 	reviewModal.find('#editReviewBtn').css('display','none');
+}
+
+//체크박스의 tag 내용을 form의 내용으로 보낼 review-tags의 value로 보냄
+var tagCheckboxData2Tags = function(){
+	var tagValues = "";
+	$("input:checkbox[name=tag]:checked").each(function(){
+		tagValues =tagValues+ $(this).val() +","; 
+	});
+	 $('#review-tags').val(tagValues.slice(0,-1));
 }
 
 

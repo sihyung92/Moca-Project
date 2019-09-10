@@ -208,12 +208,7 @@
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				var tagValues = "";
-				$("input:checkbox[name=tag]:checked").each(function(){
-					tagValues =tagValues+ $(this).val() +",";
-				   
-				});
-				 $('#review-tags').val(tagValues)
+				tagCheckboxData2Tags();
 				saveReview(fileBuffer);
 			})
 			
@@ -234,11 +229,8 @@
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
-				var tagValues = "";
-				$("input:checkbox[name=tag]:checked").each(function(){
-					tagValues =tagValues+ $(this).val() +","; 
-				});
-				 $('#review-tags').val(tagValues)
+				tagCheckboxData2Tags();
+
 				editReview();
 			})
 			
