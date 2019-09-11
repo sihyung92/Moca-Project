@@ -107,6 +107,10 @@
 		#storeAverageLevel{
 			display : inline;
 		}
+		
+		#storeSummaryDiv{
+			font-size : 150%;
+		}
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -764,6 +768,15 @@
 							</c:if>					
 						</div>
 
+						<div id="storeTagDiv">
+							<!-- 태그 -->
+							<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
+							<c:forEach items="${tags}" var="tag">
+								<c:if test="${tag ne ''}">
+									<button type="button" class="btn btn-default btn-sm">#${tag}</button>
+								</c:if>
+							</c:forEach>
+						</div>
 						
 						<!-- 로고 & 카페이름-->
 						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
@@ -804,21 +817,6 @@
 					<div class="col-md-2">
 						<div id="storeFavoriteCountDiv">
 							<span id="storeFavoriteCount">${storeVo.favoriteCnt}</span>명이 가고 싶어하는
-						</div>
-					</div>
-				</div>
-				<br><br>
-				<div class="row">
-					<div class="col-md-8 col-md-offset-2">
-						<div id="storeTagDiv">
-							주요 태그 : 
-							<!-- 태그 -->
-							<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
-							<c:forEach items="${tags}" var="tag">
-								<c:if test="${tag ne ''}">
-									<button type="button" class="btn btn-default btn-sm">#${tag}</button>
-								</c:if>
-							</c:forEach>
 						</div>
 					</div>
 				</div>
