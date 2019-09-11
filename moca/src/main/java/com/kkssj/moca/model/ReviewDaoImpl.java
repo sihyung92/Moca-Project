@@ -255,10 +255,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	}
 	
 	public double selectAverageLevelByReviewId(int review_id) throws SQLException {
-		System.out.println(review_id);
-		
 		double result = sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAverageLevelByReviewId",review_id); 
-		System.out.println(result);
 		return result;
 
 	}

@@ -452,7 +452,7 @@ public class StoreController {
     			return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     		}
 		}
-    	
+
     	
     	
 		////////////////////////////////
@@ -640,15 +640,41 @@ public class StoreController {
 	}
 
 
+	////////////////////////
+	//동기화 (나중에 put 방식으로 변경)
 	
-	//리뷰 좋아요수 동기화(나중에 put 방식으로 변경)
-	@GetMapping("/reviewsLikeHate")
+	//리뷰 좋아요수 동기화
+	@GetMapping("/reviews/likeHate")
 	public String syncReviewLikeHate() {
 		
 		int result = storeService.syncReviewLikeHate();
 		
 		//일단 페이지 띄워야 하니까 
-		return "redirect:../stores/"+1;
+		return "redirect:/stores/"+1;
+	}
+	
+	//store 좋아요 수 동기화
+	@GetMapping("/stores/likeCnt")
+	public String syncStoresLikeCnt() {
+		int result = storeService.syncStoresLikeCnt();
+		logger.debug("syncStoresLikeCnt result="+result);
+		return "";
+	}
+	
+	//store 리뷰 수 동기화
+	@GetMapping("/stores/reviewCnt")
+	public String syncStoresReviewCnt() {
+		int result = storeService.syncStoresReviewCnt();
+		logger.debug("syncStoresReviewCnt result="+result);
+		return "";
+	}
+	
+	//store 가고싶은 수 동기화
+	@GetMapping("/stores/favoriteCnt")
+	public String syncStoresFavoriteCnt() {
+		int result = storeService.syncStoresFavoriteCnt();
+		logger.debug("syncStoresFavoriteCnt result="+result);
+		return "";
 	}
 	
 

@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
@@ -304,7 +305,7 @@ public class StoreServiceImpl implements StoreService{
 				logger.debug("storeDao.insertTags(tagMap) result : "+ result );
 				reviewVo.setTags(reviewVoTags);
 				
-				
+				/////////////////////////////////////
 				//리뷰 작성에 대한 exp 적립 및 로그 기록
 				int exp = 10;
 				String classification = "리뷰작성";
@@ -324,6 +325,11 @@ public class StoreServiceImpl implements StoreService{
 				
 				//account의 reviewcnt를 증가시켜줌
 				accountDao.updateReviewCount(accountVo.getAccount_id(),1);
+				
+				
+				///////////////////////////
+				//store reviewCnt
+				storeDao.updateReviewCount(reviewVo.getStore_id(), 1);
 				
 				// 방금 입력한 reviewVo를 리턴
 				return reviewVo;
@@ -508,6 +514,18 @@ public class StoreServiceImpl implements StoreService{
 			//account의 reviewcnt를 감소시켜줌
 			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);
 			
+<<<<<<< HEAD
+=======
+			//카페에 대한 levelCnt 수정(삭제)
+			double beforeAveragelevel = reviewDao.selectAverageLevelByReviewId(reviewVo.getReview_id());
+			String BeforelevelCntColumn = setLevelCntColumn(beforeAveragelevel);
+			storeDao.updateLevelCnt(reviewVo.getStore_id(), BeforelevelCntColumn, -1);
+			
+			///////////////////////////
+			//store reviewCnt
+			storeDao.updateReviewCount(reviewVo.getStore_id(), -1);
+			
+>>>>>>> 7cdbd310b6dbe760020fa4c3f8ad241f56ca8dc1
 			//정상일 경우 return 1
 			return 1;
 			
@@ -679,6 +697,8 @@ public class StoreServiceImpl implements StoreService{
 				}
 			}
 			
+
+			
 			
 			return result;
 			
@@ -791,7 +811,10 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int addLikeStore(int storeId, int account_id) {
 		try {
-			return accountDao.insertLikeStore(storeId,account_id);
+			int result = accountDao.insertLikeStore(storeId,account_id);
+			storeDao.updateLikeCount(storeId , 1);
+			
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -801,7 +824,9 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int deleteLikeStore(int storeId, int account_id) {
 		try {
-			return accountDao.deleteLikeStore(storeId,account_id);
+			int result = accountDao.deleteLikeStore(storeId,account_id);
+			storeDao.updateLikeCount(storeId , -1);
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -811,7 +836,9 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int addFavoriteStore(int storeId, int account_id) {
 		try {
-			return accountDao.insertFavoriteStore(storeId,account_id);
+			int result = accountDao.insertFavoriteStore(storeId,account_id);
+			storeDao.updateFavoriteCount(storeId , 1);
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -821,7 +848,9 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int deleteFavoriteStore(int storeId, int account_id) {
 		try {
-			return accountDao.deleteFavoriteStore(storeId,account_id);
+			int result = accountDao.deleteFavoriteStore(storeId,account_id);
+			storeDao.updateFavoriteCount(storeId , -1);
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -902,6 +931,51 @@ public class StoreServiceImpl implements StoreService{
 		
 		return levelCntColumn;
 		
+	}
+	@Override
+	public int syncStoresLikeCnt() {
+		List<StoreVo> storesLikeCnt = storeDao.selectAllLikeCntList();
+		boolean isSync = true;
+		logger.debug("storesLikeCnt size : "+ storesLikeCnt.size());
+		for (StoreVo storeVo : storesLikeCnt) {
+			if(storeDao.updateStoreLikeCnt(storeVo) !=1) {
+				isSync =false;
+			}
+		}
+		if(isSync) {
+			return 1;
+		}
+		return 0;
+	}
+	@Override
+	public int syncStoresReviewCnt() {
+		List<StoreVo> storesReviewCnt = storeDao.selectAllReviewCntList();
+		boolean isSync = true;
+		logger.debug("storesReviewCnt size : "+ storesReviewCnt.size());
+		for (StoreVo storeVo : storesReviewCnt) {
+			if(storeDao.updateStoreReviewCnt(storeVo) !=1) {
+				isSync =false;
+			}
+		}
+		if(isSync) {
+			return 1;
+		}
+		return 0;
+	}
+	@Override
+	public int syncStoresFavoriteCnt() {
+		List<StoreVo> storesFavoriteCnt = storeDao.selectAllFavoriteCntList();
+		boolean isSync = true;
+		logger.debug("storesFavoriteCnt size : "+ storesFavoriteCnt.size());
+		for (StoreVo storeVo : storesFavoriteCnt) {
+			if(storeDao.updateStoreFavoriteCnt(storeVo) !=1) {
+				isSync =false;
+			}
+		}
+		if(isSync) {
+			return 1;
+		}
+		return 0;
 	}
 	
 	

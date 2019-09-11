@@ -93,6 +93,7 @@
 			margin: 30px auto;
 			width:50%;
 		}
+<<<<<<< HEAD
 		.progress-label {
 		  float: left;
 		  margin-right: 1em;
@@ -147,6 +148,15 @@
 		}
 		#carousel-custom .carousel-outer {
 		    position: relative;
+=======
+		
+		#storeAverageLevel{
+			display : inline;
+		}
+		
+		#storeSummaryDiv{
+			font-size : 150%;
+>>>>>>> 7cdbd310b6dbe760020fa4c3f8ad241f56ca8dc1
 		}
 }
 	</style>
@@ -204,6 +214,12 @@
 			storeFiles = $('#storeFiles');
 
 			bindRaty();
+			$('#storeAverageLevel').raty({
+				half : true,
+				readOnly:   true,
+				scoreName:  'storeAverageLevel',
+				start : ${storeVo.averageLevel}
+			});
 
 			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
 							
@@ -284,8 +300,12 @@
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				tagCheckboxData2Tags();
-				saveReview(fileBuffer);
+				if(isCheckLevel()){
+					tagCheckboxData2Tags();
+					saveReview(fileBuffer);
+				}else{
+					alert("별점을 입력해주세요 ^0^")
+				}
 			})
 			
 			//수정 버튼 클릭시
@@ -314,6 +334,8 @@
 				//모달에 있는 데이터 없애고 
 				fileBuffer = [];
 				clearReviewModalData();
+
+				initReviewLevel();
 
 				transReviewAddMode();
 
@@ -393,6 +415,12 @@
 					success: function() {
 						likeStoreBtn.toggleClass('glyphicon-heart');
 						likeStoreBtn.toggleClass('glyphicon-heart-empty')
+
+						if(methodType == 'POST'){
+							$('#storeLikeCount').text($('#storeLikeCount').text()*1+1)
+						}else if(methodType == 'DELETE'){
+							$('#storeLikeCount').text($('#storeLikeCount').text()*1-1)
+						}
 						
 					},
 					error: function(request,status,error) {
@@ -424,6 +452,12 @@
 					success: function() {
 						favoriteStoreBtn.toggleClass('glyphicon-star')
 						favoriteStoreBtn.toggleClass('glyphicon-star-empty')
+
+						if(methodType == 'POST'){
+							$('#storeFavoriteCount').text($('#storeFavoriteCount').text()*1+1)
+						}else if(methodType == 'DELETE'){
+							$('#storeFavoriteCount').text($('#storeFavoriteCount').text()*1-1)
+						}
 						
 					},
 					error: function(request,status,error) {
@@ -749,15 +783,16 @@
 							</c:if>					
 						</div>
 
-						<!-- 태그 -->
-						<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
-						<p>
+						<div id="storeTagDiv">
+							<!-- 태그 -->
+							<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
 							<c:forEach items="${tags}" var="tag">
 								<c:if test="${tag ne ''}">
 									<button type="button" class="btn btn-default btn-sm">#${tag}</button>
 								</c:if>
 							</c:forEach>
-						</p>
+						</div>
+						
 						<!-- 로고 & 카페이름-->
 						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
 						<h1>
@@ -777,7 +812,35 @@
 					</div>
 				</div>
 			</div>
+<<<<<<< HEAD
 			
+=======
+			<div id="storeSummaryDiv">
+				<div class="row">
+					<div class="col-md-2 col-md-offset-2">
+						<div id="storeAverageLevelDiv">
+							<div id="storeAverageLevel"></div><span>${storeVo.averageLevel}</span>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeReviewCountDiv">
+							<span class="storeReviewCount">${storeVo.reviewCnt}</span>개의 리뷰
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeLikeCountDiv">
+							<span id="storeLikeCount">${storeVo.likeCnt}</span>명이 좋아하는
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeFavoriteCountDiv">
+							<span id="storeFavoriteCount">${storeVo.favoriteCnt}</span>명이 가고 싶어하는
+						</div>
+					</div>
+				</div>
+				<br><br>
+			</div>
+>>>>>>> 7cdbd310b6dbe760020fa4c3f8ad241f56ca8dc1
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2">
 					<!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->						

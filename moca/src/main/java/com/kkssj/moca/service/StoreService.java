@@ -84,6 +84,14 @@ public interface StoreService {
 
 	List<String> getTagNameList();
 
+<<<<<<< HEAD
 	//store countLevel 맞추기(동기화)
 	int syncStoreLevel();
+=======
+	int syncStoresLikeCnt();
+
+	int syncStoresReviewCnt();
+
+	int syncStoresFavoriteCnt();
+>>>>>>> 7cdbd310b6dbe760020fa4c3f8ad241f56ca8dc1
 }

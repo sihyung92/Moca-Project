@@ -60,6 +60,24 @@ public interface StoreDao {
 	int selectAlreadyReviewByKakaoId(int kakaoId) throws SQLException;
 
 	int updateLevelCnt(int storeId, String levelCntColumn, int addCntNum) throws SQLException;
+
+	List<StoreVo> selectAllLikeCntList();
+
+	int updateStoreLikeCnt(StoreVo storeVo);
+
+	List<StoreVo> selectAllReviewCntList();
+
+	int updateStoreReviewCnt(StoreVo storeVo);
+
+	List<StoreVo> selectAllFavoriteCntList();
+
+	int updateStoreFavoriteCnt(StoreVo storeVo);
+
+	int updateReviewCount(int store_id, int upDown) throws SQLException;
+
+	int updateLikeCount(int storeId, int upDown) throws SQLException;
+
+	int updateFavoriteCount(int storeId, int upDown) throws SQLException;
 	
 	List<Integer> selectAllStoreId();
 	

@@ -176,7 +176,63 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
+<<<<<<< HEAD
 	public List<Integer> selectAllStoreId() {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllStoreId");
 	}
+=======
+	public List<StoreVo> selectAllLikeCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllLikeCntList");
+	}
+	@Override
+	public int updateStoreLikeCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreLikeCnt", storeVo);
+	}
+
+	@Override
+	public List<StoreVo> selectAllReviewCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllReviewCntList");
+	}
+
+	@Override
+	public int updateStoreReviewCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreReviewCnt", storeVo);
+	}
+
+	@Override
+	public List<StoreVo> selectAllFavoriteCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllFavoriteCntList");
+	}
+
+	@Override
+	public int updateStoreFavoriteCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreFavoriteCnt", storeVo);
+	}
+
+	@Override
+	public int updateReviewCount(int store_id, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_id);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateReviewCount", map);
+	}
+
+	@Override
+	public int updateLikeCount(int storeId, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", storeId);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLikeCount", map);
+	}
+
+	@Override
+	public int updateFavoriteCount(int storeId, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", storeId);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateFavoriteCount", map);
+	}
+
+
+>>>>>>> 7cdbd310b6dbe760020fa4c3f8ad241f56ca8dc1
 }

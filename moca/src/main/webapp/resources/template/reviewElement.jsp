@@ -17,7 +17,7 @@
 			</div>
 			<div class="modal-body" data-role="content">
 				<form id="reviewForm">
-					<input name="store_id" value="${storeVo.store_Id}" style="display:none;" >
+					<input name="store_id" id="storeId" value="${storeVo.store_Id}" style="display:none;" >
 					<input name="review_id" id="review_id" value="0" style="display:none;" >
 					<div class="form-group">
 						<label for="picture-file">사진 선택</label>
@@ -120,8 +120,8 @@
 <!-- clone할 review element -->
 <div class="row"  id="reviewTemplate" style="display : none;">
 	<div class="editDeleteGroup btn-group" role="group">
-		<input type="number" style="display: none;" class="review-id" >
-		<input type="number" style="display: none;" class="store-id" >
+		<input type="number" class="review-id" style="display: none;">
+		<input type="number" class="store-id" style="display: none;">
 		<button type="button" class="btn-edit btn btn-default">수정</button>
 		<button type="button" class="btn-delete btn btn-default">삭제</button>
 	</div>
