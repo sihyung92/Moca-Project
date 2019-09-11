@@ -7,7 +7,7 @@ nav{width:100%;z-index:1001;position:fixed !important;}
 
  
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
-.modal-backdrop.in{z-index:10;}
+.modal-backdrop.in{z-index:10;}/*이게 있어야 로그인창이 제일 위에 올라옴..*/
 .dropdown-menu{border:none;}
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
 .btn-default{box-shadow:none;background-image:none;border:none;text-shadow:none;background-color:rgba(242,174,46,0.85);}
@@ -17,12 +17,17 @@ nav{width:100%;z-index:1001;position:fixed !important;}
 #searchBtn{background-color:transparent; border:none;}
 .navbar-default .form-control{border-radius:0px;border:none; box-shadow:none;border-bottom:1px solid rgba(0,0,0,0.85);}
 #keyword:-internal-autofill-selected {background-color:rgba(247,247,235,1.0); !important;}/*아 왜안돼ㅠㅠ*/
-#hiddenSearch.glyphicon{position: relative;float:right;}
+#hiddenSearch{border:unset;}
+#hiddenSearch:hover{background-color:unset;}
 
+#hiddenSearch button{background-color:transparent; border:none;position: relative;}
+.searchBar{display:none;}
+.form-control{display:inline-block;width:95%;}
 /*패드 크기*/
 @media (min-width:768px) {
 	.navbar-default .form-control{width:300px;}
 	#beMoca{display:none;}
+	.searchBar{display:block;}
 }
 
 /*데스크톱 크기*/
