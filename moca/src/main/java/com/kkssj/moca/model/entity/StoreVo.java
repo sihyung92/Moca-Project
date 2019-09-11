@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class StoreVo {
-	private int store_Id, kakaoId, reviewCnt, wifi, parkingLot, viewCnt, managerId;
+	private int store_Id, kakaoId, reviewCnt, likeCnt, favoriteCnt, wifi, parkingLot, viewCnt, managerId;
 	private String name, category, url, tag, dayOff, tel;
 	private String address,roadAddress;
 	private String xLocation, yLocation, distance;
@@ -319,6 +319,22 @@ public class StoreVo {
 		this.managerId = managerId;
 	}
 
+	public int getLikeCnt() {
+		return likeCnt;
+	}
+
+	public void setLikeCnt(int likeCnt) {
+		this.likeCnt = likeCnt;
+	}
+
+	public int getFavoriteCnt() {
+		return favoriteCnt;
+	}
+
+	public void setFavoriteCnt(int favoriteCnt) {
+		this.favoriteCnt = favoriteCnt;
+	}
+
 	public void calAllLevel(List<ReviewVo> list) {
 		this.tasteLevel = 0;
 		this.priceLevel = 0;
@@ -410,19 +426,6 @@ public class StoreVo {
 		yLocation = y;
 	}
 
-	@Override
-	public String toString() {
-		return "StoreVo [store_Id=" + store_Id + ", kakaoId=" + kakaoId + ", reviewCnt=" + reviewCnt + ", wifi=" + wifi
-				+ ", parkingLot=" + parkingLot + ", viewCnt=" + viewCnt + ", managerId=" + managerId + ", name=" + name
-				+ ", category=" + category + ", url=" + url + ", tag=" + tag + ", dayOff=" + dayOff + ", tel=" + tel
-				+ ", address=" + address + ", roadAddress=" + roadAddress + ", xLocation=" + xLocation + ", yLocation="
-				+ yLocation + ", distance=" + distance + ", logoImg=" + logoImg + ", storeImg1=" + storeImg1
-				+ ", storeImg2=" + storeImg2 + ", storeImg3=" + storeImg3 + ", tasteLevel=" + tasteLevel
-				+ ", priceLevel=" + priceLevel + ", serviceLevel=" + serviceLevel + ", moodLevel=" + moodLevel
-				+ ", convenienceLevel=" + convenienceLevel + ", averageLevel=" + averageLevel + ", openTime=" + openTime
-				+ ", endTime=" + endTime + ", openTime2=" + openTime2 + ", endTime2=" + endTime2 + ", isLike=" + isLike
-				+ ", isFavorite=" + isFavorite + ", isManager=" + isManager + "]";
-	}
 
 	//각각 점수에 따른 리뷰가 몇 개 있는 지
 	public int getLevel1Cnt() {
@@ -465,9 +468,21 @@ public class StoreVo {
 		this.level5Cnt = level5Cnt;
 	}
 
-
-	
-	
+	@Override
+	public String toString() {
+		return "StoreVo [store_Id=" + store_Id + ", kakaoId=" + kakaoId + ", reviewCnt=" + reviewCnt + ", likeCnt="
+				+ likeCnt + ", favoriteCnt=" + favoriteCnt + ", wifi=" + wifi + ", parkingLot=" + parkingLot
+				+ ", viewCnt=" + viewCnt + ", managerId=" + managerId + ", name=" + name + ", category=" + category
+				+ ", url=" + url + ", tag=" + tag + ", dayOff=" + dayOff + ", tel=" + tel + ", address=" + address
+				+ ", roadAddress=" + roadAddress + ", xLocation=" + xLocation + ", yLocation=" + yLocation
+				+ ", distance=" + distance + ", logoImg=" + logoImg + ", storeImg1=" + storeImg1 + ", storeImg2="
+				+ storeImg2 + ", storeImg3=" + storeImg3 + ", tasteLevel=" + tasteLevel + ", priceLevel=" + priceLevel
+				+ ", serviceLevel=" + serviceLevel + ", moodLevel=" + moodLevel + ", convenienceLevel="
+				+ convenienceLevel + ", averageLevel=" + averageLevel + ", openTime=" + openTime + ", endTime="
+				+ endTime + ", openTime2=" + openTime2 + ", endTime2=" + endTime2 + ", level1Cnt=" + level1Cnt
+				+ ", level2Cnt=" + level2Cnt + ", level3Cnt=" + level3Cnt + ", level4Cnt=" + level4Cnt + ", level5Cnt="
+				+ level5Cnt + ", isLike=" + isLike + ", isFavorite=" + isFavorite + ", isManager=" + isManager + "]";
+	}
 
 }
 

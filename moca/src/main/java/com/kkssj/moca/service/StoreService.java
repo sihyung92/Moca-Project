@@ -83,4 +83,10 @@ public interface StoreService {
 	int editStoreLogo(int store_Id, MultipartFile newFiles, String delStoreLogo);
 
 	List<String> getTagNameList();
+
+	int syncStoresLikeCnt();
+
+	int syncStoresReviewCnt();
+
+	int syncStoresFavoriteCnt();
 }

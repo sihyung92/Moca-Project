@@ -159,6 +159,12 @@
 			storeFiles = $('#storeFiles');
 
 			bindRaty();
+			$('#storeAverageLevel').raty({
+				half : true,
+				readOnly:   true,
+				scoreName:  'storeAverageLevel',
+				start : ${storeVo.averageLevel}
+			});
 
 			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
 							
@@ -742,15 +748,7 @@
 							</c:if>					
 						</div>
 
-						<!-- 태그 -->
-						<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
-						<p>
-							<c:forEach items="${tags}" var="tag">
-								<c:if test="${tag ne ''}">
-									<button type="button" class="btn btn-default btn-sm">#${tag}</button>
-								</c:if>
-							</c:forEach>
-						</p>
+						
 						<!-- 로고 & 카페이름-->
 						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
 						<h1>
@@ -769,6 +767,46 @@
 						</c:if>
 					</div>
 				</div>
+			</div>
+			<div id="storeSummaryDiv">
+				<div class="row">
+					<div class="col-md-2 col-md-offset-2">
+						<div id="storeAverageLevelDiv">
+							<div id="storeAverageLevel"></div><span>${storeVo.averageLevel}</span>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeReviewCountDiv">
+							<span id="storeReviewCount">${storeVo.reviewCnt}</span>개의 리뷰
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeLikeCountDiv">
+							<span id="storeLikeCount">${storeVo.likeCnt}</span>명이 좋아하는
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeFavoriteCountDiv">
+							<span id="storeFavoriteCount">${storeVo.favoriteCnt}</span>명이 가고 싶어하는
+						</div>
+					</div>
+				</div>
+				<br><br>
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<div id="storeTagDiv">
+							주요 태그 : 
+							<!-- 태그 -->
+							<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
+							<c:forEach items="${tags}" var="tag">
+								<c:if test="${tag ne ''}">
+									<button type="button" class="btn btn-default btn-sm">#${tag}</button>
+								</c:if>
+							</c:forEach>
+						</div>
+					</div>
+				</div>
+				<br><br>
 			</div>
 			<div class="row">
 				<div class="col-md-4 col-md-offset-2">

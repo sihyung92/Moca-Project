@@ -174,4 +174,35 @@ public class StoreDaoImpl implements StoreDao {
 		map.put("ADDCNTNUM", addCntNum);
 		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLevelCnt",map);
 	}
+
+	@Override
+	public List<StoreVo> selectAllLikeCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllLikeCntList");
+	}
+	@Override
+	public int updateStoreLikeCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreLikeCnt", storeVo);
+	}
+
+	@Override
+	public List<StoreVo> selectAllReviewCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllReviewCntList");
+	}
+
+	@Override
+	public int updateStoreReviewCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreReviewCnt", storeVo);
+	}
+
+	@Override
+	public List<StoreVo> selectAllFavoriteCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllFavoriteCntList");
+	}
+
+	@Override
+	public int updateStoreFavoriteCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreFavoriteCnt", storeVo);
+	}
+
+
 }

@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
@@ -884,6 +885,51 @@ public class StoreServiceImpl implements StoreService{
 		
 		return levelCntColumn;
 		
+	}
+	@Override
+	public int syncStoresLikeCnt() {
+		List<StoreVo> storesLikeCnt = storeDao.selectAllLikeCntList();
+		boolean isSync = true;
+		logger.debug("storesLikeCnt size : "+ storesLikeCnt.size());
+		for (StoreVo storeVo : storesLikeCnt) {
+			if(storeDao.updateStoreLikeCnt(storeVo) !=1) {
+				isSync =false;
+			}
+		}
+		if(isSync) {
+			return 1;
+		}
+		return 0;
+	}
+	@Override
+	public int syncStoresReviewCnt() {
+		List<StoreVo> storesReviewCnt = storeDao.selectAllReviewCntList();
+		boolean isSync = true;
+		logger.debug("storesReviewCnt size : "+ storesReviewCnt.size());
+		for (StoreVo storeVo : storesReviewCnt) {
+			if(storeDao.updateStoreReviewCnt(storeVo) !=1) {
+				isSync =false;
+			}
+		}
+		if(isSync) {
+			return 1;
+		}
+		return 0;
+	}
+	@Override
+	public int syncStoresFavoriteCnt() {
+		List<StoreVo> storesFavoriteCnt = storeDao.selectAllFavoriteCntList();
+		boolean isSync = true;
+		logger.debug("storesFavoriteCnt size : "+ storesFavoriteCnt.size());
+		for (StoreVo storeVo : storesFavoriteCnt) {
+			if(storeDao.updateStoreFavoriteCnt(storeVo) !=1) {
+				isSync =false;
+			}
+		}
+		if(isSync) {
+			return 1;
+		}
+		return 0;
 	}
 	
 }
