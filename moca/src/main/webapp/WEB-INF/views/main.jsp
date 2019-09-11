@@ -5,12 +5,12 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1", user-scalable=no">
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
-
-
 <style type="text/css">
 /* Header */
 	/* 템플릿 헤더 CSS(투명 설정 / 검색창 없애기) */
@@ -52,6 +52,15 @@
 	}
 /* Body */
 	/* 캐러셀 */
+	.slider{
+		width: 1300px;
+	}
+	.slider .store{
+		background-color: pink;
+		display: inline-block;
+		border: black 1px solid;
+	}
+	
 	.carousel-control {
 	  position: absolute;
 	  top: 0;
@@ -66,22 +75,33 @@
 	  filter: alpha(opacity=50);
 	  opacity: 0;
 	}
-	.mocaPick .item-inner ul{
-		list-style:none;
-		width:auto;		
+	.mocaPick{
+		background-color: red;	
 	}
-	.mocaPick .item-inner li{
+	.mocaPick .carousel{
+		border: 2px aqua solid;
+	}
+	.mocaPick .carousel-inner{
+		background-color: lavender;
+	}
+	.mocaPick .item{
+		background-color: orange;
+		border: 3px yellow solid;
+		height: auto;
+	}
+	.mocaPick .item-content{
 		display: inline-block;
 		float: left;
-/* 		width:25%;
-		height:100px;  */
+ 		width:20%;
+		height:20%;
 	}
-	.mocaPick img, .overlay{
-		width:300px;
-		height:300px;
+	.mocaPick img{
+ 		width: 100%;
+		height: 100%; 
 		display:none;
 		border: black solid 1px;
 	}
+
 	.mocaPick img:nth-child(2){
 		display:block;
 	}
@@ -93,6 +113,16 @@
 	}
 	.overlay span{
 		color: brown;
+	}
+	/* 최근 리뷰2 */
+	.recentReviews img{
+		width:30px;
+		height:30px;
+		border-radius: 50%;
+	}
+	.recentReviews .review{
+		background-color: lightgray;
+		margin: 1px;
 	}
 	/* 인기 리뷰 */
 	.panel-heading img{
@@ -133,7 +163,14 @@
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
 	var slide;
-    window.onload = function () {         
+    window.onload = function () {  
+   	 	//bxSlider 시작 
+    	$('.slider').bxSlider({
+    		minSlides: 1,
+    		maxSlides: 7,
+    		moveSlides: 3,
+    		slideWidth: 300
+    	});       
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
         $('.mocaPick li a').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
@@ -206,10 +243,28 @@
 <div id="content" class="container-fluid">
 	<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
 	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>
+<!-- 카페 추천 캐러샐(bxSlider)-->
+ 	<c:forEach items="${storesList}" var="list" varStatus="status" begin="0" end="0">
+		<c:if test="${not empty list}">
+			<c:set var="length" value="${fn:length(list)}"/>
+			<c:set var="index" value="${status.index}"/>
+			<c:set var="name" value="${listNames[index]}"/>
+				<h5>${name}: 총 가게 ${length}개</h5>
+				<div class="slider row">
+					<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
+					    <div class="store col-md-3">
+					    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
+						</div>
+					</c:forEach>
+				</div>
+		</c:if>
+	</c:forEach> 
+
+
 <!-- 카페 추천 캐러샐(부트스트랩)-->
-	<c:forEach items="${storesList}" var="store" varStatus="status" begin="0" end="0">
-		<c:if test="${not empty store}">		
-			<c:set var="length" value="${fn:length(store)}"/>
+	<c:forEach items="${storesList}" var="list" varStatus="status" begin="0" end="0">
+		<c:if test="${not empty list}">		
+			<c:set var="length" value="${fn:length(list)}"/>
 			<c:set var="index" value="${status.index}"/>
 			<c:set var="name" value="${listNames[index]}"/>
 	 		<div class="mocaPick">
@@ -228,75 +283,69 @@
 				  <!-- Wrapper for slides -->
 				  <div class="carousel-inner" role="listbox">
 				    <div class="item active">
-				     <ul class="item-inner">
-				     	<c:forEach items="${store}" var="bean" begin="0" end="4" > 					     	
-					     	<li><a href="./stores/${bean.store_Id }">
-					     		<div class="overlay">
+				     	<c:forEach items="${list}" var="store" begin="0" end="4" > 					     	
+					     	<div class="item-content"><a href="./stores/${store.store_Id }">
+					     		<%-- <div class="overlay">
 					     			<div>
-						     			<h4>${bean.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${bean.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
 						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${bean.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${bean.reviewCnt}
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
 							     		</h5>
-						     			<h6>${bean.roadAddress}</h6>
+						     			<h6>${store.roadAddress}</h6>
 					     			</div>
-					     		</div>
-					     		<img src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
-					     		<img src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
-					     		<img src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">					     	
-					     	</a></li>					     	
+					     		</div> --%>
+					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
+					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
+					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
+					     	</a></div>					     	
 				     	</c:forEach>
-				     </ul>	
 				    </div>
 				    <c:if test="${length gt 5}">
 				    <div class="item">
-				     <ul class="item-inner" style="list-style:none">
-				     	<c:set var="end">9</c:set>
+			    		<c:set var="end">9</c:set>
 				     	<c:if test="${length lt 10}"><c:set var="end">${length-1 }</c:set></c:if>
-				     	<c:forEach items="${store}" var="bean" begin="${end-4 }" end="${end }">
-					     	<li><a href="./stores/${bean.store_Id }">
-					     		<div class="overlay">
+				     	<c:forEach items="${list}" var="store" begin="${end-4 }" end="${end }">				     	
+					     	<div class="item-content"><a href="./stores/${store.store_Id }">
+					     		<%-- <div class="overlay">
 					     			<div>
-						     			<h4>${bean.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${bean.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
 						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${bean.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${bean.reviewCnt}
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
 							     		</h5>
-						     			<h6>${bean.roadAddress}</h6>
+						     			<h6>${store.roadAddress}</h6>
 					     			</div>
-					     		</div>
-					     		<img src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
-					     		<img src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
-					     		<img src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">					     	
-					     	</a></li>	
-				     	</c:forEach> 
-				     </ul>		
+					     		</div> --%>
+					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
+					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
+					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
+					     	</a></div>					     	
+				     	</c:forEach>				     
 				    </div>
 				    </c:if>     
 				    <c:if test="${length gt 10}">	
-					   <div class="item">		    
-					     <ul class="item-inner" style="list-style:none">
-					     	<c:forEach items="${store}" var="bean" begin="${length-5 }" end="${length-1 }"> 
-						     <li><a href="./stores/${bean.store_Id }">
-					     		<div class="overlay">
+					   <div class="item">
+				     		<c:forEach items="${list}" var="store" begin="${length-5 }" end="${length-1 }"> 					     	
+					     	<div class="item-content"><a href="./stores/${store.store_Id }">
+					     		<%-- <div class="overlay">
 					     			<div>
-						     			<h4>${bean.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${bean.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
 						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${bean.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${bean.reviewCnt}
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
 							     		</h5>
-						     			<h6>${bean.roadAddress}</h6>
+						     			<h6>${store.roadAddress}</h6>
 					     			</div>
-					     		</div>
-					     		<img src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main1">
-					     		<img src="${bean.storeImg2}<c:if test="${bean.storeImg2 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main2">
-					     		<img src="${bean.storeImg3}<c:if test="${bean.storeImg3 eq null}">${defaultImg }</c:if>" alt="${bean.name }_main3">					     	
-					     	</a></li>
-					     	</c:forEach>
-					     </ul>		     
+					     		</div> --%>
+					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
+					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
+					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
+					     	</a></div>					     	
+				     		</c:forEach>						   	
 					    </div> 
 					</c:if> 	  		   
-					  </div>	
+				</div>	
 				  <!-- Controls -->
 				  <a class="left carousel-control" href="#mocaPick_${index}" role="button" data-slide="prev">
 				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -310,6 +359,7 @@
 			</div>
 		</c:if>
 	</c:forEach>
+	
 <!-- 인기 리뷰 -->
 <c:if test="${not empty bestReviews }">
 	<div class="col-md-12">
@@ -355,10 +405,21 @@
 		  	</form>
 	  	</h5>
 	</div>
+	<div class="row recentReviews">
+		<c:forEach items="${recentReviews }" var="bean">
+			<div class="review col-md-8 col-md-offset-1">
+				<h3>${bean.storeName}</h3>				
+				<img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+				${bean.nickName } Lv${bean.accountLevel}
+				<c:forEach begin="1" end="${bean.averageLevel}">★</c:forEach>
+				 ${bean.writeDate }
+				<h4>${bean.reviewContent }</h4>
+			</div>
+		</c:forEach>
+	</div>
 	<div class="row panel panel-default col-md-12">
 	  <div class="panel-body">
-
-	  	<c:forEach items="${recentReviews }" var="bean">
+	  	<c:forEach items="${recentReviews }" var="bean">	  	
 			<div class="panel panel-default col-md-12">
 			 <div class="panel-heading">
 			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>LV${bean.accountLevel}☕️ ${bean.nickName } </h3><h4>${bean.averageLevel}</h4>
