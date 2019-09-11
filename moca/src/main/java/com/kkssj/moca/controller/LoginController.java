@@ -52,7 +52,7 @@ public class LoginController {//@SessionAtrribute?인가 삭제함
 				HttpSession ses=req.getSession();
 				
 				researchQuestionService.getList(ses);
-				ArrayList array = (ArrayList)ses.getAttribute("alist");
+				ArrayList array = (ArrayList)ses.getAttribute("qlist");
 				for(int i=0;i<array.size();i++) {
 					ResearchQuestionVo rqVo = (ResearchQuestionVo)array.get(i);
 					if((rqVo).getAnswer()!=null) {

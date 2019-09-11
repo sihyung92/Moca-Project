@@ -331,7 +331,7 @@
     <!-- Modal -->
     <div class="modal fade" id="Login-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" id="Login-Modal-dialog" role="document">
-            <div class="modal-content">
+            <div class="modal-content modal-login" id="modal-login">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">소셜 로그인</h4>

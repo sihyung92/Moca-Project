@@ -327,6 +327,11 @@
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="male" value="1"> 남
                                 </label>
+                                    <div class="progress">
+                                      <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                        60%
+                                      </div>
+                                    </div>
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="female" value="2"> 여
                                 </label><br><br>
@@ -346,7 +351,7 @@
                                     
                                     <!-- 선호도 질문 표현식 사용 -->
                                 <%
-                                    ArrayList alist = (ArrayList)session.getAttribute("arrayList");
+                                    ArrayList alist = (ArrayList)session.getAttribute("qlist");
                                 	if(alist!=null){
                                 		for(int i=0 ;i< alist.size();i++){
                                 			ResearchQuestionVo rqVo = (ResearchQuestionVo)alist.get(i);
@@ -396,7 +401,9 @@
     <!-- 설문에 대한 버튼 처리 -->
     <script type="text/javascript">
         researchSubmit();
-        
+        function test(){
+            $('#male').css('')
+        }
         function researchSubmit(){
             $('#research-submit').click(function(){
                 var account_id=''+'${sessionScope.login.account_id}';

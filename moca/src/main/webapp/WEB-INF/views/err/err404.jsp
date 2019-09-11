@@ -7,34 +7,40 @@
 <html>
 <head>
 <meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
+	<style type="text/css">
+		@font-face {
+		font-family:"잘난체";
+		src:url("/moca/resources/fonts/Jalnan.ttf");
+		}
+		body img{
+			display : block;
+			margin: 50px auto;
+		}
+		.Big-Font{
+			font-family : "잘난체";
+			font-size: 60px;
+		}
+		.Mid-Font{
+			font-family : "잘난체";
+			font-size: 44px;
+		}
+	</style>
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
+	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
+	<!-- 차트 -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<!-- mocaReview -->
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=31"/>"></script>
+	<!-- mocaStore -->
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
-
 <title>페이지를 찾을 수 없습니다</title>
-<style type="text/css">
-	@font-face {
-	font-family:"잘난체";
-	src:url("/moca/resources/fonts/Jalnan.ttf");
-	}
-	body img{
-		display : block;
-		margin: 50px auto;
-	}
-	.Big-Font{
-		font-family : "잘난체";
-		font-size: 60px;
-	}
-	.Mid-Font{
-		font-family : "잘난체";
-		font-size: 44px;
-	}
-</style>
+
 </head>
 <body>
 	<div id="header">
@@ -49,4 +55,5 @@
 	<img alt="#" src="/moca/resources/imgs/404Page_Not_Found.PNG"/>
 
 </body>
+
 </html>
