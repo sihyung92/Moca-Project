@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!-- 카페 추천 캐러샐 -->
+<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
+<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>
 	<c:forEach items="${storesList}" var="store" varStatus="status">
 		<c:if test="${not empty store}">		
 			<c:set var="length" value="${fn:length(store)}"/>
@@ -11,7 +13,7 @@
 			<c:set var="name" value="${listNames[index]}"/>
 	 		<div class="row mocaPick">
 				<div class="col-md-12">
-					<h5>${name} <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
+					<h5>${name}</h5>
 				</div>
 				<div class="col-md-12 carousel slide" id="mocaPick_${index}" data-ride="carousel">
 				  <!-- Indicators -->

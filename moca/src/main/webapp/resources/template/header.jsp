@@ -52,6 +52,7 @@
 				return false;
 			}else{
 				$(this).parent().submit();
+				return false;
 			}
 		});
         

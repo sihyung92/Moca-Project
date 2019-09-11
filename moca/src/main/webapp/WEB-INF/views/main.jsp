@@ -8,7 +8,50 @@
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
+
+
 <style type="text/css">
+/* Header */
+	/* 템플릿 헤더 CSS(투명 설정 / 검색창 없애기) */
+	#header .navbar{
+		background-image: none;
+		background-color:transparent;
+		border: none;
+		box-shadow: none;		
+	}
+	#header .navbar-header, #header .collapse{
+		background-color: transparent;
+	}
+	#searchBar{
+		display: none;
+	}
+	/* 메인 페이지 헤더 */
+	#header{
+		position: relative;
+		height: 500px;
+		background-image: url("resources/imgs/background.jpg");
+		background-size: cover;
+	}
+	#searchBar_main{
+		font-size: 0;
+		background-color: lightgray;
+		position: absolute;
+		top: 70%;
+		left: 50%;
+   	 	transform: translate(-50%, -50%);
+	}
+	.form-control{
+		font-size: 20px;
+		height: 50px;
+		width: 500px;
+		border-radius: 25px;
+	}
+	#searchBar_main button{
+		font-size: 25px;
+	}
+/* Body */
+	/* 캐러셀 */
 	.carousel-control {
 	  position: absolute;
 	  top: 0;
@@ -22,14 +65,22 @@
 	  background-color: rgba(0, 0, 0, 0);
 	  filter: alpha(opacity=50);
 	  opacity: 0;
-	}	
+	}
+	.mocaPick .item-inner ul{
+		list-style:none;
+		width:auto;		
+	}
 	.mocaPick .item-inner li{
-		float:left;	
+		display: inline-block;
+		float: left;
+/* 		width:25%;
+		height:100px;  */
 	}
 	.mocaPick img, .overlay{
 		width:300px;
 		height:300px;
 		display:none;
+		border: black solid 1px;
 	}
 	.mocaPick img:nth-child(2){
 		display:block;
@@ -43,12 +94,12 @@
 	.overlay span{
 		color: brown;
 	}
+	/* 인기 리뷰 */
 	.panel-heading img{
 		width:30px;
 		height:30px;
 		border-radius: 50%;
 	}
-	
 	.panel-body .panel-body h3{
 		color: brown;
 	}
@@ -73,13 +124,16 @@
 		overflow : scroll;
 		height : 400px;
 	}
+	
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 <script type="text/javascript">
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
 	var slide;
-    window.onload = function () {   	
+    window.onload = function () {         
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
         $('.mocaPick li a').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
@@ -140,22 +194,27 @@
 </head>
 <body>
 <div id="header">
-			<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
+	<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
+	<form id="searchBar_main" class="form-inline" action="<c:url value="/stores"/>">
+      <div class="form-group">
+        <input type="text" name="keyword" id="keyword" class="form-control" placeholder="카페를 검색해보세요:D" size="50">	
+  		<input type="hidden" name="filter" value="distance"/>
+      </div>
+      <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+    </form>
 </div>
 <div id="content" class="container-fluid">
 	<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
 	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>
-<!-- 카페 추천 캐러샐 -->
-	<c:forEach items="${storesList}" var="store" varStatus="status">
+<!-- 카페 추천 캐러샐(부트스트랩)-->
+	<c:forEach items="${storesList}" var="store" varStatus="status" begin="0" end="0">
 		<c:if test="${not empty store}">		
 			<c:set var="length" value="${fn:length(store)}"/>
 			<c:set var="index" value="${status.index}"/>
 			<c:set var="name" value="${listNames[index]}"/>
-	 		<div class="row mocaPick">
-				<div class="col-md-12">
-					<h5>${name} <span class="glyphicon glyphicon-home" aria-hidden="true"></span></h5>
-				</div>
-				<div class="col-md-12 carousel slide" id="mocaPick_${index}" data-ride="carousel">
+	 		<div class="mocaPick">
+				<h5>${name}</h5>
+				<div class="carousel slide" id="mocaPick_${index}" data-ride="carousel">
 				  <!-- Indicators -->
 				  <ol class="carousel-indicators">
 				    <li data-target="#mocaPick_${index}" data-slide-to="0" class="active"></li>
@@ -169,7 +228,7 @@
 				  <!-- Wrapper for slides -->
 				  <div class="carousel-inner" role="listbox">
 				    <div class="item active">
-				     <ul class="item-inner" style="list-style:none">
+				     <ul class="item-inner">
 				     	<c:forEach items="${store}" var="bean" begin="0" end="4" > 					     	
 					     	<li><a href="./stores/${bean.store_Id }">
 					     		<div class="overlay">
