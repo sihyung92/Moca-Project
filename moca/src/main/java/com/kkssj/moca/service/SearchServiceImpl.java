@@ -83,11 +83,19 @@ public class SearchServiceImpl implements SearchService {
 		if(region!=null) {
 			logger.debug("지역 필터 들어옴!");
 			sort="accuracy";
-			if(keyword.contains(region[1])){
-				query=keyword;		//광진스타벅스
+			if(region.length==1) {
+				if(keyword.contains(region[0])){
+					query=keyword;		//광진스타벅스
+				}else {
+					query=region[0]+" "+keyword;
+				}
 			}else {
-				query=region[0]+" "+region[1]+" "+keyword;
-			}			
+				if(keyword.contains(region[1])){
+					query=keyword;		//광진스타벅스
+				}else {
+					query=region[0]+" "+region[1]+" "+keyword;
+				}
+			}		
 		}else {
 			query=keyword;
 		}

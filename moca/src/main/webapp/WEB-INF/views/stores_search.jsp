@@ -6,16 +6,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Insert title here</title>
 <style type="text/css">
+	/*
+		body에 padding-top줘야함 - header fixed된 후.
+	*/
 	#searchBar{
 		display: none;
 	}
-	#header{
-		background-color:pink;
-	}
 	#search{
 		text-align: center;
+		background-image: url("resources/imgs/store3.jpg");
+	}
+	#keyword2{
+		width : 500px;
+		height : 50px;
+	}
+	#filter_sort>span{
+		color : white;
 	}
 	.links{
 		border: 1px solid purple;
@@ -48,6 +57,7 @@
 		text-align: center;
 	}
 	#page{
+		display : none;
 		text-align: center;
 	}
 </style>
@@ -77,10 +87,12 @@
 		});
 //카페 리스트 클릭 이벤트(POST방식으로 디테일 페이지 이동)
         $('.links').on("click",toDetail);
-        
+        $('#filter_region>span.seoul').attr('target','target');
 //지역 필터 -> 지역1(도 / 광역시) 클릭 이벤트
 		$('#filter_region>span').click(function(){
 			$('#filter_region>span').css('background-color','white');
+			$('#filter_region>span').removeAttr('target');
+			$(this).attr('target','target');
 			$(this).css('background-color','yellow');
 			$('.region_list').hide();
 			$('.'+$(this).attr('class')).show();
@@ -94,10 +106,15 @@
 		
 //지역 필터 모달 적용버튼 클릭이벤트
 		$('#region_modal_btn').click(function(){
-			var region1 = $('#filter_region input[checked="checked"]').parent().children('input[type="hidden"]').val();
+			var cls = $('#filter_region>span[target="target"]').attr('class');
+			var region1 = $('#filter_region div.'+cls+'').children('input[type=hidden]').val();
 			var region2 = $('#filter_region input[checked="checked"]').val();
-			
-			if(region2!=undefined){
+			console.log(cls+' '+region1 +' '+ region2);
+			if(region1!=undefined && region2==undefined){
+				$('#region1').removeAttr('disabled');
+				$('#region2').attr('disabled',true);
+				$('#region1').val(region1);
+			}else if(region2!=undefined){
 				$('#region1').add('#region2').removeAttr('disabled');
 				$('#region1').val(region1);
 				$('#region2').val(region2);
@@ -114,8 +131,10 @@
 			$('#search form').submit();
 		});
 		createMap();
+		<c:if test="${not empty storeList}">
 		var totalCount = $('.links').size()-1; //총 가게수, paging 함수내에서 인덱스로 활용되기때문에 -1
-		paging(totalCount, 1);
+		paging(totalCount, 1); //
+		</c:if>
     };//onload 끝-
 
     //리스트 클릭 이벤트
@@ -213,7 +232,7 @@
 		//맵 중심 좌표 변경 이벤트
 	//	$('#map').css({'position':'relative','z-index':0});
 		kakao.maps.event.addListener(map, 'center_changed', function() {
-		    $('#map_re-search').show().css({'position':'relative','top':'-30px','left':'310px','z-index':2});
+		    $('#map_re-search').show().css({'position':'relative','top':'-30px','left':'40%','z-index':2});
 		});
 		//지도 내 재검색 기능
 		$('#map_re-search').click(function(){
@@ -240,6 +259,7 @@
 				success: function(data){
 					if(data.length==0){
 						$('#warning_noResult').text("검색 결과가 없습니다");
+						$('#page').hide();
 					}
 					reload_map(data);
 					paging(data.length, 1);
@@ -286,29 +306,30 @@
 			});
 			$('.links').on("click",toDetail);
 			setMarkers(null);
-			
 			createElements();			
 		};    
 		</c:if>
 	};
 	
+//카카오맵 핀 삽입(map),제거(null) 함수
 	function setMarkers(map) {
 	    for (var i = 0; i < markers.length; i++) {
 	        markers[i].setMap(map);
 	    }            
 	}
-	//paging 함수 , class 명 page-n
+	
+//페이지 바 추가, 페이지에 해당하는 가게 노출 및 지도 처리
 	function paging(totalCount,currentPage){
-		$('.links').hide();
-		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).remove();
+		$('.links').hide(); //일단 가게 다 숨겨
+		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).remove(); //페이지 바 초기화
 		console.log('paging 시작, count는 '+totalCount);
-		var countList = 10;
-		var countPage = 10;
-		var totalPage = Math.floor(totalCount / countList); //총 페이지 수
+		var countList = 10; //한 페이지에 들어갈 가게 수
+		var countPage = 10; //페이지 바에 들어갈 수 있는 최대 페이지 수
+		var totalPage = Math.floor(totalCount / countList); //총 페이지
 		var startPage = (Math.floor((currentPage - 1)/10)) * 10 +1; //시작페이지
 		
 		var endPage =  startPage + countPage - 1; //마지막페이지
-		console.log('paging 도중, totalPage='+totalPage+' start='+startPage+' end='+endPage)
+		//console.log('paging 도중, totalPage='+totalPage+' startPage='+startPage+' endPage='+endPage)
 		if (totalCount % countList > 0) {
 		    totalPage++;
 		}
@@ -330,16 +351,19 @@
 			$('.pagination>li').removeClass('active');
 			$('li.page-'+pageNum).addClass('active');
 			var divPage= 'page-'+pageNum;
-			console.log('page 클릭 이벤트, 페이지 넘버:'+pageNum+' divPage : '+divPage);
+			//console.log('page 클릭 이벤트, 페이지 넘버:'+pageNum+' divPage : '+divPage);
 			$('.links').hide();
 			setMarkers(null);
+			bounds = new kakao.maps.LatLngBounds();
 			for(var i = (pageNum*countList)-countList; i <= pageNum*countList-1; i++){
 				if(i==totalCount)break;
-				console.log('i count : '+ i);
+				//console.log('i count : '+ i);
+				//console.log('i번째 markers의 index : '+markers[i]);
 				$('div.page-'+i).show();
-				console.log('i번째 markers의 index : '+markers[i]);
+				bounds.extend(markers[i].getPosition());
 				markers[i].setMap(map);
 			}
+			map.setBounds(bounds);
 			var prev = $('.pagination>li:first');
 			var next = $('.pagination>li:last');
 			
@@ -370,14 +394,13 @@
 			}else{
 				next.removeClass('disabled');
 				next.off('click').click(clickNext);
-				
 			}	
 			pageNum=null;
 		}
 		
 		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).on("click",goPage);
-		
 		$('.pagination>li:nth-child(2)').click();
+		$('#page').show();
 	};
 	
 	</script>	
@@ -705,13 +728,7 @@
 		<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 </div>
 <div id="content" class="container-fluid">
-	<div class="warning">
-		<span id="warning_geo">
-			<strong>정확한 검색을 위해 위치 정보 접근을 허용해주세요:)</strong><br/>
-			<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
-		</span>		
-	</div>
-	<div id="search" class="row" style="background-color:pink">		
+	<div id="search" class="row">		
 		<form class="form-inline" action="stores">
 			<input type="text" name="keyword" class="form-control" id="keyword2" placeholder="Search" value="${keyword}"/>
 			<button id="searchBtn2" class="btn btn-default" type="submit">검색</button><br/>
@@ -727,13 +744,18 @@
 			<input type="hidden" name="region" id="region2" disabled="disabled"/>
 			<c:if test="${not empty msg_changedFilter}">원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</c:if>		
 		</form>	
-		<br/>
+	</div>
+	<div class="warning">
+		<span id="warning_geo">
+			<strong>정확한 검색을 위해 위치 정보 접근을 허용해주세요:)</strong><br/>
+			<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
+		</span>		
 	</div>
 	<div class="row">			
 		<c:if test="${not empty storeList }">
 			<div id="mapContainer" class="col-xs-12 col-md-6" style="background-color:lightblue">
 				<div id="map" style="height:600px;"></div>
-				<button id="map_re-search" style="display:none">이 지역에서 재검색</button>	
+				<button id="map_re-search" class="btn btn-default" style="display:none">이 지역에서 재검색</button>	
 			</div>			
 		</c:if>
 		<div id="result_stores" class="col-xs-12 col-md-6" style="background-color:lavender">
