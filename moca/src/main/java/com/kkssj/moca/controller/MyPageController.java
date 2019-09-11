@@ -58,7 +58,7 @@ public class MyPageController {
 		//탈퇴한 회원이거나 DB에 없는 회원번호를 호출했을 때
 		if(currentPageAccount==null) {
 			//오류페이지로(현재는 메인페이지로 이동)
-			return "redirect:/";
+			return "redirect:/err/err404.jsp";
 		}
 		
 		//비회원인 경우

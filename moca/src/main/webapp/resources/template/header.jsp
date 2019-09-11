@@ -4,7 +4,11 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!-- kss 공통 header  -->
-    
+    <%
+    	if(response.getStatus() == response.SC_NOT_FOUND){
+    		response.sendRedirect("/err/noneMeanErrPage");
+    	}
+    %>
 <!--//css 설정-->
     <style type="text/css">
         .modal .modal-body {

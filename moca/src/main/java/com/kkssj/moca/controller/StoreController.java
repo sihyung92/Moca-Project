@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -69,7 +70,7 @@ public class StoreController {
 
 	// 리다이렉트로 상세페이지로
 	@GetMapping("/stores/{storeId}")
-	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session, HttpServletRequest req){
+	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session, HttpServletRequest req, HttpServletResponse res){
 		
 		////////////////////////////////
 		//account check
@@ -91,7 +92,8 @@ public class StoreController {
 
 		// 이때 storeVo에 store_id 값이 없으면 해당페이지 없다는 view 리턴
 		if (storeVo.getStore_Id() == 0) {
-			// return "에러페이지";
+			res.setStatus(res.SC_NOT_FOUND);
+			return "error";
 		}
 		
 		List<String> tagNameList = storeService.getTagNameList();
