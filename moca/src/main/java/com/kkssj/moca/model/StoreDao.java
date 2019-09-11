@@ -61,4 +61,6 @@ public interface StoreDao {
 
 	int updateLevelCnt(int storeId, String levelCntColumn, int addCntNum) throws SQLException;
 	
+	List<Integer> selectAllStoreId();
+	
 }

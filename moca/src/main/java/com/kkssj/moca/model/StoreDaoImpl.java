@@ -174,4 +174,9 @@ public class StoreDaoImpl implements StoreDao {
 		map.put("ADDCNTNUM", addCntNum);
 		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLevelCnt",map);
 	}
+
+	@Override
+	public List<Integer> selectAllStoreId() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllStoreId");
+	}
 }

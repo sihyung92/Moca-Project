@@ -21,16 +21,6 @@
 		#likeFavoriteDiv span{
 			font-size:30px;
 		}
-		.carousel-inner img {
-			margin: 0px auto;
-		}
-		
-		.carousel .carousel-inner img {
-			width: 100%;
-			height: 20rem;
-			object-fit: cover;
-			overflow: hidden;
-		}
 		
 		/* 카페 관리자의 사진 수정 */
 		.storeImgGroup  .storeImg{
@@ -95,13 +85,68 @@
 			text-align: center;
 			height: 100%;
 		}
-		.overAllLevel-left{
+		.overAllLevel-left .overAllLevel-right{
 			margin-top: 30px;
 		}
 		#reviewModalBtn{
 			text-align: center;
 			margin: 30px auto;
 			width:50%;
+		}
+		.progress-label {
+		  float: left;
+		  margin-right: 1em;
+		}
+		
+		
+		/*케러셀 부분*/
+		.carousel-inner img {
+			margin: 0px auto;
+		}
+		
+		.carousel .carousel-inner img {
+			width: 100%;
+			height: 40rem;
+			object-fit: cover;
+			overflow: hidden;
+		}
+		
+		#carousel-custom {
+		    margin: 20px auto;
+		    width: 100%;
+		}
+		
+		#carousel-custom .carousel-indicators {
+		    margin: 10px 0 0;
+		    overflow: auto;
+		    position: static;
+		    text-align: left;
+		    white-space: nowrap;
+		    width: 100%;
+		}
+		
+		#carousel-custom .carousel-indicators li {
+		    background-color: transparent;
+		    -webkit-border-radius: 0;
+		    border-radius: 0;
+		    display: inline-block;
+		    height: auto;
+		    margin: 0 !important;
+		    width: auto;
+		}
+		#carousel-custom .carousel-indicators li img {
+			width: 100px;
+		    display: block;
+		    opacity: 0.5;
+		}
+		#carousel-custom .carousel-indicators li.active img {
+		    opacity: 1;
+		}
+		#carousel-custom .carousel-indicators li:hover img {
+		    opacity: 0.75;
+		}
+		#carousel-custom .carousel-outer {
+		    position: relative;
 		}
 }
 	</style>
@@ -222,10 +267,6 @@
 	         
 			//리뷰 내용 더보기 style 변화
 			callReviewDataMore();
-			
-			//차트
-			makeStoreLevelChart();
-
 
 			//storeInfo 참여하기 버튼 클릭시
 			$('#updateStore').click(function() {
@@ -548,7 +589,6 @@
 					newStoreImg.find('img').attr('src', URL.createObjectURL(file));
 					$('.storeImgGroup').append(newStoreImg)
 				})
-				
 			})
 
 			//수정 버튼을 눌렀을때
@@ -574,15 +614,17 @@
 
 			//스토어 review 전체 평균 별점
 			 $('#store-level').raty({
+				  half:true,
 				  readOnly:  true,
 				  size:       24,
 				  starHalf:   'star-half-big.png',
 				  starOff:    'star-off-big.png',
 				  starOn:     'star-on-big.png',
-				  start: 4 //데이터 시작 값
+				  start: ${storeVo.averageLevel}
 			 });
 
 			//스토어 5개의 막대바
+			var levelCntVal = [${storeVo.level5Cnt}, ${storeVo.level4Cnt}, ${storeVo.level3Cnt}, ${storeVo.level2Cnt}, ${storeVo.level1Cnt}];
 			new Chart(document.getElementById("bar-chart-horizontal"), {
 			    type: 'horizontalBar',
 			    data: {
@@ -591,7 +633,7 @@
 			        {
 			          backgroundColor: ["#C6A153", "#C6A153","#C6A153","#C6A153","#C6A153"],
 			          borderWidth : 0,
-			          data: [7,4,2,3,1]
+			          data: levelCntVal
 			        }
 			      ]
 			    },
@@ -602,7 +644,8 @@
 			    	      {
 			    	    	ticks: {
 			    	    		beginAtZero: true,
-			                    display: false
+			                    display: false,
+			                    max: levelCntVal[0]+levelCntVal[1]+levelCntVal[2]+levelCntVal[3]+levelCntVal[4],
 			                },
 			    	        gridLines: {
 			    	        	 color: 'rgba(0,0,0,0)'
@@ -611,6 +654,7 @@
 			    	    ],
 			    	    yAxes: [
 			    	      {
+			    	    	barThickness : 15,
 			    	        gridLines: {
 			    	          color: 'rgba(0,0,0,0)'
 			    	        },
@@ -675,37 +719,6 @@
 
 		}
 
-		var makeStoreLevelChart = function(){
-			var ctx = document.getElementById('myChart').getContext('2d');
-			var labelVal = [${storeVo.tasteLevel}, ${storeVo.serviceLevel}, ${storeVo.moodLevel}, ${storeVo.priceLevel}, ${storeVo.convenienceLevel}];
-			var myRadarChart = new Chart(ctx, {
-				type: 'radar',
-				data: {
-					labels: ['맛', '서비스', '분위기', '가격', '편의성'],
-					datasets: [{
-						//label: '종합 평가',
-						//		    	backgroundColor: 'rgb(255, 99, 132)',
-						borderColor: 'rgb(255, 99, 132)',
-						pointRadius: 0,
-						lineTension: 0.1,
-						data: labelVal
-					}]
-				},
-				options: {
-					legend: {
-						display: false
-					},
-					scale: {
-						ticks: {
-							suggestedMin: 0,
-							suggestedMax: 5,
-							stepSize: 1
-						}
-					}
-				}
-			});
-		}
-
 	</script>
 </head>
 
@@ -764,25 +777,15 @@
 					</div>
 				</div>
 			</div>
+			
 			<div class="row">
-				<div class="col-md-4 col-md-offset-2">
-					<!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->
-					<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-						<!-- Indicators -->
-						<ol class="carousel-indicators">
-							<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
-								<c:if test="${status.index eq 0}">
-									<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-								</c:if>
-								<c:if test="${status.index ne 0}">
-									<li data-target="#carousel-example-generic" data-slide-to="${status.index }"></li>
-								</c:if>
-							</c:forEach>
-						</ol>
+				<div class="col-md-8 col-md-offset-2">
+					<!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->						
 
-						<!-- Wrapper for slides -->
-						<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-							<div class="carousel-inner" role="listbox">
+					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+					    <div class='carousel-outer'>
+					        <!-- Wrapper for slides -->
+					        <div class='carousel-inner'>
 								<c:if test="${not empty StoreImgList}">
 									<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
 										<c:if test="${status.index eq 0}">
@@ -792,21 +795,34 @@
 											<div class="item <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<img src="<c:url value="${StoreImg.url }" />" alt="..." class="d-block w-100">
-								<div class="carousel-caption">...</div>
 							</div>
 							</c:forEach>
 							</c:if>
 							<c:if test="${empty StoreImgList}">
 								<img src="<c:url value="/resources/imgs/reviewDefault.png"/>" alt="..." class="d-block w-100">
 							</c:if>
-						</div>
+						
 
 						<!-- Controls -->
-						<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-							<span class="sr-only">Previous</span>
-						</a> <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> <span class="sr-only">Next</span>
-						</a>
+				        <a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+				            <span class='glyphicon glyphicon-chevron-left'></span>
+				        </a>
+				        <a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+				            <span class='glyphicon glyphicon-chevron-right'></span>
+				        </a>
+						</div>
+						
+						<!-- Indicators -->
+						<ol class='carousel-indicators mCustomScrollbar'>
+							<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
+								<c:if test="${status.index eq 0}">
+									<li data-target='#carousel-custom' data-slide-to="0" class="active"><img src="${StoreImg.thumbnailUrl}" alt=""/></li>
+								</c:if>
+								<c:if test="${status.index ne 0}">
+									<li data-target='#carousel-custom' data-slide-to="${status.index }"><img src="${StoreImg.thumbnailUrl}" alt=""/></li>
+								</c:if>
+							</c:forEach>
+						</ol>
 					</div>
 				</div>
 				<!-- 갖고있는 이미지의 개수만큼  캐러셀 끝-->
@@ -814,13 +830,10 @@
 					<button id="editStoreImgsBtn">수정</button>
 				</c:if>
 			</div>
-			<div class="col-md-4">
-				<canvas id="myChart"></canvas>
-			</div>
 		</div>
 		<div class="row">
 			<br>
-			<div class="col-md-8 col-md-offset-2">
+			<div class="col-md-4 col-md-offset-2">
 				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 					<div class="panel panel-default">
 						<div class="panel-heading" role="tab" id="headingOne">
@@ -869,22 +882,20 @@
 								</small>
 								<hr>
 								<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#StoreInfoModal">
-									정보제공
+									정보 수정
 								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8 col-md-offset-2">
-				<div id="map" style="width:100%;height:500px;"></div>
+			<div class="col-md-4">
+				<div id="map" style="width:100%;height:261px;"></div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
-				<h1>리뷰</h1>
+				<h1>리뷰<span class="storeReviewCount">(${storeVo.reviewCnt})</span></h1>
 				<div class="review-header">
 					<!-- 리뷰  -->
 					<div id="overAllLevel">
@@ -911,7 +922,50 @@
 								</tr>
 								</table>
 							</div>
-							<div class="col-md-6">
+							<div class="col-md-6"> <!-- overAllLevel-right"> -->
+							<!-- 
+							 <c:set var="allLevelCnt" value="${storeVo.level5Cnt+storeVo.level4Cnt+storeVo.level3Cnt+storeVo.level2Cnt+storeVo.level1Cnt}" />
+							<div>
+								<span class="progress-label">5</span>
+								<div class="progress">
+								  <div class="progress-bar" role="progressbar" aria-valuenow="${storeVo.level5Cnt}" aria-valuemin="0" aria-valuemax="${allLevelCnt}" style="width:${(storeVo.level5Cnt/allLevelCnt)*100}%;">
+								  ${(storeVo.level5Cnt/allLevelCnt)*100}%
+								</div>
+								</div>
+							</div>
+							<div>
+								<span class="progress-label">4</span>
+								<div class="progress">
+								  <div class="progress-bar" role="progressbar" aria-valuenow="${storeVo.level4Cnt}" aria-valuemin="0" aria-valuemax="${allLevelCnt}" style="width: ${(storeVo.level4Cnt/allLevelCnt)*100}%;">
+								  ${(storeVo.level4Cnt/allLevelCnt)*100}%
+								  </div>
+								</div>
+							</div>
+							<div>
+								<span class="progress-label">3</span>
+								<div class="progress">
+								  <div class="progress-bar" role="progressbar" aria-valuenow="${storeVo.level3Cnt}" aria-valuemin="0" aria-valuemax="${allLevelCnt}" style="width: ${(storeVo.level3Cnt/allLevelCnt)*100}%;">
+								  ${(storeVo.level3Cnt/allLevelCnt)*100}%
+								  </div>
+								</div>
+							</div>
+							<div>
+								<span class="progress-label">2</span>
+								<div class="progress">
+								  <div class="progress-bar" role="progressbar" aria-valuenow="${storeVo.level2Cnt}" aria-valuemin="0" aria-valuemax="${allLevelCnt}" style="width: ${(storeVo.level2Cnt/allLevelCnt)*100}%;">
+								  ${(storeVo.level2Cnt/allLevelCnt)*100}%
+								  </div>
+								</div>
+							</div>
+							<div>
+								<span class="progress-label">1</span>
+								<div class="progress">
+								  <div class="progress-bar" role="progressbar" aria-valuenow="${storeVo.level1Cnt}" aria-valuemin="0" aria-valuemax="${allLevelCnt}" style="width: ${(storeVo.level1Cnt/allLevelCnt)*100}%;">
+								  ${(storeVo.level1Cnt/allLevelCnt)*100}%
+								  </div>
+								</div>
+							</div>
+														 -->
 								<canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
 							</div>
 						</div>						

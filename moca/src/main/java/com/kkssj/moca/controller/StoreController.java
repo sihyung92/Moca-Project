@@ -530,21 +530,24 @@ public class StoreController {
 	
 	// 리뷰 삭제
 	@DeleteMapping("/reviews/{review_id}")
-	public ResponseEntity deleteReview(@PathVariable("review_id") int review_id, HttpSession session){
+	public ResponseEntity deleteReview(@PathVariable("review_id") int review_id,@RequestParam("storeId") int store_id, HttpSession session){
 		
 		////////////////////////////////
 		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
-		
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
+		logger.debug("store_id : "+store_id);
+		
 		ReviewVo reviewVo = new ReviewVo();
 		reviewVo.setAccount_id(accountVo.getAccount_id());
 		reviewVo.setReview_id(review_id);
+		reviewVo.setStore_id(store_id);
+		
 		
 		
 		////////////////////////////////
@@ -649,6 +652,12 @@ public class StoreController {
 	}
 	
 
+	//store levelCnt 동기화
+	@GetMapping("/stores/levelCnt")
+	public String syncStoreLevel() {
+		int result = storeService.syncStoreLevel();
+		return "redirect:stores/1";
+	}
 	
 
 	

@@ -83,4 +83,7 @@ public interface StoreService {
 	int editStoreLogo(int store_Id, MultipartFile newFiles, String delStoreLogo);
 
 	List<String> getTagNameList();
+
+	//store countLevel 맞추기(동기화)
+	int syncStoreLevel();
 }
