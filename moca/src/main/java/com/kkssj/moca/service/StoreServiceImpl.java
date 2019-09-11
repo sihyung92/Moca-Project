@@ -303,7 +303,7 @@ public class StoreServiceImpl implements StoreService{
 				logger.debug("storeDao.insertTags(tagMap) result : "+ result );
 				reviewVo.setTags(reviewVoTags);
 				
-				
+				/////////////////////////////////////
 				//리뷰 작성에 대한 exp 적립 및 로그 기록
 				int exp = 10;
 				String classification = "리뷰작성";
@@ -323,6 +323,11 @@ public class StoreServiceImpl implements StoreService{
 				
 				//account의 reviewcnt를 증가시켜줌
 				accountDao.updateReviewCount(accountVo.getAccount_id(),1);
+				
+				
+				///////////////////////////
+				//store reviewCnt
+				storeDao.updateReviewCount(reviewVo.getStore_id(), 1);
 				
 				// 방금 입력한 reviewVo를 리턴
 				return reviewVo;
@@ -507,6 +512,10 @@ public class StoreServiceImpl implements StoreService{
 			String BeforelevelCntColumn = setLevelCntColumn(beforeAveragelevel);
 			storeDao.updateLevelCnt(reviewVo.getStore_id(), BeforelevelCntColumn, -1);
 			
+			///////////////////////////
+			//store reviewCnt
+			storeDao.updateReviewCount(reviewVo.getStore_id(), -1);
+			
 			//정상일 경우 return 1
 			return 1;
 			
@@ -678,6 +687,8 @@ public class StoreServiceImpl implements StoreService{
 				}
 			}
 			
+
+			
 			
 			return result;
 			
@@ -790,7 +801,10 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int addLikeStore(int storeId, int account_id) {
 		try {
-			return accountDao.insertLikeStore(storeId,account_id);
+			int result = accountDao.insertLikeStore(storeId,account_id);
+			storeDao.updateLikeCount(storeId , 1);
+			
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -800,7 +814,9 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int deleteLikeStore(int storeId, int account_id) {
 		try {
-			return accountDao.deleteLikeStore(storeId,account_id);
+			int result = accountDao.deleteLikeStore(storeId,account_id);
+			storeDao.updateLikeCount(storeId , -1);
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -810,7 +826,9 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int addFavoriteStore(int storeId, int account_id) {
 		try {
-			return accountDao.insertFavoriteStore(storeId,account_id);
+			int result = accountDao.insertFavoriteStore(storeId,account_id);
+			storeDao.updateFavoriteCount(storeId , 1);
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -820,7 +838,9 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int deleteFavoriteStore(int storeId, int account_id) {
 		try {
-			return accountDao.deleteFavoriteStore(storeId,account_id);
+			int result = accountDao.deleteFavoriteStore(storeId,account_id);
+			storeDao.updateFavoriteCount(storeId , -1);
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

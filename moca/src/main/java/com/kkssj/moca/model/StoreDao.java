@@ -72,5 +72,11 @@ public interface StoreDao {
 	List<StoreVo> selectAllFavoriteCntList();
 
 	int updateStoreFavoriteCnt(StoreVo storeVo);
+
+	int updateReviewCount(int store_id, int upDown) throws SQLException;
+
+	int updateLikeCount(int storeId, int upDown) throws SQLException;
+
+	int updateFavoriteCount(int storeId, int upDown) throws SQLException;
 	
 }

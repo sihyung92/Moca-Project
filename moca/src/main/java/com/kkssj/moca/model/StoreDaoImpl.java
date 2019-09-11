@@ -204,5 +204,29 @@ public class StoreDaoImpl implements StoreDao {
 		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreFavoriteCnt", storeVo);
 	}
 
+	@Override
+	public int updateReviewCount(int store_id, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_id);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateReviewCount", map);
+	}
+
+	@Override
+	public int updateLikeCount(int storeId, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", storeId);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLikeCount", map);
+	}
+
+	@Override
+	public int updateFavoriteCount(int storeId, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", storeId);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateFavoriteCount", map);
+	}
+
 
 }

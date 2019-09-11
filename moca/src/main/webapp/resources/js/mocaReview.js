@@ -136,6 +136,9 @@ var saveReview = function(fileBuffer){
 		
 			//수정 삭제 버튼 바인딩 해줄것
 			
+			//store의 리뷰 수 증가
+			$('.storeReviewCount').text($('.storeReviewCount').eq(0).text()*1+1)
+			
 		},
 		error: function(request,status,error) {
 			respondHttpStatus(request.status);
@@ -356,6 +359,7 @@ var deleteReview = function(review_id) {
 		url: '/moca/reviews/'+review_id,
 		success: function() {
 			console.log('ajax 통신 성공')
+			$('.storeReviewCount').text($('.storeReviewCount').eq(0).text()*1-1);
 		},
 		error: function(request,status,error) {
 			respondHttpStatus(request.status);

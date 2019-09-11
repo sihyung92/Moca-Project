@@ -659,7 +659,7 @@ public class StoreController {
 	}
 	
 	//store 리뷰 수 동기화
-	@GetMapping("stores/reviewCnt")
+	@GetMapping("/stores/reviewCnt")
 	public String syncStoresReviewCnt() {
 		int result = storeService.syncStoresReviewCnt();
 		logger.debug("syncStoresReviewCnt result="+result);
@@ -667,7 +667,7 @@ public class StoreController {
 	}
 	
 	//store 가고싶은 수 동기화
-	@GetMapping("stores/favoriteCnt")
+	@GetMapping("/stores/favoriteCnt")
 	public String syncStoresFavoriteCnt() {
 		int result = storeService.syncStoresFavoriteCnt();
 		logger.debug("syncStoresFavoriteCnt result="+result);

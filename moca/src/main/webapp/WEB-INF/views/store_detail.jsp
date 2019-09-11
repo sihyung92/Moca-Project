@@ -103,6 +103,10 @@
 			margin: 30px auto;
 			width:50%;
 		}
+		
+		#storeAverageLevel{
+			display : inline;
+		}
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -364,6 +368,12 @@
 					success: function() {
 						likeStoreBtn.toggleClass('glyphicon-heart');
 						likeStoreBtn.toggleClass('glyphicon-heart-empty')
+
+						if(methodType == 'POST'){
+							$('#storeLikeCount').text($('#storeLikeCount').text()*1+1)
+						}else if(methodType == 'DELETE'){
+							$('#storeLikeCount').text($('#storeLikeCount').text()*1-1)
+						}
 						
 					},
 					error: function(request,status,error) {
@@ -395,6 +405,12 @@
 					success: function() {
 						favoriteStoreBtn.toggleClass('glyphicon-star')
 						favoriteStoreBtn.toggleClass('glyphicon-star-empty')
+
+						if(methodType == 'POST'){
+							$('#storeFavoriteCount').text($('#storeFavoriteCount').text()*1+1)
+						}else if(methodType == 'DELETE'){
+							$('#storeFavoriteCount').text($('#storeFavoriteCount').text()*1-1)
+						}
 						
 					},
 					error: function(request,status,error) {
@@ -777,7 +793,7 @@
 					</div>
 					<div class="col-md-2">
 						<div id="storeReviewCountDiv">
-							<span id="storeReviewCount">${storeVo.reviewCnt}</span>개의 리뷰
+							<span class="storeReviewCount">${storeVo.reviewCnt}</span>개의 리뷰
 						</div>
 					</div>
 					<div class="col-md-2">
