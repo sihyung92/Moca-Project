@@ -157,6 +157,20 @@
         //회원탈퇴 기능 처리
         //signOut();
         //설문 버튼 처리
+
+    	$('.hiddenSearch').each(function(){	
+    		$(this).click(function(){
+    			if ($(this).hasClass('open')){
+    				$('.searchBar').hide();
+    				$(this).removeClass('open'); 
+    			}
+    	 		else{
+    	 			$(this).removeClass('open');
+    	 			$('.searchBar').show();
+    	 			$(this).addClass('open');
+    			}
+    		});
+    	});
         
     });
     
@@ -291,16 +305,16 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-    <div id="hiddenSearch" class="navbar-toggle collapsed" ><button class="glyphicon glyphicon-search" aria-hidden="true"></button></div>
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+      <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button class="glyphicon glyphicon-search" aria-hidden="true"></button></div>
       <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
-	      <form class="navbar-form navbar-left" action="<c:url value="/stores"/>">
+	      <form  class="navbar-form navbar-left searchBar" action="<c:url value="/stores"/>">
 	        <div class="form-group">
 	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
 			  <input type="hidden" name="filter" value="distance"/>
