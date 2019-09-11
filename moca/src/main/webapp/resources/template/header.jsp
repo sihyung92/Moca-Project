@@ -2,7 +2,6 @@
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <!-- kss 공통 header  -->
     <%
     	if(response.getStatus() == response.SC_NOT_FOUND){
@@ -32,7 +31,8 @@
         }
         
     </style>
-    
+
+<link rel="stylesheet" type="text/css" href="/moca/resources/css/testHeaderCss.css"/>
 <!-- naver API -->
     <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js"></script>
 <!-- kakao API -->
@@ -291,6 +291,7 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
+    <div id="hiddenSearch" class="navbar-toggle collapsed" ><button class="glyphicon glyphicon-search" aria-hidden="true"></button></div>
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
@@ -299,18 +300,19 @@
       </button>
       <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <form class="navbar-form navbar-left" action="<c:url value="/stores"/>">
 	        <div class="form-group">
 	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
 			  <input type="hidden" name="filter" value="distance"/>
+	        <button id="searchBtn" type="submit" class="glyphicon glyphicon-search" aria-hidden="true"></button>
 	        </div>
-	        <button id="searchBtn" type="submit" class="btn btn-default">Submit</button>
 	      </form>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	  	
         <ul class="nav navbar-nav navbar-right">
-            <li ><a href="#">moca의 카페가 되어주세요!</a></li>
+            <li><a href="#" id="beMoca">moca의 카페가 되어주세요!</a></li>
             <li id="replace-to-userName"></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mypage<span class="caret"></span></a>

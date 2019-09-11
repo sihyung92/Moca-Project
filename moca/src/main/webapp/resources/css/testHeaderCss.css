@@ -1,0 +1,59 @@
+@charset "UTF-8";
+
+.navbar-default{background-image:none;border-radius:0px;background-color:#FFFFFF;}
+.navbar{z-index:1002;border:none;border-bottom:1px solid transparent;}
+.container-fluid{padding:5px;}
+nav{width:100%;z-index:1001;position:fixed !important;}
+
+ 
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
+
+.dropdown-menu{border:none;}
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
+.btn-default{box-shadow:none;background-image:none;border:none;text-shadow:none;background-color:rgba(242,174,46,0.85);}
+.btn-default:hover, .btn-default:focus{background-color:inherit;border-color:none;}
+
+/*검색창*/
+#searchBtn{background-color:transparent; border:none;}
+.navbar-default .form-control{border-radius:0px;border:none; box-shadow:none;border-bottom:1px solid rgba(0,0,0,0.85);}
+#keyword:-internal-autofill-selected {background-color:rgba(247,247,235,1.0); !important;}/*아 왜안돼ㅠㅠ*/
+#hiddenSearch.glyphicon{position: relative;float:right;}
+
+/*패드 크기*/
+@media (min-width:768px) {
+	.navbar-default .form-control{width:300px;}
+	#beMoca{display:none;}
+}
+
+/*데스크톱 크기*/
+@media(min-width:986px){
+	.navbar-default .form-control{width:auto;}
+	#beMoca{display:block;}
+}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:#FFFFFF;}
+
+/*#footer*/
+#footer ul, ol, li{list-style:none;}
+ #footer{
+       overflow: hidden;
+       clear: both;
+       position: relative;
+       margin-top: 120px;
+       padding: 63px 31px 40px 31px;
+       border-top: 1px solid rgba(0,0,0,0.08);
+       background: rgb(245,245,245);
+       font-size: 13px;
+       line-height: 20px;
+       color: rgba(0,0,0,0.38); }
+#footer .align {width: 1024px;margin: 0 auto;}
+#footer.show {opacity: 1;visibility: visible;}
+#footer .link li {float: left;margin-bottom: 0;line-height: normal;font-style:normal;}
+#footer .link li a {color: rgba(0,0,0,0.87);}
+#footer .link li span{display:inline-block;position:relative;top:-2px;width:24px;font-size:11px;text-align:center}
+#footer p{padding:37px 0 24px 0;}
+#footer p b{display:inline-block;margin-right:10px}
+#footer address {line-height: 22px;}
+#footer address span{display:block;padding-bottom:7px}
+#footer .ico{overflow: hidden;margin-top: 20px;padding: 20px 0 5px 0;border-top: 1px solid rgba(0,0,0,0.04);margin: 26px 0 0 0}
+#footer .ico a {margin-right: 25px;font-size: 30px;}
+#footer .ico a {display: inline-block;float: left;margin-right: 10px;font-size: 22px;color: rgba(0,0,0,0.48);}
