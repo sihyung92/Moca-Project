@@ -327,11 +327,18 @@
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="male" value="1"> 남
                                 </label>
-                                    <div class="progress">
-                                      <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                                        60%
-                                      </div>
-                                    </div>
+                                <div class="progress">
+                                  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                    60%
+                                  </div>
+                                </div>
+                                
+                                <div>
+                                    <img alt="#" src="/moca/resources/imgs/an1p"/>
+                                </div>
+                                
+                                
+                                
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="female" value="2"> 여
                                 </label><br><br>
