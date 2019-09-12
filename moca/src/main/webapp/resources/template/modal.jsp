@@ -334,10 +334,12 @@
                                 </div>
                                 
                                 <div>
-                                    <img alt="#" src="/moca/resources/imgs/an1p"/>
+                                    <img id="an1p" alt="#" src="/moca/resources/imgs/an1p.png"/>
+                                    <img id="an2p" alt="#" src="/moca/resources/imgs/an2p.png"/>
+                                    <img id="an3p" alt="#" src="/moca/resources/imgs/an3p.png"/>
+                                    <img id="an4p" alt="#" src="/moca/resources/imgs/an4p.png"/>
+                                    <img id="an5p" alt="#" src="/moca/resources/imgs/an5p.png"/>
                                 </div>
-                                
-                                
                                 
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="female" value="2"> 여

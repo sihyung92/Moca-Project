@@ -157,7 +157,11 @@
         //회원탈퇴 기능 처리
         //signOut();
         //설문 버튼 처리
-
+        
+        //설문조사시 선택지 마우스호버
+        anp();
+        
+        //하나짜리임 hiddenSearch~ 랑 window~ 랑
     	$('.hiddenSearch').each(function(){	
     		$(this).click(function(){
     			if ($(this).hasClass('open')){
@@ -171,11 +175,32 @@
     			}
     		});
     	});
-        
+       $(window).on('resize',function(){
+           console.log($('.navbar-header').width());
+           if($('.navbar-header').width()>760||$('.navbar-header').width()==59){
+               if($('hiddenSearch').hasClass('open')){
+                    $('.searchBar').hide();
+                    $(this).removeClass('open'); 
+                }
+                else{
+                    $(this).removeClass('open');
+                    $('.searchBar').show();
+                    $(this).addClass('open');
+                }
+            }
+       })
     });
     
     
     //함수 정의
+    function anp(){
+        // <img id="an1p" alt="#" src="/moca/resources/imgs/an1p.png"/>
+        $('#an1p').mouseenter(function(){
+            $(this).replaceWith(' <img id="an1p" alt="#" src="/moca/resources/imgs/an1.png"/>');
+        }).mouseout(function(){
+            $('#an1p').replaceWith(' <img id="an1p" alt="#" src="/moca/resources/imgs/an1p.png"/>');
+        });
+    }
     function redirToHome(){
     	location.replace("http://localhost:8080/moca/home2")
 	}
