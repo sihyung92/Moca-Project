@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -193,6 +193,9 @@
   	UPDATE STORE SET ${LEVELCNTCOLUMN} = ${LEVELCNTCOLUMN}+#{ADDCNTNUM} WHERE store_id=#{STORE_ID}
   </update>
   
+  <select id="selectAllStoreId">
+  	SELECT STORE_ID FROM STORE
+  </select>
   
   <select id="selectAllLikeCntList" resultType="com.kkssj.moca.model.entity.StoreVo">
   	SELECT STORE_ID, COUNT(*) as LIKECNT FROM LIKESTORE ls GROUP BY ls.STORE_ID
@@ -221,8 +224,7 @@
   </update>
   <update id="updateFavoriteCount">
   	UPDATE STORE s SET s.FAVORITECNT = s.FAVORITECNT + #{upDown} WHERE s.STORE_ID = #{STORE_ID }
-  </update>
-  
+  </update>  
   <update id="updateStoreTag" >
   	UPDATE STORE s SET s.TAG = #{TAG} WHERE s.STORE_ID = #{STORE_ID};
   </update>

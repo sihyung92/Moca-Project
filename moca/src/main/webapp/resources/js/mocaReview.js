@@ -357,6 +357,7 @@ var deleteReview = function(review_id) {
 	$.ajax({
 		type: 'DELETE',
 		url: '/moca/reviews/'+review_id,
+		data: {"storeId":storeId},
 		success: function() {
 			console.log('ajax 통신 성공')
 			$('.storeReviewCount').text($('.storeReviewCount').eq(0).text()*1-1);

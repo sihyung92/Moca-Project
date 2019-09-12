@@ -176,6 +176,9 @@ public class StoreDaoImpl implements StoreDao {
 	}
 
 	@Override
+	public List<Integer> selectAllStoreId() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllStoreId");
+	}
 	public List<StoreVo> selectAllLikeCntList() {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllLikeCntList");
 	}
@@ -235,6 +238,4 @@ public class StoreDaoImpl implements StoreDao {
 		map.put("TAG", topTags);
 		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreTag", map);
 	}
-
-
 }

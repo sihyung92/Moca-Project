@@ -167,4 +167,8 @@
   	SELECT AVERAGELEVEL FROM REVIEW WHERE REVIEW_ID = #{REVIEW_ID}
   </select>
   
+  <select id="select">
+  	
+  </select>
+  
 </mapper>

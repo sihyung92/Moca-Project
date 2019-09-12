@@ -157,6 +157,9 @@ public class ImageVo {
 		setUrl();
 		
 	}
+	public void setImageVo(String url) {
+		setDelImageVo(url);
+	}
 
 	
 	

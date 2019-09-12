@@ -81,4 +81,6 @@ public interface StoreDao {
 
 	int updateStoreTag(int store_id, String topTags) throws SQLException;
 	
+	List<Integer> selectAllStoreId();
+	
 }
