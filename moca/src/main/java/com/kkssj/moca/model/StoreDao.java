@@ -78,5 +78,7 @@ public interface StoreDao {
 	int updateLikeCount(int storeId, int upDown) throws SQLException;
 
 	int updateFavoriteCount(int storeId, int upDown) throws SQLException;
+
+	int updateStoreTag(int store_id, String topTags) throws SQLException;
 	
 }

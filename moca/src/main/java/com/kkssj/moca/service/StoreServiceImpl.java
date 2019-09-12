@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -211,14 +212,13 @@ public class StoreServiceImpl implements StoreService{
 		///
 		String uploadPath = "review";
 		String reviewVoTags =reviewVo.getTags();
+		List<String> tagList =  getTagNameList();
 		
-		
-		
+
 		
 		//평균 점수 계산
 		reviewVo.calAverageLevel();
-		try {
-			
+		try {			
 			
 			//정상적으로 입력되었을때
 			if(reviewDao.insertReview(reviewVo) ==1) {
@@ -272,7 +272,7 @@ public class StoreServiceImpl implements StoreService{
 				Map<String, Object> tagMap = new HashMap<String, Object>();
 				tagMap.put("REVIEW_ID", reviewVo.getReview_id());
 				tagMap.put("STORE_ID", reviewVo.getStore_id());
-				List<String> tagList =  getTagNameList();
+				
 				String[] tagArray = reviewVoTags.split(",");
 				int tagArrayIdx = 0;
 				String tags ="";
@@ -302,6 +302,12 @@ public class StoreServiceImpl implements StoreService{
 				int result = reviewDao.insertTags(tagMap);
 				logger.debug("storeDao.insertTags(tagMap) result : "+ result );
 				reviewVo.setTags(reviewVoTags);
+				
+				
+				///////////////////////////////////////////
+				//태그 동기화
+				syncStoreTag(reviewVo.getStore_id(),tagList);
+				
 				
 				/////////////////////////////////////
 				//리뷰 작성에 대한 exp 적립 및 로그 기록
@@ -344,6 +350,52 @@ public class StoreServiceImpl implements StoreService{
 		return null;
 	}
 	
+	private int syncStoreTag(int store_id, List<String> tagList) throws SQLException {
+		//태그 종류와 해당 태그의 입력횟수를 저장하는 map
+		Map<String, Integer> tagsCount = new HashMap<String, Integer>();
+		for (String tag : tagList) {
+			tagsCount.put(tag, 0);
+		}
+		
+		//해당 STORE_ID 에 해당하는 tag 조회
+		List<Map<String, Integer>> tagListByStoreId = reviewDao.selectTagListByStoreId(store_id);
+		
+		for (Map<String, Integer> map : tagListByStoreId) {
+			for (Entry<String, Integer> entry : map.entrySet()) {	
+				if(!entry.getKey().contains("ID") && (entry.getValue() ==1)) {
+					tagsCount.put(entry.getKey(), tagsCount.get(entry.getKey())+1);
+				}
+				
+			}
+			
+		}
+
+		//내림차순 정렬을 위한 LikedList
+		List<Map.Entry<String, Integer>> tagsCountList = new LinkedList(tagsCount.entrySet());
+		
+		//tag의 횟수에 다른 내림 차순 정렬
+		Collections.sort(tagsCountList, new Comparator<Map.Entry<String, Integer>>() {
+			@Override
+			public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+				return o2.getValue() - o1.getValue();
+			}
+		});
+
+
+		//tag count가 0이상인 태그 문자열 만들기
+		String topTags = "";
+		for(int i = 0 ; i <3 ; i++) {
+			if( tagsCountList.get(i).getValue()!=0) {
+				topTags += "#"+tagsCountList.get(i).getKey();				
+			}
+		}	
+		
+		int result = 1;
+		if(!topTags.equals("")) {
+			result = storeDao.updateStoreTag(store_id , topTags);
+		}
+		return result;
+	}
 	@Override
 	public ReviewVo editReview(ReviewVo reviewVo, MultipartFile[] newFiles, String delThumbnails) {
 		String reviewVoTags =reviewVo.getTags();
@@ -440,10 +492,15 @@ public class StoreServiceImpl implements StoreService{
 			if(setTag.length() ==0) {
 				setTag = "REVIEW_ID="+reviewVo.getReview_id();
 			}
-			logger.debug(setTag);
 			tagMap.put("SETTAG", setTag);
 			int result2 = reviewDao.updateTags(tagMap);
 			logger.debug("storeDao.updateTags(tagMap) result : "+ result2 );
+			
+			
+			///////////////////////////////////////////
+			//태그 동기화
+			syncStoreTag(reviewVo.getStore_id(),tagList);
+			
 			
 			//상점에 대한 평점 동기화
 			if(result>0) {
@@ -503,6 +560,11 @@ public class StoreServiceImpl implements StoreService{
 				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getFileName());
 				s3.fileDelete(imageVo.getPath()+"/"+imageVo.getThumbnailFileName());
 			}
+			
+			///////////////////////////////////////////
+			//태그 동기화
+			List<String> tagList =  getTagNameList();
+			syncStoreTag(reviewVo.getStore_id(),tagList);
 			
 			//account의 reviewcnt를 감소시켜줌
 			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);

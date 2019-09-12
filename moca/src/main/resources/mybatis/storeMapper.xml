@@ -222,4 +222,8 @@
   <update id="updateFavoriteCount">
   	UPDATE STORE s SET s.FAVORITECNT = s.FAVORITECNT + #{upDown} WHERE s.STORE_ID = #{STORE_ID }
   </update>
+  
+  <update id="updateStoreTag" >
+  	UPDATE STORE s SET s.TAG = #{TAG} WHERE s.STORE_ID = #{STORE_ID};
+  </update>
 </mapper>

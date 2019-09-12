@@ -70,4 +70,6 @@ public interface ReviewDao {
 	
 	//평균점수 불러오기
 	double selectAverageLevelByReviewId(int review_id) throws SQLException;
+
+	List<Map<String, Integer>> selectTagListByStoreId(int store_id);
 }

@@ -260,4 +260,9 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	}
 
+	@Override
+	public List<Map<String, Integer>> selectTagListByStoreId(int store_id) {
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectTagListByStoreId", store_id);
+	}
+
 }

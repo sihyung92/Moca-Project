@@ -159,6 +159,9 @@
 	ORDER BY r.WRITEDATE DESC
 	limit #{STARTNUM}, #{ENDNUM}
   </select>
+  <select id="selectTagListByStoreId" parameterType="Integer" resultType="map">
+  	SELECT * FROM TAGS WHERE STORE_ID = #{store_id}
+  </select>
   
   <select id="selectAverageLevelByReviewId" parameterType="Integer" resultType="Double">
   	SELECT AVERAGELEVEL FROM REVIEW WHERE REVIEW_ID = #{REVIEW_ID}

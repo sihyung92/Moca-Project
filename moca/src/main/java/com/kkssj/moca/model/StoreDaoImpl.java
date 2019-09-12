@@ -228,5 +228,13 @@ public class StoreDaoImpl implements StoreDao {
 		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateFavoriteCount", map);
 	}
 
+	@Override
+	public int updateStoreTag(int store_id, String topTags) throws SQLException  {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_id);
+		map.put("TAG", topTags);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreTag", map);
+	}
+
 
 }
