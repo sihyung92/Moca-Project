@@ -84,6 +84,19 @@ var bindReviewVariable = function(){
 	
 	reviewVoListLength=false;
 	
+	
+
+	
+	
+	//스토어 review 전체 평균 별점
+	$('.review-content .reviewAverageLevel').raty({
+		  half:true,
+		  readOnly:  true,
+		  starHalf:   'star-half.png',
+		  starOff:    'star-off.png',
+		  starOn:     'star-on.png',  
+	});
+	
 }
 
 
@@ -214,7 +227,7 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 		reviewModal.find('#reviewModalLabel').html(storeName+"에 대한 리뷰");
 	}
 	
-	
+	test = editReviewRow;
 	//리뷰 아이디
 	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
 	//스토어아이디
@@ -303,6 +316,12 @@ var editReview = function(){
 						reviewVo.imageList[i].uu_id
 						+'"></div>');
 			}
+			//점수
+			editReviewRow.find('.taste-level').text(reviewFormObj.tasteLevel);
+			editReviewRow.find('.price-level').text(reviewFormObj.priceLevel);
+			editReviewRow.find('.service-level').text(reviewFormObj.serviceLevel);
+			editReviewRow.find('.mood-level').text(reviewFormObj.moodLevel);
+			editReviewRow.find('.convenience-level').text(reviewFormObj.convenienceLevel);
 			
 			
 			//리뷰 내용
@@ -312,13 +331,10 @@ var editReview = function(){
 			editReviewRow.find('.review-tags-div').text('');		
 			addTag2Review(reviewVo, editReviewRow);
 			
-			//평점
-			editReviewRow.find('.taste-level').text(reviewFormObj.tasteLevel);
-			editReviewRow.find('.price-level').text(reviewFormObj.priceLevel);
-			editReviewRow.find('.service-level').text(reviewFormObj.serviceLevel);
-			editReviewRow.find('.mood-level').text(reviewFormObj.moodLevel);
-			editReviewRow.find('.convenience-level').text(reviewFormObj.convenienceLevel);
-			editReviewRow.find('.average-level').text(reviewVo.averageLevel);
+			
+			//평균 점수
+			$.fn.raty.start(reviewVo.averageLevel, '#reviewAverageLevel-'+reviewVo.review_id);
+			editReviewRow.find('.average-level').text(int2Double(reviewVo.averageLevel));
 			
 			$('#reviewModal').modal("hide");	//모달창 닫기
 			
@@ -872,10 +888,19 @@ var moreReviewList = function(startNum,callWhere) {
 					toggleSvgFill(likehateFormGroup.find('.hate-btn'));
 				}
 				
-
-				
+				var newReviewId = 'reviewAverageLevel-'+reviewVo.review_id;
+				console.log(reviewVo.averageLevel, newReviewId);
+				newReview.find('.reviewAverageLevel').attr('id',newReviewId);
+				newReview.find('.reviewAverageLevel').raty({
+					half:true,
+					readOnly:  true,
+					starHalf:   'star-half.png',
+					starOff:    'star-off.png',
+					starOn:     'star-on.png',
+					start : reviewVo.averageLevel*1
+				});
 				newReview.find('.average-level').text(int2Double(reviewVo.averageLevel))
-
+					
 				$('.review-content').append(newReview);	//리뷰에 추가
 			}
 			

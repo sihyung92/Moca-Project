@@ -166,7 +166,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=45"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=51"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=20"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
@@ -217,6 +217,9 @@
 			$('#storeAverageLevel').raty({
 				half : true,
 				readOnly:   true,
+				starHalf:   'star-half-big.png',
+				starOff:    'star-off-big.png',
+				starOn:     'star-on-big.png',
 				scoreName:  'storeAverageLevel',
 				start : ${storeVo.averageLevel}
 			});
@@ -225,6 +228,9 @@
 							
 			//리뷰변수 바인딩
 			bindReviewVariable();
+			<c:forEach items="${reviewVoList }" var="reviewVo">
+			$.fn.raty.start(${reviewVo.averageLevel }, '#reviewAverageLevel-${reviewVo.review_id }');
+			</c:forEach>
 			
 
 			//리뷰 작성버튼 클릭시
@@ -1125,7 +1131,7 @@
 
 							<div class="average-level-div  col-md-2">
 								<label for="average_level">평균</label>
-								<span class="average-level">${reviewVo.averageLevel }</span>점
+								<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>점
 							</div>								
 							<br><br><br>
 						</div>

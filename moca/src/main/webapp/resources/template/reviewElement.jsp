@@ -204,9 +204,9 @@
 			</div>
 		</div>
 	</div>
-	<div class="average-level-div">
+	<div class="average-level-div  col-md-2">
 		<label for="average_level">평균</label>
-		<span class="average-level"></span >점
+		<div class="reviewAverageLevel"></div><span class="average-level"></span>점
 	</div>								
 	<br><br><br>
 	
