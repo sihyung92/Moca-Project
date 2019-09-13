@@ -67,7 +67,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
-		
+		logger.debug(review_id+", "+accountId +", "+isLike );
 		return sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertLikeHate", map);
 	}
 
@@ -78,7 +78,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
-		
+		logger.debug(review_id+", "+accountId +", "+isLike );
 		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeHate", map);
 	}
 
@@ -90,7 +90,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
-		
+		logger.debug(review_id+", "+accountId );
 		return sqlSession.delete("com.kkssj.moca.model.ReviewDao.deleteLikeHate", map);
 	}
 

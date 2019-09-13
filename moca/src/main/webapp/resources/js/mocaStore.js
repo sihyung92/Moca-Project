@@ -32,19 +32,19 @@ var updateStore = function(store_Id) {
 			console.log("카페상세정보 수정성공");
 			//카페 정보 바꿔주기
 			if (param.wifi == '0') {
-				$('#wifiInfo').html('없음');
+				setSvgNone($('#wifiInfo img'));
 			} else if (param.wifi == '1') {
-				$('#wifiInfo').html('있음');
+				setSvgNotNone($('#wifiInfo img'));
 			} else if (param.wifi == '-1') {
-				$('#wifiInfo').html('');
+				setSvgNone($('#wifiInfo img'));
 			}
 
 			if (param.parkingLot == '0') {
-				$('#parkingLotInfo').html('없음');
+				setSvgNone($('#parkingLotInfo img'))
 			} else if (param.parkingLot == '1') {
-				$('#parkingLotInfo').html('있음');
+				setSvgNotNone($('#parkingLotInfo img'))
 			} else if (param.parkingLot == '-1') {
-				$('#parkingLotInfo').html('');
+				setSvgNone($('#parkingLotInfo img'))
 			}
 
 			$('#dayOffInfo').html(param.dayOff);
@@ -58,6 +58,21 @@ var updateStore = function(store_Id) {
 		}
 	});
 };
+
+var setSvgNotNone =function(svgElement){
+	//none 상태인가?
+	if( isClickedSvg(svgElement) ){
+		//none 이 없는 상태로
+		toggleSvgNone(svgElement);
+	}
+}
+var setSvgNone =function(svgElement){
+	//none 상태인가?
+	if( !isClickedSvg(svgElement) ){
+		//none 이 없는 상태로
+		toggleSvgNone(svgElement);
+	}
+}
 
 //카페 이미지 수정
 var editStoreImg = function(){

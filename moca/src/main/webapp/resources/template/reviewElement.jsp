@@ -122,8 +122,8 @@
 	<div class="editDeleteGroup btn-group" role="group">
 		<input type="number" class="review-id" style="display: none;">
 		<input type="number" class="store-id" style="display: none;">
-		<button type="button" class="btn-edit btn btn-default">수정</button>
-		<button type="button" class="btn-delete btn btn-default">삭제</button>
+		<img class="btn-edit" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
+		<img class="btn-delete" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 	</div>
 	<div class="reviewer-info col-md-2">
 		<div class="profile-div">
@@ -160,6 +160,28 @@
 	<div class="review-info col-md-8">
 		<div class="reviewThumbnailGroup">
 		</div>
+		<div class="review-level col-md-2">
+			<div class="taste-level-div">
+				<label>맛</label>
+				<span class="taste-level"></span>점
+			</div>
+			<div class="price-level-div">
+				<label>가격</label>
+				<span class="price-level"></span>점
+			</div>
+			<div class="service-level-div">
+				<label>서비스</label>
+				<span class="service-level"></span>점
+			</div>
+			<div class="taste-level-div">
+				<label>분위기</label>
+				<span class="mood-level"></span>점
+			</div>
+			<div class="taste-level-div">
+				<label>편의성</label>
+				<span class="convenience-level"></span>점
+			</div>
+		</div>
 		<div class="review-data">
 			<div class="write-date-div">
 				<label>작성일</label>
@@ -175,40 +197,17 @@
 		<div class="form-group like-hate">
 			<div class="btn-group" data-toggle="buttons">
 				<input type="number" class="review-id" style="display: none;">
-				<button type="button" class="btn btn-primary like-btn ">좋아요</button>
+				<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
 				<input type="number" class="like-count" value=0 >
-				<button type="button" class="btn btn-primary hate-btn">싫어요</button>
+				<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 				<input type="number" class="hate-count" value=0>
 			</div>
 		</div>
 	</div>
-
-	<div class="review-level col-md-2">
-		<div class="taste-level-div">
-			<label>맛</label>
-			<span class="taste-level"></span>점
-		</div>
-		<div class="price-level-div">
-			<label>가격</label>
-			<span class="price-level"></span>점
-		</div>
-		<div class="service-level-div">
-			<label>서비스</label>
-			<span class="service-level"></span>점
-		</div>
-		<div class="taste-level-div">
-			<label>분위기</label>
-			<span class="mood-level"></span>점
-		</div>
-		<div class="taste-level-div">
-			<label>편의성</label>
-			<span class="convenience-level"></span>점
-		</div>
-		<div class="taste-level-div">
-			<label for="average_level">평균</label>
-			<span class="average-level"></span >점
-		</div>								
-	</div>
+	<div class="average-level-div">
+		<label for="average_level">평균</label>
+		<span class="average-level"></span >점
+	</div>								
 	<br><br><br>
 	
 	<!-- clone할 tag element -->

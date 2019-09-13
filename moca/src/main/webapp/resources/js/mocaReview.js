@@ -68,7 +68,7 @@ var bindReviewVariable = function(){
 	deleteBtn = $('.btn-delete')
 	thumbnailDeleteSpan = $('.thumbnailDeleteSpan');
 
-	likeHateButton = $('.like-hate>.btn-group>button')
+	likeHateButton = $('.like-hate>.btn-group>img')
 	
 	//리뷰 더보기
 	quotient = $('.reviewCnt').length/3;
@@ -455,10 +455,10 @@ var addLikeHate = function(reviewId, isLike){
 			//ajax 통신 성공시
 			
 			if(isLike ==1){
-				likeBtn.addClass('clicked')
+				toggleSvgFill(likeBtn);
 				likeCount.val(Number(likeCount.val()) + 1);
 			}else if(isLike == -1){
-				hateBtn.addClass('clicked')
+				toggleSvgFill(hateBtn);
 				hateCount.val(Number(hateCount.val()) + 1);
 			}
 		},
@@ -483,17 +483,14 @@ var changeLikeHate = function(reviewId, isLike){
 			console.log('ajax 통신 성공')
 			
 			if(isLike ==1){
-				hateBtn.removeClass('clicked')
 				hateCount.val(Number(hateCount.val()) - 1);
-				likeBtn.addClass('clicked')
 				likeCount.val(Number(likeCount.val()) + 1);
 			}else if( isLike == -1){
-				likeBtn.removeClass('clicked')
 				likeCount.val(Number(likeCount.val()) - 1);
-				hateBtn.addClass('clicked')
 				hateCount.val(Number(hateCount.val()) + 1);
 			}
-			
+			toggleSvgFill(hateBtn);
+			toggleSvgFill(likeBtn);
 
 		},
 		error: function(request,status,error) {
@@ -517,10 +514,10 @@ var cancelLikeHate = function(reviewId, isLike){
 		success: function() {
 			console.log('ajax 통신 성공')
 			if(isLike ==1){
-				likeBtn.removeClass('clicked')
+				toggleSvgFill(likeBtn);
 				likeCount.val(Number(likeCount.val()) - 1);
 			}else if(isLike == -1){
-				hateBtn.removeClass('clicked')
+				toggleSvgFill(hateBtn)
 				hateCount.val(Number(hateCount.val()) - 1);
 			}
 			
@@ -604,10 +601,10 @@ var bindLikeHateButtonEvent = function(clickedLikeHateButton){
 		if (clickedLikeHateButton.hasClass('like-btn')) {
 			isLike=1;
 			//좋아요 버튼을 눌렀을때 
-			if (likeBtn.hasClass('clicked')) {
+			if (isClickedSvg(likeBtn)) {
 				//이전에 좋아요 누른 상태 > 좋아요를 누를때 = > 좋아요 취소
 				cancelLikeHate(reviewId, isLike);
-			} else if (hateBtn.hasClass('clicked')) {
+			} else if (isClickedSvg(hateBtn)) {
 				//이전에 싫어요 누른 상태 > 좋아요를 누를때 = > 싫어요 취소 + 좋아요
 				changeLikeHate(reviewId, isLike);
 			} else {
@@ -618,10 +615,10 @@ var bindLikeHateButtonEvent = function(clickedLikeHateButton){
 			isLike=-1;
 			
 			//싫어요 버튼을 눌렀을때 
-			if (likeBtn.hasClass('clicked')) {
+			if (isClickedSvg(likeBtn)) {
 				//이전에 좋아요 누른 상태 > 싫어요를 누를때 = >좋아요 취소 + 싫어요
 				changeLikeHate(reviewId, isLike);
-			} else if (hateBtn.hasClass('clicked')) {
+			} else if (isClickedSvg(hateBtn)) {
 				//이전에 싫어요 누른 상태 > 싫어요를 누를때 = > 싫어요 취소
 				cancelLikeHate(reviewId, isLike);
 			} else {
@@ -630,6 +627,31 @@ var bindLikeHateButtonEvent = function(clickedLikeHateButton){
 			}
 		}
 };
+
+//svg 태그를 넣어주면 fill을 토글 해줌
+var toggleSvgFill = function(svgElement){
+	var srcValue= svgElement.attr('src');
+
+	//꽉차 있는 상태일때
+	if(isClickedSvg(svgElement)){
+		srcValue = srcValue.replace('-fill.svg', '.svg')
+
+	}else{//비어 있는 상태 일때
+		srcValue = srcValue.replace('.svg', '-fill.svg')				
+	}
+	svgElement.attr('src', srcValue)
+}
+
+var isClickedSvg = function(svgElement){
+	console.log(svgElement,"isClickedSvg"+ (svgElement.attr('src').indexOf('-none') !=-1 || svgElement.attr('src').indexOf('-fill') !=-1));
+	
+	//클릭된 상태
+	if(svgElement.attr('src').indexOf('-none') !=-1 || svgElement.attr('src').indexOf('-fill') !=-1){
+		return true;
+	}
+	return false;
+}
+
 
 //파일 change function
 var filesChange = function(){
@@ -762,7 +784,8 @@ var moreReviewList = function(startNum,callWhere) {
 				var reviewerInfo = newReview.find('.reviewer-info')
 				var storeInfo = newReview.find('.store-info')
 				var reviewInfo = newReview.find('.review-info')
-				var reviewLevel = newReview.children(".review-level")
+				var reviewLevel = newReview.find(".review-level")
+				
 				
 				if(isStorePage){
 					storeInfo.css('display','none')
@@ -820,25 +843,38 @@ var moreReviewList = function(startNum,callWhere) {
 					storeInfo.find('.storeName').text(reviewVo.storeName); 	//storeName
 				}
 				
-				reviewInfo.find('.reviewInfo-write-date').text((new Date(reviewVo.writeDate)).toLocaleDateString());
-				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent);
-				
-				//태그를 리뷰에 추가
-				addTag2Review(reviewVo, newReview);				
-				
-				var likehateFormGroup = reviewInfo.children('.like-hate')
-				
-				//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
-				likehateFormGroup.find('input').eq(0).val(reviewVo.review_id)
-				likehateFormGroup.find('input').eq(1).val(reviewVo.likeCount)
-				likehateFormGroup.find('input').eq(2).val(reviewVo.hateCount)
 				
 				reviewLevel.find('.taste-level').text(reviewVo.tasteLevel)
 				reviewLevel.find('.price-level').text(reviewVo.priceLevel)
 				reviewLevel.find('.service-level').text(reviewVo.serviceLevel)
 				reviewLevel.find('.mood-level').text(reviewVo.moodLevel)
 				reviewLevel.find('.convenience-level').text(reviewVo.convenienceLevel)
-				reviewLevel.find('.average-level').text(reviewVo.averageLevel)
+				
+				
+				var writeDate = new Date(reviewVo.writeDate);
+				reviewInfo.find('.reviewInfo-write-date').text(date2Str(writeDate));
+				reviewInfo.find('.reviewInfo-review-content').text(reviewVo.reviewContent);
+				
+				//태그를 리뷰에 추가
+				addTag2Review(reviewVo, newReview);				
+				
+				var likehateFormGroup = reviewInfo.find('.like-hate')
+				
+				test = reviewInfo;
+				console.log(reviewVo)
+				//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
+				likehateFormGroup.find('input').eq(0).val(reviewVo.review_id)
+				likehateFormGroup.find('input').eq(1).val(reviewVo.likeCount)
+				likehateFormGroup.find('input').eq(2).val(reviewVo.hateCount)
+				if(reviewVo.isLike ==1){
+					toggleSvgFill(likehateFormGroup.find('.like-btn'));
+				}else if(reviewVo.isLike ==-1){
+					toggleSvgFill(likehateFormGroup.find('.hate-btn'));
+				}
+				
+
+				
+				newReview.find('.average-level').text(int2Double(reviewVo.averageLevel))
 
 				$('.review-content').append(newReview);	//리뷰에 추가
 			}
@@ -858,6 +894,31 @@ var moreReviewList = function(startNum,callWhere) {
 
 	})
 }
+
+var int2Double =function(intNum){
+	intNum =intNum+"";
+	if(intNum.indexOf('.') == -1){
+		intNum = intNum+".0";
+	}
+	return intNum;
+}
+var date2Str = function(format){
+
+    var year = format.getFullYear();
+
+    var month = format.getMonth() + 1;
+
+    if(month<10) month = '0' + month;
+
+    var date = format.getDate();
+
+    if(date<10) date = '0' + date;
+  
+
+    return year + "-" + month + "-" + date
+
+}
+
 
 var bindRaty = function(){
 	//평점 별

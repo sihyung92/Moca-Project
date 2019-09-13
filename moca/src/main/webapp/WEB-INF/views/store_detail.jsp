@@ -147,13 +147,16 @@
 		}
 		#carousel-custom .carousel-outer {
 		    position: relative;
-
+		}
 		#storeAverageLevel{
 			display : inline;
 		}
 		
 		#storeSummaryDiv{
 			font-size : 150%;
+		}
+		.review-level div{
+			display : inline;
 		}
 }
 	</style>
@@ -163,9 +166,9 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=36"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=45"/>"></script>
 	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=20"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
@@ -391,9 +394,9 @@
 			///////////////////////
 			//카페 좋아요
 			likeStoreBtn.click(function(){
-				
+				var srcValue = likeStoreBtn.attr('src');
 				//좋아요를 누르지 않은 경우
-				if(likeStoreBtn.hasClass('glyphicon-heart-empty')){
+				if(srcValue.indexOf('-fill.svg')==-1){
 					//좋아요 추가
 					methodType = 'POST';
 					
@@ -409,9 +412,8 @@
 					data : {
 						storeId : storeId
 					},
-					success: function() {
-						likeStoreBtn.toggleClass('glyphicon-heart');
-						likeStoreBtn.toggleClass('glyphicon-heart-empty')
+					success: function() {						
+						toggleSvgFill(likeStoreBtn);
 
 						if(methodType == 'POST'){
 							$('#storeLikeCount').text($('#storeLikeCount').text()*1+1)
@@ -430,8 +432,9 @@
 			////////////////////////////////
 			//가고 싶은 카페
 			favoriteStoreBtn.click(function(){
+				var srcValue = favoriteStoreBtn.attr('src');
 				//가고 싶은 카페 누르지 않은 경우
-				if(favoriteStoreBtn.hasClass('glyphicon-star-empty')){
+				if(srcValue.indexOf('-fill.svg')==-1){
 					//가고 싶은 카페에 추가
 					methodType = 'POST';
 					
@@ -447,8 +450,8 @@
 						storeId : storeId
 					},
 					success: function() {
-						favoriteStoreBtn.toggleClass('glyphicon-star')
-						favoriteStoreBtn.toggleClass('glyphicon-star-empty')
+			
+						toggleSvgFill(favoriteStoreBtn);
 
 						if(methodType == 'POST'){
 							$('#storeFavoriteCount').text($('#storeFavoriteCount').text()*1+1)
@@ -565,7 +568,6 @@
 				$('.storeImgDeleteSpan').unbind();
 				$('.storeImgDeleteSpan').click(function(){					
 					
-					test = this;
 					//newStoreImg인 경우 
 					if($(this.previousElementSibling).hasClass('newStoreImg')){
 						//fileBuffer에서 제거
@@ -750,6 +752,21 @@
 
 		}
 
+
+		//svg 태그를 넣어주면 none을 토글 해줌
+		var toggleSvgNone = function(svgElement){
+			var srcValue= svgElement.attr('src');
+			
+			//꽉차 있는 상태일때
+			if(isClickedSvg(svgElement)){
+				srcValue = srcValue.replace('-none.svg', '.svg')
+				
+			}else{//비어 있는 상태 일때
+				srcValue = srcValue.replace('.svg', '-none.svg')
+			}
+			svgElement.attr('src', srcValue)
+		}
+
 	</script>
 </head>
 
@@ -765,18 +782,21 @@
 					<div class="jumbotron text-center">
 						<span id="storeId" style= "display: none;">${storeVo.store_Id }</span>
 						<div id="likeFavoriteDiv">
+							
 							<c:if test="${storeVo.isLike eq 0 }">
-								좋아요<span id="likeStoreBtn" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ></span>
+								좋아요<img id="likeStoreBtn" src="<c:url value="/resources/imgs/icons/heart.svg"/>">
 							</c:if>
 							<c:if test="${storeVo.isLike ne 0 }">
-								좋아요<span id="likeStoreBtn" class="glyphicon glyphicon-heart" aria-hidden="true" ></span>
+								좋아요<img id="likeStoreBtn" src="<c:url value="/resources/imgs/icons/heart-fill.svg"/>">
 							</c:if>
 						
 							<c:if test="${storeVo.isFavorite eq 0 }">
-								가고 싶은 카페<span id="favoriteStoreBtn" class="glyphicon glyphicon-star-empty" aria-hidden="true" ></span>	
+								가고 싶은 카페
+								<img id="favoriteStoreBtn"  src="<c:url value="/resources/imgs/icons/bookmark.svg"/>">	
 							</c:if>
 							<c:if test="${storeVo.isFavorite ne 0 }">
-								가고 싶은 카페<span id="favoriteStoreBtn" class="glyphicon glyphicon-star" aria-hidden="true" ></span>	
+								가고 싶은 카페
+								<img id="favoriteStoreBtn"  src="<c:url value="/resources/imgs/icons/bookmark-fill.svg"/>">		
 							</c:if>					
 						</div>
 
@@ -818,16 +838,19 @@
 					</div>
 					<div class="col-md-2">
 						<div id="storeReviewCountDiv">
+							<img src="<c:url value="/resources/imgs/icons/edit.svg"/>">
 							<span class="storeReviewCount">${storeVo.reviewCnt}</span>개의 리뷰
 						</div>
 					</div>
 					<div class="col-md-2">
 						<div id="storeLikeCountDiv">
+							<img src="<c:url value="/resources/imgs/icons/heart.svg"/>">
 							<span id="storeLikeCount">${storeVo.likeCnt}</span>명이 좋아하는
 						</div>
 					</div>
 					<div class="col-md-2">
 						<div id="storeFavoriteCountDiv">
+							<img src="<c:url value="/resources/imgs/icons/bookmark.svg"/>">
 							<span id="storeFavoriteCount">${storeVo.favoriteCnt}</span>명이 가고 싶어하는
 						</div>
 					</div>
@@ -901,16 +924,15 @@
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 							<div class="panel-body">
-								와이파이 :
+								
 								<span id="wifiInfo">
-									<c:if test="${storeVo.wifi eq 0}">없음</c:if>
-									<c:if test="${storeVo.wifi eq 1}">있음</c:if>
+									<c:if test="${storeVo.wifi eq 0}"><img src="<c:url value="/resources/imgs/icons/wifi-none.svg"/>"></c:if>
+									<c:if test="${storeVo.wifi eq 1}"><img src="<c:url value="/resources/imgs/icons/wifi.svg"/>"></c:if>
 								</span>
 								<br>
-								주차장 :
 								<span id="parkingLotInfo">
-									<c:if test="${storeVo.parkingLot eq 0}">없음</c:if>
-									<c:if test="${storeVo.parkingLot eq 1}">있음</c:if>
+									<c:if test="${storeVo.parkingLot eq 0}"><img src="<c:url value="/resources/imgs/icons/parking-none.svg"/>"></c:if>
+									<c:if test="${storeVo.parkingLot eq 1}"><img src="<c:url value="/resources/imgs/icons/parking.svg"/>"></c:if>
 								</span>
 								<br>
 								휴무일 : <span id="dayOffInfo">${storeVo.dayOff}</span><br>
@@ -998,8 +1020,8 @@
 							<c:if test="${reviewVo.editable eq 1}">
 								<div class="editDeleteGroup btn-group" role="group">
 									<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
-									<button type="button" class="btn-edit btn btn-default">수정</button>
-									<button type="button" class="btn-delete btn btn-default">삭제</button>
+									<img class="btn-edit" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
+									<img class="btn-delete" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 								</div>
 							</c:if>
 							<div class="reviewer-info col-md-2" onclick="location.href='/moca/mypage/${reviewVo.account_id}'" style="cursor:pointer;">
@@ -1012,15 +1034,14 @@
 									</c:if>
 								</div>
 								<div class="nickName-div">
-									<label>별명</label>	
 									<span class="reviewer-nickName">${reviewVo.nickName} </span>
 								</div>
 								<div class="follows-div">
-									<label>팔로워 수</label>
+									<img src="<c:url value="/resources/imgs/icons/user.svg"/>">
 									<span class="reviewer-followers">${reviewVo.followCount}</span>
 								</div>
 								<div class="reviews-div">
-									<label>리뷰 수</label>
+									<img src="<c:url value="/resources/imgs/icons/edit.svg"/>">
 									<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
 								</div>
 							</div>
@@ -1034,6 +1055,28 @@
 												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
 											</div>
 										</c:forEach>
+									</div>
+									<div class="review-level">
+										<div class="taste-level-div">
+											<label>맛</label>
+											<span class="taste-level">${reviewVo.tasteLevel }</span>점
+										</div>
+										<div class="price-level-div">
+											<label>가격</label>
+											<span class="price-level">${reviewVo.priceLevel }</span>점
+										</div>
+										<div class="service-level-div">
+											<label>서비스</label>
+											<span class="service-level">${reviewVo.serviceLevel }</span>점
+										</div>
+										<div class="mood-level-div">
+											<label>분위기</label>
+											<span class="mood-level">${reviewVo.moodLevel }</span>점
+										</div>
+										<div class="convenience-level-div">
+											<label>편의성</label>
+											<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
+										</div>
 									</div>
 									<div class="review-data">
 									<div class="write-date-div">
@@ -1057,13 +1100,21 @@
 									<div class="btn-group" data-toggle="buttons">
 										<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
 										<c:choose>
-											<c:when test="${reviewVo.isLike==1 }"><button type="button" class="btn btn-primary like-btn clicked">좋아요</button></c:when>
-											<c:otherwise><button type="button" class="btn btn-primary like-btn ">좋아요</button></c:otherwise>
+											<c:when test="${reviewVo.isLike==1 }">
+												<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
+											</c:when>
+											<c:otherwise>
+												<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
+											</c:otherwise>
 										</c:choose>
 										<input type="number" class="like-count" value=${reviewVo.likeCount }>
 										<c:choose>
-											<c:when test="${reviewVo.isLike==-1 }"><button type="button" class="btn btn-primary hate-btn clicked">싫어요</button></c:when>
-											<c:otherwise><button type="button" class="btn btn-primary hate-btn">싫어요</button></c:otherwise>
+											<c:when test="${reviewVo.isLike==-1 }">
+												<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
+											</c:when>
+											<c:otherwise>
+												<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
+											</c:otherwise>
 										</c:choose>
 
 										<input type="number" class="hate-count" value=${reviewVo.hateCount }>
@@ -1071,32 +1122,11 @@
 								</div>
 								</div>
 							</div>
-							<div class="review-level col-md-2">
-								<div class="taste-level-div">
-									<label>맛</label>
-									<span class="taste-level">${reviewVo.tasteLevel }</span>점
-								</div>
-								<div class="price-level-div">
-									<label>가격</label>
-									<span class="price-level">${reviewVo.priceLevel }</span>점
-								</div>
-								<div class="service-level-div">
-									<label>서비스</label>
-									<span class="service-level">${reviewVo.serviceLevel }</span>점
-								</div>
-								<div class="taste-level-div">
-									<label>분위기</label>
-									<span class="mood-level">${reviewVo.moodLevel }</span>점
-								</div>
-								<div class="taste-level-div">
-									<label>편의성</label>
-									<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
-								</div>
-								<div class="taste-level-div">
-									<label for="average_level">평균</label>
-									<span class="average-level">${reviewVo.averageLevel }</span>점
-								</div>								
-							</div>
+
+							<div class="average-level-div  col-md-2">
+								<label for="average_level">평균</label>
+								<span class="average-level">${reviewVo.averageLevel }</span>점
+							</div>								
 							<br><br><br>
 						</div>
 					</c:forEach>
