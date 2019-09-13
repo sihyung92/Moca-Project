@@ -238,4 +238,17 @@ public class StoreDaoImpl implements StoreDao {
 		map.put("TAG", topTags);
 		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreTag", map);
 	}
+
+	@Override
+	public int updateLevelCntAll(Integer store_id, int level1Cnt, int level2Cnt, int level3Cnt, int level4Cnt,
+			int level5Cnt) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_id);
+		map.put("LEVEL1CNT", level1Cnt);
+		map.put("LEVEL2CNT", level2Cnt);
+		map.put("LEVEL3CNT", level3Cnt);
+		map.put("LEVEL4CNT", level4Cnt);
+		map.put("LEVEL5CNT", level5Cnt);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLevelCntAll", map);
+	}
 }

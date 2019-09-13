@@ -85,7 +85,7 @@
 			text-align: center;
 			height: 100%;
 		}
-		.overAllLevel-left .overAllLevel-right{
+		.overAllLevel-left {
 			margin-top: 30px;
 		}
 		#reviewModalBtn{
@@ -147,7 +147,8 @@
 		}
 		#carousel-custom .carousel-outer {
 		    position: relative;
-
+		}
+		
 		#storeAverageLevel{
 			display : inline;
 		}
@@ -155,6 +156,21 @@
 		#storeSummaryDiv{
 			font-size : 150%;
 		}
+		
+		/*더보기 버튼 css*/
+		#moreReview{
+			font-size : 150%;
+		}
+		
+	  /*custom 버튼 css*/
+	  .customBtn{
+			background: none;
+  			transition: 0.3s;
+		}
+	  .customBtn:hover {
+	  	background: #f0f0f0;
+	  }
+	  *:focus{ outline:none; }
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -163,9 +179,10 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=36"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=37"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
+	<!-- raty -->
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
@@ -283,8 +300,25 @@
 
 			//storeInfo 참여하기 버튼 클릭시
 			$('#updateStore').click(function() {
+				//console.log(validationStoreInfo());
+				var openTime = $(".timePattern").eq(0);
+				var endTime = $(".timePattern").eq(1);
+				
+				if(validationStoreInfoTime(openTime)==false || validationStoreInfoTime(endTime)==false){
+					return false;
+				}
+
+				if(validationOpenTimeEndTime()==false){
+					return false;
+				}
+				
 				$(this).attr('data-dismiss', "modal");
 				updateStore(${storeVo.store_Id});
+			});
+
+			//storeInfo form 전화번호에 번호형식만 받도록
+			$("input:text[numberOnly]").on("keyup", function() {
+    			$(this).val($(this).val().replace(/[^0-9]/g,""));
 			});
 
 			//리뷰 더보기 버튼을 눌렀을 때
@@ -750,6 +784,54 @@
 
 		}
 
+		//storeInfo 수정확인을 누르기 전에 체크해야할 목록들
+		var validationOpenTimeEndTime = function(){
+		    //영업 시작 시간이 종료 시간보다 늦습니다. 영업시간을 다시 확인해주세요.
+			console.log($(".timePattern").eq(0));
+			openTime = $(".timePattern").eq(0).val().split(":")[0];
+		    var openMin = $(".timePattern").eq(0).val().split(":")[1];
+		    endTime = $(".timePattern").eq(1).val().split(":")[0];
+		    var endMin = $(".timePattern").eq(1).val().split(":")[1];
+		    
+		    if(openTime=="00" && openMin=="00" && endTime=="00" && endMin=="00"){
+			    return true;
+			}else if(openTime*1>=0 && openTime*1<24){
+				if((endTime*1 - openTime*1)<0){
+					console.log((endTime*1 - openTime*1));
+					if(endTime*1<4 && endtime*1>=0){
+						if(openTime*1 - endTime*1>0){
+							return true;
+						}else{
+							alert("영업시간을 다시 확인해주세요.");
+							return false;
+						}
+					}else{
+						alert("영업시간을 다시 확인해주세요.");					
+						return false;
+					}
+				}else if(endTime*1 == openTime*1){
+					alert("영업시작시간과 영업종료시간은 같을 수 없습니다. 다시 확인해주세요.");
+				}
+			return true;
+		}
+		}
+
+		//storeInfo 수정확인을 누르기 전에 체크해야할 목록들
+		var validationStoreInfoTime = function(checkTime){
+			//영업시간 형식이 맞지 않습니다. 영업시간을 다시 확인해주세요.
+			var timeValidation = /^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$/;
+
+			if(checkTime.val()==""){
+			    return true;
+			}
+		    
+		    if(timeValidation.test(checkTime.val())==false){
+		        alert("입력한 영업시간이 형식에 맞지 않습니다. 영업시간을 다시 확인해주세요.");
+		        checkTime.val("");
+		        return false;
+		    }
+		}
+
 	</script>
 </head>
 
@@ -986,8 +1068,9 @@
 				</div>
 				<!-- Button trigger modal -->
 				<div class="row text-center">
-				<button type="button" class="btn btn-default" data-toggle="modal" id="reviewModalBtn">
-					리뷰 작성
+				<button type="button" class="customBtn" data-toggle="modal" id="reviewModalBtn"  style="border: 2px solid #c0c0c0; padding: 10px;">
+					<img alt="more" src="<c:url value="/resources/imgs/icons/compose.svg"/>" style="width: 20px; padding-bottom: 5px; margin-right: 5px;">
+					<b>리뷰 작성</b>
 				</button>
 				</div>
 				<br><br>
@@ -1103,7 +1186,9 @@
 				</div>
 				<div class="review-footer">
 				<c:if test="${fn:length(reviewVoList) ge 3}">
-					<button id="moreReview">더보기</button>
+					<button id="moreReview" class="customBtn" style="width:100%; border: 2px solid #c0c0c0; border-left:none; border-right:none; padding: 10px;">
+					<img alt="more" src="<c:url value="/resources/imgs/icons/chevron-bottom.svg"/>" style="width: 15px; padding-bottom: 2px; margin-right: 5px;"> 더보기
+					</button>
 				</c:if>
 				</div>
 
@@ -1152,17 +1237,17 @@
 						<div class="form-group">
 							<label for="openTime" class="col-sm-2 control-label">영업시간</label>
 							<div class="col-sm-10">
-								<input type="time" id="openTime" name="openTime" value="${fn:substring(storeVo.openTime,11,16)}"> - <input type="time" id="endTime" name="endTime" value="${fn:substring(storeVo.endTime,11,16)}">
+								<input type="time" placeholder="00:00 형태로 입력해주세요" class="timePattern" id="openTime" name="openTime" max="10" pattern="[0-9]{2}:[0-9]{2}" value="${fn:substring(storeVo.openTime,11,16)}"> - <input type="time" placeholder="24:00 형태로 입력해주세요" class="timePattern" id="endTime" name="endTime" pattern="[0-9]{2}:[0-9]{2}" value="${fn:substring(storeVo.endTime,11,16)}"> <span class="validity"></span>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="tel" class="col-sm-2 control-label">전화번호</label>
 							<div class="col-sm-10">
-								<input type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:substring(storeVo.tel,0,fn:indexOf(storeVo.tel, '-'))}" />
+								<input numberOnly type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:split(storeVo.tel,'-')[0]}" required />
 								-
-								<input type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+1,fn:indexOf(storeVo.tel, '-')+5)}" />
+								<input numberOnly type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:split(storeVo.tel,'-')[1]}" required />
 								-
-								<input type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+6,fn:indexOf(storeVo.tel, '-')+10)}" />
+								<input numberOnly type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:split(storeVo.tel,'-')[2]}" required />
 							</div>
 						</div>
 						<div class="form-group">

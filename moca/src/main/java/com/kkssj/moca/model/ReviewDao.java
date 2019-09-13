@@ -72,4 +72,6 @@ public interface ReviewDao {
 	double selectAverageLevelByReviewId(int review_id) throws SQLException;
 
 	List<Map<String, Integer>> selectTagListByStoreId(int store_id);
+
+	List<Double> selectReviewAverageLevelByStoreId(Integer store_id);
 }

@@ -118,7 +118,7 @@
 <!-- CLONE -->
 
 <!-- clone할 review element -->
-<div class="row"  id="reviewTemplate" style="display : none;">
+<div class="row reviewCnt"  id="reviewTemplate" style="display : none;">
 	<div class="editDeleteGroup btn-group" role="group">
 		<input type="number" class="review-id" style="display: none;">
 		<input type="number" class="store-id" style="display: none;">

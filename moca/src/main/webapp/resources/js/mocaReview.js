@@ -843,6 +843,7 @@ var moreReviewList = function(startNum,callWhere) {
 				$('.review-content').append(newReview);	//리뷰에 추가
 			}
 			
+			
 			//리뷰이미지 모달 바인딩
 			reviewImg = $('.reviewThumbnailGroup').find('img');
 			
