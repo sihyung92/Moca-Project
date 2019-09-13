@@ -10,7 +10,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=2"/>" />
 	<style type="text/css">
 		body{
 			font-family: 'Noto Sans KR', sans-serif;
@@ -156,21 +156,6 @@
 		#storeSummaryDiv{
 			font-size : 150%;
 		}
-		
-		/*더보기 버튼 css*/
-		#moreReview{
-			font-size : 150%;
-		}
-		
-	  /*custom 버튼 css*/
-	  .customBtn{
-			background: none;
-  			transition: 0.3s;
-		}
-	  .customBtn:hover {
-	  	background: #f0f0f0;
-	  }
-	  *:focus{ outline:none; }
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -1073,7 +1058,6 @@
 					<b>리뷰 작성</b>
 				</button>
 				</div>
-				<br><br>
 				<div class="review-content">
 					<!-- js로 리뷰 수만큼 추가 할 것  -->
 					<c:forEach items="${reviewVoList }" var="reviewVo">

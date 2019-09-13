@@ -150,7 +150,7 @@
 	<div class="store-info col-md-2" style="cursor:pointer;">
 		<div class="storeLogo-div">
 			<!-- store logo 이미지 -->
-			<img src="<c:url value="/resources/imgs/logoDefault.png"/>"	alt="logo" class="img-circle" style="width: 100px;">
+			<img src="<c:url value="/resources/imgs/logoDefault.png"/>"	alt="logo" class="img-circle" style="width: 100px; height:100px;">
 		</div>
 		<div class="storeName-div">
 			<!-- store 이름 -->
