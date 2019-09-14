@@ -193,7 +193,7 @@
   	UPDATE STORE SET ${LEVELCNTCOLUMN} = ${LEVELCNTCOLUMN}+#{ADDCNTNUM} WHERE store_id=#{STORE_ID}
   </update>
   
-  <select id="selectAllStoreId">
+  <select id="selectAllStoreId" resultType="Integer">
   	SELECT STORE_ID FROM STORE
   </select>
   
@@ -227,5 +227,9 @@
   </update>  
   <update id="updateStoreTag" >
   	UPDATE STORE s SET s.TAG = #{TAG} WHERE s.STORE_ID = #{STORE_ID};
+  </update>
+  
+  <update id="updateLevelCntAll" parameterType="map">
+  	UPDATE STORE SET LEVEL1CNT=#{LEVEL1CNT}, LEVEL2CNT=#{LEVEL2CNT}, LEVEL3CNT=#{LEVEL3CNT}, LEVEL4CNT=#{LEVEL4CNT}, LEVEL5CNT=#{LEVEL5CNT} WHERE STORE_ID=#{STORE_ID}
   </update>
 </mapper>

@@ -10,7 +10,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=2"/>" />
 	<style type="text/css">
 		body{
 			font-family: 'Noto Sans KR', sans-serif;
@@ -85,7 +85,7 @@
 			text-align: center;
 			height: 100%;
 		}
-		.overAllLevel-left .overAllLevel-right{
+		.overAllLevel-left {
 			margin-top: 30px;
 		}
 		#reviewModalBtn{
@@ -148,6 +148,7 @@
 		#carousel-custom .carousel-outer {
 		    position: relative;
 		}
+
 		#storeAverageLevel{
 			display : inline;
 		}
@@ -166,9 +167,10 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=51"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=40"/>"></script>
 	<!-- mocaStore -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=20"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
+	<!-- raty -->
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
@@ -292,8 +294,25 @@
 
 			//storeInfo 참여하기 버튼 클릭시
 			$('#updateStore').click(function() {
+				//console.log(validationStoreInfo());
+				var openTime = $(".timePattern").eq(0);
+				var endTime = $(".timePattern").eq(1);
+				
+				if(validationStoreInfoTime(openTime)==false || validationStoreInfoTime(endTime)==false){
+					return false;
+				}
+
+				if(validationOpenTimeEndTime()==false){
+					return false;
+				}
+				
 				$(this).attr('data-dismiss', "modal");
 				updateStore(${storeVo.store_Id});
+			});
+
+			//storeInfo form 전화번호에 번호형식만 받도록
+			$("input:text[numberOnly]").on("keyup", function() {
+    			$(this).val($(this).val().replace(/[^0-9]/g,""));
 			});
 
 			//리뷰 더보기 버튼을 눌렀을 때
@@ -772,6 +791,53 @@
 			}
 			svgElement.attr('src', srcValue)
 		}
+		//storeInfo 수정확인을 누르기 전에 체크해야할 목록들
+		var validationOpenTimeEndTime = function(){
+		    //영업 시작 시간이 종료 시간보다 늦습니다. 영업시간을 다시 확인해주세요.
+			console.log($(".timePattern").eq(0));
+			openTime = $(".timePattern").eq(0).val().split(":")[0];
+		    var openMin = $(".timePattern").eq(0).val().split(":")[1];
+		    endTime = $(".timePattern").eq(1).val().split(":")[0];
+		    var endMin = $(".timePattern").eq(1).val().split(":")[1];
+		    
+		    if(openTime=="00" && openMin=="00" && endTime=="00" && endMin=="00"){
+			    return true;
+			}else if(openTime*1>=0 && openTime*1<24){
+				if((endTime*1 - openTime*1)<0){
+					console.log((endTime*1 - openTime*1));
+					if(endTime*1<4 && endtime*1>=0){
+						if(openTime*1 - endTime*1>0){
+							return true;
+						}else{
+							alert("영업시간을 다시 확인해주세요.");
+							return false;
+						}
+					}else{
+						alert("영업시간을 다시 확인해주세요.");					
+						return false;
+					}
+				}else if(endTime*1 == openTime*1){
+					alert("영업시작시간과 영업종료시간은 같을 수 없습니다. 다시 확인해주세요.");
+				}
+				return true;
+			}
+		}
+
+		//storeInfo 수정확인을 누르기 전에 체크해야할 목록들
+		var validationStoreInfoTime = function(checkTime){
+			//영업시간 형식이 맞지 않습니다. 영업시간을 다시 확인해주세요.
+			var timeValidation = /^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$/;
+
+			if(checkTime.val()==""){
+			    return true;
+			}
+		    
+		    if(timeValidation.test(checkTime.val())==false){
+		        alert("입력한 영업시간이 형식에 맞지 않습니다. 영업시간을 다시 확인해주세요.");
+		        checkTime.val("");
+		        return false;
+		    }
+		}
 
 	</script>
 </head>
@@ -1014,17 +1080,18 @@
 				</div>
 				<!-- Button trigger modal -->
 				<div class="row text-center">
-				<button type="button" class="btn btn-default" data-toggle="modal" id="reviewModalBtn">
-					리뷰 작성
+				<button type="button" class="customBtn" data-toggle="modal" id="reviewModalBtn"  style="border: 2px solid #c0c0c0; padding: 10px;">
+					<img alt="more" src="<c:url value="/resources/imgs/icons/compose.svg"/>" style="width: 20px; padding-bottom: 5px; margin-right: 5px;">
+					<b>리뷰 작성</b>
 				</button>
 				</div>
-				<br><br>
 				<div class="review-content">
 					<!-- js로 리뷰 수만큼 추가 할 것  -->
 					<c:forEach items="${reviewVoList }" var="reviewVo">
 						<div class="row reviewCnt">
 							<c:if test="${reviewVo.editable eq 1}">
 								<div class="editDeleteGroup btn-group" role="group">
+									<input type="number" class="store-id"  value=${storeVo.store_Id } style="display: none;">
 									<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
 									<img class="btn-edit" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
 									<img class="btn-delete" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
@@ -1085,47 +1152,47 @@
 										</div>
 									</div>
 									<div class="review-data">
-									<div class="write-date-div">
-										<label>작성일</label>
-										<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
+										<div class="write-date-div">
+											<label>작성일</label>
+											<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
+										</div>
+										<div class="review-content-div">
+											<label>리뷰 내용</label>
+											<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+											<span class="more-review-content-btn">더보기</span>
+										</div>
+										<div class="review-tags-div">
+											<c:forEach items="${reviewVo.tagMap}" var="i">
+												<c:if test="${i.value eq 1}">
+													<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
+												</c:if>
+											</c:forEach>
+										</div>
 									</div>
-									<div class="review-content-div">
-										<label>리뷰 내용</label>
-										<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
-										<span class="more-review-content-btn">더보기</span>
+									<div class="form-group like-hate">
+										<div class="btn-group" data-toggle="buttons">
+											<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+											<c:choose>
+												<c:when test="${reviewVo.isLike==1 }">
+													<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
+												</c:when>
+												<c:otherwise>
+													<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
+												</c:otherwise>
+											</c:choose>
+											<input type="number" class="like-count" value=${reviewVo.likeCount }>
+											<c:choose>
+												<c:when test="${reviewVo.isLike==-1 }">
+													<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
+												</c:when>
+												<c:otherwise>
+													<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
+												</c:otherwise>
+											</c:choose>
+	
+											<input type="number" class="hate-count" value=${reviewVo.hateCount }>
+										</div>
 									</div>
-									<div class="review-tags-div">
-										<c:forEach items="${reviewVo.tagMap}" var="i">
-											<c:if test="${i.value eq 1}">
-												<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
-											</c:if>
-										</c:forEach>
-									</div>
-								</div>
-								<div class="form-group like-hate">
-									<div class="btn-group" data-toggle="buttons">
-										<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
-										<c:choose>
-											<c:when test="${reviewVo.isLike==1 }">
-												<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
-											</c:when>
-											<c:otherwise>
-												<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
-											</c:otherwise>
-										</c:choose>
-										<input type="number" class="like-count" value=${reviewVo.likeCount }>
-										<c:choose>
-											<c:when test="${reviewVo.isLike==-1 }">
-												<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
-											</c:when>
-											<c:otherwise>
-												<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
-											</c:otherwise>
-										</c:choose>
-
-										<input type="number" class="hate-count" value=${reviewVo.hateCount }>
-									</div>
-								</div>
 								</div>
 							</div>
 
@@ -1139,7 +1206,9 @@
 				</div>
 				<div class="review-footer">
 				<c:if test="${fn:length(reviewVoList) ge 3}">
-					<button id="moreReview">더보기</button>
+					<button id="moreReview" class="customBtn" style="width:100%; border: 2px solid #c0c0c0; border-left:none; border-right:none; padding: 10px;">
+					<img alt="more" src="<c:url value="/resources/imgs/icons/chevron-bottom.svg"/>" style="width: 15px; padding-bottom: 2px; margin-right: 5px;"> 더보기
+					</button>
 				</c:if>
 				</div>
 
@@ -1188,17 +1257,17 @@
 						<div class="form-group">
 							<label for="openTime" class="col-sm-2 control-label">영업시간</label>
 							<div class="col-sm-10">
-								<input type="time" id="openTime" name="openTime" value="${fn:substring(storeVo.openTime,11,16)}"> - <input type="time" id="endTime" name="endTime" value="${fn:substring(storeVo.endTime,11,16)}">
+								<input type="time" placeholder="00:00 형태로 입력해주세요" class="timePattern" id="openTime" name="openTime" max="10" pattern="[0-9]{2}:[0-9]{2}" value="${fn:substring(storeVo.openTime,11,16)}"> - <input type="time" placeholder="24:00 형태로 입력해주세요" class="timePattern" id="endTime" name="endTime" pattern="[0-9]{2}:[0-9]{2}" value="${fn:substring(storeVo.endTime,11,16)}"> <span class="validity"></span>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="tel" class="col-sm-2 control-label">전화번호</label>
 							<div class="col-sm-10">
-								<input type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:substring(storeVo.tel,0,fn:indexOf(storeVo.tel, '-'))}" />
+								<input numberOnly type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:split(storeVo.tel,'-')[0]}" required />
 								-
-								<input type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+1,fn:indexOf(storeVo.tel, '-')+5)}" />
+								<input numberOnly type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:split(storeVo.tel,'-')[1]}" required />
 								-
-								<input type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+6,fn:indexOf(storeVo.tel, '-')+10)}" />
+								<input numberOnly type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:split(storeVo.tel,'-')[2]}" required />
 							</div>
 						</div>
 						<div class="form-group">

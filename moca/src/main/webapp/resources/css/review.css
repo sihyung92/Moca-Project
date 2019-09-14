@@ -1,9 +1,30 @@
 @charset "UTF-8";
 /* 같이 쓰는 페이지 : store.jsp, mypage.jsp */
 
+/*더보기 버튼 css*/
+#moreReview{
+	font-size : 150%;
+}
+
+ /*custom 버튼 css*/
+ .customBtn{
+	background: none;
+	transition: 0.3s;
+}
+ .customBtn:hover {
+ 	background: #f0f0f0;
+ }
+ *:focus{ outline:none; }
+
 /* br태그 대신 margin */
+.reviewCnt:first-child{
+	margin-top: 3em;
+}
 .reviewCnt{
-	margin-bottom: 2em;
+	margin-bottom: 3em;
+	background-color:white;
+	padding:3em;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
 /* 리뷰 내용 더보기 */

@@ -9,8 +9,22 @@
 	<title>Home</title>
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=1"/>" />
 	<style type="text/css">
+	body{
+		background:#f6f5ef;
+	}
+	#userGraph{
+		margin-top:50px;
+		border-bottom: 1px black;
+	}
+	#userGraph table{
+		width:100%;
+		text-align: center;
+	}
+	#userGraph table tr{
+		height:30px;
+	}
 		#userInfo, #followInfo{
 			margin:20px auto;
 			text-align: center;
@@ -535,12 +549,33 @@
 					</c:if>
 				</div>
 			</div>
-			<div class="col-md-3" id="userGraph">
+			<div class="col-md-6" >
+			<div class="row">
+			<div class="col-md-12" id="userGraph">
+			<table>
+					<tr>
+						<td>출석수</td>
+						<td>리뷰수</td>
+						<td>팔로워</td>
+						<td>팔로잉</td>
+					</tr>
+					<tr>
+						<td>12</td>
+						<td>3</td>
+						<td>5</td>
+						<td>10</td>
+					</tr>
+				</table>
+				</div>
+				
 			</div>
-			<div class="col-md-3" id="userBadge">
+			<div class="row">
+				<div class="col-md-12" id="userBadge">
 			
+				</div>
 			</div>
-			<br><br>
+				
+			</div>
 			
 		</div>
 		<div class="row">
@@ -583,11 +618,11 @@
 											<!-- store logo 이미지 -->
 											<c:if test="${empty reviewVo.storeLogoImg}">
 												<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
-													alt="logo" class="img-circle" style="width: 100px;">
+													alt="logo" class="img-circle" style="width: 100px; height:100px;">
 											</c:if>
 											<c:if test="${not empty reviewVo.storeLogoImg}">
 												<img src="<c:url value="${reviewVo.storeLogoImg }" />" alt="logo"
-													class="img-circle" style="width: 100px;">
+													class="img-circle" style="width: 100px; height:100px;">
 											</c:if>
 										</div>
 										<div class="storeName-div">
@@ -676,15 +711,14 @@
 												class="average-level">${reviewVo.averageLevel }</span>점
 										</div>
 									</div>
-									<br>
-									<br>
-									<br>
 								</div>
 							</c:forEach>
 						</div>
 						<div class="review-footer">
 							<c:if test="${fn:length(reviewVoList) ge 3}">
-								<button id="moreReview">더보기</button>
+								<button id="moreReview" class="customBtn" style="width:100%; border: 2px solid #c0c0c0; border-left:none; border-right:none; padding: 10px;">
+									<img alt="more" src="<c:url value="/resources/imgs/icons/chevron-bottom.svg"/>" style="width: 15px; padding-bottom: 2px; margin-right: 5px;"> 더보기
+								</button>
 							</c:if>
 						</div>
 					</div>

@@ -167,8 +167,8 @@
   	SELECT AVERAGELEVEL FROM REVIEW WHERE REVIEW_ID = #{REVIEW_ID}
   </select>
   
-  <select id="select">
-  	
+  <select id="selectReviewAverageLevelByStoreId" parameterType="Integer" resultType="Double">
+  	SELECT AVERAGELEVEL FROM REVIEW WHERE STORE_ID = #{STORE_ID}
   </select>
   
 </mapper>

@@ -958,17 +958,37 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	public int syncStoreLevel() {
 		//storeId list가져오고
-		List<Integer> storeIdList = storeDao.selectAllStoreId(); 
+		List<Integer> storeIdList = storeDao.selectAllStoreId();
 		
-		//해당 아이디 for문 돌려서 review 점수 가져오기
+		int[] updateLevelArr = new int[5];
+		int result = 0;
+		
+		//해당 스토어 아이디 for문 돌려서 review 점수 가져오기
 		for(int i=0; i<storeIdList.size(); i++) {
-			storeIdList.get(i);
+			List<Double> reviewAverageLevelList = reviewDao.selectReviewAverageLevelByStoreId(storeIdList.get(i));
+			for(int j=0; j<reviewAverageLevelList.size(); j++) {
+				double averageLevel = reviewAverageLevelList.get(j);
+				if(averageLevel>=4.2) {
+					updateLevelArr[4] += 1;
+				}else if(averageLevel>=3.4) {
+					updateLevelArr[3] += 1;
+				}else if(averageLevel>=2.6) {
+					updateLevelArr[2] += 1;
+				}else if(averageLevel>=1.8) {
+					updateLevelArr[1] += 1;
+				}else if(averageLevel>=0.0) {
+					updateLevelArr[0] += 1;
+				}
+			}
+			//review 점수 별로 levelCnt 바꾸기
+			result += storeDao.updateLevelCntAll(storeIdList.get(i), updateLevelArr[0], updateLevelArr[1],updateLevelArr[2],updateLevelArr[3],updateLevelArr[4]);
+			for(int j=0; j<updateLevelArr.length; j++) {
+				updateLevelArr[j]=0;				
+			}
 		}
 		
-		//review 점수 별로 levelCnt 바꾸기
 		
-		
-		return 0;
+		return result;
 	}
 	
 	//카페에 대한 levelCnt 추가

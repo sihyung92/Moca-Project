@@ -682,9 +682,8 @@ public class StoreController {
 	@GetMapping("/stores/levelCnt")
 	public String syncStoreLevel() {
 		int result = storeService.syncStoreLevel();
-		return "redirect:stores/1";
+		return "redirect:../1";
 	}
-	
 
 	
 	public String changeCategory(String category, String name) {

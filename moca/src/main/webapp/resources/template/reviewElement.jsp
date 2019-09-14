@@ -118,7 +118,7 @@
 <!-- CLONE -->
 
 <!-- clone할 review element -->
-<div class="row"  id="reviewTemplate" style="display : none;">
+<div class="row reviewCnt"  id="reviewTemplate" style="display : none;">
 	<div class="editDeleteGroup btn-group" role="group">
 		<input type="number" class="review-id" style="display: none;">
 		<input type="number" class="store-id" style="display: none;">
@@ -139,18 +139,18 @@
 			<span class="reviewer-nickName">${accountVo.nickname }</span>
 		</div>
 		<div class="follows-div">
-			<label>팔로워 수</label>
+			<img src="<c:url value="/resources/imgs/icons/user.svg"/>">
 			<span class="reviewer-followers">${accountVo.followCount }</span>
 		</div>
 		<div class="reviews-div">
-			<label>리뷰 수</label>
+			<img src="<c:url value="/resources/imgs/icons/edit.svg"/>">
 			<span class="reviewer-reviews">${accountVo.reviewCount }</span>
 		</div>
 	</div>
 	<div class="store-info col-md-2" style="cursor:pointer;">
 		<div class="storeLogo-div">
 			<!-- store logo 이미지 -->
-			<img src="<c:url value="/resources/imgs/logoDefault.png"/>"	alt="logo" class="img-circle" style="width: 100px;">
+			<img src="<c:url value="/resources/imgs/logoDefault.png"/>"	alt="logo" class="img-circle" style="width: 100px; height:100px;">
 		</div>
 		<div class="storeName-div">
 			<!-- store 이름 -->
@@ -160,7 +160,7 @@
 	<div class="review-info col-md-8">
 		<div class="reviewThumbnailGroup">
 		</div>
-		<div class="review-level col-md-2">
+		<div class="review-level">
 			<div class="taste-level-div">
 				<label>맛</label>
 				<span class="taste-level"></span>점
@@ -173,11 +173,11 @@
 				<label>서비스</label>
 				<span class="service-level"></span>점
 			</div>
-			<div class="taste-level-div">
+			<div class="mood-level-div">
 				<label>분위기</label>
 				<span class="mood-level"></span>점
 			</div>
-			<div class="taste-level-div">
+			<div class="convenience-level-div">
 				<label>편의성</label>
 				<span class="convenience-level"></span>점
 			</div>
