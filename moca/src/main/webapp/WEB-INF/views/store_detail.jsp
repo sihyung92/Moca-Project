@@ -10,10 +10,14 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=2"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=3"/>" />
 	<style type="text/css">
 		body{
+			background: #f6f5ef;
 			font-family: 'Noto Sans KR', sans-serif;
+		}
+		.jumbotron{
+			background: #EAE7DC;
 		}
 		#likeFavoriteDiv{
 			text-align: right;
@@ -156,9 +160,7 @@
 		#storeSummaryDiv{
 			font-size : 150%;
 		}
-		.review-level div{
-			display : inline;
-		}
+
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -816,7 +818,7 @@
 						alert("영업시간을 다시 확인해주세요.");					
 						return false;
 					}
-				}else if(endTime*1 == openTime*1){
+				}else if(endTime*1 == openTime*1 && !(endTime=="" && openTime=="")){
 					alert("영업시작시간과 영업종료시간은 같을 수 없습니다. 다시 확인해주세요.");
 				}
 				return true;
@@ -886,7 +888,7 @@
 						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
 						<h1>
 							<c:if test="${empty storeVo.logoImg}">
-								<img id="storeLogo" src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px; height:100px;">
+								<img id="storeLogo" src="<c:url value="/resources/imgs/moca1.png"/>" alt="logo" class="img-circle" style="width:100px; height:100px;">
 							</c:if>
 							<c:if test="${not empty storeVo.logoImg}">
 								<img id="storeLogo" src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px; height:100px;">

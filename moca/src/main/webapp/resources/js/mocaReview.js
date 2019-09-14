@@ -196,7 +196,7 @@ var setReviewerInfo = function(reviewRow, reviewVo){
 
 var setStoreInfo = function(reviewRow, reviewVo){
 	if(reviewVo.storeLogoImg==null){
-		reviewRow.find('.store-info img').attr('src','/moca/resources/imgs/basicProfile.png');
+		reviewRow.find('.store-info img').attr('src','/moca/resources/imgs/logoDefault.png');
 	}else{
 		reviewRow.find('.store-info img').attr('src',reviewVo.storeLogoImg);
 	}
@@ -884,8 +884,8 @@ var filesChange = function(){
             newFileDiv += '<span class="glyphicon glyphicon-remove removeThumbnailBtn"onclick="deleteReviewImg(this)" aria-hidden="true" style="position:relative; left:-95px; top:-30px; cursor:pointer; background-color:rgb(255,255,255,0.5);"></span>';
             newFileDiv += '</div>';
             const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
-            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
-                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+            if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp" && fileEx != "jpeg"){
+                alert("파일은 (jpg, jpeg, png, gif, bmp) 형식만 등록 가능합니다.");
                 fileBuffer.splice(fileBuffer.length-1, 1);
                 test = fileBuffer;
                 return false;
@@ -923,6 +923,7 @@ var int2Double =function(intNum){
 	}
 	return intNum;
 }
+
 var date2Str = function(format){
 
     var year = format.getFullYear();

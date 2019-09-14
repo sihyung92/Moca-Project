@@ -3,20 +3,18 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page errorPage="error.jsp" %>
 <html>
 <head>
 	<title>Home</title>
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=1"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=3"/>" />
 	<style type="text/css">
 	body{
 		background:#f6f5ef;
 	}
 	#userGraph{
-		margin-top:50px;
-		border-bottom: 1px black;
+		margin-top:70px;
 	}
 	#userGraph table{
 		width:100%;
@@ -24,6 +22,24 @@
 	}
 	#userGraph table tr{
 		height:30px;
+	}
+	
+	#userBadge{
+		hegiht:100%;
+		background-color: #f2f0ee;
+		margin-top:20px;
+		padding:20px;
+		border-top: 3px ridge rgba(193,140,88,0.6) ;
+	}
+	#userBadge img{
+		margin-right: 10px;
+	}
+	
+	#userInfo{
+		padding:30px;
+	}
+	#userInfo button{
+		margin: 20px 0px;
 	}
 		#userInfo, #followInfo{
 			margin:20px auto;
@@ -63,7 +79,7 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=7"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=8"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -113,6 +129,9 @@
 
 		//raty
 		bindRaty();
+		<c:forEach items="${reviewVoList }" var="reviewVo">
+		$.fn.raty.start(${reviewVo.averageLevel }, '#reviewAverageLevel-${reviewVo.review_id }');
+		</c:forEach>
 		
 		//좋아요 또는 싫어요 버튼 클릭시
 		likeHateButton.click(function(){
@@ -554,10 +573,10 @@
 			<div class="col-md-12" id="userGraph">
 			<table>
 					<tr>
-						<td>출석수</td>
-						<td>리뷰수</td>
-						<td>팔로워</td>
-						<td>팔로잉</td>
+						<td><b>출석수</b></td>
+						<td><b>리뷰수</b></td>
+						<td><b>팔로워</b></td>
+						<td><b>팔로잉</b></td>
 					</tr>
 					<tr>
 						<td>12</td>
@@ -571,7 +590,9 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12" id="userBadge">
-			
+					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
+					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
+					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
 				</div>
 			</div>
 				
@@ -631,24 +652,45 @@
 										</div>
 									</div>
 
-
-									<div class="review-info col-md-8">
+									<div class="review-info col-md-8"> 
 										<div class="row">
 											<div class="reviewThumbnailGroup">
-												<c:forEach items="${reviewVo.imageList}" var="reviewImg"
-													varStatus="status">
+												<c:forEach items="${reviewVo.imageList}" var="reviewImg">
 													<div class="reviewThumbnail">
-														<img src="${reviewImg.thumbnailUrl}" alt="Image"
-															class="img-thumbnail" id="${reviewImg.uu_id}">
+														<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
 													</div>
 												</c:forEach>
 											</div>
+											<div class="review-level">
+												<div class="taste-level-div">
+													<label>맛</label>
+													<span class="taste-level">${reviewVo.tasteLevel }</span>점
+												</div>
+												<div class="price-level-div">
+													<label>가격</label>
+													<span class="price-level">${reviewVo.priceLevel }</span>점
+												</div>
+												<div class="service-level-div">
+													<label>서비스</label>
+													<span class="service-level">${reviewVo.serviceLevel }</span>점
+												</div>
+												<div class="mood-level-div">
+													<label>분위기</label>
+													<span class="mood-level">${reviewVo.moodLevel }</span>점
+												</div>
+												<div class="convenience-level-div">
+													<label>편의성</label>
+													<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
+												</div>
+											</div>
 											<div class="review-data">
 												<div class="write-date-div">
-													<label>작성일</label> <span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
+													<label>작성일</label>
+													<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
 												</div>
 												<div class="review-content-div">
-													<label>리뷰 내용</label> <span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+													<label>리뷰 내용</label>
+													<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
 													<span class="more-review-content-btn">더보기</span>
 												</div>
 												<div class="review-tags-div">
@@ -661,55 +703,34 @@
 											</div>
 											<div class="form-group like-hate">
 												<div class="btn-group" data-toggle="buttons">
-													<input type="number" class="review-id"
-														value=${reviewVo.review_id } style="display: none;">
+													<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
 													<c:choose>
 														<c:when test="${reviewVo.isLike==1 }">
-															<button type="button"
-																class="btn btn-primary like-btn clicked">좋아요</button>
+															<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
 														</c:when>
 														<c:otherwise>
-															<button type="button" class="btn btn-primary like-btn ">좋아요</button>
+															<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
 														</c:otherwise>
 													</c:choose>
-													<input type="number" class="like-count"
-														value=${reviewVo.likeCount }>
+													<input type="number" class="like-count" value=${reviewVo.likeCount }>
 													<c:choose>
 														<c:when test="${reviewVo.isLike==-1 }">
-															<button type="button"
-																class="btn btn-primary hate-btn clicked">싫어요</button>
+															<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
 														</c:when>
 														<c:otherwise>
-															<button type="button" class="btn btn-primary hate-btn">싫어요</button>
+															<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 														</c:otherwise>
 													</c:choose>
-
-													<input type="number" class="hate-count"
-														value=${reviewVo.hateCount }>
+			
+													<input type="number" class="hate-count" value=${reviewVo.hateCount }>
 												</div>
 											</div>
 										</div>
 									</div>
-									<div class="review-level col-md-2">
-										<div class="taste-level-div">
-											<label>맛</label> <span class="taste-level">${reviewVo.tasteLevel }</span>점
-										</div>
-										<div class="price-level-div">
-											<label>가격</label> <span class="price-level">${reviewVo.priceLevel }</span>점
-										</div>
-										<div class="service-level-div">
-											<label>서비스</label> <span class="service-level">${reviewVo.serviceLevel }</span>점
-										</div>
-										<div class="taste-level-div">
-											<label>분위기</label> <span class="mood-level">${reviewVo.moodLevel }</span>점
-										</div>
-										<div class="taste-level-div">
-											<label>편의성</label> <span class="convenience-level">${reviewVo.convenienceLevel }</span>점
-										</div>
-										<div class="taste-level-div">
-											<label for="average_level">평균</label> <span
-												class="average-level">${reviewVo.averageLevel }</span>점
-										</div>
+		
+									<div class="average-level-div  col-md-2">
+										<label for="average_level">평균</label>
+										<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>점
 									</div>
 								</div>
 							</c:forEach>
