@@ -164,7 +164,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=37"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=38"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -794,7 +794,7 @@
 						alert("영업시간을 다시 확인해주세요.");					
 						return false;
 					}
-				}else if(endTime*1 == openTime*1){
+				}else if(endTime*1 == openTime*1 && !(endTime=="" && openTime=="")){
 					alert("영업시작시간과 영업종료시간은 같을 수 없습니다. 다시 확인해주세요.");
 				}
 			return true;

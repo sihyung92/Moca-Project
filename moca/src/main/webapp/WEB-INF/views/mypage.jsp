@@ -3,7 +3,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page errorPage="error.jsp" %>
 <html>
 <head>
 	<title>Home</title>
@@ -15,8 +14,7 @@
 		background:#f6f5ef;
 	}
 	#userGraph{
-		margin-top:50px;
-		border-bottom: 1px black;
+		margin-top:70px;
 	}
 	#userGraph table{
 		width:100%;
@@ -24,6 +22,24 @@
 	}
 	#userGraph table tr{
 		height:30px;
+	}
+	
+	#userBadge{
+		hegiht:100%;
+		background-color: #f2f0ee;
+		margin-top:20px;
+		padding:20px;
+		border-top: 3px ridge rgba(193,140,88,0.6) ;
+	}
+	#userBadge img{
+		margin-right: 10px;
+	}
+	
+	#userInfo{
+		padding:30px;
+	}
+	#userInfo button{
+		margin: 20px 0px;
 	}
 		#userInfo, #followInfo{
 			margin:20px auto;
@@ -63,7 +79,7 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=7"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=8"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -554,10 +570,10 @@
 			<div class="col-md-12" id="userGraph">
 			<table>
 					<tr>
-						<td>출석수</td>
-						<td>리뷰수</td>
-						<td>팔로워</td>
-						<td>팔로잉</td>
+						<td><b>출석수</b></td>
+						<td><b>리뷰수</b></td>
+						<td><b>팔로워</b></td>
+						<td><b>팔로잉</b></td>
 					</tr>
 					<tr>
 						<td>12</td>
@@ -571,7 +587,9 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12" id="userBadge">
-			
+					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
+					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
+					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
 				</div>
 			</div>
 				
