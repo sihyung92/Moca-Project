@@ -327,6 +327,16 @@
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="male" value="1"> 남
                                 </label>
+                                <div class="progress">
+                                  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                    60%
+                                  </div>
+                                </div>
+                                
+                                <div id="" class="qArea" style="display: inline-block">
+                                    <img id="an1p" alt="#" src="/moca/resources/imgs/an1p.png"/><img id="an2p" alt="#" src="/moca/resources/imgs/an2p.png"/><img id="an3p" alt="#" src="/moca/resources/imgs/an3p.png"/><img id="an4p" alt="#" src="/moca/resources/imgs/an4p.png"/><img id="an5p" alt="#" src="/moca/resources/imgs/an5p.png"/>
+                                    <input id="an1q" type="hidden" name="" value=""/>
+                                </div>
                                 
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="female" value="2"> 여
@@ -360,7 +370,12 @@
 			                                	ArrayList ans = (ArrayList)session.getAttribute("ans"+rqVo.getQuestion_id());
 			                                	if(ans!=null){
 			                                		for(int j=0;j<ans.size();j=j+2){	                                   			
-                               
+                                %>
+				                                    <label class="radio-inline forSort">
+						                           		<input class="essential-selective-info" type="radio" name="SQ<%=rqVo.getQuestion_id() %>" id="SQ<%=rqVo.getQuestion_id() %>_<%=q %>" value="<%=q%>"> <%=ans.get(j+1) %>
+						                            </label>
+						                            
+                                <%
 		                                			q++;
 		                                			}
                           		%>
@@ -477,7 +492,9 @@
                         $('#'+idx+'an'+i+'p').attr({src:"/moca/resources/imgs/an"+i+"p.png"});
                     }
                 }
-                $('#an'+idx+'qVal').val(num);
+                var anqHidden = $('#an'+idx+'q').val();
+                anqHidden = num;
+                alert(anqHidden);
             });
         }
     </script>

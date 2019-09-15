@@ -26,6 +26,10 @@
 			font-family : "잘난체";
 			font-size: 44px;
 		}
+        .Sma-Font{
+            font-family : "잘난체";
+			font-size: 18px;
+        }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -43,17 +47,14 @@
 
 </head>
 <body>
-	<div id="header">
-		<jsp:include page="/resources/template/header.jsp" flush="true"></jsp:include>
-	</div>
+	
 	<div class="row Big-Font">
 	  <div class="col-md-8">Error Code <span style="color: red">404</span></div>
-	</div>
-	<div class="row Mid-Font">
 	  <div class="col-md-8 col-md-offset-1">페이지를 찾을 수 없습니다!</div>
 	</div>
 	<img alt="#" src="/moca/resources/imgs/404Page_Not_Found.PNG"/>
-
+	<div class="Sma-Font"> ⊙ 이용자께서 현재 MOCA에 등록되지 않은 페이지를 요청한 것 같습니다!</div>
 </body>
-
+<script type="text/javascript">
+</script>
 </html>
