@@ -633,16 +633,18 @@
 											<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 										</div>
 									</c:if>
-									<div class="store-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+									<div class="store-info col-md-2" >
 										<div class="storeLogo-div">
 											<!-- store logo 이미지 -->
 											<c:if test="${empty reviewVo.storeLogoImg}">
 												<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
-													alt="logo" class="img-circle" style="width: 100px; height:100px;">
+													alt="logo" class="img-circle" style="width: 100px; height:100px;" 
+													onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
 											</c:if>
 											<c:if test="${not empty reviewVo.storeLogoImg}">
 												<img src="<c:url value="${reviewVo.storeLogoImg }" />" alt="logo"
-													class="img-circle" style="width: 100px; height:100px;">
+													class="img-circle" style="width: 100px; height:100px;"
+													onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
 											</c:if>
 										</div>
 										<div class="storeName-div">
@@ -711,7 +713,7 @@
 															<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
 														</c:otherwise>
 													</c:choose>
-													<input type="number" class="like-count" value=${reviewVo.likeCount }>
+													<input type="number" class="like-count" readonly value=${reviewVo.likeCount }>
 													<c:choose>
 														<c:when test="${reviewVo.isLike==-1 }">
 															<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
@@ -721,7 +723,7 @@
 														</c:otherwise>
 													</c:choose>
 			
-													<input type="number" class="hate-count" value=${reviewVo.hateCount }>
+													<input type="number" class="hate-count" readonly value=${reviewVo.hateCount }>
 												</div>
 											</div>
 										</div>

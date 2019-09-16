@@ -158,8 +158,6 @@
 		</div>
 	</div>
 	<div class="review-info col-md-8">
-		<div class="reviewThumbnailGroup">
-		</div>
 		<div class="review-level">
 			<div class="taste-level-div">
 				<label>맛</label>
@@ -182,6 +180,8 @@
 				<span class="convenience-level"></span>점
 			</div>
 		</div>
+		<div class="reviewThumbnailGroup">
+		</div>
 		<div class="review-data">
 			<div class="write-date-div">
 				<label>작성일</label>
@@ -198,9 +198,9 @@
 			<div class="btn-group" data-toggle="buttons">
 				<input type="number" class="review-id" style="display: none;">
 				<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
-				<input type="number" class="like-count" value=0 >
+				<input type="number" class="like-count" value=0  readonly>
 				<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
-				<input type="number" class="hate-count" value=0>
+				<input type="number" class="hate-count" value=0 readonly>
 			</div>
 		</div>
 	</div>

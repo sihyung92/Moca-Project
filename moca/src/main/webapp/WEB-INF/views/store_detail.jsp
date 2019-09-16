@@ -10,7 +10,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=4"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=6"/>" />
 	<style type="text/css">
 		body{
 			background: #f6f5ef;
@@ -170,7 +170,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=46"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -1098,13 +1098,15 @@
 									<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 								</div>
 							</c:if>
-							<div class="reviewer-info col-md-2" onclick="location.href='/moca/mypage/${reviewVo.account_id}'" style="cursor:pointer;">
+							<div class="reviewer-info col-md-2" >
 								<div class="profile-div">
 									<c:if test="${empty reviewVo.thumbnailImage}">
-										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
+										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" 
+										alt="profile" style="width:100px;" onclick="location.href='/moca/mypage/${reviewVo.account_id}'"  >
 									</c:if>
 									<c:if test="${not empty reviewVo.thumbnailImage}">
-										<img class="accountProfile img-circle"  src="<c:url value="${reviewVo.thumbnailImage }" />" alt="profile" style="width:100px;">
+										<img class="accountProfile img-circle"  src="<c:url value="${reviewVo.thumbnailImage }" />" 
+										alt="profile" style="width:100px;" onclick="location.href='/moca/mypage/${reviewVo.account_id}'" >
 									</c:if>
 								</div>
 								<div class="nickName-div">
@@ -1123,13 +1125,6 @@
 
 							<div class="review-info col-md-8"> 
 								<div class="row">
-									<div class="reviewThumbnailGroup">
-										<c:forEach items="${reviewVo.imageList}" var="reviewImg">
-											<div class="reviewThumbnail">
-												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
-											</div>
-										</c:forEach>
-									</div>
 									<div class="review-level">
 										<div class="taste-level-div">
 											<label>맛</label>
@@ -1151,6 +1146,13 @@
 											<label>편의성</label>
 											<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
 										</div>
+									</div>
+									<div class="reviewThumbnailGroup">
+										<c:forEach items="${reviewVo.imageList}" var="reviewImg">
+											<div class="reviewThumbnail">
+												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
+											</div>
+										</c:forEach>
 									</div>
 									<div class="review-data">
 										<div class="write-date-div">
@@ -1181,7 +1183,7 @@
 													<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
 												</c:otherwise>
 											</c:choose>
-											<input type="number" class="like-count" value=${reviewVo.likeCount }>
+											<input type="number" class="like-count" value=${reviewVo.likeCount } readonly size="3">
 											<c:choose>
 												<c:when test="${reviewVo.isLike==-1 }">
 													<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
@@ -1191,7 +1193,7 @@
 												</c:otherwise>
 											</c:choose>
 	
-											<input type="number" class="hate-count" value=${reviewVo.hateCount }>
+											<input type="number" class="hate-count" value=${reviewVo.hateCount } readonly size="5">
 										</div>
 									</div>
 								</div>

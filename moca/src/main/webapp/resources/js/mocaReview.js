@@ -186,8 +186,7 @@ var setReviewerInfo = function(reviewRow, reviewVo){
 		reviewRow.find('.accountProfile').attr('src',reviewVo.thumbnailImage);
 	}
 	//마이페이지로 이동
-	reviewRow.find('.reviewer-info').attr('onclick',"location.href='/moca/mypage/"+reviewVo.account_id+"'");
-	reviewRow.find('.reviewer-info').css('cursor','pointer');
+	reviewRow.find('.reviewer-info img').attr('onclick',"location.href='/moca/mypage/"+reviewVo.account_id+"'");
 
 	reviewRow.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 	reviewRow.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
@@ -202,8 +201,7 @@ var setStoreInfo = function(reviewRow, reviewVo){
 	}
 	
 	//store 페이지로 이동
-	reviewRow.find('.store-info').attr('onclick',"location.href='/moca/stores/"+reviewVo.store_id+"'");
-	reviewRow.find('.store-info').css('cursor','pointer');
+	reviewRow.find('.store-info img').attr('onclick',"location.href='/moca/stores/"+reviewVo.store_id+"'");
 	
 	
 	reviewRow.find('.store-info .storeName').text(reviewVo.storeName); 	//storeName
@@ -258,6 +256,7 @@ var setReviewAverageLevel = function(reviewRow, reviewVo){
 	
 }
 
+//$.fn.raty.start를 실행하려면 해당 엘리먼트가 있어야 하기 때문에 평균 엘리먼트 추가후 start
 var ratyStartAveragelevel = function(reviewVo){
 	$.fn.raty.start(reviewVo.averageLevel, '#reviewAverageLevel-'+reviewVo.review_id);
 }
@@ -300,6 +299,10 @@ var addReviewInReviewContent = function(reviewVo) {
 var addReviewImgae = function(reviewRow, reviewVo){
 	// 나중에 사진 추가할때 사용
 	var reviewThumbnail = reviewRow.find('.reviewThumbnailGroup');
+	
+	//리뷰 섬네일 초기화
+	reviewThumbnail.html("");
+
 	for(var i=0; i<reviewVo.imageList.length; i++){
 		var oldReviewThumbnail = reviewThumbnail.html();
 		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail clickableSvgCss"><img src="'+
