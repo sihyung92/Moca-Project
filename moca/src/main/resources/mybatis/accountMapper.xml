@@ -106,5 +106,17 @@
   <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
   	SELECT * FROM ACCOUNT WHERE ACCOUNT_ID=#{ACCOUNT_ID} and PLATFORMID!=0
   </select>
+  
+  <update id="updateAttendanceCount" parameterType="Integer">
+  	UPDATE ACCOUNT SET ATTENDANCECOUNT=ATTENDANCECOUNT+1 WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  
+  <update id="updateFollowCount" parameterType="map">
+  	UPDATE ACCOUNT SET FOLLOWCOUNT=FOLLOWCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
+  
+  <update id="updateFollowingCount" parameterType="map">
+  	UPDATE ACCOUNT SET FOLLOWINGCOUNT=FOLLOWINGCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  </update>
 
 </mapper>

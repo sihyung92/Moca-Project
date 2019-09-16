@@ -17,6 +17,9 @@ public class AccountVo {
 	int gender, barista;
 	Date birthday;
 	
+	//followingCount와 attendanceCount 추가
+	private int followingCount, attendanceCount;
+	
 	public int getGender() {
 		return gender;
 	}
@@ -240,16 +243,16 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 		this.minExp=maxExps[this.accountLevel-1];
 		System.out.println("minExp"+this.minExp);
 	}
-	
 
 	@Override
 	public String toString() {
 		return "AccountVo [maxExps=" + Arrays.toString(maxExps) + ", account_id=" + account_id + ", followCount="
 				+ followCount + ", reviewCount=" + reviewCount + ", platformId=" + platformId + ", accountLevel="
-				+ accountLevel + ", isMine=" + isMine + ", exp=" + exp + ", maxExp=" + maxExp + ", minExp=" + minExp
-				+ ", nickname=" + nickname + ", platformType=" + platformType + ", profileImage=" + profileImage
-				+ ", thumbnailImage=" + thumbnailImage + ", levelName=" + levelName + ", email=" + email + ", gender="
-				+ gender + ", barista=" + barista + ", birthday=" + birthday + "]";
+				+ accountLevel + ", isMine=" + isMine + ", isResearch=" + isResearch + ", exp=" + exp + ", maxExp="
+				+ maxExp + ", minExp=" + minExp + ", nickname=" + nickname + ", platformType=" + platformType
+				+ ", profileImage=" + profileImage + ", thumbnailImage=" + thumbnailImage + ", levelName=" + levelName
+				+ ", email=" + email + ", gender=" + gender + ", barista=" + barista + ", birthday=" + birthday
+				+ ", followingCount=" + followingCount + ", attendanceCount=" + attendanceCount + "]";
 	}
 
 	@Override
@@ -296,6 +299,22 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 		} else if (!thumbnailImage.equals(other.thumbnailImage))
 			return false;
 		return true;
+	}
+
+	public int getFollowingCount() {
+		return followingCount;
+	}
+
+	public void setFollowingCount(int followingCount) {
+		this.followingCount = followingCount;
+	}
+
+	public int getAttendanceCount() {
+		return attendanceCount;
+	}
+
+	public void setAttendanceCount(int attendanceCount) {
+		this.attendanceCount = attendanceCount;
 	}
 
 }

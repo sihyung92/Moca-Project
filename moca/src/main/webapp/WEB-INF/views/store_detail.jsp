@@ -18,6 +18,7 @@
 		}
 		.jumbotron{
 			background: #EAE7DC;
+			border : 10px solid rgba(255,255,255,0.7);
 		}
 		#likeFavoriteDiv{
 			text-align: right;
@@ -110,7 +111,7 @@
 		
 		.carousel .carousel-inner img {
 			width: 100%;
-			height: 40rem;
+			height: 50rem;
 			object-fit: cover;
 			overflow: hidden;
 		}
@@ -160,6 +161,11 @@
 		#storeSummaryDiv{
 			font-size : 150%;
 		}
+				
+		.jumbotron h1{
+			padding-bottom: 3%;
+		}
+		
 
 }
 	</style>
@@ -934,7 +940,6 @@
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2">
 					<!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->						
-
 					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
 					    <div class='carousel-outer'>
 					        <!-- Wrapper for slides -->

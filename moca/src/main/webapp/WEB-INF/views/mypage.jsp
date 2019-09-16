@@ -25,8 +25,6 @@
 	}
 	
 	#userBadge{
-		hegiht:100%;
-		background-color: #f2f0ee;
 		margin-top:20px;
 		padding:20px;
 		border-top: 3px ridge rgba(193,140,88,0.6) ;
@@ -65,8 +63,8 @@
 		}
 		
 		.popover{
-			width:300px;
-    		max-width: 100%;
+			width: 400px;
+    		max-width: 400px;
 		}
 		
 		#userImage{
@@ -555,7 +553,7 @@
 					<span id="levelName">(${currentPageAccount.levelName})</span>
 					<span class="glyphicon glyphicon-question-sign" aria-hidden="true"
 						id="levelGuide" data-toggle="popover" title="등급제도 안내"
-						data-content="8단계의 등급을 설명해요 나중에">
+						data-content="Lv.1 : 라이트 <br>Lv.2 : 시나몬 <br>Lv.3 : 미디움 <br> Lv.4 : 하이 <br>Lv.5 : 시티 <br>Lv.6 : 풀시티 <br>Lv.7 : 프렌치 <br>Lv.8 : 이탈리안 <br>">
 					</span> <br>
 					<c:if test="${accountVo.isMine eq 1}">
 					<div class="progress">
@@ -579,10 +577,10 @@
 						<td><b>팔로잉</b></td>
 					</tr>
 					<tr>
-						<td>12</td>
-						<td>3</td>
-						<td>5</td>
-						<td>10</td>
+						<td>${currentPageAccount.attendanceCount}</td>
+						<td>${currentPageAccount.reviewCount}</td>
+						<td>${currentPageAccount.followCount}</td>
+						<td>${currentPageAccount.followingCount}</td>
 					</tr>
 				</table>
 				</div>
@@ -599,7 +597,7 @@
 			</div>
 			
 		</div>
-		<div class="row">
+	<div class="row">
 			<div class="col-md-8 col-md-offset-2">
 				<ul id="mypageTab" class="nav nav-tabs">
 					<li role="presentation" class="nav-item active">
