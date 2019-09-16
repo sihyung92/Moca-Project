@@ -251,6 +251,11 @@
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
 			$('input:radio[name=parkingLot]:input[value=' + ${storeVo.parkingLot} + ']').attr("checked", true);
+
+			//carousel-indicators에 있는 (리뷰)이미지 클릭시 해당 이미지의 views up 
+			$('.carousel-indicators .storeImgByReview').click(function(){
+				upReviewImageViews($(this).attr('src'));
+			})
 			
 			var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 				mapOption = {
@@ -973,10 +978,18 @@
 						<ol class='carousel-indicators mCustomScrollbar'>
 							<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
 								<c:if test="${status.index eq 0}">
-									<li data-target='#carousel-custom' data-slide-to="0" class="active"><img src="${StoreImg.thumbnailUrl}" alt=""/></li>
+									<li data-target='#carousel-custom' data-slide-to="0" class="active">
+										<img src="${StoreImg.thumbnailUrl}" 
+											<c:if test="${StoreImg.path ne 'store'}">class="<c:out value="storeImgByReview"></c:out>"</c:if>
+										/>
+									</li>
 								</c:if>
 								<c:if test="${status.index ne 0}">
-									<li data-target='#carousel-custom' data-slide-to="${status.index }"><img src="${StoreImg.thumbnailUrl}" alt=""/></li>
+									<li data-target='#carousel-custom' data-slide-to="${status.index }">
+										<img src="${StoreImg.thumbnailUrl}" 
+											<c:if test="${StoreImg.path ne 'store'}">class="<c:out value="storeImgByReview"></c:out>"</c:if>
+										/>
+									</li>
 								</c:if>
 							</c:forEach>
 						</ol>
