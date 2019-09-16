@@ -134,6 +134,10 @@ public class MypageServiceImpl implements MypageService{
 				accountDao.updateAccountExp(following, 7);
 				accountDao.insertExpLog(following, "팔로우받음", 7);
 				
+				//각각의 팔로워, 팔로잉 count 증가
+				accountDao.updateFollowCount(following, 1);
+				accountDao.updateFollowingCount(follower, 1);
+				
 				//포인트가 레벨업 할만큼 쌓였는지 검사
 				AccountVo accountVo = accountDao.selectByaccountId(following);
 				accountVo.setMaxExp();
@@ -157,6 +161,10 @@ public class MypageServiceImpl implements MypageService{
 				//팔로우 취소된 사람 포인트 down
 				accountDao.updateAccountExp(following, -7);
 				accountDao.insertExpLog(following, "팔로우취소됨", -7);
+				
+				//각각의 팔로워, 팔로잉 count 감소
+				accountDao.updateFollowCount(following, -1);
+				accountDao.updateFollowingCount(follower, -1);
 				
 				//취소된 포인트로 레벨 down을 해야하는지
 				AccountVo accountVo = accountDao.selectByaccountId(following);

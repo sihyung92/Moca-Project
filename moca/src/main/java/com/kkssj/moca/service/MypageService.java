@@ -42,5 +42,6 @@ public interface MypageService{
 
 	//tag 이름 가져오기
 	List<String> getTagNameList();
+	
 
 }
