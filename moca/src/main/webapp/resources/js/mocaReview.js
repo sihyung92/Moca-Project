@@ -228,8 +228,6 @@ var setReviewInfo = function(reviewRow, reviewVo){
 }
 
 var setReviewLikeHate = function(reviewRow, reviewVo){
-	test = reviewRow;
-	console.log(reviewVo)
 	var likehateFormGroup = reviewRow.find('.like-hate')
 	
 	//eq(0) 리뷰id, eq(1) 좋아요수, eq(2) 싫어요수
@@ -248,17 +246,20 @@ var setReviewAverageLevel = function(reviewRow, reviewVo){
 	reviewRow.find('.reviewAverageLevel').text('')
 	
 	var newReviewId = 'reviewAverageLevel-'+reviewVo.review_id;
-	console.log(reviewVo.averageLevel, newReviewId);
 	reviewRow.find('.reviewAverageLevel').attr('id',newReviewId);
 	reviewRow.find('.reviewAverageLevel').raty({
 		half:true,
 		readOnly:  true,
 		starHalf:   'star-half.png',
 		starOff:    'star-off.png',
-		starOn:     'star-on.png',
-		start : reviewVo.averageLevel*1
+		starOn:     'star-on.png',  
 	});
 	reviewRow.find('.average-level').text(int2Double(reviewVo.averageLevel))
+	
+}
+
+var ratyStartAveragelevel = function(reviewVo){
+	$.fn.raty.start(reviewVo.averageLevel, '#reviewAverageLevel-'+reviewVo.review_id);
 }
 
 
@@ -292,6 +293,8 @@ var addReviewInReviewContent = function(reviewVo) {
 	setReviewAverageLevel(newReview, reviewVo);
 
 	$('.review-content').prepend(newReview);	//리뷰에 추가
+	
+	ratyStartAveragelevel(reviewVo);
 }
 
 var addReviewImgae = function(reviewRow, reviewVo){
@@ -299,7 +302,7 @@ var addReviewImgae = function(reviewRow, reviewVo){
 	var reviewThumbnail = reviewRow.find('.reviewThumbnailGroup');
 	for(var i=0; i<reviewVo.imageList.length; i++){
 		var oldReviewThumbnail = reviewThumbnail.html();
-		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail"><img src="'+
+		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail clickableSvgCss"><img src="'+
 				reviewVo.imageList[i].thumbnailUrl
 				+'" alt="Image" class="img-thumbnail" id="'+
 				reviewVo.imageList[i].uu_id
@@ -414,6 +417,7 @@ var editReview = function(){
 			
 			//평균 점수
 			setReviewAverageLevel(editReviewRow, reviewVo);
+			ratyStartAveragelevel(reviewVo)
 
 			
 			$('#reviewModal').modal("hide");	//모달창 닫기
@@ -516,6 +520,8 @@ var moreReviewList = function(startNum,callWhere) {
 
 					
 				$('.review-content').append(newReview);	//리뷰에 추가
+				
+				ratyStartAveragelevel(reviewVo)
 			}
 			
 			

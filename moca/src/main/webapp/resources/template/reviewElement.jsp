@@ -122,8 +122,8 @@
 	<div class="editDeleteGroup btn-group" role="group">
 		<input type="number" class="review-id" style="display: none;">
 		<input type="number" class="store-id" style="display: none;">
-		<img class="btn-edit" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
-		<img class="btn-delete" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
+		<img class="btn-edit clickableSvgCss" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
+		<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 	</div>
 	<div class="reviewer-info col-md-2">
 		<div class="profile-div">
@@ -197,9 +197,9 @@
 		<div class="form-group like-hate">
 			<div class="btn-group" data-toggle="buttons">
 				<input type="number" class="review-id" style="display: none;">
-				<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
+				<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
 				<input type="number" class="like-count" value=0 >
-				<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
+				<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 				<input type="number" class="hate-count" value=0>
 			</div>
 		</div>

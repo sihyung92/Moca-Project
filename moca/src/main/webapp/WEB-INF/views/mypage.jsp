@@ -8,7 +8,7 @@
 	<title>Home</title>
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=3"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=4"/>" />
 	<style type="text/css">
 	body{
 		background:#f6f5ef;
@@ -627,11 +627,10 @@
 								<div class="row reviewCnt">
 									<c:if test="${reviewVo.editable eq 1}">
 										<div class="editDeleteGroup btn-group" role="group">
-											<input name="storeId" class="storeId" value="${reviewVo.store_id}" style="display: none;">
-											<input type="number" class="review-id"
-												value=${reviewVo.review_id } style="display: none;">
-											<button type="button" class="btn-edit btn btn-default">수정</button>
-											<button type="button" class="btn-delete btn btn-default">삭제</button>
+											<input name="storeId" class="store-id" value="${reviewVo.store_id}" style="display: none;">
+											<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+											<img class="btn-edit clickableSvgCss" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
+											<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 										</div>
 									</c:if>
 									<div class="store-info col-md-2" onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
@@ -706,19 +705,19 @@
 													<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
 													<c:choose>
 														<c:when test="${reviewVo.isLike==1 }">
-															<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
+															<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
 														</c:when>
 														<c:otherwise>
-															<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
+															<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
 														</c:otherwise>
 													</c:choose>
 													<input type="number" class="like-count" value=${reviewVo.likeCount }>
 													<c:choose>
 														<c:when test="${reviewVo.isLike==-1 }">
-															<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
+															<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
 														</c:when>
 														<c:otherwise>
-															<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
+															<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 														</c:otherwise>
 													</c:choose>
 			

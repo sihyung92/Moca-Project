@@ -10,7 +10,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=3"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=4"/>" />
 	<style type="text/css">
 		body{
 			background: #f6f5ef;
@@ -18,6 +18,7 @@
 		}
 		.jumbotron{
 			background: #EAE7DC;
+			padding-top: 0 ;
 		}
 		#likeFavoriteDiv{
 			text-align: right;
@@ -169,7 +170,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=40"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=46"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -858,19 +859,17 @@
 						<div id="likeFavoriteDiv">
 							
 							<c:if test="${storeVo.isLike eq 0 }">
-								좋아요<img id="likeStoreBtn" src="<c:url value="/resources/imgs/icons/heart.svg"/>">
+								<img id="likeStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/heart.svg"/>">
 							</c:if>
 							<c:if test="${storeVo.isLike ne 0 }">
-								좋아요<img id="likeStoreBtn" src="<c:url value="/resources/imgs/icons/heart-fill.svg"/>">
+								<img id="likeStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/heart-fill.svg"/>">
 							</c:if>
 						
 							<c:if test="${storeVo.isFavorite eq 0 }">
-								가고 싶은 카페
-								<img id="favoriteStoreBtn"  src="<c:url value="/resources/imgs/icons/bookmark.svg"/>">	
+								<img id="favoriteStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/bookmark.svg"/>">	
 							</c:if>
 							<c:if test="${storeVo.isFavorite ne 0 }">
-								가고 싶은 카페
-								<img id="favoriteStoreBtn"  src="<c:url value="/resources/imgs/icons/bookmark-fill.svg"/>">		
+								<img id="favoriteStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/bookmark-fill.svg"/>">		
 							</c:if>					
 						</div>
 
@@ -1095,8 +1094,8 @@
 								<div class="editDeleteGroup btn-group" role="group">
 									<input type="number" class="store-id"  value=${storeVo.store_Id } style="display: none;">
 									<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
-									<img class="btn-edit" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
-									<img class="btn-delete" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
+									<img class="btn-edit clickableSvgCss" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
+									<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 								</div>
 							</c:if>
 							<div class="reviewer-info col-md-2" onclick="location.href='/moca/mypage/${reviewVo.account_id}'" style="cursor:pointer;">
@@ -1176,19 +1175,19 @@
 											<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
 											<c:choose>
 												<c:when test="${reviewVo.isLike==1 }">
-													<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
+													<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
 												</c:when>
 												<c:otherwise>
-													<img class="like-btn" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
+													<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
 												</c:otherwise>
 											</c:choose>
 											<input type="number" class="like-count" value=${reviewVo.likeCount }>
 											<c:choose>
 												<c:when test="${reviewVo.isLike==-1 }">
-													<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
+													<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
 												</c:when>
 												<c:otherwise>
-													<img class="hate-btn" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
+													<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 												</c:otherwise>
 											</c:choose>
 	
