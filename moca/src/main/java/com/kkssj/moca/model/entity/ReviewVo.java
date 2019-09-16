@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class ReviewVo {
 	//REVIEW table
-	private int review_id, account_id, store_id;
+	private int review_id, account_id, store_id, reviewCnt, viewCnt;
 	private String reviewContent;
 	private Date writeDate;
 	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
@@ -32,12 +32,8 @@ public class ReviewVo {
 	//내가 쓴 댓글인지 (table엔 없음)
 	private int isMine;
 	
-	
-	
 	public ReviewVo() {
 	}
-	
-	
 
 	public ReviewVo(int review_id, int accountId, int storeId, String reviewContent, String pictureUrls, Date writeDate,
 			int tasteLevel, int priceLevel, int serviceLevel, int moodLevel, int convenienceLevel, double averageLevel,
@@ -63,7 +59,21 @@ public class ReviewVo {
 		this.isMine = isMine;
 	}
 
+	public int getViewCnt() {
+		return viewCnt;
+	}
 
+	public void setViewCnt(int viewCnt) {
+		this.viewCnt = viewCnt;
+	}
+
+	public int getReviewCnt() {
+		return reviewCnt;
+	}
+
+	public void setReviewCnt(int reviewCnt) {
+		this.reviewCnt = reviewCnt;
+	}
 
 	public int getReview_id() {
 		return review_id;

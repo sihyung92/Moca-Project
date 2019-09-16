@@ -51,6 +51,9 @@
 		font-size: 25px;
 	}
 /* Body */
+	body{
+		background-color: rgba(246,245,239,0.5);
+	}
 	/* 캐러셀 */
 	.slider{
 		width: 1300px;
@@ -59,8 +62,7 @@
 		background-color: pink;
 		display: inline-block;
 		border: black 1px solid;
-	}
-	
+	}	
 	.carousel-control {
 	  position: absolute;
 	  top: 0;
@@ -114,47 +116,55 @@
 	.overlay span{
 		color: brown;
 	}
-	/* 최근 리뷰2 */
-	.recentReviews img{
-		width:30px;
-		height:30px;
+	/* 인기 리뷰, 최근 리뷰 */
+	#review-list{
+		color: dimgray;
+	}
+	#bestReview-list, #recentReview-list{
+		border: lightgray 1px solid;
+		border-radius: 2px;
+		overflow-y : scroll;
+		height : 400px;
+	}
+	.review{
+		background-color: rgba(236,235,229,1);
+		padding: 10px;
+		margin-bottom: 2px;
+		overflow: hidden;
+	}
+	.review .review-img-profile{
+		width:25px;
+		height:25px;
 		border-radius: 50%;
 	}
-	.recentReviews .review{
-		background-color: lightgray;
-		margin: 1px;
-	}
-	/* 인기 리뷰 */
-	.panel-heading img{
-		width:30px;
-		height:30px;
-		border-radius: 50%;
-	}
-	.panel-body .panel-body h3{
-		color: brown;
-	}
-	.panel-heading h3{
-		display : inline-block;
-	}
-	.panel-heading h4{
-		margin-left : 5px;
-		display : inline-block;
-		color: orange;
-	}
-	.review-img-list a{
+	.review .review-img-list{
+		font-size: 0;
+	}	
+	.review .review-img-list img{	
 		display:inline-block;
 		width:130px;
 		height:130px;
+		margin-top: 3px;
+		margin-left: 10px; 
 	}
-	.review-img-list a img{
-		width:120px;
-		height:120px;
+	#review-list a{
+		color: dimgray;
+		font-weight: bold;
+	    font-size: 20px;
 	}
-	#content>.panel-default {
-		overflow : scroll;
-		height : 400px;
+ 	#review-list a:hover{
+		text-decoration: none;		
 	}
-	
+	.review-text-averageLevel{
+		font-size: 19px;
+		color: rgb(198,161,83);
+	}
+	.review-text-userInfo{
+		font-size: 12px;
+	}
+	.review-text-content{
+		font-size: 15px;
+	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -359,91 +369,65 @@
 			</div>
 		</c:if>
 	</c:forEach>
-	
-<!-- 인기 리뷰 -->
-<c:if test="${not empty bestReviews }">
-	<div class="col-md-12">
-		<h5>금주의 인기리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-			<form action="reviewboard/best">
-			  	<input type="submit" class="btn btn-default" value="상세보기"/>
-		  	</form>
-		</h5>
-	</div>
-	<div class="row panel panel-default col-md-12">
-	  <div class="panel-body">
-	  	<c:forEach items="${bestReviews }" var="bean">
-			<div class="panel panel-default col-md-12">
-			 <div class="panel-heading">
-			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>LV${bean.accountLevel}☕️ ${bean.nickName }</h3><h4>${bean.averageLevel}</h4>
-			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
-			  </div>
-			  <div class="panel-body">
-			  	<h3>${bean.storeName }</h3>
-			 	<p><small>${bean.writeDate }</small></p>
-			  	<h4>${bean.reviewContent }</h4>
-				<c:if test="${not empty bean.imageList }">
-			  	<div class="review-img-list">
-			  	<c:forEach items="${bean.imageList }" var="imgList" varStatus="status">			  	
-		  	    <a href="#" class="thumbnail">
-				  	<img src="${imgList.url }" alt="${imgList.originName }">		  	
-			    </a>			  	
-			  	</c:forEach>
-			  	</div>
-			  	</c:if>		  	
-			  </div>
-			</div>
-		</c:forEach>
-	  </div>
-	</div>
-</c:if>	
-<!-- 최신 리뷰 -->
+<br/><br/>
+<!-- 인기 리뷰 / 최근 리뷰 시작 -->
 <c:if test="${not empty recentReviews }">
-	<div class="col-md-12">
-		<h5>최신 리뷰<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-			<form action="reviewboard/recent">
-		  	<input type="submit" class="btn btn-default" value="상세보기"/>
-		  	</form>
-	  	</h5>
-	</div>
-	<div class="row recentReviews">
-		<c:forEach items="${recentReviews }" var="bean">
-			<div class="review col-md-8 col-md-offset-1">
-				<h3>${bean.storeName}</h3>				
-				<img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
-				${bean.nickName } Lv${bean.accountLevel}
-				<c:forEach begin="1" end="${bean.averageLevel}">★</c:forEach>
-				 ${bean.writeDate }
-				<h4>${bean.reviewContent }</h4>
+<!-- <c:if test="${not empty bestReviews }"></c:if>	-->
+	<div class="row" id="review-list">
+		<!-- 인기 리뷰 -->
+		<div class="col-sx-12 col-md-6">	
+			<h4>&nbsp;인기 리뷰</h4>
+			<div id="bestReview-list">
+				<c:forEach items="${bestReviews }" var="bean">
+					<div class="review">
+						<a href="./stores/${bean.store_id}">
+							<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
+							<span class="review-text-averageLevel">${bean.averageLevel}</span>
+						</a><br/>
+						&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+						<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+						<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
+						<c:if test="${not empty bean.imageList }">
+							<div class="review-img-list">
+								<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
+								  	<img src="${img.url }" alt="${img.originName }">		  				  	
+						  		</c:forEach>
+							</div>
+						</c:if>
+						<span class="review-text-content col-md-12">${bean.reviewContent }</span>				
+					</div>
+				</c:forEach>
 			</div>
-		</c:forEach>
-	</div>
-	<div class="row panel panel-default col-md-12">
-	  <div class="panel-body">
-	  	<c:forEach items="${recentReviews }" var="bean">	  	
-			<div class="panel panel-default col-md-12">
-			 <div class="panel-heading">
-			    <h3 class="panel-title"><img src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>LV${bean.accountLevel}☕️ ${bean.nickName } </h3><h4>${bean.averageLevel}</h4>
-			    <p><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true">${bean.likeCount}</span><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true">${bean.hateCount}</span></p>
-			  </div>
-			  <div class="panel-body">
-			  	<h3>${bean.storeName }</h3>
-			 	<p><small>${bean.writeDate }</small></p>
-			  	<h4>${bean.reviewContent }</h4>
-			  	<c:if test="${not empty bean.imageList }">
-			  	<div class="review-img-list">
-			  	<c:forEach items="${bean.imageList }" var="imgList" varStatus="status">
-			  	    <a href="#" class="thumbnail">
-					  	<img src="${imgList.url }" alt="${imgList.originName }">		  	
-				    </a>			  	
-			  	</c:forEach>
-			  	</div>
-			  	</c:if>
-			  </div>
+		</div>
+		<!-- 최신 리뷰 -->
+		<div class="col-sx-12 col-md-6">	
+			<h4>&nbsp;최신 리뷰</h4>
+			<div id="recentReview-list">
+				<c:forEach items="${recentReviews }" var="bean">
+					<div class="review">
+						<a href="./stores/${bean.store_id}">
+							<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
+							<span class="review-text-averageLevel">${bean.averageLevel}</span>
+						</a><br/>			
+						&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+						<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+						<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
+						<c:if test="${not empty bean.imageList }">
+							<div class="review-img-list">
+								<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
+							  		<img src="${img.url }" alt="${img.originName }">		  				  	
+						  		</c:forEach>
+							</div>
+						</c:if>
+						<span class="review-text-content col-md-12">${bean.reviewContent }</span>			
+					</div>
+				</c:forEach>
 			</div>
-		</c:forEach>
-	  </div>
-	</div>
+		</div>
+	</div>	
 </c:if>
+<br/><br/>
+<!-- 인기 리뷰 / 최근 리뷰 끝 -->	
 </div>
 </body>
 </html>
