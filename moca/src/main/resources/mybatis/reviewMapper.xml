@@ -171,4 +171,8 @@
   	SELECT AVERAGELEVEL FROM REVIEW WHERE STORE_ID = #{STORE_ID}
   </select>
   
+  <update id="updateReviewImageViews" parameterType="String">
+  	UPDATE REVIEWIMAGE ri SET ri.VIEWS = ri.VIEWS+1 WHERE ri.UU_ID = #{UU_ID}
+  </update>
+  
 </mapper>

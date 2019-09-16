@@ -6,6 +6,8 @@ public class ImageVo {
 	private String uu_id, path, originName, url, thumbnailUrl, fileName, thumbnailFileName;
 	private int store_id, review_id, views, account_id;
 	
+	
+	
 	public ImageVo() {
 		
 	}
@@ -159,6 +161,13 @@ public class ImageVo {
 	}
 	public void setImageVo(String url) {
 		setDelImageVo(url);
+	}
+
+	public void setUu_idPathOriginNameByUrl() {
+		this.fileName = this.url.split(".com/")[1];
+		String uu_idFileName = this.fileName.split("/")[this.fileName.split("/").length-1];
+		this.uu_id = uu_idFileName.split("_")[0];
+		
 	}
 
 	

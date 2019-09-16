@@ -769,11 +769,15 @@ var showDetailReviewImg = function(clickedReviewImg){
 		}
 	}
 	
+	upReviewImageViews(url)
+	
+
+	
 	reviewThumbnailGroup.find('img').click(function(){
 		$('img').removeClass('clickedImg')
 		$(this).addClass('clickedImg');
 		//섬네일 url 주소를 원본 url 주소로 변경
-		var url = thumbnailUrl2Url( this.src );
+		url = thumbnailUrl2Url( this.src );
 		
 		//
 		$('#reviewDetailDiv').html($('<img/>',{
@@ -786,9 +790,32 @@ var showDetailReviewImg = function(clickedReviewImg){
 				detailImgIdx = i;
 			}
 		}
+		upReviewImageViews(url);
+		
 	})
 	
 	
+	
+	
+}
+
+//reviewImage의 views 올리기
+//ajax 통신 - put 방식으로 수정
+var upReviewImageViews = function(url){
+	$.ajax({
+		type: 'PUT',
+		url: '/moca/reviewImages/views',
+		data: {
+			"url": url
+		},
+		success: function() {
+			console.log('ajax 통신 성공')
+		},
+		error: function(request,status,error) {
+			respondHttpStatus(request.status);
+		}
+
+	})
 }
 
 var thumbnailUrl2Url = function(thumbnailUrl){
