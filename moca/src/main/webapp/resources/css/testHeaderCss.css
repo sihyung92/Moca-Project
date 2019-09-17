@@ -16,10 +16,24 @@ nav{width:100%;z-index:1001;position:fixed !important;}
 /*검색창*/
 #searchBtn{background-color:transparent; border:none;}
 .navbar-default .form-control{border-radius:0px;border:none; box-shadow:none;border-bottom:1px solid rgba(0,0,0,0.85);}
-#keyword:-internal-autofill-selected {background-color:rgba(247,247,235,1.0); !important;}/*아 왜안돼ㅠㅠ*/
 #hiddenSearch{border:unset;}
 #hiddenSearch:hover{background-color:unset;}
-
+#keyword:-internal-autofill-selected {background-color:rgba(247,247,235,1.0) !important;}/*아 왜안돼ㅠㅠ*/
+      /* Change Autocomplete styles in Chrome*/
+nav input:-webkit-autofill,
+nav input:-webkit-autofill:hover, 
+nav input:-webkit-autofill:focus,
+nav textarea:-webkit-autofill,
+nav textarea:-webkit-autofill:hover,
+nav textarea:-webkit-autofill:focus,
+nav select:-webkit-autofill,
+nav select:-webkit-autofill:hover,
+nav select:-webkit-autofill:focus {
+  border: none;
+  -webkit-text-fill-color: black;
+  -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
 #hiddenSearch button{background-color:transparent; border:none;position: relative;}
 .searchBar{display:none;}
 .form-control{display:inline-block;width:95%;}
@@ -35,7 +49,52 @@ nav{width:100%;z-index:1001;position:fixed !important;}
 	.navbar-default .form-control{width:auto;}
 	#beMoca{display:block;}
 }
-.navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:#FFFFFF;}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:transparant;}
+
+/*stores_search
+#filter_region > span{display:inline-block;border-radius:5px;margin:2px;padding:3px; border:2px solid rgba(107,122,41,1);}
+#filter_region > span:hover{background-color:rgba(107,122,41,1);color:#FFFFFF;}
+#filter_region > span.on{background-color:rgba(107,122,41,1);color:#FFFFFF;}
+.region_list{
+		display : none;
+	}
+.seoul{
+		display : inline-block;
+	}
+*/
+
+/*modal-body > radio box
+.modal-content .modal-body .radio-inline{
+
+}
+.modal-content .modal-body input[type="checkbox"]:after{}
+.modal-content>.modal-body input[type="checkbox"]{
+	display: inline-block;
+  width: 100%;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: rgb(107,122,41);
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: #e6e6e6;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+*/
+/*스크롤바*/
+::-webkit-scrollbar-track
+{ -webkit-box-shadow: none;
+ border-radius: 10px;
+ background-color: transparant;}
+::-webkit-scrollbar
+{ width: 12px;
+ background-color: transparant;}
+::-webkit-scrollbar-thumb
+{ border-radius: 10px;
+z-index:1000;
+ background-color: rgba(0,0,0,0.3);}
 
 /*#footer*/
 #footer ul, ol, li{list-style:none;}
