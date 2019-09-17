@@ -21,6 +21,7 @@ private static final Logger logger = LoggerFactory.getLogger(ResearchQuestionSer
 	@Override
 	public void getList(HttpSession sess) throws SQLException {
 		// TODO Auto-generated method stub
-		sess.setAttribute("alist",researchQuestionDao.list());
+		sess.setAttribute("qlist",researchQuestionDao.list());
+		//그 설문 내용이 뜨질 않아서 key 이름을 qlist 로 변경
 	}
 }

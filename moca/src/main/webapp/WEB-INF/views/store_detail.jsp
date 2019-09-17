@@ -27,6 +27,98 @@
 		#likeFavoriteDiv span{
 			font-size:30px;
 		}
+
+		.carousel-inner img {
+			margin: 0px auto;
+		}
+		
+		.carousel .carousel-inner img {
+			width: 100%;
+			height: 20rem;
+			object-fit: cover;
+			overflow: hidden;
+		}
+		
+		/* br태그 대신 margin */
+		.reviewCnt{
+			margin-bottom: 2em;
+		}
+		
+		/* 리뷰 내용 더보기 */
+		.review-data{overflow:hidden;}
+     	.review-data .more-review-content.hidden{
+	         white-space:nowrap;
+	         word-wrap:normal;
+	         width:90%;
+	         overflow:hidden;
+	         text-overflow: ellipsis;
+	         float:left;
+	      }
+	    .more-review-content-btn{display:none;white-space:nowrap;float:right;}
+	    
+	    .reviewThumbnailGroup .reviewThumbnail{
+	    	display: inline-block;
+	    }
+	    
+	    .reviewThumbnailGroup img{
+	    	width:100px;
+	    	height: 100px;
+			object-fit: cover;
+			overflow: hidden;
+	    }
+	    
+	    
+	    
+	    .modal-content {
+		  position: relative;
+		  background-color: #fefefe;
+		  margin: auto;
+		  padding: 0;
+		  width: 90%;
+		  max-width: 1200px;
+		}
+        //그 스토어페이지랑 메인페이지랑 로그인 사이즈가 다른 이유가 클래스 설정이 이상해서임 이거 제발 추가해야함
+    .modal-login{
+            width:100%;
+    }
+		#reviewDetailDiv {
+		  overflow:hidden;
+		  text-align: center;
+		  background-color: black;
+		  padding: 2px 16px;
+		  color: white;
+		}
+		#reviewThumbnailGroup{
+			text-align: center;
+			background-color: black;
+			padding: 2px 16px;
+			color: white;
+		}
+		#reviewThumbnailGroup .clickedImg {
+	    	border: 5px solid red;
+	    }
+	    /* Next & previous buttons */
+		#preReviewImgBtn,
+		#nextReviewImgBtn {
+		  cursor: pointer;
+		  position: absolute;
+		  top: 50%;
+		  width: auto;
+		  padding: 16px;
+		  margin-top: -50px;
+		  font-weight: bold;
+		  font-size: 20px;
+		  transition: 0.6s ease;
+		  border-radius: 0 3px 3px 0;
+		  user-select: none;
+		  -webkit-user-select: none;
+		}
+		
+		/* Position the "next button" to the right */
+		#nextReviewImgBtn{
+		  right: 0;
+		  border-radius: 3px 0 0 3px;
+		}
 		
 		/* 카페 관리자의 사진 수정 */
 		.storeImgGroup  .storeImg{
