@@ -71,13 +71,6 @@ public class MyPageController {
 			logger.debug(accountVo.toString());
 		}
 		
-		AccountVo currentPageAccount = mypageService.getAccountInfo(accountId);
-		//탈퇴한 회원이거나 DB에 없는 회원번호를 호출했을 때
-		if(currentPageAccount==null) {
-			//오류페이지로(현재는 메인페이지로 이동)
-			return "redirect:/";
-		}
-		
 		currentPageAccount.setLevelName(currentPageAccount.getAccountLevel());
 		model.addAttribute("currentPageAccount",currentPageAccount);
 		logger.debug(currentPageAccount.toString());

@@ -26,6 +26,9 @@
             height: 20px;
         }
         
+        div#header+div{
+        	padding-top:62px;
+        }
     </style>
 
 <link rel="stylesheet" type="text/css" href="/moca/resources/css/testHeaderCss.css"/>
@@ -51,7 +54,7 @@
 				$('#keyword').attr('placeholder', '잘못된 키워드 입니다... :(');
 				return false;
 			}else{
-				$(this).parent().submit();
+				$(this).parent().parent().submit();
 				return false;
 			}
 		});
@@ -336,7 +339,7 @@
 	        <div class="form-group">
 	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
 			  <input type="hidden" name="filter" value="distance"/>
-	        <button id="searchBtn" type="submit" class="glyphicon glyphicon-search" aria-hidden="true"></button>
+	        <button id="searchBtn" type="submit" role="submit" class="glyphicon glyphicon-search" aria-hidden="true"></button>
 	        </div>
 	      </form>
         <ul class="nav navbar-nav navbar-right">
