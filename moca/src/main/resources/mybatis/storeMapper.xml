@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -197,7 +197,51 @@
   <select id="selectTagList" resultType="String">
   	SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'mocadb' AND TABLE_NAME = 'TAGS'
   </select>
-  <insert id="insertTags">
-  	INSERT INTO TAGS(REVIEW_ID, STORE_ID ${TAGS }) VALUES(${REVIEW_ID }, ${STORE_ID } ${TAGVALUES });
-  </insert>
+  <select id="selectAlreadyReviewByKakaoId" parameterType="INTEGER" resultType="INTEGER">
+  	SELECT count(STORE_ID) FROM STORE WHERE KAKAOID=#{id}
+  </select>
+  
+  <update id="updateLevelCnt" parameterType="map">
+  	UPDATE STORE SET ${LEVELCNTCOLUMN} = ${LEVELCNTCOLUMN}+#{ADDCNTNUM} WHERE store_id=#{STORE_ID}
+  </update>
+  
+  <select id="selectAllStoreId" resultType="Integer">
+  	SELECT STORE_ID FROM STORE
+  </select>
+  
+  <select id="selectAllLikeCntList" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	SELECT STORE_ID, COUNT(*) as LIKECNT FROM LIKESTORE ls GROUP BY ls.STORE_ID
+  </select>
+  <update id="updateStoreLikeCnt">
+  	UPDATE STORE s SET s.LIKECNT = #{likeCnt} WHERE s.STORE_ID = #{store_Id} 
+  </update>
+  <select id="selectAllReviewCntList" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	SELECT STORE_ID, COUNT(*) as REVIEWCNT FROM REVIEW r GROUP BY r.STORE_ID
+  </select>
+  <update id="updateStoreReviewCnt">
+  	UPDATE STORE s SET s.REVIEWCNT = #{reviewCnt} WHERE s.STORE_ID = #{store_Id} 
+  </update>
+  <select id="selectAllFavoriteCntList" resultType="com.kkssj.moca.model.entity.StoreVo">
+  	SELECT STORE_ID, COUNT(*) as FAVORITECNT FROM FAVORITESTORE fs GROUP BY fs.STORE_ID
+  </select>
+  <update id="updateStoreFavoriteCnt">
+  	UPDATE STORE s SET s.FAVORITECNT = #{favoriteCnt} WHERE s.STORE_ID = #{store_Id} 
+  </update>
+  
+  <update id="updateReviewCount">
+  	UPDATE STORE s SET s.REVIEWCNT = s.REVIEWCNT + #{upDown} WHERE s.STORE_ID = #{STORE_ID }
+  </update>
+  <update id="updateLikeCount">
+  	UPDATE STORE s SET s.LIKECNT = s.LIKECNT + #{upDown} WHERE s.STORE_ID = #{STORE_ID }
+  </update>
+  <update id="updateFavoriteCount">
+  	UPDATE STORE s SET s.FAVORITECNT = s.FAVORITECNT + #{upDown} WHERE s.STORE_ID = #{STORE_ID }
+  </update>  
+  <update id="updateStoreTag" >
+  	UPDATE STORE s SET s.TAG = #{TAG} WHERE s.STORE_ID = #{STORE_ID};
+  </update>
+  
+  <update id="updateLevelCntAll" parameterType="map">
+  	UPDATE STORE SET LEVEL1CNT=#{LEVEL1CNT}, LEVEL2CNT=#{LEVEL2CNT}, LEVEL3CNT=#{LEVEL3CNT}, LEVEL4CNT=#{LEVEL4CNT}, LEVEL5CNT=#{LEVEL5CNT} WHERE STORE_ID=#{STORE_ID}
+  </update>
 </mapper>

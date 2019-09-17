@@ -12,7 +12,7 @@
 <!--//css 설정-->
     <style type="text/css">
         .modal .modal-body {
-            max-height: 350px;
+            max-height: 500px;
             overflow-y: auto;
         }
         .modal-open .modal{
@@ -280,6 +280,8 @@
 			$('.modal').modal('hide')		
 			alert("로그인 후 이용가능합니다.");
 			$('#Login-Modal').modal('show')
+		}else if(status==412){ // Precondition Failed(form의 내용을 채우지 않은 경우)
+			alert("별점을 입력해주세요 ^0^")
 		}else{
 			console.log('ajax 통신 실패', status);
 		}

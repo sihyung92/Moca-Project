@@ -189,4 +189,25 @@ public class AccountDaoImpl implements AccountDao {
 		map.put("CNT", cnt);
 		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateReviewCount",map);
 	}
+
+	@Override
+	public int updateAttendanceCount(int account_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateAttendanceCount",account_id);
+	}
+
+	@Override
+	public int updateFollowCount(int account_id, int cnt) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ACCOUNT_ID", account_id);
+		map.put("CNT", cnt);
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowCount",map);
+	}
+
+	@Override
+	public int updateFollowingCount(int account_id, int cnt) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ACCOUNT_ID", account_id);
+		map.put("CNT", cnt);
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowingCount",map);
+	}
 }

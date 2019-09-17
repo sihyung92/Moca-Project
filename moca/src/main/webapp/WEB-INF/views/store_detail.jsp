@@ -2,22 +2,32 @@
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <!DOCTYPE html>
 <html>
-
 <head>
 	<meta charset="utf-8">
 	<title>moca</title>
+	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=6"/>" />
 	<style type="text/css">
+		body{
+			background: #f6f5ef;
+			font-family: 'Noto Sans KR', sans-serif;
+		}
+		.jumbotron{
+			background: #EAE7DC;
+			padding-top: 0 ;
+			border : 10px solid rgba(255,255,255,0.7);
+		}
 		#likeFavoriteDiv{
 			text-align: right;
 		}
 		#likeFavoriteDiv span{
 			font-size:30px;
 		}
+
 		.carousel-inner img {
 			margin: 0px auto;
 		}
@@ -68,9 +78,9 @@
 		  max-width: 1200px;
 		}
         //그 스토어페이지랑 메인페이지랑 로그인 사이즈가 다른 이유가 클래스 설정이 이상해서임 이거 제발 추가해야함
-        .modal-login{
+    .modal-login{
             width:100%;
-        }
+    }
 		#reviewDetailDiv {
 		  overflow:hidden;
 		  text-align: center;
@@ -110,7 +120,6 @@
 		  border-radius: 3px 0 0 3px;
 		}
 		
-		
 		/* 카페 관리자의 사진 수정 */
 		.storeImgGroup  .storeImg{
 	    	display: inline-block;
@@ -123,7 +132,7 @@
 			overflow: hidden;
 	    }
 	    
-	    .storeImgGroup .StoreImgDeleteSpan{
+	    .storeImgGroup .storeImgDeleteSpan{
 	    	position : relative;
 	    	left:-95px;
 	    	top:-30px;
@@ -143,14 +152,114 @@
 			overflow: hidden;
 	    }
 	    
-	    .storeLogoGroup .StoreImgDeleteSpan{
+	    .storeLogoGroup .storeImgDeleteSpan{
 	    	position : relative;
 	    	left:-95px;
 	    	top:-30px;
 	    	cursor:pointer;
 	    	background-color:rgb(255,255,255,0.5);
 	    }
+	    
+	    .levelGroup{
+	    	margin:20px auto;
+	    	text-align: center;
+	    	width:100%;
+	    }
+		.levelGroup tr{
+			width:100%;
+			height:30px;
+			line-height: 30px;
+		}
+		.levelGroup td{
+			width:20%;
+		}
+		.review-header{
+			background-color: #fffff5;
+			padding: 20px;
+			border-radius: 10px 20px;
+			margin: 10px 0px;
+		}
+		#overAllLevel{
+			text-align: center;
+			height: 100%;
+		}
+		.overAllLevel-left {
+			margin-top: 30px;
+		}
+		#reviewModalBtn{
+			text-align: center;
+			margin: 30px auto;
+			width:50%;
+		}
+		.progress-label {
+		  float: left;
+		  margin-right: 1em;
+		}
 		
+		
+		/*케러셀 부분*/
+		.carousel-inner img {
+			margin: 0px auto;
+		}
+		
+		.carousel .carousel-inner img {
+			width: 100%;
+			height: 50rem;
+			object-fit: cover;
+			overflow: hidden;
+		}
+		
+		#carousel-custom {
+		    margin: 20px auto;
+		    width: 100%;
+		}
+		
+		#carousel-custom .carousel-indicators {
+		    margin: 10px 0 0;
+		    overflow: auto;
+		    position: static;
+		    text-align: left;
+		    white-space: nowrap;
+		    width: 100%;
+		}
+		
+		#carousel-custom .carousel-indicators li {
+		    background-color: transparent;
+		    -webkit-border-radius: 0;
+		    border-radius: 0;
+		    display: inline-block;
+		    height: auto;
+		    margin: 0 !important;
+		    width: auto;
+		}
+		#carousel-custom .carousel-indicators li img {
+			width: 100px;
+		    display: block;
+		    opacity: 0.5;
+		}
+		#carousel-custom .carousel-indicators li.active img {
+		    opacity: 1;
+		}
+		#carousel-custom .carousel-indicators li:hover img {
+		    opacity: 0.75;
+		}
+		#carousel-custom .carousel-outer {
+		    position: relative;
+		}
+
+		#storeAverageLevel{
+			display : inline;
+		}
+		
+		#storeSummaryDiv{
+			font-size : 150%;
+		}
+				
+		.jumbotron h1{
+			padding-bottom: 3%;
+		}
+		
+
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -159,9 +268,10 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=31"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=15"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
+	<!-- raty -->
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<script type="text/javascript">
 		//여러 파일을 가지고 있는 버퍼
@@ -191,6 +301,11 @@
 
 		var startLevel;
 
+		$(document).ready(function() { 
+			$(document).error(function(){
+				console.log("오류");
+			}); 
+        }); 
 	
 		$(document).ready(function() {
 			//카페 변수 바인딩
@@ -202,11 +317,23 @@
 			storeFiles = $('#storeFiles');
 
 			bindRaty();
+			$('#storeAverageLevel').raty({
+				half : true,
+				readOnly:   true,
+				starHalf:   'star-half-big.png',
+				starOff:    'star-off-big.png',
+				starOn:     'star-on-big.png',
+				scoreName:  'storeAverageLevel',
+				start : ${storeVo.averageLevel}
+			});
 
 			accountId = "${accountVo.account_id}" ///나중에 세션에서 값 사용
 							
 			//리뷰변수 바인딩
 			bindReviewVariable();
+			<c:forEach items="${reviewVoList }" var="reviewVo">
+			$.fn.raty.start(${reviewVo.averageLevel }, '#reviewAverageLevel-${reviewVo.review_id }');
+			</c:forEach>
 			
 
 			//리뷰 작성버튼 클릭시
@@ -216,6 +343,11 @@
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
 			$('input:radio[name=parkingLot]:input[value=' + ${storeVo.parkingLot} + ']').attr("checked", true);
+
+			//carousel-indicators에 있는 (리뷰)이미지 클릭시 해당 이미지의 views up 
+			$('.carousel-indicators .storeImgByReview').click(function(){
+				upReviewImageViews($(this).attr('src'));
+			})
 			
 			var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
 				mapOption = {
@@ -265,15 +397,28 @@
 	         
 			//리뷰 내용 더보기 style 변화
 			callReviewDataMore();
-			
-			//차트
-			makeStoreLevelChart();
-
 
 			//storeInfo 참여하기 버튼 클릭시
 			$('#updateStore').click(function() {
+				//console.log(validationStoreInfo());
+				var openTime = $(".timePattern").eq(0);
+				var endTime = $(".timePattern").eq(1);
+				
+				if(validationStoreInfoTime(openTime)==false || validationStoreInfoTime(endTime)==false){
+					return false;
+				}
+
+				if(validationOpenTimeEndTime()==false){
+					return false;
+				}
+				
 				$(this).attr('data-dismiss', "modal");
 				updateStore(${storeVo.store_Id});
+			});
+
+			//storeInfo form 전화번호에 번호형식만 받도록
+			$("input:text[numberOnly]").on("keyup", function() {
+    			$(this).val($(this).val().replace(/[^0-9]/g,""));
 			});
 
 			//리뷰 더보기 버튼을 눌렀을 때
@@ -281,31 +426,29 @@
 				if(reviewVoListLength==true){
 					return false;
 				}
-				reviewMoreBtnClick("review");
+				reviewMoreBtnClick('store');
 			});
 
 			//리뷰 저장 버튼 클릭시
 			$(saveReviewBtn).click(function() {
-				 var tagValues = "";
-				$("input:checkbox[name=tag]:checked").each(function(){
-					tagValues =tagValues+ $(this).val() +",";
-				   
-				});
-				 $('#review-tags').val(tagValues)
-				saveReview(fileBuffer);
+				if(isCheckLevel()){
+					tagCheckboxData2Tags();
+					saveReview(fileBuffer);
+				}else{
+					alert("별점을 입력해주세요 ^0^")
+				}
 			})
 			
 			//수정 버튼 클릭시
 			editBtn.click(function(){
-				$('.storeLevel').css('display','')
-				$('.level').css('display','none')
 				
 				//파일 버퍼 내용 비우기
 				fileBuffer = [];
+				
 				//리뷰 내용을 리뷰 모달로 옴기고 창 띄움
 				reviewData2ReviewModal(this);
-				reviewModal.find('#saveReviewBtn').css('display','none')
-				reviewModal.find('#editReviewBtn').css('display','')
+				
+				transReviewEditMode();
 				$('#reviewModal').modal("show");		//리뷰 모달창 show
 							
 			})
@@ -313,7 +456,8 @@
 			
 			//리뷰 수정 버튼 클릭시
 			editReviewBtn.click(function(){
-				
+				tagCheckboxData2Tags();
+
 				editReview();
 			})
 			
@@ -321,11 +465,11 @@
 				//모달에 있는 데이터 없애고 
 				fileBuffer = [];
 				clearReviewModalData();
-				$('.storeLevel').css('display','none')
-				$('.level').css('display','')
-				
-				reviewModal.find('#saveReviewBtn').css('display','')
-				reviewModal.find('#editReviewBtn').css('display','none')
+
+				initReviewLevel();
+
+				transReviewAddMode();
+
 				$('#reviewModal').modal("show");		//리뷰 모달창 show
 			})
 			
@@ -333,7 +477,6 @@
 			deleteBtn.click(function(){
 				var reviewId = $(this).parent().find('.review-id').val();
 				var reviewTodelete = $(this).parent().parent();
-				console.log(reviewTodelete);
 				$('#confirm').modal({ backdrop: 'static', keyboard: false })
 		        .one('click', '#delete', function() {
 		        	reviewTodelete.remove();
@@ -382,9 +525,9 @@
 			///////////////////////
 			//카페 좋아요
 			likeStoreBtn.click(function(){
-				
+				var srcValue = likeStoreBtn.attr('src');
 				//좋아요를 누르지 않은 경우
-				if(likeStoreBtn.hasClass('glyphicon-heart-empty')){
+				if(srcValue.indexOf('-fill.svg')==-1){
 					//좋아요 추가
 					methodType = 'POST';
 					
@@ -400,9 +543,14 @@
 					data : {
 						storeId : storeId
 					},
-					success: function() {
-						likeStoreBtn.toggleClass('glyphicon-heart');
-						likeStoreBtn.toggleClass('glyphicon-heart-empty')
+					success: function() {						
+						toggleSvgFill(likeStoreBtn);
+
+						if(methodType == 'POST'){
+							$('#storeLikeCount').text($('#storeLikeCount').text()*1+1)
+						}else if(methodType == 'DELETE'){
+							$('#storeLikeCount').text($('#storeLikeCount').text()*1-1)
+						}
 						
 					},
 					error: function(request,status,error) {
@@ -415,8 +563,9 @@
 			////////////////////////////////
 			//가고 싶은 카페
 			favoriteStoreBtn.click(function(){
+				var srcValue = favoriteStoreBtn.attr('src');
 				//가고 싶은 카페 누르지 않은 경우
-				if(favoriteStoreBtn.hasClass('glyphicon-star-empty')){
+				if(srcValue.indexOf('-fill.svg')==-1){
 					//가고 싶은 카페에 추가
 					methodType = 'POST';
 					
@@ -432,8 +581,14 @@
 						storeId : storeId
 					},
 					success: function() {
-						favoriteStoreBtn.toggleClass('glyphicon-star')
-						favoriteStoreBtn.toggleClass('glyphicon-star-empty')
+			
+						toggleSvgFill(favoriteStoreBtn);
+
+						if(methodType == 'POST'){
+							$('#storeFavoriteCount').text($('#storeFavoriteCount').text()*1+1)
+						}else if(methodType == 'DELETE'){
+							$('#storeFavoriteCount').text($('#storeFavoriteCount').text()*1-1)
+						}
 						
 					},
 					error: function(request,status,error) {
@@ -458,8 +613,8 @@
 				$('.storeLogoGroup').append(oldStoreLogo);
 
 				//기존의 클릭이벤트 재설정
-				$('.StoreImgDeleteSpan').unbind();
-				$('.StoreImgDeleteSpan').click(function(){					
+				$('.storeImgDeleteSpan').unbind();
+				$('.storeImgDeleteSpan').click(function(){					
 					
 					//기존 StoreLogo인 경우 
 					if($(this.previousElementSibling).hasClass('oldStoreLogo')){
@@ -541,10 +696,9 @@
 				}
 
 				//기존의 클릭이벤트 제거
-				$('.StoreImgDeleteSpan').unbind();
-				$('.StoreImgDeleteSpan').click(function(){					
+				$('.storeImgDeleteSpan').unbind();
+				$('.storeImgDeleteSpan').click(function(){					
 					
-					test = this;
 					//newStoreImg인 경우 
 					if($(this.previousElementSibling).hasClass('newStoreImg')){
 						//fileBuffer에서 제거
@@ -599,7 +753,6 @@
 					newStoreImg.find('img').attr('src', URL.createObjectURL(file));
 					$('.storeImgGroup').append(newStoreImg)
 				})
-				
 			})
 
 			//수정 버튼을 눌렀을때
@@ -613,7 +766,6 @@
 				//맨 앞에 , 문자 제거
 				toBeDeletedStoreImgUrls = toBeDeletedStoreImgUrls.substring(1);
 				oldStoreImgUrls = oldStoreImgUrls.substring(1);
-				console.log(fileBuffer,toBeDeletedStoreImgUrls )
 				editStoreImg();
 			})
 
@@ -621,9 +773,69 @@
 			$('#level').change(function(){
 				$('.storeLevel').css('display','')
 				$('.level').css('display','none')
-				console.log($('#level').val())
 				$('.storeLevel').find('select').val($('#level').val())
 			})
+
+			//스토어 review 전체 평균 별점
+			 $('#store-level').raty({
+				  half:true,
+				  readOnly:  true,
+				  size:       24,
+				  starHalf:   'star-half-big.png',
+				  starOff:    'star-off-big.png',
+				  starOn:     'star-on-big.png',
+				  start: ${storeVo.averageLevel}
+			 });
+
+			//스토어 5개의 막대바
+			var levelCntVal = [${storeVo.level5Cnt}, ${storeVo.level4Cnt}, ${storeVo.level3Cnt}, ${storeVo.level2Cnt}, ${storeVo.level1Cnt}];
+			new Chart(document.getElementById("bar-chart-horizontal"), {
+			    type: 'horizontalBar',
+			    data: {
+			      labels: ["5", "4", "3", "2", "1"],
+			      datasets: [
+			        {
+			          backgroundColor: ["#C6A153", "#C6A153","#C6A153","#C6A153","#C6A153"],
+			          borderWidth : 0,
+			          data: levelCntVal
+			        }
+			      ]
+			    },
+			    options: {
+			      legend: { display: false },
+			      scales: {
+			    	    xAxes: [
+			    	      {
+			    	    	ticks: {
+			    	    		beginAtZero: true,
+			                    display: false,
+			                    max: levelCntVal[0]+levelCntVal[1]+levelCntVal[2]+levelCntVal[3]+levelCntVal[4],
+			                },
+			    	        gridLines: {
+			    	        	 color: 'rgba(0,0,0,0)'
+			    	        }
+			    	      }
+			    	    ],
+			    	    yAxes: [
+			    	      {
+			    	    	barThickness : 15,
+			    	        gridLines: {
+			    	          color: 'rgba(0,0,0,0)'
+			    	        },
+			    	        ticks: {
+			    	          beginAtZero: true
+			    	        }
+			    	      }
+			    	    ]
+			    	  },
+			      title: {
+			        display: true,
+			      },
+			      gridLines: {
+			          display: false
+			      }
+			    }
+			});
 
 		});
 
@@ -641,7 +853,6 @@
 			
 			
 			var storeImgFormObj = $(form).serializeObject();
-			console.log(storeImgFormObj,storeImgFormData);
 			
 			if(storeImgFormObj.delStoreLogo == ""){
 				return false;
@@ -672,35 +883,66 @@
 
 		}
 
-		var makeStoreLevelChart = function(){
-			var ctx = document.getElementById('myChart').getContext('2d');
-			var labelVal = [${storeVo.tasteLevel}, ${storeVo.serviceLevel}, ${storeVo.moodLevel}, ${storeVo.priceLevel}, ${storeVo.convenienceLevel}];
-			var myRadarChart = new Chart(ctx, {
-				type: 'radar',
-				data: {
-					labels: ['맛', '서비스', '분위기', '가격', '편의성'],
-					datasets: [{
-						//label: '종합 평가',
-						//		    	backgroundColor: 'rgb(255, 99, 132)',
-						borderColor: 'rgb(255, 99, 132)',
-						pointRadius: 0,
-						lineTension: 0.1,
-						data: labelVal
-					}]
-				},
-				options: {
-					legend: {
-						display: false
-					},
-					scale: {
-						ticks: {
-							suggestedMin: 0,
-							suggestedMax: 5,
-							stepSize: 1
+
+		//svg 태그를 넣어주면 none을 토글 해줌
+		var toggleSvgNone = function(svgElement){
+			var srcValue= svgElement.attr('src');
+			
+			//꽉차 있는 상태일때
+			if(isClickedSvg(svgElement)){
+				srcValue = srcValue.replace('-none.svg', '.svg')
+				
+			}else{//비어 있는 상태 일때
+				srcValue = srcValue.replace('.svg', '-none.svg')
+			}
+			svgElement.attr('src', srcValue)
+		}
+		//storeInfo 수정확인을 누르기 전에 체크해야할 목록들
+		var validationOpenTimeEndTime = function(){
+		    //영업 시작 시간이 종료 시간보다 늦습니다. 영업시간을 다시 확인해주세요.
+			console.log($(".timePattern").eq(0));
+			openTime = $(".timePattern").eq(0).val().split(":")[0];
+		    var openMin = $(".timePattern").eq(0).val().split(":")[1];
+		    endTime = $(".timePattern").eq(1).val().split(":")[0];
+		    var endMin = $(".timePattern").eq(1).val().split(":")[1];
+		    
+		    if(openTime=="00" && openMin=="00" && endTime=="00" && endMin=="00"){
+			    return true;
+			}else if(openTime*1>=0 && openTime*1<24){
+				if((endTime*1 - openTime*1)<0){
+					console.log((endTime*1 - openTime*1));
+					if(endTime*1<4 && endtime*1>=0){
+						if(openTime*1 - endTime*1>0){
+							return true;
+						}else{
+							alert("영업시간을 다시 확인해주세요.");
+							return false;
 						}
+					}else{
+						alert("영업시간을 다시 확인해주세요.");					
+						return false;
 					}
+				}else if(endTime*1 == openTime*1 && !(endTime=="" && openTime=="")){
+					alert("영업시작시간과 영업종료시간은 같을 수 없습니다. 다시 확인해주세요.");
 				}
-			});
+				return true;
+			}
+		}
+
+		//storeInfo 수정확인을 누르기 전에 체크해야할 목록들
+		var validationStoreInfoTime = function(checkTime){
+			//영업시간 형식이 맞지 않습니다. 영업시간을 다시 확인해주세요.
+			var timeValidation = /^([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])$/;
+
+			if(checkTime.val()==""){
+			    return true;
+			}
+		    
+		    if(timeValidation.test(checkTime.val())==false){
+		        alert("입력한 영업시간이 형식에 맞지 않습니다. 영업시간을 다시 확인해주세요.");
+		        checkTime.val("");
+		        return false;
+		    }
 		}
 
 	</script>
@@ -718,38 +960,40 @@
 					<div class="jumbotron text-center">
 						<span id="storeId" style= "display: none;">${storeVo.store_Id }</span>
 						<div id="likeFavoriteDiv">
+							
 							<c:if test="${storeVo.isLike eq 0 }">
-								좋아요<span id="likeStoreBtn" class="glyphicon glyphicon-heart-empty" aria-hidden="true" ></span>
+								<img id="likeStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/heart.svg"/>">
 							</c:if>
 							<c:if test="${storeVo.isLike ne 0 }">
-								좋아요<span id="likeStoreBtn" class="glyphicon glyphicon-heart" aria-hidden="true" ></span>
+								<img id="likeStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/heart-fill.svg"/>">
 							</c:if>
 						
 							<c:if test="${storeVo.isFavorite eq 0 }">
-								가고 싶은 카페<span id="favoriteStoreBtn" class="glyphicon glyphicon-star-empty" aria-hidden="true" ></span>	
+								<img id="favoriteStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/bookmark.svg"/>">	
 							</c:if>
 							<c:if test="${storeVo.isFavorite ne 0 }">
-								가고 싶은 카페<span id="favoriteStoreBtn" class="glyphicon glyphicon-star" aria-hidden="true" ></span>	
+								<img id="favoriteStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/bookmark-fill.svg"/>">		
 							</c:if>					
 						</div>
 
-						<!-- 태그 -->
-						<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
-						<p>
+						<div id="storeTagDiv">
+							<!-- 태그 -->
+							<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
 							<c:forEach items="${tags}" var="tag">
 								<c:if test="${tag ne ''}">
 									<button type="button" class="btn btn-default btn-sm">#${tag}</button>
 								</c:if>
 							</c:forEach>
-						</p>
+						</div>
+						
 						<!-- 로고 & 카페이름-->
 						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
 						<h1>
 							<c:if test="${empty storeVo.logoImg}">
-								<img id="storeLogo" src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">
+								<img id="storeLogo" src="<c:url value="/resources/imgs/moca1.png"/>" alt="logo" class="img-circle" style="width:100px; height:100px;">
 							</c:if>
 							<c:if test="${not empty storeVo.logoImg}">
-								<img id="storeLogo" src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px;">
+								<img id="storeLogo" src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px; height:100px;">
 							</c:if>
 							&nbsp;${storeVo.name}
 						</h1>
@@ -761,25 +1005,41 @@
 					</div>
 				</div>
 			</div>
+			<div id="storeSummaryDiv">
+				<div class="row">
+					<div class="col-md-2 col-md-offset-2">
+						<div id="storeAverageLevelDiv">
+							<div id="storeAverageLevel"></div><span>${storeVo.averageLevel}</span>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeReviewCountDiv">
+							<img src="<c:url value="/resources/imgs/icons/edit.svg"/>">
+							<span class="storeReviewCount">${storeVo.reviewCnt}</span>개의 리뷰
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeLikeCountDiv">
+							<img src="<c:url value="/resources/imgs/icons/heart.svg"/>">
+							<span id="storeLikeCount">${storeVo.likeCnt}</span>명이 좋아하는
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div id="storeFavoriteCountDiv">
+							<img src="<c:url value="/resources/imgs/icons/bookmark.svg"/>">
+							<span id="storeFavoriteCount">${storeVo.favoriteCnt}</span>명이 가고 싶어하는
+						</div>
+					</div>
+				</div>
+				<br><br>
+			</div>
 			<div class="row">
-				<div class="col-md-4 col-md-offset-2">
-					<!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->
-					<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-						<!-- Indicators -->
-						<ol class="carousel-indicators">
-							<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
-								<c:if test="${status.index eq 0}">
-									<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-								</c:if>
-								<c:if test="${status.index ne 0}">
-									<li data-target="#carousel-example-generic" data-slide-to="${status.index }"></li>
-								</c:if>
-							</c:forEach>
-						</ol>
-
-						<!-- Wrapper for slides -->
-						<div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-							<div class="carousel-inner" role="listbox">
+				<div class="col-md-8 col-md-offset-2">
+					<!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->						
+					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+					    <div class='carousel-outer'>
+					        <!-- Wrapper for slides -->
+					        <div class='carousel-inner'>
 								<c:if test="${not empty StoreImgList}">
 									<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
 										<c:if test="${status.index eq 0}">
@@ -789,21 +1049,42 @@
 											<div class="item <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<img src="<c:url value="${StoreImg.url }" />" alt="..." class="d-block w-100">
-								<div class="carousel-caption">...</div>
 							</div>
 							</c:forEach>
 							</c:if>
 							<c:if test="${empty StoreImgList}">
 								<img src="<c:url value="/resources/imgs/reviewDefault.png"/>" alt="..." class="d-block w-100">
 							</c:if>
-						</div>
+						
 
 						<!-- Controls -->
-						<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-							<span class="sr-only">Previous</span>
-						</a> <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> <span class="sr-only">Next</span>
-						</a>
+				        <a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+				            <span class='glyphicon glyphicon-chevron-left'></span>
+				        </a>
+				        <a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+				            <span class='glyphicon glyphicon-chevron-right'></span>
+				        </a>
+						</div>
+						
+						<!-- Indicators -->
+						<ol class='carousel-indicators mCustomScrollbar'>
+							<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
+								<c:if test="${status.index eq 0}">
+									<li data-target='#carousel-custom' data-slide-to="0" class="active">
+										<img src="${StoreImg.thumbnailUrl}" 
+											<c:if test="${StoreImg.path ne 'store'}">class="<c:out value="storeImgByReview"></c:out>"</c:if>
+										/>
+									</li>
+								</c:if>
+								<c:if test="${status.index ne 0}">
+									<li data-target='#carousel-custom' data-slide-to="${status.index }">
+										<img src="${StoreImg.thumbnailUrl}" 
+											<c:if test="${StoreImg.path ne 'store'}">class="<c:out value="storeImgByReview"></c:out>"</c:if>
+										/>
+									</li>
+								</c:if>
+							</c:forEach>
+						</ol>
 					</div>
 				</div>
 				<!-- 갖고있는 이미지의 개수만큼  캐러셀 끝-->
@@ -811,13 +1092,10 @@
 					<button id="editStoreImgsBtn">수정</button>
 				</c:if>
 			</div>
-			<div class="col-md-4">
-				<canvas id="myChart"></canvas>
-			</div>
 		</div>
 		<div class="row">
 			<br>
-			<div class="col-md-8 col-md-offset-2">
+			<div class="col-md-4 col-md-offset-2">
 				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 					<div class="panel panel-default">
 						<div class="panel-heading" role="tab" id="headingOne">
@@ -829,16 +1107,15 @@
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 							<div class="panel-body">
-								와이파이 :
+								
 								<span id="wifiInfo">
-									<c:if test="${storeVo.wifi eq 0}">없음</c:if>
-									<c:if test="${storeVo.wifi eq 1}">있음</c:if>
+									<c:if test="${storeVo.wifi eq 0}"><img src="<c:url value="/resources/imgs/icons/wifi-none.svg"/>"></c:if>
+									<c:if test="${storeVo.wifi eq 1}"><img src="<c:url value="/resources/imgs/icons/wifi.svg"/>"></c:if>
 								</span>
 								<br>
-								주차장 :
 								<span id="parkingLotInfo">
-									<c:if test="${storeVo.parkingLot eq 0}">없음</c:if>
-									<c:if test="${storeVo.parkingLot eq 1}">있음</c:if>
+									<c:if test="${storeVo.parkingLot eq 0}"><img src="<c:url value="/resources/imgs/icons/parking-none.svg"/>"></c:if>
+									<c:if test="${storeVo.parkingLot eq 1}"><img src="<c:url value="/resources/imgs/icons/parking.svg"/>"></c:if>
 								</span>
 								<br>
 								휴무일 : <span id="dayOffInfo">${storeVo.dayOff}</span><br>
@@ -866,28 +1143,58 @@
 								</small>
 								<hr>
 								<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#StoreInfoModal">
-									정보제공
+									정보 수정
 								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8 col-md-offset-2">
-				<div id="map" style="width:100%;height:500px;"></div>
+			<div class="col-md-4">
+				<div id="map" style="width:100%;height:261px;"></div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
+				<h1>리뷰<span class="storeReviewCount">(${storeVo.reviewCnt})</span></h1>
 				<div class="review-header">
-					<h1>리뷰들</h1>
-					<!-- Button trigger modal -->
-					<button type="button" class="btn btn-primary" data-toggle="modal" id="reviewModalBtn">
-						리뷰 작성
-					</button>
-					<br><br>
+					<!-- 리뷰  -->
+					<div id="overAllLevel">
+						<!-- 스토어 전체 리뷰 평점 -->
+						<div class="row">
+							<div class="col-md-6 overAllLevel-left">
+								<span>종합 평점</span>
+								<h3>${storeVo.averageLevel}</h3>
+								<div id="store-level"></div>
+								<table class="levelGroup">
+								<tr>
+									<td><span><b>맛</b></span></td>
+									<td><span><b>가격</b></span></td>
+									<td><span><b>분위기</b></span></td>
+									<td><span><b>서비스</b></span></td>
+									<td><span><b>편의성</b></span></td>
+								</tr>
+								<tr>
+									<td><span>${storeVo.tasteLevel}</span></td>
+									<td><span>${storeVo.priceLevel}</span></td>
+									<td><span>${storeVo.moodLevel}</span></td>
+									<td><span>${storeVo.serviceLevel}</span></td>
+									<td><span>${storeVo.convenienceLevel}</span></td>
+								</tr>
+								</table>
+							</div>
+							<div class="col-md-6"> 
+								<canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
+							</div>
+						</div>						
+					</div>
+				</div>
+				<!-- Button trigger modal -->
+				<div class="row text-center">
+				<button type="button" class="customBtn" data-toggle="modal" id="reviewModalBtn"  style="border: 2px solid #c0c0c0; padding: 10px;">
+					<img alt="more" src="<c:url value="/resources/imgs/icons/compose.svg"/>" style="width: 20px; padding-bottom: 5px; margin-right: 5px;">
+					<b>리뷰 작성</b>
+				</button>
 				</div>
 				<div class="review-content">
 					<!-- js로 리뷰 수만큼 추가 할 것  -->
@@ -895,30 +1202,32 @@
 						<div class="row reviewCnt">
 							<c:if test="${reviewVo.editable eq 1}">
 								<div class="editDeleteGroup btn-group" role="group">
+									<input type="number" class="store-id"  value=${storeVo.store_Id } style="display: none;">
 									<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
-									<button type="button" class="btn-edit btn btn-default">수정</button>
-									<button type="button" class="btn-delete btn btn-default">삭제</button>
+									<img class="btn-edit clickableSvgCss" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
+									<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 								</div>
 							</c:if>
-							<div class="reviewer-info col-md-2">
+							<div class="reviewer-info col-md-2" >
 								<div class="profile-div">
 									<c:if test="${empty reviewVo.thumbnailImage}">
-										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
+										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" 
+										alt="profile" style="width:100px;" onclick="location.href='/moca/mypage/${reviewVo.account_id}'"  >
 									</c:if>
 									<c:if test="${not empty reviewVo.thumbnailImage}">
-										<img class="accountProfile img-circle"  src="<c:url value="${reviewVo.thumbnailImage }" />" alt="profile" style="width:100px;">
+										<img class="accountProfile img-circle"  src="<c:url value="${reviewVo.thumbnailImage }" />" 
+										alt="profile" style="width:100px;" onclick="location.href='/moca/mypage/${reviewVo.account_id}'" >
 									</c:if>
 								</div>
 								<div class="nickName-div">
-									<label>별명</label>	
 									<span class="reviewer-nickName">${reviewVo.nickName} </span>
 								</div>
 								<div class="follows-div">
-									<label>팔로워 수</label>
+									<img src="<c:url value="/resources/imgs/icons/user.svg"/>">
 									<span class="reviewer-followers">${reviewVo.followCount}</span>
 								</div>
 								<div class="reviews-div">
-									<label>리뷰 수</label>
+									<img src="<c:url value="/resources/imgs/icons/edit.svg"/>">
 									<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
 								</div>
 							</div>
@@ -926,6 +1235,28 @@
 
 							<div class="review-info col-md-8"> 
 								<div class="row">
+									<div class="review-level">
+										<div class="taste-level-div">
+											<label>맛</label>
+											<span class="taste-level">${reviewVo.tasteLevel }</span>점
+										</div>
+										<div class="price-level-div">
+											<label>가격</label>
+											<span class="price-level">${reviewVo.priceLevel }</span>점
+										</div>
+										<div class="service-level-div">
+											<label>서비스</label>
+											<span class="service-level">${reviewVo.serviceLevel }</span>점
+										</div>
+										<div class="mood-level-div">
+											<label>분위기</label>
+											<span class="mood-level">${reviewVo.moodLevel }</span>점
+										</div>
+										<div class="convenience-level-div">
+											<label>편의성</label>
+											<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
+										</div>
+									</div>
 									<div class="reviewThumbnailGroup">
 										<c:forEach items="${reviewVo.imageList}" var="reviewImg">
 											<div class="reviewThumbnail">
@@ -934,74 +1265,63 @@
 										</c:forEach>
 									</div>
 									<div class="review-data">
-									<div class="write-date-div">
-										<label>작성일</label>
-										<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
+										<div class="write-date-div">
+											<label>작성일</label>
+											<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
+										</div>
+										<div class="review-content-div">
+											<label>리뷰 내용</label>
+											<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+											<span class="more-review-content-btn">더보기</span>
+										</div>
+										<div class="review-tags-div">
+											<c:forEach items="${reviewVo.tagMap}" var="i">
+												<c:if test="${i.value eq 1}">
+													<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
+												</c:if>
+											</c:forEach>
+										</div>
 									</div>
-									<div class="review-content-div">
-										<label>리뷰 내용</label>
-										<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
-										<span class="more-review-content-btn">더보기</span>
-									</div>
-									<div class="review-tags-div">
-										<c:forEach items="${reviewVo.tagMap}" var="i">
-											<c:if test="${i.value eq 1}">
-												<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
-											</c:if>
-										</c:forEach>
+									<div class="form-group like-hate">
+										<div class="btn-group" data-toggle="buttons">
+											<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
+											<c:choose>
+												<c:when test="${reviewVo.isLike==1 }">
+													<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up-fill.svg"/>">
+												</c:when>
+												<c:otherwise>
+													<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
+												</c:otherwise>
+											</c:choose>
+											<input type="number" class="like-count" value=${reviewVo.likeCount } readonly size="3">
+											<c:choose>
+												<c:when test="${reviewVo.isLike==-1 }">
+													<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
+												</c:when>
+												<c:otherwise>
+													<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
+												</c:otherwise>
+											</c:choose>
+	
+											<input type="number" class="hate-count" value=${reviewVo.hateCount } readonly size="5">
+										</div>
 									</div>
 								</div>
-								<div class="form-group like-hate">
-									<div class="btn-group" data-toggle="buttons">
-										<input type="number" class="review-id" value=${reviewVo.review_id } style="display: none;">
-										<c:choose>
-											<c:when test="${reviewVo.isLike==1 }"><button type="button" class="btn btn-primary like-btn clicked">좋아요</button></c:when>
-											<c:otherwise><button type="button" class="btn btn-primary like-btn ">좋아요</button></c:otherwise>
-										</c:choose>
-										<input type="number" class="like-count" value=${reviewVo.likeCount }>
-										<c:choose>
-											<c:when test="${reviewVo.isLike==-1 }"><button type="button" class="btn btn-primary hate-btn clicked">싫어요</button></c:when>
-											<c:otherwise><button type="button" class="btn btn-primary hate-btn">싫어요</button></c:otherwise>
-										</c:choose>
+							</div>
 
-										<input type="number" class="hate-count" value=${reviewVo.hateCount }>
-									</div>
-								</div>
-								</div>
-							</div>
-							<div class="review-level col-md-2">
-								<div class="taste-level-div">
-									<label>맛</label>
-									<span class="taste-level">${reviewVo.tasteLevel }</span>점
-								</div>
-								<div class="price-level-div">
-									<label>가격</label>
-									<span class="price-level">${reviewVo.priceLevel }</span>점
-								</div>
-								<div class="service-level-div">
-									<label>서비스</label>
-									<span class="service-level">${reviewVo.serviceLevel }</span>점
-								</div>
-								<div class="taste-level-div">
-									<label>분위기</label>
-									<span class="mood-level">${reviewVo.moodLevel }</span>점
-								</div>
-								<div class="taste-level-div">
-									<label>편의성</label>
-									<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
-								</div>
-								<div class="taste-level-div">
-									<label for="average_level">평균</label>
-									<span class="average-level">${reviewVo.averageLevel }</span>점
-								</div>								
-							</div>
+							<div class="average-level-div  col-md-2">
+								<label for="average_level">평균</label>
+								<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>점
+							</div>								
 							<br><br><br>
 						</div>
 					</c:forEach>
 				</div>
 				<div class="review-footer">
 				<c:if test="${fn:length(reviewVoList) ge 3}">
-					<button id="moreReview">더보기</button>
+					<button id="moreReview" class="customBtn" style="width:100%; border: 2px solid #c0c0c0; border-left:none; border-right:none; padding: 10px;">
+					<img alt="more" src="<c:url value="/resources/imgs/icons/chevron-bottom.svg"/>" style="width: 15px; padding-bottom: 2px; margin-right: 5px;"> 더보기
+					</button>
 				</c:if>
 				</div>
 
@@ -1012,166 +1332,7 @@
 	<div id="footer">
 		<jsp:include page="../../resources/template/footer.jsp" flush="true"></jsp:include>
 	</div>
-	
-	<!-- clone할 review element -->
-	<div class="row"  id="reviewTemplate" style="display : none;">
-		<div class="editDeleteGroup btn-group" role="group">
-			<input type="number" style="display: none;" class="review-id" >
-			<button type="button" class="btn-edit btn btn-default">수정</button>
-			<button type="button" class="btn-delete btn btn-default">삭제</button>
-		</div>
-		<div class="reviewer-info col-md-2">
-			<div class="profile-div">
-				<c:if test="${empty accountVo.thumbnailImage}">
-					<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
-				</c:if>
-				<c:if test="${not empty accountVo.thumbnailImage}">
-					<img class="accountProfile img-circle"  src="<c:url value="${accountVo.thumbnailImage }" />" alt="profile" style="width:100px;">
-				</c:if>
-			</div>
-			<div class="nickName-div">
-				<label>별명</label>	
-				<span class="reviewer-nickName">${accountVo.nickname }</span>
-			</div>
-			<div class="follows-div">
-				<label>팔로워 수</label>
-				<span class="reviewer-followers">${accountVo.followCount }</span>
-			</div>
-			<div class="reviews-div">
-				<label>리뷰 수</label>
-				<span class="reviewer-reviews">${accountVo.reviewCount }</span>
-			</div>
-		</div>
-		<div class="review-info col-md-8">
-			<div class="reviewThumbnailGroup">
-			</div>
-			<div class="review-data">
-				<div class="write-date-div">
-					<label>작성일</label>
-					<span class="reviewInfo-write-date"></span>
-				</div>
-				<div class="review-content-div">
-					<label>리뷰 내용</label>
-					<span class="reviewInfo-review-content"></span>
-					<span class="more-review-content-btn">더보기</span>
-				</div>
-				<div class="review-tags-div">
 
-				</div>
-			</div>
-			<div class="form-group like-hate">
-				<div class="btn-group" data-toggle="buttons">
-					<input type="number" class="review-id" style="display: none;">
-					<button type="button" class="btn btn-primary like-btn ">좋아요</button>
-					<input type="number" class="like-count" value=0 >
-					<button type="button" class="btn btn-primary hate-btn">싫어요</button>
-					<input type="number" class="hate-count" value=0>
-				</div>
-			</div>
-		</div>
-
-		<div class="review-level col-md-2">
-			<div class="taste-level-div">
-				<label>맛</label>
-				<span class="taste-level"></span>점
-			</div>
-			<div class="price-level-div">
-				<label>가격</label>
-				<span class="price-level"></span>점
-			</div>
-			<div class="service-level-div">
-				<label>서비스</label>
-				<span class="service-level"></span>점
-			</div>
-			<div class="taste-level-div">
-				<label>분위기</label>
-				<span class="mood-level"></span>점
-			</div>
-			<div class="taste-level-div">
-				<label>편의성</label>
-				<span class="convenience-level"></span>점
-			</div>
-			<div class="taste-level-div">
-				<label for="average_level">평균</label>
-				<span class="average-level"></span >점
-			</div>								
-		</div>
-		<br><br><br>
-		
-		<!-- clone할 tag element -->
-		<a class="review-tag" id="review-tag-div" href="#" style="display:none;"></a>	
-	</div>
-	
-	<!-- Modal -->
-	<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="reviewModalLabel">
-						${storeVo.name}에 대한 리뷰</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body" data-role="content">
-					<form id="reviewForm">
-						<input name="store_id" value=${storeVo.store_Id} style="display:none;" >
-						<input name="review_id" id="review_id" value="0" style="display:none;" >
-						<div class="form-group">
-							<label for="picture-file">사진 선택</label>
-							<!-- <input type="file" name="file" id="picture-file" multiple="multiple"> --><!-- 다중으로 입력 하는 방법을 생각해야 할듯 -->
-							<input multiple="multiple" name="file" id="files" type="file"/>
-							
-						</div> 
-						<div class="form-group">
-							<label for="review-content">후기</label>
-							<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
-						</div>
-						<div class="form-group storeLevel level">
-							<label for="level">평점</label>
-							<div id="level"></div>
-						</div>	
-						<div class="form-group storeLevel">
-							<label for="taste-level">맛</label>
-							<div id="taste-level"></div>
-						</div>
-						<div class="form-group storeLevel">
-							<label for="price-level">가격</label>
-							<div id="price-level"></div>
-						</div>	
-						<div class="form-group storeLevel">
-							<label for="service-level">서비스</label>
-							<div id="service-level"></div>
-						</div>
-						<div class="form-group storeLevel">
-							<label for="mood-level">분위기</label>
-							<div id="mood-level"></div>
-						</div>
-						<div class="form-group storeLevel">
-							<label for="convenience-level">편의성</label>
-							<div id="convenience-level"></div>
-						</div>
-						
-						<div class="form-group tagsCheckbox">
-							<c:forEach items="${tagNameList}" var="tagName">
-								<label class="checkbox-inline">
-									<input type="checkbox" name="tag" value="<c:out value="${tagName}"/>"><c:out value="${tagName}"/>
-								</label>
-							</c:forEach>
-						</div>
-						<textarea class="form-control" name="tags" id="review-tags" style="display: none;"></textarea>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-					<button type="button" class="btn btn-primary" id="saveReviewBtn">작성</button>
-					<button type="button" class="btn btn-primary" id="editReviewBtn">수정</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- 리뷰작성 모달 끝-->
 	<!-- store 정보 수정 모달 시작  -->
 	<div class="modal fade" id="StoreInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -1209,17 +1370,17 @@
 						<div class="form-group">
 							<label for="openTime" class="col-sm-2 control-label">영업시간</label>
 							<div class="col-sm-10">
-								<input type="time" id="openTime" name="openTime" value="${fn:substring(storeVo.openTime,11,16)}"> - <input type="time" id="endTime" name="endTime" value="${fn:substring(storeVo.endTime,11,16)}">
+								<input type="time" placeholder="00:00 형태로 입력해주세요" class="timePattern" id="openTime" name="openTime" max="10" pattern="[0-9]{2}:[0-9]{2}" value="${fn:substring(storeVo.openTime,11,16)}"> - <input type="time" placeholder="24:00 형태로 입력해주세요" class="timePattern" id="endTime" name="endTime" pattern="[0-9]{2}:[0-9]{2}" value="${fn:substring(storeVo.endTime,11,16)}"> <span class="validity"></span>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="tel" class="col-sm-2 control-label">전화번호</label>
 							<div class="col-sm-10">
-								<input type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:substring(storeVo.tel,0,fn:indexOf(storeVo.tel, '-'))}" />
+								<input numberOnly type="text" name="tel1" size="3" maxlength="3" pattern="[0-9]{3}" value="${fn:split(storeVo.tel,'-')[0]}" required />
 								-
-								<input type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+1,fn:indexOf(storeVo.tel, '-')+5)}" />
+								<input numberOnly type="text" name="tel2" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:split(storeVo.tel,'-')[1]}" required />
 								-
-								<input type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:substring(storeVo.tel,fn:indexOf(storeVo.tel, '-')+6,fn:indexOf(storeVo.tel, '-')+10)}" />
+								<input numberOnly type="text" name="tel3" size="4" maxlength="4" pattern="[0-9]{4}" value="${fn:split(storeVo.tel,'-')[2]}" required />
 							</div>
 						</div>
 						<div class="form-group">
@@ -1238,45 +1399,6 @@
 		</div>
 	</div>
 	<!-- store 정보 수정 모달 끝 -->
-	
-	<!-- 삭제 확인 모달 -->
-	<div id="confirm" class="modal fade" aria-hidden="true" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" >
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-		<div class="modal-body">정말 삭제하시겠습니까?</div>
-		<div class="modal-footer">
-			<button type="button" data-dismiss="modal" class="btn btn-danger"
-				id="delete">삭제</button>
-			<button type="button" data-dismiss="modal" class="btn">취소</button>
-		</div>
-		</div>
-		</div>
-	</div>
-	
-	<!-- 리뷰 이미지 디테일 -->
-	<div id="reviewsDetailModal" class="modal fade" tabindex="-1">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	      </div>
-	      <div id= "reviewDetailDiv" class="modal-body">
-	        <p>원본 이미지</p>
-	      </div>
-	      
-	      
-	      <div class="leftRightBtns">
-	        <button id="preReviewImgBtn" type="button" class="btn btn-default" aria-label="Left Align">
-			  <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-			</button>
-	        <button id="nextReviewImgBtn" type="button" class="btn btn-default" aria-label="Left Align">
-			  <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-			</button>
-			<div id="reviewThumbnailGroup" class="reviewThumbnailGroup">
-				
-			</div>
-	      </div>
-	    </div><!-- /.modal-content -->
-	</div><!-- /.modal -->
 	
 	
 	<c:if test="${storeVo.isManager eq 1}">
@@ -1350,11 +1472,14 @@
 		<!-- storeImg clone -->
 		<div class="storeImg" id="storeImgTemplate">
 			<img alt="Image">
-			<span class="glyphicon glyphicon-remove StoreImgDeleteSpan" aria-hidden="true"></span>
+			<span class="glyphicon glyphicon-remove storeImgDeleteSpan" aria-hidden="true"></span>
 		</div>
 						
 	</c:if>
 	<span id="accountId" style="display : none;">${accountVo.account_id }</span>
+	
+	<jsp:include page="../../resources/template/reviewElement.jsp" flush="true"></jsp:include>
+	
 </body>
 
 </html>

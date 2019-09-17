@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ReviewVo {
 	//REVIEW table
@@ -260,6 +261,18 @@ public class ReviewVo {
 		this.tags = tags;
 	}
 	
+	public void setTags(Map<String, Object> tagMap) {
+		this.tags ="";
+		for (Entry<String, Object> tag : tagMap.entrySet()) {
+			if((int)tag.getValue()==1) {
+				this.tags +=tag.getKey()+",";				
+			}
+		}
+		if(this.tags.length() >0) {
+			this.tags = this.tags.substring(0, this.tags.length()-1);			
+		}
+	}
+	
 	
 	//mypage용도//
 
@@ -290,6 +303,7 @@ public class ReviewVo {
 	}
 	public void setTagMap(Map<String, Object> tagMap) {
 		this.tagMap = tagMap;
+		setTags(tagMap);
 	}
 
 

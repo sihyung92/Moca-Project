@@ -48,8 +48,6 @@ public interface StoreDao {
 	int updateViewcnt(int store_id) throws SQLException;
 
 	List<String> selectTagList() throws SQLException;
-
-	int insertTags(Map<String, Object> tagMap) throws SQLException;
 	
 	List<StoreVo> selectFollowersStoresList(int id);	
 	
@@ -58,5 +56,33 @@ public interface StoreDao {
 	List<StoreVo> selectStoresListByTag(Map<String, String> variables);
 	
 	List<String> selectTagNames();
+	
+	int selectAlreadyReviewByKakaoId(int kakaoId) throws SQLException;
+
+	int updateLevelCnt(int storeId, String levelCntColumn, int addCntNum) throws SQLException;
+
+	List<StoreVo> selectAllLikeCntList();
+
+	int updateStoreLikeCnt(StoreVo storeVo);
+
+	List<StoreVo> selectAllReviewCntList();
+
+	int updateStoreReviewCnt(StoreVo storeVo);
+
+	List<StoreVo> selectAllFavoriteCntList();
+
+	int updateStoreFavoriteCnt(StoreVo storeVo);
+
+	int updateReviewCount(int store_id, int upDown) throws SQLException;
+
+	int updateLikeCount(int storeId, int upDown) throws SQLException;
+
+	int updateFavoriteCount(int storeId, int upDown) throws SQLException;
+
+	int updateStoreTag(int store_id, String topTags) throws SQLException;
+	
+	List<Integer> selectAllStoreId();
+
+	int updateLevelCntAll(Integer store_id, int level1Cnt, int level2Cnt, int level3Cnt, int level4Cnt, int level5Cnt);
 	
 }

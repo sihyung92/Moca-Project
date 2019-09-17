@@ -150,11 +150,6 @@ public class StoreDaoImpl implements StoreDao {
 	public List<String> selectTagList() throws SQLException{
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTagList");
 	}
-
-	@Override
-	public int insertTags(Map<String, Object> tagMap) throws SQLException {
-		return sqlSession.insert("com.kkssj.moca.model.StoreDao.insertTags", tagMap);
-	} 
 	
 	@Override
 	public List<StoreVo> selectStoresListByRating(Map<String, String> variables) {
@@ -164,5 +159,96 @@ public class StoreDaoImpl implements StoreDao {
 	@Override
 	public List<String> selectTagNames(){
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectTagNames");
+	}
+
+	@Override
+	public int selectAlreadyReviewByKakaoId(int kakaoId) throws SQLException {
+		return sqlSession.selectOne("com.kkssj.moca.model.StoreDao.selectAlreadyReviewByKakaoId",kakaoId);
+	}
+
+	@Override
+	public int updateLevelCnt(int storeId, String levelCntColumn, int addCntNum) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", storeId);
+		map.put("LEVELCNTCOLUMN", levelCntColumn);
+		map.put("ADDCNTNUM", addCntNum);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLevelCnt",map);
+	}
+
+	@Override
+	public List<Integer> selectAllStoreId() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllStoreId");
+	}
+	public List<StoreVo> selectAllLikeCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllLikeCntList");
+	}
+	@Override
+	public int updateStoreLikeCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreLikeCnt", storeVo);
+	}
+
+	@Override
+	public List<StoreVo> selectAllReviewCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllReviewCntList");
+	}
+
+	@Override
+	public int updateStoreReviewCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreReviewCnt", storeVo);
+	}
+
+	@Override
+	public List<StoreVo> selectAllFavoriteCntList() {
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectAllFavoriteCntList");
+	}
+
+	@Override
+	public int updateStoreFavoriteCnt(StoreVo storeVo) {
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreFavoriteCnt", storeVo);
+	}
+
+	@Override
+	public int updateReviewCount(int store_id, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_id);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateReviewCount", map);
+	}
+
+	@Override
+	public int updateLikeCount(int storeId, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", storeId);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLikeCount", map);
+	}
+
+	@Override
+	public int updateFavoriteCount(int storeId, int upDown) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", storeId);
+		map.put("upDown", upDown);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateFavoriteCount", map);
+	}
+
+	@Override
+	public int updateStoreTag(int store_id, String topTags) throws SQLException  {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_id);
+		map.put("TAG", topTags);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateStoreTag", map);
+	}
+
+	@Override
+	public int updateLevelCntAll(Integer store_id, int level1Cnt, int level2Cnt, int level3Cnt, int level4Cnt,
+			int level5Cnt) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("STORE_ID", store_id);
+		map.put("LEVEL1CNT", level1Cnt);
+		map.put("LEVEL2CNT", level2Cnt);
+		map.put("LEVEL3CNT", level3Cnt);
+		map.put("LEVEL4CNT", level4Cnt);
+		map.put("LEVEL5CNT", level5Cnt);
+		return sqlSession.update("com.kkssj.moca.model.StoreDao.updateLevelCntAll", map);
 	}
 }
