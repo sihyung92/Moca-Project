@@ -3,11 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!-- kss 공통 header  -->
-    <%
-    	if(response.getStatus() == response.SC_NOT_FOUND){
-    		response.sendRedirect("/err/noneMeanErrPage");
-    	}
-    %>
+    
 <!--//css 설정-->
     <style type="text/css">
         .modal .modal-body {
@@ -125,14 +121,12 @@
             }
                                 
             var userName = '${sessionScope.login.nickname}';                
-            var thumbnailImg = null;
+            var thumbnailImg = '${sessionScope.login.thumbnailImage}';
 
-            if('${sessionScope.login.thumbnailImage}'==null){
+            if(thumbnailImg == ''){
                 thumbnailImg = '/moca/resources/imgs/nonProgileImage.png';
-            }else{
-                thumbnailImg = '${sessionScope.login.thumbnailImage}'; 
             }
-            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" alt="" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
+            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
             $('#replace-to-icon').replaceWith('<li></li>');
             $('#replace-to-logout').replaceWith('<li><a href="#" id="moca-logout">로그아웃</a></li>');
 
@@ -157,7 +151,10 @@
         //회원탈퇴 기능 처리
         //signOut();
         //설문 버튼 처리
-
+        
+        
+        
+        //하나짜리임 hiddenSearch~ 랑 window~ 랑
     	$('.hiddenSearch').each(function(){	
     		$(this).click(function(){
     			if ($(this).hasClass('open')){
@@ -171,11 +168,26 @@
     			}
     		});
     	});
+       $(window).on('resize',function(){
+           if($('.navbar-header').width()>760||$('.navbar-header').width()==59){
+               if($('hiddenSearch').hasClass('open')){
+                    $('.searchBar').hide();
+                    $(this).removeClass('open'); 
+                }
+                else{
+                    $(this).removeClass('open');
+                    $('.searchBar').show();
+                    $(this).addClass('open');
+                }
+            }
+       });
+   
+        
+        
+        
         
     });
-    
-    
-    //함수 정의
+
     function redirToHome(){
     	location.replace("http://localhost:8080/moca/home2")
 	}
