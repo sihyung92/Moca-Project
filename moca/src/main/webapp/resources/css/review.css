@@ -9,6 +9,7 @@
 /*클릭되는 모든 svg의 css설정*/
 .clickableSvgCss{
 	cursor: pointer;
+	width:1.5em;
 }
 .clickableSvgCss:hover{
 	
@@ -29,9 +30,6 @@
 	margin-top: 3em;
 }
 
-.review-content img{
-	cursor: pointer;
-}
 .reviewCnt{
 	margin-bottom: 3em;
 	background-color:white;
@@ -54,7 +52,13 @@
     text-overflow: ellipsis;
     float:left;
 }
-.more-review-content-btn{display:none;white-space:nowrap;float:right;}
+.more-review-content-btn{display:none;white-space:nowrap;}
+
+.more-review-content-btn img{
+	width: 1em;
+	margin-left:2px;
+	margin-right: 10px;
+}
    
 .reviewThumbnailGroup .reviewThumbnail{
    	display: inline-block;

@@ -10,16 +10,16 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=6"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=10"/>" />
 	<style type="text/css">
 		body{
-			background: #f6f5ef;
+			background: rgba(246,245,239,0.5);
 			font-family: 'Noto Sans KR', sans-serif;
 		}
 		.jumbotron{
-			background: #EAE7DC;
+			background: rgba(234,231,220,0.4);
 			padding-top: 0 ;
-			border : 10px solid rgba(255,255,255,0.7);
+			border : 10px solid rgba(234,231,220,0.4);
 		}
 		#likeFavoriteDiv{
 			text-align: right;
@@ -118,7 +118,6 @@
 		}
 		
 		#carousel-custom {
-		    margin: 20px auto;
 		    width: 100%;
 		}
 		
@@ -158,16 +157,117 @@
 		#storeAverageLevel{
 			display : inline;
 		}
+		#storeAverageLevelDiv span{
+			position: relative;
+		    top: 3px;
+		    padding-left: 10px;
+		    font-size: 1.2em;
+		    font-weight: bold;
+		}
 		
 		#storeSummaryDiv{
-			font-size : 150%;
-		}
-				
-		.jumbotron h1{
-			padding-bottom: 3%;
+			font-size : 120%;
 		}
 		
-
+		.review-info{
+			padding-left:50px;
+		}
+		
+		.like-count, .hate-count{
+			width: 100px;
+		}
+		
+		.nickName-div{
+			padding-top: 10px;
+			font-size: 14pt;
+			font-weight: bold;
+		}
+		
+		#storeLikeCount, #storeFavoriteCount{
+			font-size:120%;
+			font-weight: bold;
+		}
+		
+		#storeReviewCountDiv img, #storeLikeCountDiv img, #storeFavoriteCountDiv img{
+			position: relative;
+		    top: -3px;
+		    padding-right: 5px;
+		}
+		
+		#storeAverageLevelDiv{
+			position: relative;
+    		top: -3px;
+		}
+		
+		#storeTagDiv{
+			padding-top: 20px;
+		}
+		
+		.panel-default > .panel-heading {
+			background: rgba(234,231,220,1);
+		}
+		
+		.panel-default{
+			border:none;
+			background: #fffff5;
+		}
+		
+		.follows-div, .reviews-div{
+			display: inline;
+			font-size: 12pt;
+		}
+		.follows-div{
+			padding-right: 8px;
+		}
+		.follows-div img, .reviews-div img{
+			width:15px;
+		}
+		
+		.editDeleteGroup {
+		    position: relative;
+		    top: -20px;
+		    left: 95%;
+		    width: 100%;
+		}
+		
+		.review-level div{
+			padding-right: 15px;
+		}
+		
+		.review-level {
+			padding-bottom: 5px;
+			margin-bottom: 10px;
+			border-bottom: 2px solid rgba(234,231,220,1);
+		}
+		
+		.write-date-div{
+			margin: 10px 0px;
+		}
+		
+		.reviewInfo-write-date{
+			background: rgba(234,231,220,1);
+			padding: 2px 12px;
+		}
+		
+		.reviewInfo-review-content{
+			padding: 2px;
+			font-size: 110%;
+			font-family: 'Noto Sans KR', sans-serif;
+			background: none;
+			border: none;
+			margin: 0px;
+		}
+		.review-content-div{
+			padding-bottom:10px;
+			margin-bottom: 10px;
+			border-bottom: 2px solid rgba(234,231,220,1);
+		}
+		
+		.average-level-div {
+		    text-align: center;
+		    padding-top: 12%;
+		}
+		
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -176,7 +276,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=1"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=3"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -859,7 +959,7 @@
 	<div id="content">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-md-8 col-md-offset-2">
+				<div class="col-xs-8 col-xs-offset-2">
 					<div class="jumbotron text-center">
 						<span id="storeId" style= "display: none;">${storeVo.store_Id }</span>
 						<div id="likeFavoriteDiv">
@@ -909,25 +1009,25 @@
 				</div>
 			</div>
 			<div id="storeSummaryDiv">
-				<div class="row">
-					<div class="col-md-2 col-md-offset-2">
+				<div class="row text-center">
+					<div class="col-xs-2 col-xs-offset-2">
 						<div id="storeAverageLevelDiv">
 							<div id="storeAverageLevel"></div><span>${storeVo.averageLevel}</span>
 						</div>
 					</div>
-					<div class="col-md-2">
+					<div class="col-xs-2">
 						<div id="storeReviewCountDiv">
 							<img src="<c:url value="/resources/imgs/icons/edit.svg"/>">
-							<span class="storeReviewCount">${storeVo.reviewCnt}</span>개의 리뷰
+							<span class="storeReviewCount" style="font-size: 120%;font-weight: bold;">${storeVo.reviewCnt}</span>개의 리뷰
 						</div>
 					</div>
-					<div class="col-md-2">
+					<div class="col-xs-2">
 						<div id="storeLikeCountDiv">
 							<img src="<c:url value="/resources/imgs/icons/heart.svg"/>">
 							<span id="storeLikeCount">${storeVo.likeCnt}</span>명이 좋아하는
 						</div>
 					</div>
-					<div class="col-md-2">
+					<div class="col-xs-2">
 						<div id="storeFavoriteCountDiv">
 							<img src="<c:url value="/resources/imgs/icons/bookmark.svg"/>">
 							<span id="storeFavoriteCount">${storeVo.favoriteCnt}</span>명이 가고 싶어하는
@@ -937,7 +1037,7 @@
 				<br><br>
 			</div>
 			<div class="row">
-				<div class="col-md-8 col-md-offset-2">
+				<div class="col-xs-8 col-xs-offset-2">
 					<!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->						
 					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
 					    <div class='carousel-outer'>
@@ -990,7 +1090,7 @@
 		</div>
 		<div class="row">
 			<br>
-			<div class="col-md-4 col-md-offset-2">
+			<div class="col-xs-4 col-xs-offset-2">
 				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 					<div class="panel panel-default">
 						<div class="panel-heading" role="tab" id="headingOne">
@@ -1002,16 +1102,16 @@
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 							<div class="panel-body">
-								
-								<span id="wifiInfo">
-									<c:if test="${storeVo.wifi eq 0}"><img src="<c:url value="/resources/imgs/icons/wifi-none.svg"/>"></c:if>
-									<c:if test="${storeVo.wifi eq 1}"><img src="<c:url value="/resources/imgs/icons/wifi.svg"/>"></c:if>
-								</span>
-								<br>
-								<span id="parkingLotInfo">
-									<c:if test="${storeVo.parkingLot eq 0}"><img src="<c:url value="/resources/imgs/icons/parking-none.svg"/>"></c:if>
-									<c:if test="${storeVo.parkingLot eq 1}"><img src="<c:url value="/resources/imgs/icons/parking.svg"/>"></c:if>
-								</span>
+								<div>
+									<span id="wifiInfo">
+										<c:if test="${storeVo.wifi eq 0}"><img src="<c:url value="/resources/imgs/icons/wifi-none.svg"/>"></c:if>
+										<c:if test="${storeVo.wifi eq 1}"><img src="<c:url value="/resources/imgs/icons/wifi.svg"/>"></c:if>
+									</span>
+									<span id="parkingLotInfo">
+										<c:if test="${storeVo.parkingLot eq 0}"><img src="<c:url value="/resources/imgs/icons/parking-none.svg"/>"></c:if>
+										<c:if test="${storeVo.parkingLot eq 1}"><img src="<c:url value="/resources/imgs/icons/parking.svg"/>"></c:if>
+									</span>
+								</div>
 								<br>
 								휴무일 : <span id="dayOffInfo">${storeVo.dayOff}</span><br>
 								영업시간 :
@@ -1045,19 +1145,19 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4">
-				<div id="map" style="width:100%;height:261px;"></div>
+			<div class="col-xs-4">
+				<div id="map" style="width:100%;height:22em;"></div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-8 col-md-offset-2">
+			<div class="col-xs-8 col-xs-offset-2">
 				<h1>리뷰<span class="storeReviewCount">(${storeVo.reviewCnt})</span></h1>
 				<div class="review-header">
 					<!-- 리뷰  -->
 					<div id="overAllLevel">
 						<!-- 스토어 전체 리뷰 평점 -->
 						<div class="row">
-							<div class="col-md-6 overAllLevel-left">
+							<div class="col-xs-6 overAllLevel-left">
 								<span>종합 평점</span>
 								<h3>${storeVo.averageLevel}</h3>
 								<div id="store-level"></div>
@@ -1078,7 +1178,7 @@
 								</tr>
 								</table>
 							</div>
-							<div class="col-md-6"> 
+							<div class="col-xs-6"> 
 								<canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
 							</div>
 						</div>						
@@ -1103,7 +1203,7 @@
 									<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 								</div>
 							</c:if>
-							<div class="reviewer-info col-md-2" >
+							<div class="reviewer-info col-xs-2 text-center" >
 								<div class="profile-div">
 									<c:if test="${empty reviewVo.thumbnailImage}">
 										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" 
@@ -1128,7 +1228,7 @@
 							</div>
 
 
-							<div class="review-info col-md-8"> 
+							<div class="review-info col-xs-8"> 
 								<div class="row">
 									<div class="review-level">
 										<div class="taste-level-div">
@@ -1161,13 +1261,7 @@
 									</div>
 									<div class="review-data">
 										<div class="write-date-div">
-											<label>작성일</label>
 											<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
-										</div>
-										<div class="review-content-div">
-											<label>리뷰 내용</label>
-											<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
-											<span class="more-review-content-btn">더보기</span>
 										</div>
 										<div class="review-tags-div">
 											<c:forEach items="${reviewVo.tagMap}" var="i">
@@ -1175,6 +1269,10 @@
 													<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
 												</c:if>
 											</c:forEach>
+										</div>
+										<div class="review-content-div">
+											<pre class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</pre>
+											<span class="more-review-content-btn"><img src="<c:url value="/resources/imgs/icons/chevron-bottom.svg"/>">더보기</span>
 										</div>
 									</div>
 									<div class="form-group like-hate">
@@ -1188,7 +1286,7 @@
 													<img class="like-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-up.svg"/>">
 												</c:otherwise>
 											</c:choose>
-											<input type="number" class="like-count" value=${reviewVo.likeCount } readonly size="3">
+											<input type="number" class="like-count" value=${reviewVo.likeCount } readonly>
 											<c:choose>
 												<c:when test="${reviewVo.isLike==-1 }">
 													<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down-fill.svg"/>">
@@ -1198,13 +1296,13 @@
 												</c:otherwise>
 											</c:choose>
 	
-											<input type="number" class="hate-count" value=${reviewVo.hateCount } readonly size="5">
+											<input type="number" class="hate-count" value=${reviewVo.hateCount } readonly>
 										</div>
 									</div>
 								</div>
 							</div>
 
-							<div class="average-level-div  col-md-2">
+							<div class="average-level-div  col-xs-2">
 								<label for="average_level">평균</label>
 								<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>점
 							</div>								

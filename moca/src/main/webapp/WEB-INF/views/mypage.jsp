@@ -11,7 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=4"/>" />
 	<style type="text/css">
 	body{
-		background:#f6f5ef;
+		background:rgba(246,245,239,0.5);
 	}
 	#userGraph{
 		margin-top:70px;
