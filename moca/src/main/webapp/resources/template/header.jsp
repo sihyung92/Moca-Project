@@ -2,13 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <!-- kss 공통 header  -->
-    <%
-    	if(response.getStatus() == response.SC_NOT_FOUND){
-    		response.sendRedirect("/err/noneMeanErrPage");
-    	}
-    %>
+    
 <!--//css 설정-->
     <style type="text/css">
         .modal .modal-body {
@@ -32,7 +27,8 @@
         }
         
     </style>
-    
+
+<link rel="stylesheet" type="text/css" href="/moca/resources/css/testHeaderCss.css"/>
 <!-- naver API -->
     <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js"></script>
 <!-- kakao API -->
@@ -126,14 +122,12 @@
             }
                                 
             var userName = '${sessionScope.login.nickname}';                
-            var thumbnailImg = null;
+            var thumbnailImg = '${sessionScope.login.thumbnailImage}';
 
-            if('${sessionScope.login.thumbnailImage}'==null){
+            if(thumbnailImg == ''){
                 thumbnailImg = '/moca/resources/imgs/nonProgileImage.png';
-            }else{
-                thumbnailImg = '${sessionScope.login.thumbnailImage}'; 
             }
-            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" alt="" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
+            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
             $('#replace-to-icon').replaceWith('<li></li>');
             $('#replace-to-logout').replaceWith('<li><a href="#" id="moca-logout">로그아웃</a></li>');
 
@@ -159,10 +153,42 @@
         //signOut();
         //설문 버튼 처리
         
+        
+        
+        //하나짜리임 hiddenSearch~ 랑 window~ 랑
+    	$('.hiddenSearch').each(function(){	
+    		$(this).click(function(){
+    			if ($(this).hasClass('open')){
+    				$('.searchBar').hide();
+    				$(this).removeClass('open'); 
+    			}
+    	 		else{
+    	 			$(this).removeClass('open');
+    	 			$('.searchBar').show();
+    	 			$(this).addClass('open');
+    			}
+    		});
+    	});
+       $(window).on('resize',function(){
+           if($('.navbar-header').width()>760||$('.navbar-header').width()==59){
+               if($('hiddenSearch').hasClass('open')){
+                    $('.searchBar').hide();
+                    $(this).removeClass('open'); 
+                }
+                else{
+                    $(this).removeClass('open');
+                    $('.searchBar').show();
+                    $(this).addClass('open');
+                }
+            }
+       });
+   
+        
+        
+        
+        
     });
-    
-    
-    //함수 정의
+
     function redirToHome(){
     	location.replace("http://localhost:8080/moca/home2")
 	}
@@ -300,6 +326,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+      <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button class="glyphicon glyphicon-search" aria-hidden="true"></button></div>
       <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
 
@@ -309,11 +336,11 @@
 	        <div class="form-group">
 	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
 			  <input type="hidden" name="filter" value="distance"/>
+	        <button id="searchBtn" type="submit" class="glyphicon glyphicon-search" aria-hidden="true"></button>
 	        </div>
-	        <button id="searchBtn" type="submit" class="btn btn-default">Submit</button>
 	      </form>
         <ul class="nav navbar-nav navbar-right">
-            <li ><a href="#">moca의 카페가 되어주세요!</a></li>
+            <li><a href="#" id="beMoca">moca의 카페가 되어주세요!</a></li>
             <li id="replace-to-userName"></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mypage<span class="caret"></span></a>
