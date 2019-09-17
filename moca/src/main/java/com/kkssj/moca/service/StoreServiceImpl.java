@@ -45,6 +45,10 @@ public class StoreServiceImpl implements StoreService{
 	AccountDao accountDao;
 	
 	
+	int[] reviewBadgeLevel = new int[] {0,10,30,50,100}; 
+	int[] likeHateBadgeLevel = new int[] {0,10,30,50,100}; 
+	
+	
 	//////////////////////////////
 	//Store
 
@@ -332,6 +336,9 @@ public class StoreServiceImpl implements StoreService{
 				//account의 reviewcnt를 증가시켜줌
 				accountDao.updateReviewCount(accountVo.getAccount_id(),1);
 				
+				//배지 check 및 부여
+				badgeManage(accountVo.getAccount_id(), "review");
+				
 				
 				///////////////////////////
 				//store reviewCnt
@@ -352,6 +359,26 @@ public class StoreServiceImpl implements StoreService{
 		return null;
 	}
 	
+	private void badgeManage(int account_id, String callWhere) throws SQLException {
+		int level = 0;
+		if(callWhere.equals("review")) {
+			int reviewCount = reviewDao.selectReviewCountByAccountId(account_id);
+			
+			for (int i = 0; i < reviewBadgeLevel.length; i++) {
+				if(reviewBadgeLevel[i] == reviewCount) {
+					level = i;
+				}
+			}
+			
+			if(level != 0) {
+				accountDao.insertBadge(account_id, "리뷰" , level);
+			}
+		}else if(callWhere.equals("likeHate")) {
+			int likeHateCount = reviewDao.selectLikeHateCountByAccountId(account_id);
+		}
+		
+		
+	}
 	private int syncStoreTag(int store_id, List<String> tagList) throws SQLException {
 		//태그 종류와 해당 태그의 입력횟수를 저장하는 map
 		Map<String, Integer> tagsCount = new HashMap<String, Integer>();
@@ -581,6 +608,8 @@ public class StoreServiceImpl implements StoreService{
 			String BeforelevelCntColumn1 = setLevelCntColumn(beforeAveragelevel1);
 			storeDao.updateLevelCnt(reviewVo.getStore_id(), BeforelevelCntColumn1, -1);
 			
+			badgeManage(reviewVo.getAccount_id(), "review");
+			
 			///////////////////////////
 			//store reviewCnt
 			storeDao.updateReviewCount(reviewVo.getStore_id(), -1);
@@ -706,9 +735,6 @@ public class StoreServiceImpl implements StoreService{
 	}
 	
 	
-	
-	
-	
 	///////////////////////////////
 	//likeHate
 	@Override
@@ -736,6 +762,8 @@ public class StoreServiceImpl implements StoreService{
 					if(accountVo.getExp() >= accountVo.getMaxExp()) {
 						accountDao.updateAccountlevel(likeAccountId);
 					}
+					
+					badgeManage(likeAccountId, "likeHate");
 				}
 			}else { 
 				classification = "리뷰싫어요클릭";
@@ -793,6 +821,8 @@ public class StoreServiceImpl implements StoreService{
 					if(accountVo.getExp() < accountVo.getMinExp()) {
 						accountDao.updateAccountlevelDown(likeAccountId);
 					}
+					
+					badgeManage(likeAccountId, "likeHate");
 				}
 				
 				result = reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()-1);

@@ -128,10 +128,10 @@
 	<div class="reviewer-info col-md-2">
 		<div class="profile-div">
 			<c:if test="${empty accountVo.thumbnailImage}">
-				<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
+				<img class="accountProfile img-circle clickableSvgCss" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
 			</c:if>
 			<c:if test="${not empty accountVo.thumbnailImage}">
-				<img class="accountProfile img-circle"  src="<c:url value="${accountVo.thumbnailImage }" />" alt="profile" style="width:100px;">
+				<img class="accountProfile img-circle clickableSvgCss"  src="<c:url value="${accountVo.thumbnailImage }" />" alt="profile" style="width:100px;">
 			</c:if>
 		</div>
 		<div class="nickName-div">
@@ -150,7 +150,7 @@
 	<div class="store-info col-md-2" style="cursor:pointer;">
 		<div class="storeLogo-div">
 			<!-- store logo 이미지 -->
-			<img src="<c:url value="/resources/imgs/logoDefault.png"/>"	alt="logo" class="img-circle" style="width: 100px; height:100px;">
+			<img src="<c:url value="/resources/imgs/logoDefault.png"/>"	class="clickableSvgCss" alt="logo" class="img-circle" style="width: 100px; height:100px;">
 		</div>
 		<div class="storeName-div">
 			<!-- store 이름 -->

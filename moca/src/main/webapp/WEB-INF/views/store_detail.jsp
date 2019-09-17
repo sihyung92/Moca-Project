@@ -10,7 +10,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=6"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=7"/>" />
 	<style type="text/css">
 		body{
 			background: #f6f5ef;
@@ -176,7 +176,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=15"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=16"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -951,10 +951,10 @@
 								<c:if test="${not empty StoreImgList}">
 									<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
 										<c:if test="${status.index eq 0}">
-											<div class="item active <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
+											<div class="item clickableSvgCss active <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<c:if test="${status.index ne 0}">
-											<div class="item <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
+											<div class="item clickableSvgCss <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<img src="<c:url value="${StoreImg.url }" />" alt="..." class="d-block w-100">
 							</div>
@@ -1119,11 +1119,11 @@
 							<div class="reviewer-info col-md-2" >
 								<div class="profile-div">
 									<c:if test="${empty reviewVo.thumbnailImage}">
-										<img class="accountProfile img-circle" src="<c:url value="/resources/imgs/basicProfile.png"/>" 
+										<img class="accountProfile img-circle clickableSvgCss" src="<c:url value="/resources/imgs/basicProfile.png"/>" 
 										alt="profile" style="width:100px;" onclick="location.href='/moca/mypage/${reviewVo.account_id}'"  >
 									</c:if>
 									<c:if test="${not empty reviewVo.thumbnailImage}">
-										<img class="accountProfile img-circle"  src="<c:url value="${reviewVo.thumbnailImage }" />" 
+										<img class="accountProfile img-circle clickableSvgCss"  src="<c:url value="${reviewVo.thumbnailImage }" />" 
 										alt="profile" style="width:100px;" onclick="location.href='/moca/mypage/${reviewVo.account_id}'" >
 									</c:if>
 								</div>
@@ -1168,7 +1168,7 @@
 									<div class="reviewThumbnailGroup">
 										<c:forEach items="${reviewVo.imageList}" var="reviewImg">
 											<div class="reviewThumbnail">
-												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail" id="${reviewImg.uu_id}">
+												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail clickableSvgCss" id="${reviewImg.uu_id}">
 											</div>
 										</c:forEach>
 									</div>

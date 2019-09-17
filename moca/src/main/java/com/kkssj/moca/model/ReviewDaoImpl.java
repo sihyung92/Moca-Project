@@ -275,4 +275,14 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateReviewImageViews", uu_id);
 	}
 
+	@Override
+	public int selectReviewCountByAccountId(int account_id) throws SQLException {
+		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectReviewCountByAccountId", account_id);
+	}
+
+	@Override
+	public int selectLikeHateCountByAccountId(int account_id) throws SQLException {
+		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectLikeHateCountByAccountId", account_id);
+	}
+
 }

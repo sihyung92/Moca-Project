@@ -76,4 +76,8 @@ public interface ReviewDao {
 	List<Double> selectReviewAverageLevelByStoreId(Integer store_id);
 
 	int updateReviewImageViews(String uu_id);
+
+	int selectReviewCountByAccountId(int account_id) throws SQLException;
+
+	int selectLikeHateCountByAccountId(int account_id) throws SQLException;
 }

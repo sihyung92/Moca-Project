@@ -175,4 +175,8 @@
   	UPDATE REVIEWIMAGE ri SET ri.VIEWS = ri.VIEWS+1 WHERE ri.UU_ID = #{UU_ID}
   </update>
   
+  <select id="selectLikeHateCountByAccountId">
+  	
+  </select>
+  
 </mapper>

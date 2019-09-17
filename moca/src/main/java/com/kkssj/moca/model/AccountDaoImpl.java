@@ -210,4 +210,13 @@ public class AccountDaoImpl implements AccountDao {
 		map.put("CNT", cnt);
 		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowingCount",map);
 	}
+
+	@Override
+	public int insertBadge(int account_id, String classification, int level) throws SQLException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ACCOUNT_ID", account_id);
+		map.put("CLASSIFICATION", classification);
+		map.put("BADGELEVEL", level);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.insertBadge", map);
+	}
 }

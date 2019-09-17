@@ -636,13 +636,13 @@
 											<!-- store logo 이미지 -->
 											<c:if test="${empty reviewVo.storeLogoImg}">
 												<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
-													alt="logo" class="img-circle" style="width: 100px; height:100px;" 
-													onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+													alt="logo" class="img-circle clickableSvgCss" style="width: 100px; height:100px;" 
+													onclick="location.href='/moca/stores/${reviewVo.store_id}'" >
 											</c:if>
 											<c:if test="${not empty reviewVo.storeLogoImg}">
 												<img src="<c:url value="${reviewVo.storeLogoImg }" />" alt="logo"
-													class="img-circle" style="width: 100px; height:100px;"
-													onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+													class="img-circle clickableSvgCss" style="width: 100px; height:100px;"
+													onclick="location.href='/moca/stores/${reviewVo.store_id}'" >
 											</c:if>
 										</div>
 										<div class="storeName-div">
@@ -779,7 +779,7 @@
 	<div class="row" id="storeTemplate" style="display : none;" style="cursor:pointer;">
 		<span class="storeId" style="display:none;"></span>
 		<div class="storeLogoDiv col-md-2 col-md-offset-1">
-			<img src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">
+			<img src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle clickableSvgCss" style="width:100px;">
 		</div>
 		<div class="storeInfoDiv col-md-5">
 			<div class="storeNameDiv">
