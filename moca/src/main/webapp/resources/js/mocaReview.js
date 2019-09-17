@@ -305,7 +305,7 @@ var addReviewImgae = function(reviewRow, reviewVo){
 
 	for(var i=0; i<reviewVo.imageList.length; i++){
 		var oldReviewThumbnail = reviewThumbnail.html();
-		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail clickableSvgCss"><img src="'+
+		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail clickableThumbnailCss"><img src="'+
 				reviewVo.imageList[i].thumbnailUrl
 				+'" alt="Image" class="img-thumbnail" id="'+
 				reviewVo.imageList[i].uu_id

@@ -9,6 +9,11 @@
 /*클릭되는 모든 svg의 css설정*/
 .clickableSvgCss{
 	cursor: pointer;
+}
+.clickableThumbnailCss{
+	cursor: pointer;
+}
+.review-content .clickableSvgCss{
 	width:1.5em;
 }
 .clickableSvgCss:hover{
