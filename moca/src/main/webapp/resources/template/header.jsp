@@ -4,7 +4,11 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!-- kss 공통 header  -->
-    
+    <%
+    	if(response.getStatus() == response.SC_NOT_FOUND){
+    		response.sendRedirect("/err/noneMeanErrPage");
+    	}
+    %>
 <!--//css 설정-->
     <style type="text/css">
         .modal .modal-body {
@@ -52,6 +56,7 @@
 				return false;
 			}else{
 				$(this).parent().submit();
+				return false;
 			}
 		});
         
@@ -300,7 +305,7 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <form class="navbar-form navbar-left" action="<c:url value="/stores"/>">
+	      <form id="searchBar" class="navbar-form navbar-left" action="<c:url value="/stores"/>">
 	        <div class="form-group">
 	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
 			  <input type="hidden" name="filter" value="distance"/>
@@ -329,7 +334,7 @@
     <!-- Modal -->
     <div class="modal fade" id="Login-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" id="Login-Modal-dialog" role="document">
-            <div class="modal-content">
+            <div class="modal-content modal-login" id="modal-login">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">소셜 로그인</h4>

@@ -270,4 +270,9 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewAverageLevelByStoreId",store_id);
 	}
 
+	@Override
+	public int updateReviewImageViews(String uu_id) {
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateReviewImageViews", uu_id);
+	}
+
 }
