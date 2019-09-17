@@ -23,7 +23,7 @@ public class StoreDaoImpl implements StoreDao {
 	private static final Logger logger = LoggerFactory.getLogger(StoreDao.class);
 	
 	@Override
-	public List<StoreVo> selectListByTag(Map<String, String> variables) {
+	public List<StoreVo> selectListByTag(Map<String, Object> variables) {
 		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectByTag", variables);
 	}
 
