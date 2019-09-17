@@ -74,4 +74,6 @@ public interface ReviewDao {
 	List<Map<String, Integer>> selectTagListByStoreId(int store_id);
 
 	List<Double> selectReviewAverageLevelByStoreId(Integer store_id);
+
+	int updateReviewImageViews(String uu_id);
 }

@@ -1056,6 +1056,10 @@ public class StoreServiceImpl implements StoreService{
 		}
 		return 0;
 	}
+	@Override
+	public int editReviewImageViews(String uu_id) {
+		return reviewDao.updateReviewImageViews(uu_id);
+	}
 	
 	
 }

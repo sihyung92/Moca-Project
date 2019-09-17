@@ -92,4 +92,6 @@ public interface StoreService {
 	int syncStoresReviewCnt();
 
 	int syncStoresFavoriteCnt();
+
+	int editReviewImageViews(String uu_id);
 }

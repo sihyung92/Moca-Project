@@ -7,10 +7,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.support.DaoSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -72,7 +74,7 @@ public class StoreController {
 
 	// 리다이렉트로 상세페이지로
 	@GetMapping("/stores/{storeId}")
-	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session, HttpServletRequest req){
+	public String getStore(@PathVariable("storeId") int storeId, Model model, HttpSession session, HttpServletRequest req, HttpServletResponse res){
 		
 		////////////////////////////////
 		//account check
@@ -87,17 +89,17 @@ public class StoreController {
 		
 		////////////////////////////////
 		//store log
-		boolean addStroeView = true;
+		boolean addStoreView = true;
 		Map<Integer,Long> viewCntIsAdded = (Map<Integer, Long>) session.getAttribute("viewCntIsAdded");
 		
 		if(viewCntIsAdded.get(storeId)==null) {
 			viewCntIsAdded.put(storeId, System.currentTimeMillis());
-			addStroeView = false;
+			addStoreView = false;
 		}else {
 			long currentTime = System.currentTimeMillis();
 			long timeDiff = viewCntIsAdded.get(storeId);
 			if(currentTime-timeDiff>(1000*60*30)) {
-				addStroeView = false;
+				addStoreView = false;
 				viewCntIsAdded.put(storeId, System.currentTimeMillis());
 			}
 		}
@@ -106,12 +108,12 @@ public class StoreController {
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
 			//비회원 store view 로그 찍기
-			if(addStroeView==false)
+			if(addStoreView==false)
 			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}else {
 			logger.debug(accountVo.toString());
 			//회원 store view 로그 찍기
-			if(addStroeView==false)
+			if(addStoreView==false)
 			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}
 		
@@ -123,7 +125,8 @@ public class StoreController {
 
 		/// 이때 storeVo에 store_id 값이 없으면 해당페이지 없다는 view 리턴
 		if (storeVo.getStore_Id() == 0) {
-			// return "에러페이지";
+			res.setStatus(res.SC_NOT_FOUND);
+			return "error";
 		}
 		
 		List<String> tagNameList = storeService.getTagNameList();
@@ -637,6 +640,52 @@ public class StoreController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	
+	/////////////////////////
+	//리뷰 이미지 뷰 수 올리기
+	@PutMapping("/reviewImages/views")
+	public ResponseEntity upReviewImageViews(@RequestParam String url, HttpSession session) {
+		//
+		if(session.getAttribute("reviewImageViewsMap") ==null) {
+			session.setAttribute("reviewImageViewsMap", new HashMap<String, Long>());
+		}
+		
+		//리뷰 이미지의 뷰 수를 증가 시킬 수 있는가
+		boolean isUpReviewImageViews = true;
+		Map<String, Long> reviewImageViewsMap = (HashMap<String, Long>)session.getAttribute("reviewImageViewsMap");
+		
+		//처음 클릭한 이미지인 경우
+		if(reviewImageViewsMap.get(url) ==null) {
+			reviewImageViewsMap.put(url, System.currentTimeMillis());
+		}else {//이전에 클릭한 경우
+			long currentTime = System.currentTimeMillis();
+			long timeDiff = reviewImageViewsMap.get(url);
+			
+			//30분 전에 클릭한 경우
+			if((currentTime-timeDiff) <(1000*60*30)) {
+				isUpReviewImageViews = false;
+				reviewImageViewsMap.put(url, System.currentTimeMillis());
+			}
+		}
+		int result = 1;
+		
+		//증가시킬 경우
+		if(isUpReviewImageViews) {
+			ImageVo imageVo = new ImageVo();
+			imageVo.setUrl(url);
+			imageVo.setUu_idPathOriginNameByUrl();
+			
+			result = storeService.editReviewImageViews(imageVo.getUu_id());
+		}
+		
+		
+		if(result ==1) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
 	}
 
 
