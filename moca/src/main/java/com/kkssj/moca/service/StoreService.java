@@ -32,7 +32,7 @@ public interface StoreService {
 	///////////////////////
 	//review
 	//리뷰 리스트 n개씩 가져오기
-	List<ReviewVo> getReviewListLimit(int accountId, int storeId, int startNum, List<String> tagList);
+	List<ReviewVo> getReviewListLimit(int myAccountId, int targetStoreId, int startNum);
 	
 	//리뷰 추가
 	ReviewVo addReview(ReviewVo reviewVo, MultipartFile[] files);
@@ -83,4 +83,13 @@ public interface StoreService {
 	int editStoreLogo(int store_Id, MultipartFile newFiles, String delStoreLogo);
 
 	List<String> getTagNameList();
+
+	//store countLevel 맞추기(동기화)
+	int syncStoreLevel();
+
+	int syncStoresLikeCnt();
+
+	int syncStoresReviewCnt();
+
+	int syncStoresFavoriteCnt();
 }

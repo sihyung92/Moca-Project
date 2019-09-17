@@ -17,7 +17,7 @@ public interface MypageService{
 	List<AccountVo> getFollowingList(int accountId);
 	
 	//해당 account의 내가 쓴 리뷰 가져오기
-	List<ReviewVo> getMyreviewList(int accountId, int sessionId, int startNum);
+	List<ReviewVo> getMyReviewListLimit(int myAccountId, int targetAccountId, int startNum);
 
 	//해당 account의 follow신청
 	int addFollow(int follower, int following);
@@ -39,5 +39,9 @@ public interface MypageService{
 	
 	//해당 account의 회원탈퇴(삭제)
 	int deleteAccount(int accountId);
+
+	//tag 이름 가져오기
+	List<String> getTagNameList();
+	
 
 }

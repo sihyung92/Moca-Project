@@ -1,6 +1,9 @@
 package com.kkssj.moca.controller;
 
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -76,21 +79,50 @@ public class StoreController {
 		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
 		
+		//store Log 찍혔는지 확인
+		//storeview 찍기 위한 session (storeId당 30분)
+		if(session.getAttribute("viewCntIsAdded")==null) {
+			session.setAttribute("viewCntIsAdded",new HashMap<Integer, Long>());
+		}
+		
+		
+		////////////////////////////////
+		//store log
+		boolean addStroeView = true;
+		Map<Integer,Long> viewCntIsAdded = (Map<Integer, Long>) session.getAttribute("viewCntIsAdded");
+		
+		if(viewCntIsAdded.get(storeId)==null) {
+			viewCntIsAdded.put(storeId, System.currentTimeMillis());
+			addStroeView = false;
+		}else {
+			long currentTime = System.currentTimeMillis();
+			long timeDiff = viewCntIsAdded.get(storeId);
+			if(currentTime-timeDiff>(1000*60*30)) {
+				addStroeView = false;
+				viewCntIsAdded.put(storeId, System.currentTimeMillis());
+			}
+		}
+	
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
 			//비회원 store view 로그 찍기
+			if(addStroeView==false)
 			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}else {
 			logger.debug(accountVo.toString());
 			//회원 store view 로그 찍기
+			if(addStroeView==false)
 			logService.writeLogStore(req, "스토어뷰", storeId, accountVo.getAccount_id());
 		}
+		
+		
+
 		
 		StoreVo storeVo = storeService.getStore(storeId, accountVo.getAccount_id());
 		logger.debug(storeVo.toString());
 
-		// 이때 storeVo에 store_id 값이 없으면 해당페이지 없다는 view 리턴
+		/// 이때 storeVo에 store_id 값이 없으면 해당페이지 없다는 view 리턴
 		if (storeVo.getStore_Id() == 0) {
 			res.setStatus(res.SC_NOT_FOUND);
 			return "error";
@@ -101,8 +133,11 @@ public class StoreController {
 		model.addAttribute("accountVo", accountVo);
 
 		//리뷰가져오기
-		model.addAttribute("reviewVoList", storeService.getReviewListLimit(accountVo.getAccount_id(), storeId, 0, tagNameList));
+		model.addAttribute("reviewVoList", storeService.getReviewListLimit(accountVo.getAccount_id(), storeId, 0));
 
+		//tag 가져오기
+		model.addAttribute("tagNameList", tagNameList);
+				
 		model.addAttribute("storeVo", storeVo);
 		
 		//storeImg의 개수에 따라 리뷰 이미지 vo 받아오기
@@ -110,8 +145,7 @@ public class StoreController {
 		
 		model.addAttribute("storeInfoHistory", storeService.getStoreInfoHistory(storeId));		
 		
-		//tag 가져오기
-		model.addAttribute("tagNameList", tagNameList);
+		
 		
 		return "store_detail";
 	}
@@ -385,10 +419,8 @@ public class StoreController {
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
 		}
-		
-		List<String> tagNameList = storeService.getTagNameList();
     	
-    	List<ReviewVo> reviewVoList = storeService.getReviewListLimit(accountVo.getAccount_id(), store_id, startNum , tagNameList);
+    	List<ReviewVo> reviewVoList = storeService.getReviewListLimit(accountVo.getAccount_id(), store_id, startNum);
     	logger.debug("startNum : "+startNum);
     	logger.debug(reviewVoList.toString());
     	return new ResponseEntity<>(reviewVoList,HttpStatus.OK);
@@ -422,7 +454,7 @@ public class StoreController {
     			return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     		}
 		}
-    	
+
     	
     	
 		////////////////////////////////
@@ -433,7 +465,6 @@ public class StoreController {
         for (int i = 0; i < files.length; i++) {
 			logger.debug(files[i].getName());
 		}
-        
         
 		////////////////////////////////
 		//기능		
@@ -501,21 +532,24 @@ public class StoreController {
 	
 	// 리뷰 삭제
 	@DeleteMapping("/reviews/{review_id}")
-	public ResponseEntity deleteReview(@PathVariable("review_id") int review_id, HttpSession session){
+	public ResponseEntity deleteReview(@PathVariable("review_id") int review_id,@RequestParam("storeId") int store_id, HttpSession session){
 		
 		////////////////////////////////
 		//account check
 		AccountVo accountVo = (AccountVo) session.getAttribute("login");
-		
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
+		logger.debug("store_id : "+store_id);
+		
 		ReviewVo reviewVo = new ReviewVo();
 		reviewVo.setAccount_id(accountVo.getAccount_id());
 		reviewVo.setReview_id(review_id);
+		reviewVo.setStore_id(store_id);
+		
 		
 		
 		////////////////////////////////
@@ -608,19 +642,50 @@ public class StoreController {
 	}
 
 
+	////////////////////////
+	//동기화 (나중에 put 방식으로 변경)
 	
-	//리뷰 좋아요수 동기화(나중에 put 방식으로 변경)
-	@GetMapping("/reviewsLikeHate")
+	//리뷰 좋아요수 동기화
+	@GetMapping("/reviews/likeHate")
 	public String syncReviewLikeHate() {
 		
 		int result = storeService.syncReviewLikeHate();
 		
 		//일단 페이지 띄워야 하니까 
-		return "redirect:../stores/"+1;
+		return "redirect:/stores/"+1;
+	}
+	
+	//store 좋아요 수 동기화
+	@GetMapping("/stores/likeCnt")
+	public String syncStoresLikeCnt() {
+		int result = storeService.syncStoresLikeCnt();
+		logger.debug("syncStoresLikeCnt result="+result);
+		return "";
+	}
+	
+	//store 리뷰 수 동기화
+	@GetMapping("/stores/reviewCnt")
+	public String syncStoresReviewCnt() {
+		int result = storeService.syncStoresReviewCnt();
+		logger.debug("syncStoresReviewCnt result="+result);
+		return "";
+	}
+	
+	//store 가고싶은 수 동기화
+	@GetMapping("/stores/favoriteCnt")
+	public String syncStoresFavoriteCnt() {
+		int result = storeService.syncStoresFavoriteCnt();
+		logger.debug("syncStoresFavoriteCnt result="+result);
+		return "";
 	}
 	
 
-	
+	//store levelCnt 동기화
+	@GetMapping("/stores/levelCnt")
+	public String syncStoreLevel() {
+		int result = storeService.syncStoreLevel();
+		return "redirect:../1";
+	}
 
 	
 	public String changeCategory(String category, String name) {
