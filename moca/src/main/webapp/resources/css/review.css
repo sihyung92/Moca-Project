@@ -1,0 +1,129 @@
+@charset "UTF-8";
+/* 같이 쓰는 페이지 : store.jsp, mypage.jsp */
+
+/*더보기 버튼 css*/
+#moreReview{
+	font-size : 150%;
+}
+
+/*클릭되는 모든 svg의 css설정*/
+.clickableSvgCss{
+	cursor: pointer;
+}
+.clickableSvgCss:hover{
+	
+}
+
+ /*custom 버튼 css*/
+ .customBtn{
+	background: none;
+	transition: 0.3s;
+}
+ .customBtn:hover {
+ 	background: #f0f0f0;
+ }
+ *:focus{ outline:none; }
+
+/* br태그 대신 margin */
+.reviewCnt:first-child{
+	margin-top: 3em;
+}
+
+.review-content img{
+	cursor: pointer;
+}
+.reviewCnt{
+	margin-bottom: 3em;
+	background-color:white;
+	padding:3em;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+/*리뷰 좋아요 싫어요 count */
+.like-hate input{
+	border: none;
+}
+
+/* 리뷰 내용 더보기 */
+.review-data{overflow:hidden;}
+.review-data .more-review-content.hidden{
+    white-space:nowrap;
+    word-wrap:normal;
+    width:90%;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    float:left;
+}
+.more-review-content-btn{display:none;white-space:nowrap;float:right;}
+   
+.reviewThumbnailGroup .reviewThumbnail{
+   	display: inline-block;
+}
+   
+.reviewThumbnailGroup img{
+   	width:100px;
+   	height: 100px;
+	object-fit: cover;
+	overflow: hidden;
+}
+
+#reviewDetailImg{
+	max-width: 500px;
+	max-height: 600px;
+	object-fit: contain;
+}
+   
+.modal-content {
+	position: relative;
+	background-color: #fefefe;
+ 	margin: auto;
+	padding: 0;
+	width: 90%;
+	max-width: 1200px;
+}	
+#reviewDetailDiv {
+	overflow:hidden;
+	text-align: center;
+	background-color: black;
+	padding: 2px 16px;
+	color: white;
+}
+#reviewThumbnailGroup{
+	text-align: center;
+	background-color: black;
+	padding: 2px 16px;
+	color: white;
+}
+#reviewThumbnailGroup .clickedImg {
+   	border: 5px solid red;
+}
+
+
+/* Next & previous buttons */
+#preReviewImgBtn,
+#nextReviewImgBtn {
+	cursor: pointer;
+	position: absolute;
+	top: 50%;
+	width: auto;
+	padding: 16px;
+	margin-top: -50px;
+	font-weight: bold;
+	font-size: 20px;
+	transition: 0.6s ease;
+	border-radius: 0 3px 3px 0;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+/* Position the "next button" to the right */
+#nextReviewImgBtn{
+	right: 0;
+	border-radius: 3px 0 0 3px;
+}
+
+
+
+.review-level div{
+	display : inline;
+}

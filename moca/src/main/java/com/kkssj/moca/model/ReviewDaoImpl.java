@@ -67,7 +67,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
-		
+		logger.debug(review_id+", "+accountId +", "+isLike );
 		return sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertLikeHate", map);
 	}
 
@@ -78,7 +78,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
 		map.put("ISLIKE", isLike);
-		
+		logger.debug(review_id+", "+accountId +", "+isLike );
 		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeHate", map);
 	}
 
@@ -90,7 +90,7 @@ public class ReviewDaoImpl implements ReviewDao {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("REVIEW_ID", review_id);
 		map.put("ACCOUNT_ID", accountId);
-		
+		logger.debug(review_id+", "+accountId );
 		return sqlSession.delete("com.kkssj.moca.model.ReviewDao.deleteLikeHate", map);
 	}
 
@@ -165,7 +165,7 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//리뷰 이미지 가져오기
 	@Override
-	public List<ImageVo> selectReviewImgListByStoreId(int storeId) {
+	public List<ImageVo> selectReviewImgListByStoreId(int storeId) throws SQLException{
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewImgListByStoreId", storeId);
 	}
 
@@ -198,12 +198,12 @@ public class ReviewDaoImpl implements ReviewDao {
 	}
 
 	@Override
-	public List<ReviewVo> selectRecentReviews() {
+	public List<ReviewVo> selectRecentReviews() throws SQLException{
 		return sqlSession.selectList("selectRecentReviews");
 	}
 
 	@Override
-	public List<ReviewVo> selectBestReviews() {
+	public List<ReviewVo> selectBestReviews() throws SQLException{
 		return sqlSession.selectList("selectBestReviews");
 	}
 	
@@ -215,7 +215,7 @@ public class ReviewDaoImpl implements ReviewDao {
 	
 	//리뷰 3개씩 가져오기
 	@Override
-	public List<ReviewVo> selectReviewLimit3ByStoreId(int accountId, int storeId, int startNum) {
+	public List<ReviewVo> selectReviewLimit3ByStoreId(int accountId, int storeId, int startNum) throws SQLException{
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("ACCOUNT_ID", accountId);
 		map.put("STORE_ID", storeId);
@@ -225,13 +225,54 @@ public class ReviewDaoImpl implements ReviewDao {
 	}
 
 	@Override
-	public List<Map<String, Object>> selectTagsLimit3ByStoreId(int accountId, int storeId, int startNum) {
+	public List<Map<String, Object>> selectTagsLimit3ByStoreId(int myAccountId, int targetStoreId, int startNum) throws SQLException {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("ACCOUNT_ID", accountId);
-		map.put("STORE_ID", storeId);
+		map.put("ACCOUNT_ID", myAccountId);
+		map.put("STORE_ID", targetStoreId);
 		map.put("STARTNUM", startNum);
 		map.put("ENDNUM", 3);
 		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectTagsLimit3ByStoreId",map);
+	}
+
+	@Override
+	public int insertTags(Map<String, Object> tagMap) throws SQLException{
+		return sqlSession.insert("com.kkssj.moca.model.ReviewDao.insertTags", tagMap);
+	}
+
+	@Override
+	public int updateTags(Map<String, Object> tagMap) throws SQLException{
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateTags", tagMap);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectTagsLimit3ByAccountId(int targetAccountId, int startNum)
+			throws SQLException {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("ACCOUNT_ID", targetAccountId);
+		map.put("STARTNUM", startNum);
+		map.put("ENDNUM", 3);
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectTagsLimit3ByAccountId",map);
+	}
+	
+	public double selectAverageLevelByReviewId(int review_id) throws SQLException {
+		double result = sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectAverageLevelByReviewId",review_id); 
+		return result;
+
+	}
+
+	@Override
+	public List<Map<String, Integer>> selectTagListByStoreId(int store_id) {
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectTagListByStoreId", store_id);
+	}
+
+	@Override
+	public List<Double> selectReviewAverageLevelByStoreId(Integer store_id) {
+		return sqlSession.selectList("com.kkssj.moca.model.ReviewDao.selectReviewAverageLevelByStoreId",store_id);
+	}
+
+	@Override
+	public int updateReviewImageViews(String uu_id) {
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateReviewImageViews", uu_id);
 	}
 
 }

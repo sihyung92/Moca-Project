@@ -4,10 +4,11 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ReviewVo {
 	//REVIEW table
-	private int review_id, account_id, store_id;
+	private int review_id, account_id, store_id, reviewCnt, viewCnt;
 	private String reviewContent;
 	private Date writeDate;
 	private int tasteLevel, priceLevel,serviceLevel, moodLevel, convenienceLevel;
@@ -32,12 +33,8 @@ public class ReviewVo {
 	//내가 쓴 댓글인지 (table엔 없음)
 	private int isMine;
 	
-	
-	
 	public ReviewVo() {
 	}
-	
-	
 
 	public ReviewVo(int review_id, int accountId, int storeId, String reviewContent, String pictureUrls, Date writeDate,
 			int tasteLevel, int priceLevel, int serviceLevel, int moodLevel, int convenienceLevel, double averageLevel,
@@ -63,7 +60,21 @@ public class ReviewVo {
 		this.isMine = isMine;
 	}
 
+	public int getViewCnt() {
+		return viewCnt;
+	}
 
+	public void setViewCnt(int viewCnt) {
+		this.viewCnt = viewCnt;
+	}
+
+	public int getReviewCnt() {
+		return reviewCnt;
+	}
+
+	public void setReviewCnt(int reviewCnt) {
+		this.reviewCnt = reviewCnt;
+	}
 
 	public int getReview_id() {
 		return review_id;
@@ -250,6 +261,18 @@ public class ReviewVo {
 		this.tags = tags;
 	}
 	
+	public void setTags(Map<String, Object> tagMap) {
+		this.tags ="";
+		for (Entry<String, Object> tag : tagMap.entrySet()) {
+			if((int)tag.getValue()==1) {
+				this.tags +=tag.getKey()+",";				
+			}
+		}
+		if(this.tags.length() >0) {
+			this.tags = this.tags.substring(0, this.tags.length()-1);			
+		}
+	}
+	
 	
 	//mypage용도//
 
@@ -280,6 +303,7 @@ public class ReviewVo {
 	}
 	public void setTagMap(Map<String, Object> tagMap) {
 		this.tagMap = tagMap;
+		setTags(tagMap);
 	}
 
 

@@ -7,7 +7,7 @@
 <!--//css 설정-->
     <style type="text/css">
         .modal .modal-body {
-            max-height: 350px;
+            max-height: 500px;
             overflow-y: auto;
         }
         .modal-open .modal{
@@ -52,6 +52,7 @@
 				return false;
 			}else{
 				$(this).parent().submit();
+				return false;
 			}
 		});
         
@@ -305,6 +306,8 @@
 			$('.modal').modal('hide')		
 			alert("로그인 후 이용가능합니다.");
 			$('#Login-Modal').modal('show')
+		}else if(status==412){ // Precondition Failed(form의 내용을 채우지 않은 경우)
+			alert("별점을 입력해주세요 ^0^")
 		}else{
 			console.log('ajax 통신 실패', status);
 		}
@@ -326,17 +329,16 @@
       <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button class="glyphicon glyphicon-search" aria-hidden="true"></button></div>
       <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
-	      <form  class="navbar-form navbar-left searchBar" action="<c:url value="/stores"/>">
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	      <form id="searchBar" class="navbar-form navbar-left" action="<c:url value="/stores"/>">
 	        <div class="form-group">
 	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
 			  <input type="hidden" name="filter" value="distance"/>
 	        <button id="searchBtn" type="submit" class="glyphicon glyphicon-search" aria-hidden="true"></button>
 	        </div>
 	      </form>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	  	
         <ul class="nav navbar-nav navbar-right">
             <li><a href="#" id="beMoca">moca의 카페가 되어주세요!</a></li>
             <li id="replace-to-userName"></li>
