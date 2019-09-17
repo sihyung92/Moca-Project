@@ -461,7 +461,7 @@
         
     //함수 정의
         function selectiveProgressBar(){
-        	var idx = <%=alist.size()%>
+        	var idx = 50; // 적당히 큰 수
 	    	for(var k=0;k<idx;k++){
 	            for(var i=1;i<6;i++){
 	                anpClick(i,k);
@@ -481,57 +481,3 @@
             });
         }
     </script>
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
