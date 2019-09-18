@@ -154,14 +154,17 @@ public class StoreServiceImpl implements StoreService{
 				logger.debug(result.get(i).getOriginName());
 			}
 			if(storeImgUrlMap!=null) {
+				System.out.println();
 				for(int i=0; i<storeImgUrlMap.size(); i++) {
 					ImageVo imageVo = new ImageVo();
 					imageVo.setPath("store");				
 					imageVo.setUrl(storeImgUrlMap.get("storeImg"+(i+1)));
 					//url로 imageVo에 필요한 부분 넣기
 					imageVo.setImageVo(imageVo.getUrl());
+					logger.debug(imageVo.toString());
 					result.add(imageVo);
 				}
+				System.out.println();
 			}
 			Collections.reverse(result);
 			logger.debug(result.toString());

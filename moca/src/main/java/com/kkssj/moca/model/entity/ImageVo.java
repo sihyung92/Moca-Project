@@ -157,6 +157,7 @@ public class ImageVo {
 		setFileName();
 		setThumbnailFileName();
 		setUrl();
+		System.out.println(this.toString());
 		
 	}
 	public void setImageVo(String url) {

@@ -431,6 +431,13 @@ public class StoreController {
     @ResponseBody
     @PostMapping(value ="/reviews")
     public ResponseEntity addReview(@RequestParam("file") MultipartFile[] files, ReviewVo reviewVo, HttpSession session){
+    	
+    	try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		////////////////////////////////
 		//account check

@@ -10,7 +10,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=14"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=15"/>" />
 	<style type="text/css">
 		.jumbotron{
 			background: rgba(234,231,220,0.4);
@@ -229,6 +229,13 @@
 			background: rgba(234,231,220,0.4);;
 		}
 		
+		#progress_loading{
+			position: fixed;
+			left: 50%;
+			top: 50%;
+			z-index: 5000;
+		}
+		
 }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -237,7 +244,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=8"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=12"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -308,6 +315,9 @@
 			//리뷰 작성버튼 클릭시
  			fileBuffer = [];
 		    $('#files').change(filesChange);
+
+		    //첫 시작시 로딩바를 숨겨준다.
+		    $('#progress_loading').hide();
 			
 			//가져올때부터 수정 모달에 값 세팅
 			$('input:radio[name=wifi]:input[value=' + ${storeVo.wifi} + ']').attr("checked", true);
@@ -1158,6 +1168,9 @@
 						</div>						
 					</div>
 				</div>
+				
+
+				
 				<!-- Button trigger modal -->
 				<div class="row text-center">
 				<button type="button" class="customBtn" data-toggle="modal" id="reviewModalBtn"  style="border: 2px solid #c0c0c0; padding: 10px;">
@@ -1297,6 +1310,10 @@
 			</div>
 		</div>
 	</div>
+	</div>
+	
+	<div id="progress_loading">
+		<img src="<c:url value="/resources/imgs/progress_loading.gif"/>" />
 	</div>
 	<div id="footer">
 		<jsp:include page="../../resources/template/footer.jsp" flush="true"></jsp:include>

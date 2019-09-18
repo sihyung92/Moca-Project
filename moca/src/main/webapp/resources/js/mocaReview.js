@@ -52,6 +52,9 @@ var userImage;
 var startNum = 0;
 var reviewVoListLength=false;
 
+
+var reviewWritable =true;
+
 ////////////////////////////
 //함수부
 
@@ -116,48 +119,58 @@ var saveReview = function(fileBuffer){
 		}
 	}
 	
-	
-	$.ajax({
-		type: 'POST',
-		enctype : 'multipart/form-data',
-		url: '/moca/reviews',
-		data : reviewFormData,
-		dataType : "json",
-		contentType : false,  
-		processData : false,
-		cache : false,
-		timeout : 60000,
-
-		beforeSend:function(){
-			
-			
-	    },
-		success: function(reviewVo) {
-			
-			//리뷰 추가(최상단에)
-			addReviewInReviewContent(reviewVo);
-	
-			$('#reviewModal').modal("hide");		//모달창 닫기
-			
-			//리뷰디테일 모달창 바인딩
-			reviewImg = $('.reviewThumbnailGroup').find('img');
-			
-			reviewImg.click(function(){
-				reviewsDetailModal.modal("show");
-
-				showDetailReviewImg(this);
-			});
+	if(reviewWritable){
+		reviewWritable = false;
 		
-			//수정 삭제 버튼 바인딩 해줄것
+		$('#progress_loading').show();
+		
+		$.ajax({
+			type: 'POST',
+			enctype : 'multipart/form-data',
+			url: '/moca/reviews',
+			data : reviewFormData,
+			dataType : "json",
+			contentType : false,  
+			processData : false,
+			cache : false,
+			timeout : 60000,
 			
-			//store의 리뷰 수 증가
-			$('.storeReviewCount').text($('.storeReviewCount').eq(0).text()*1+1)
-			
-		},
-		error: function(request,status,error) {
-			respondHttpStatus(request.status);
-		}
-	})
+			beforeSend:function(){
+				
+				
+			},
+			success: function(reviewVo) {
+				
+				
+				//리뷰 추가(최상단에)
+				addReviewInReviewContent(reviewVo);
+				$('#reviewModal').modal("hide");		//모달창 닫기
+				
+				
+				//리뷰디테일 모달창 바인딩
+				reviewImg = $('.reviewThumbnailGroup').find('img');
+				
+				reviewImg.click(function(){
+					reviewsDetailModal.modal("show");
+					
+					showDetailReviewImg(this);
+				});
+				
+				//수정 삭제 버튼 바인딩 해줄것
+				
+				//store의 리뷰 수 증가
+				$('.storeReviewCount').text($('.storeReviewCount').eq(0).text()*1+1)
+				
+			},
+			error: function(request,status,error) {
+				respondHttpStatus(request.status);
+			},
+			complete : function(){
+				//로딩바를 숨겨준다.
+				$('#progress_loading').hide();
+			}
+		})
+	}
 }
 
 //리뷰 템플릿 가져오기
