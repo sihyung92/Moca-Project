@@ -356,7 +356,7 @@
       <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button class="glyphicon glyphicon-search" aria-hidden="true"></button></div>
       <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
-
+	<!-- 깃 이그노어? -->
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	      <form id="searchBar" class="navbar-form navbar-left" action="<c:url value="/stores"/>">
