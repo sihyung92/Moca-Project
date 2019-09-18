@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<!-- kss 공통 header  -->
+<!-- kss 공통 header 하악 -->
     
 <!--//css 설정-->
     <style type="text/css">
