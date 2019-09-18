@@ -20,7 +20,7 @@ public class AccountServiceImpl implements AccountService {
 	AccountDao accountDao;
 	
 	int[] attandanceBadgeLevel = new int[] {0,10,30,50,100}; 
-	String[] attandanceBadgeUrl = new String[] {"","/resources/imgs/badge/attandanceBadge1.png","/resources/imgs/badge/attandanceBadge2.png","/resources/imgs/badge/attandanceBadge3.png","/resources/imgs/badge/attandanceBadge4.png","/resources/imgs/badge/attandanceBadge5.png"};
+	String[] attandanceBadgeUrl = new String[] {"","/resources/imgs/badge/attendanceBadge1.png","/resources/imgs/badge/attendanceBadge2.png","/resources/imgs/badge/attendanceBadge3.png","/resources/imgs/badge/attendanceBadge4.png","/resources/imgs/badge/attendanceBadge5.png"};
 	
 	/*-----------------------------------------------------------------------------*/
 	

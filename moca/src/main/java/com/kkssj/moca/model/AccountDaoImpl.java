@@ -184,11 +184,8 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public int updateReviewCount(int account_id, int cnt) throws SQLException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("ACCOUNT_ID", account_id);
-		map.put("CNT", cnt);
-		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateReviewCount",map);
+	public int updateReviewCount(int account_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateReviewCount",account_id);
 	}
 
 	@Override
@@ -197,19 +194,13 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public int updateFollowCount(int account_id, int cnt) throws SQLException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("ACCOUNT_ID", account_id);
-		map.put("CNT", cnt);
-		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowCount",map);
+	public int updateFollowCount(int account_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowCount",account_id);
 	}
 
 	@Override
-	public int updateFollowingCount(int account_id, int cnt) throws SQLException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("ACCOUNT_ID", account_id);
-		map.put("CNT", cnt);
-		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowingCount",map);
+	public int updateFollowingCount(int account_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowingCount",account_id);
 	}
 
 	@Override

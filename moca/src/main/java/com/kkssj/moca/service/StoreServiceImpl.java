@@ -48,8 +48,8 @@ public class StoreServiceImpl implements StoreService{
 	int[] reviewBadgeLevel = new int[] {0,10,30,50,100}; 
 	int[] reviewLikeBadgeLevel = new int[] {0,10,30,50,100}; 
 	
-	String[] reviewBadgeUrl = new String[] {"","/moca/resources/badge/reviewBadge1.png","/moca/resources/badge/reviewBadge2.png","/moca/resources/badge/reviewBadge3.png","/moca/resources/badge/reviewBadge4.png","/moca/resources/badge/reviewBadge5.png"};
-	String[] reviewLikeBadgeUrl = new String[] {"", "/moca/resources/badge/likeBadge1.png", "/moca/resources/badge/likeBadge2.png", "/moca/resources/badge/likeBadge3.png", "/moca/resources/badge/likeBadge4.png", "/moca/resources/badge/likeBadge5.png"};
+	String[] reviewBadgeUrl = new String[] {"","/resources/imgs/badge/reviewBadge1.png","/resources/imgs/badge/reviewBadge2.png","/resources/imgs/badge/reviewBadge3.png","/resources/imgs/badge/reviewBadge4.png","/resources/imgs/badge/reviewBadge5.png"};
+	String[] reviewLikeBadgeUrl = new String[] {"", "/resources/imgs/badge/likeBadge1.png", "/resources/imgs/badge/likeBadge2.png", "/resources/imgs/badge/likeBadge3.png", "/resources/imgs/badge/likeBadge4.png", "/resources/imgs/badge/likeBadge5.png"};
 	
 	
 	//////////////////////////////
@@ -337,7 +337,7 @@ public class StoreServiceImpl implements StoreService{
 				}
 				
 				//account의 reviewcnt를 증가시켜줌
-				accountDao.updateReviewCount(accountVo.getAccount_id(),1);
+				accountDao.updateReviewCount(accountVo.getAccount_id());
 				
 				//배지 check 및 부여
 				badgeManage(accountVo.getAccount_id(), "review");
@@ -618,7 +618,7 @@ public class StoreServiceImpl implements StoreService{
 			syncStoreTag(reviewVo.getStore_id(),tagList);
 			
 			//account의 reviewcnt를 감소시켜줌
-			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);
+			accountDao.updateReviewCount(reviewVo.getAccount_id());
 			
 			//카페에 대한 levelCnt 수정(삭제)
 			double beforeAveragelevel1 = reviewDao.selectAverageLevelByReviewId(reviewVo.getReview_id());
