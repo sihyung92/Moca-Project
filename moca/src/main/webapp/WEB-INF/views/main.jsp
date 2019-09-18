@@ -8,7 +8,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1", user-scalable=no">
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
-<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css?ver=2"/>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
 <style type="text/css">
@@ -41,7 +41,7 @@
 		left: 50%;
    	 	transform: translate(-50%, -50%);
 	}
-	.form-control{
+	#searchBar_main .form-control{
 		font-size: 20px;
 		height: 50px;
 		width: 500px;
@@ -187,6 +187,8 @@
         $('.mocaPick li a').on("mouseleave", mouseLeave);
 		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
     	$(window).on("scroll", updateData);
+    	//스크롤 위치에 따라 헤더 배경 토글
+    	$(window).on("scroll", changeHeaderColor);
     };//onload() 끝  
     
     //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
@@ -236,7 +238,18 @@
         			}
     			});
             };
-    };        
+    };      
+    //스크롤 위치에 따라 헤더 배경색 변경
+    function changeHeaderColor(){
+    	var position = $(window).scrollTop();
+    	if(position > 438){
+        	$('#searchBar').show();
+        	$('#header .navbar').css('background-color', 'rgba(255,255,255)');
+        }else{
+        	$('#searchBar').hide();
+        	$('#header .navbar').css('background-color', 'transparent');
+        }
+    };
 	</script>
 </head>
 <body>
