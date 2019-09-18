@@ -27,7 +27,8 @@ public class MypageServiceImpl implements MypageService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(MypageServiceImpl.class);
 	
-	int[] followBadgeLevel = new int[] {0,10,30,50,100}; 
+	int[] followBadgeLevel = new int[] {0,1,30,50,100}; 
+	String[] followBadgeUrl = new String[] {"", "/moca/resources/badge/followBadge1.png", "/moca/resources/badge/followBadge2.png", "/moca/resources/badge/followBadge3.png", "/moca/resources/badge/followBadge4.png", "/moca/resources/badge/followBadge5.png"};
 	
 	@Inject
 	AccountDao accountDao;	
@@ -37,6 +38,8 @@ public class MypageServiceImpl implements MypageService{
 	
 	@Inject
 	StoreDao storeDao;
+	
+	
 
 	@Override
 	public List<StoreVo> getFavoriteStoreList(int accountId) {
@@ -131,6 +134,7 @@ public class MypageServiceImpl implements MypageService{
 	@Override
 	public int addFollow(int follower, int following) {
 		try {
+			int result = accountDao.insertFollow(follower,following);
 			if(follower!=following) {
 				//팔로우 받은사람 포인트 up
 				accountDao.updateAccountExp(following, 7);
@@ -150,7 +154,7 @@ public class MypageServiceImpl implements MypageService{
 				badgeManage(following , "following");
 			}
 			
-			return accountDao.insertFollow(follower,following);
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -169,7 +173,7 @@ public class MypageServiceImpl implements MypageService{
 			}
 			
 			if(level != 0) {
-				accountDao.insertBadge(followingAccount, "팔로우" , level);
+				accountDao.insertBadge(followingAccount, "팔로우" , level, followBadgeUrl[level]);
 			}
 		}
 		

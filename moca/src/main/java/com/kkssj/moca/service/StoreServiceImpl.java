@@ -46,7 +46,10 @@ public class StoreServiceImpl implements StoreService{
 	
 	
 	int[] reviewBadgeLevel = new int[] {0,10,30,50,100}; 
-	int[] likeHateBadgeLevel = new int[] {0,10,30,50,100}; 
+	int[] reviewLikeBadgeLevel = new int[] {0,10,30,50,100}; 
+	
+	String[] reviewBadgeUrl = new String[] {"","/moca/resources/badge/reviewBadge1.png","/moca/resources/badge/reviewBadge2.png","/moca/resources/badge/reviewBadge3.png","/moca/resources/badge/reviewBadge4.png","/moca/resources/badge/reviewBadge5.png"};
+	String[] reviewLikeBadgeUrl = new String[] {"", "/moca/resources/badge/likeBadge1.png", "/moca/resources/badge/likeBadge2.png", "/moca/resources/badge/likeBadge3.png", "/moca/resources/badge/likeBadge4.png", "/moca/resources/badge/likeBadge5.png"};
 	
 	
 	//////////////////////////////
@@ -372,21 +375,21 @@ public class StoreServiceImpl implements StoreService{
 			}
 			
 			if(level != 0) {
-				accountDao.insertBadge(account_id, "리뷰수" , level);
+				accountDao.insertBadge(account_id, "리뷰수" , level, reviewBadgeUrl[level]);
 			}
 			logger.debug(callWhere+", reviewCount=" +reviewCount+", level=" +level);
 			
 		}else if(callWhere.equals("likeHate")) {// 좋아요를 받았을때
 			int likeHateCount = reviewDao.selectLikeHateCountByAccountId(account_id);
 			
-			for (int i = 0; i < likeHateBadgeLevel.length; i++) {
-				if(likeHateBadgeLevel[i] == likeHateCount) {
+			for (int i = 0; i < reviewLikeBadgeLevel.length; i++) {
+				if(reviewLikeBadgeLevel[i] == likeHateCount) {
 					level = i;
 				}
 			}
 
 			if(level != 0) {
-				accountDao.insertBadge(account_id, "리뷰좋아요" , level);
+				accountDao.insertBadge(account_id, "리뷰좋아요" , level, reviewLikeBadgeUrl[level]);
 			}
 		}
 		

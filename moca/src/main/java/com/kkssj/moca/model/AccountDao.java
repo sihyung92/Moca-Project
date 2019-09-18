@@ -88,7 +88,7 @@ public interface AccountDao {
 	int updateFollowingCount(int account_id, int cnt) throws SQLException;
 	
 	//배지 추가
-	int insertBadge(int account_id, String classification, int level) throws SQLException;
+	int insertBadge(int account_id, String classification, int level, String badgeUrl) throws SQLException;
 	
 	//자신의 follow수 조회
 	int selectFollowCountByFollowing(int followingAccount) throws SQLException;

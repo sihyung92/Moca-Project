@@ -176,7 +176,12 @@
   </update>
   
   <select id="selectLikeHateCountByAccountId" resultType="Integer">
-  	SELECT count(*) FROM LIKEHATE l JOIN REVIEW r on l.REVIEW_ID = r.REVIEW_ID WHERE r.ACCOUNT_ID = #{ACCOUNT_ID } GROUP BY r.ACCOUNT_ID	
+  <![CDATA[
+  	SELECT count(*) 
+  	FROM LIKEHATE l JOIN REVIEW r on l.REVIEW_ID = r.REVIEW_ID 
+  	WHERE r.ACCOUNT_ID = #{ACCOUNT_ID} AND r.ACCOUNT_ID <> l.ACCOUNT_ID
+  	GROUP BY r.ACCOUNT_ID	
+  ]]>
   </select>
   
   <select id="selectReviewCountByAccountId" parameterType="Integer" resultType="Integer">
