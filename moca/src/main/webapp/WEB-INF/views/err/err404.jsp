@@ -26,6 +26,18 @@
 			font-family : "잘난체";
 			font-size: 44px;
 		}
+        .Sma-Font{
+            font-family : "잘난체";
+			font-size: 18px;
+        }
+        .Nom-Font{
+            font-family : "잘난체";
+			font-size: 27px;
+        }
+        .Lar-Font{
+            font-family : "잘난체";
+			font-size: 36px;
+        }
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -43,17 +55,20 @@
 
 </head>
 <body>
-	<div id="header">
-		<jsp:include page="/resources/template/header.jsp" flush="true"></jsp:include>
-	</div>
+	
 	<div class="row Big-Font">
 	  <div class="col-md-8">Error Code <span style="color: red">404</span></div>
-	</div>
-	<div class="row Mid-Font">
 	  <div class="col-md-8 col-md-offset-1">페이지를 찾을 수 없습니다!</div>
 	</div>
 	<img alt="#" src="/moca/resources/imgs/404Page_Not_Found.PNG"/>
-
+    <div class="Sma-Font">
+        <span class="Lar-Font"> 죄송합니다,</span><span class="Nom-Font"> 요청하신 페이지를 찾을 수 없습니다.</span><br>
+        <span class="Sma-Font">찾으시려는 페이지는 주소를 잘못 입력하였거나 페이지 주소의 변경 또는 삭제 등의 이유로 페이지를 찾을 수 없습니다.</span><br>
+        <span class="Sma-Font">입력하신 페이지의 주소와 경로가 정확한지 한 번 더 확인 후 이용하시기 바랍니다.</span><br>
+    </div>
+    
+    <div><button>이전페이지</button></div>
 </body>
-
+<script type="text/javascript">
+</script>
 </html>

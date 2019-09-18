@@ -35,8 +35,14 @@ public class SearchServiceImpl implements SearchService {
 	Logger logger = LoggerFactory.getLogger(SearchService.class);
 	
 	@Override
-	public List<StoreVo> getListByTag(Map<String, String> variables) {		
-		return storeDao.selectListByTag(variables);
+	public List<StoreVo> getListByTag(Map<String, Object> variables) {		
+		List<StoreVo> alist=storeDao.selectListByTag(variables);
+		for(StoreVo s: alist) {
+			if(s.getStoreImg1()==null) {
+				s.setStoreImg1(s.getStoreImg2());
+			}
+		}
+		return alist; 
 	}	
 
 	@Override
@@ -55,7 +61,12 @@ public class SearchServiceImpl implements SearchService {
 			currentVo.setServiceLevel(tempVo.getServiceLevel());
 			currentVo.setPriceLevel(tempVo.getPriceLevel());
 			currentVo.setAverageLevel(tempVo.getAverageLevel());
-			currentVo.setLogoImg(tempVo.getLogoImg());			
+			currentVo.setLogoImg(tempVo.getLogoImg());	
+			if(tempVo.getStoreImg1()!=null) {
+				currentVo.setStoreImg1(tempVo.getStoreImg1());
+			}else{
+				currentVo.setStoreImg1(tempVo.getStoreImg2());
+			}	
 		}		
 		return currentVo;
 	}
@@ -72,11 +83,19 @@ public class SearchServiceImpl implements SearchService {
 		if(region!=null) {
 			logger.debug("지역 필터 들어옴!");
 			sort="accuracy";
-			if(keyword.contains(region[1])){
-				query=keyword;		//광진스타벅스
+			if(region.length==1) {
+				if(keyword.contains(region[0])){
+					query=keyword;		//광진스타벅스
+				}else {
+					query=region[0]+" "+keyword;
+				}
 			}else {
-				query=region[0]+" "+region[1]+" "+keyword;
-			}			
+				if(keyword.contains(region[1])){
+					query=keyword;		//광진스타벅스
+				}else {
+					query=region[0]+" "+region[1]+" "+keyword;
+				}
+			}		
 		}else {
 			query=keyword;
 		}
@@ -84,6 +103,8 @@ public class SearchServiceImpl implements SearchService {
 		if(rect!=null) {
 			sort="accuracy";
 		}
+		
+		logger.debug("카카오 검색 키워드: "+query);
 		
 //카카오 API 접속 정보 세팅
 		//URL  category_group_code=CE7&		

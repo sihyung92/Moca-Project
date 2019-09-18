@@ -36,20 +36,15 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<!-- Processes application requests -->
-	
-	<error-page>
-	    <exception-type>java.lang.Throwable</exception-type>
-	    <location>/WEB-INF/views/err/noneMeanErrPage.jsp</location>
-	</error-page>
 
 	<error-page>
 	    <error-code>400</error-code>
-	    <location>/WEB-INF/views/err/err404.jsp</location>
+	    <location>/WEB-INF/views/err/err400.jsp</location>
 	</error-page>
 
 	<error-page>
 	    <error-code>403</error-code>
-	    <location>/WEB-INF/views/err/err404.jsp</location>
+	    <location>/WEB-INF/views/err/err403.jsp</location>
 	</error-page>
 
 	<error-page>
@@ -59,7 +54,7 @@
 
 	<error-page>
 	    <error-code>500</error-code>
-	    <location>/WEB-INF/views/err/noneMeanErrPage.jsp</location>
+	    <location>/WEB-INF/views/err/err500.jsp</location>
 	</error-page>
 	
 	<error-page>

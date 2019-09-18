@@ -77,5 +77,14 @@ public interface AccountDao {
 	
 	//해당 acoount의 reviewcount 증감
 	int updateReviewCount(int account_id, int cnt) throws SQLException;
+	
+	//해당 acoount의 AttendanceCount 증가
+	int updateAttendanceCount(int account_id) throws SQLException;
+	
+	//해당 acoount의 FollowCount 증감
+	int updateFollowCount(int account_id, int cnt) throws SQLException;
+	
+	//해당 acoount의 FollowingCount 증감
+	int updateFollowingCount(int account_id, int cnt) throws SQLException;
 
 }

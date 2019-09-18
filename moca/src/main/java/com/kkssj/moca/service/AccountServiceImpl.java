@@ -42,6 +42,7 @@ public class AccountServiceImpl implements AccountService {
 					//로그인 exp 증가
 					accountDao.updateAccountExp(compareVo.getAccount_id(), 2);
 					accountDao.insertExpLog(compareVo.getAccount_id(), "로그인", 2);
+					accountDao.updateAttendanceCount(compareVo.getAccount_id());
 					
 					//포인트가 레벨업 할만큼 쌓였는지 검사
 					AccountVo accountVoForExp = accountDao.selectByaccountId(compareVo.getAccount_id());
@@ -59,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
 					//로그인 exp 증가
 					accountDao.updateAccountExp(compareVo.getAccount_id(), 2);
 					accountDao.insertExpLog(compareVo.getAccount_id(), "로그인", 2);
+					accountDao.updateAttendanceCount(compareVo.getAccount_id());
 					
 					//포인트가 레벨업 할만큼 쌓였는지 검사
 					AccountVo accountVoForExp = accountDao.selectByaccountId(compareVo.getAccount_id());
@@ -99,7 +101,7 @@ public class AccountServiceImpl implements AccountService {
 			if(cnt==1) {
 				//"설문조사" 하나도 없을 경우만
 				if(accountDao.selectExpLogByAccountId(account_id, "설문조사")==0) {
-					//로그인 exp 증가
+					//설문조사 exp 증가
 					accountDao.updateAccountExp(account_id, 30);
 					accountDao.insertExpLog(account_id, "설문조사", 30);
 					

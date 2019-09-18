@@ -12,8 +12,10 @@ public class MocaExceptionHandler {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("exception", e);
 		mav.setViewName("/err/err404");
+		
 		return mav;
 	}
+	
 	@ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
 	public ModelAndView NotFoundException(Exception e) {
 		ModelAndView mav = new ModelAndView();

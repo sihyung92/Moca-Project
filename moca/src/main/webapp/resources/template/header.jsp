@@ -3,15 +3,11 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!-- kss 공통 header  -->
-    <%
-    	if(response.getStatus() == response.SC_NOT_FOUND){
-    		response.sendRedirect("/err/noneMeanErrPage");
-    	}
-    %>
+    
 <!--//css 설정-->
     <style type="text/css">
         .modal .modal-body {
-            max-height: 350px;
+            max-height: 500px;
             overflow-y: auto;
         }
         .modal-open .modal{
@@ -30,6 +26,9 @@
             height: 20px;
         }
         
+        div#header+div{
+        	padding-top:62px;
+        }
     </style>
 
 <link rel="stylesheet" type="text/css" href="/moca/resources/css/testHeaderCss.css"/>
@@ -55,7 +54,8 @@
 				$('#keyword').attr('placeholder', '잘못된 키워드 입니다... :(');
 				return false;
 			}else{
-				$(this).parent().submit();
+				$(this).parent().parent().submit();
+				return false;
 			}
 		});
         
@@ -125,14 +125,12 @@
             }
                                 
             var userName = '${sessionScope.login.nickname}';                
-            var thumbnailImg = null;
+            var thumbnailImg = '${sessionScope.login.thumbnailImage}';
 
-            if('${sessionScope.login.thumbnailImage}'==null){
+            if(thumbnailImg == ''){
                 thumbnailImg = '/moca/resources/imgs/nonProgileImage.png';
-            }else{
-                thumbnailImg = '${sessionScope.login.thumbnailImage}'; 
             }
-            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" alt="" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
+            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
             $('#replace-to-icon').replaceWith('<li></li>');
             $('#replace-to-logout').replaceWith('<li><a href="#" id="moca-logout">로그아웃</a></li>');
 
@@ -157,7 +155,10 @@
         //회원탈퇴 기능 처리
         //signOut();
         //설문 버튼 처리
-
+        
+        
+        
+        //하나짜리임 hiddenSearch~ 랑 window~ 랑
     	$('.hiddenSearch').each(function(){	
     		$(this).click(function(){
     			if ($(this).hasClass('open')){
@@ -171,11 +172,26 @@
     			}
     		});
     	});
+       $(window).on('resize',function(){
+           if($('.navbar-header').width()>760||$('.navbar-header').width()==59){
+               if($('hiddenSearch').hasClass('open')){
+                    $('.searchBar').hide();
+                    $(this).removeClass('open'); 
+                }
+                else{
+                    $(this).removeClass('open');
+                    $('.searchBar').show();
+                    $(this).addClass('open');
+                }
+            }
+       });
+   
+        
+        
+        
         
     });
-    
-    
-    //함수 정의
+
     function redirToHome(){
     	location.replace("http://localhost:8080/moca/home2")
 	}
@@ -293,6 +309,8 @@
 			$('.modal').modal('hide')		
 			alert("로그인 후 이용가능합니다.");
 			$('#Login-Modal').modal('show')
+		}else if(status==412){ // Precondition Failed(form의 내용을 채우지 않은 경우)
+			alert("별점을 입력해주세요 ^0^")
 		}else{
 			console.log('ajax 통신 실패', status);
 		}
@@ -314,17 +332,16 @@
       <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button class="glyphicon glyphicon-search" aria-hidden="true"></button></div>
       <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
-	      <form  class="navbar-form navbar-left searchBar" action="<c:url value="/stores"/>">
-	        <div class="form-group">
-	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
-			  <input type="hidden" name="filter" value="distance"/>
-	        <button id="searchBtn" type="submit" class="glyphicon glyphicon-search" aria-hidden="true"></button>
-	        </div>
-	      </form>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	  	
+	      <form id="searchBar" class="navbar-form navbar-left" action="<c:url value="/stores"/>">
+	        <div class="form-group">
+	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
+			  <input type="hidden" name="filter" value="distance"/>
+	        <button id="searchBtn" type="submit" role="submit" class="glyphicon glyphicon-search" aria-hidden="true"></button>
+	        </div>
+	      </form>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="#" id="beMoca">moca의 카페가 되어주세요!</a></li>
             <li id="replace-to-userName"></li>
