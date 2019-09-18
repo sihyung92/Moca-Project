@@ -10,9 +10,6 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=4"/>" />
 	<style type="text/css">
-	body{
-		background:rgba(246,245,239,0.5);
-	}
 	#userGraph{
 		margin-top:70px;
 	}
@@ -27,7 +24,7 @@
 	#userBadge{
 		margin-top:20px;
 		padding:20px;
-		border-top: 3px ridge rgba(193,140,88,0.6) ;
+		background : rgba(246,245,239,1);
 	}
 	#userBadge img{
 		margin-right: 10px;
@@ -71,6 +68,7 @@
 			margin: 20px auto;
 			text-align: center;
 		}
+		
 		
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -588,8 +586,6 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12" id="userBadge">
-					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
-					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
 					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
 				</div>
 			</div>

@@ -38,10 +38,10 @@ public class AccountServiceImpl implements AccountService {
 				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//변경된 값으로 새로 조회해온다.
 				
 				//오늘날짜로 "로그인"이 하나도 없을 경우만
-				if(accountDao.selectExpLogByAccountId(compareVo.getAccount_id(), "로그인")==0) {
+				if(accountDao.selectExpLogByAccountId(compareVo.getAccount_id(), "출석")==0) {
 					//로그인 exp 증가
 					accountDao.updateAccountExp(compareVo.getAccount_id(), 2);
-					accountDao.insertExpLog(compareVo.getAccount_id(), "로그인", 2);
+					accountDao.insertExpLog(compareVo.getAccount_id(), "출석", 2);
 					accountDao.updateAttendanceCount(compareVo.getAccount_id());
 					
 					//포인트가 레벨업 할만큼 쌓였는지 검사
@@ -56,10 +56,10 @@ public class AccountServiceImpl implements AccountService {
 			}else {	//DB에 데이터도 있으며 값도 다르지 않은 경우 다시 이 DB속 VO(compareVo)를 리턴해준다(이때는 account_id가 제대로 설정된 VO로 받아옴)
 				
 				//오늘날짜로 "로그인"이 하나도 없을 경우만
-				if(accountDao.selectExpLogByAccountId(compareVo.getAccount_id(), "로그인")==0) {
+				if(accountDao.selectExpLogByAccountId(compareVo.getAccount_id(), "출석")==0) {
 					//로그인 exp 증가
 					accountDao.updateAccountExp(compareVo.getAccount_id(), 2);
-					accountDao.insertExpLog(compareVo.getAccount_id(), "로그인", 2);
+					accountDao.insertExpLog(compareVo.getAccount_id(), "출석", 2);
 					accountDao.updateAttendanceCount(compareVo.getAccount_id());
 					
 					//포인트가 레벨업 할만큼 쌓였는지 검사
