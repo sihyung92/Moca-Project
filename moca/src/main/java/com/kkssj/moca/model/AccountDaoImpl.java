@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.BadgeVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
 @Repository
@@ -229,5 +230,10 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public int selectAttendanceCountByAccountId(int account_id) {
 		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectAttendanceCountByAccountId", account_id);
+	}
+
+	@Override
+	public List<BadgeVo> selectBadgeList(int account_id) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectBadgeList", account_id);
 	}
 }

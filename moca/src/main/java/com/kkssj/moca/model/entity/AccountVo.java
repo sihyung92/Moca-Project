@@ -2,6 +2,7 @@ package com.kkssj.moca.model.entity;
 
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.List;
 
 public class AccountVo {
 	
@@ -19,6 +20,9 @@ public class AccountVo {
 	
 	//followingCount와 attendanceCount 추가
 	private int followingCount, attendanceCount;
+	
+	//배지
+	private List<BadgeVo> badgeList;
 	
 	public int getGender() {
 		return gender;
@@ -242,6 +246,16 @@ public AccountVo(int account_id, int followCount, int reviewCount, int platformI
 	public void setMinExp() {
 		this.minExp=maxExps[this.accountLevel-1];
 		System.out.println("minExp"+this.minExp);
+	}
+	
+	
+
+	public List<BadgeVo> getBadgeList() {
+		return badgeList;
+	}
+
+	public void setBadgeList(List<BadgeVo> badgeList) {
+		this.badgeList = badgeList;
 	}
 
 	@Override

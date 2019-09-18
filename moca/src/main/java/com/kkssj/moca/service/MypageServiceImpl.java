@@ -19,6 +19,7 @@ import com.kkssj.moca.util.UploadFileUtils;
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.StoreDao;
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.BadgeVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
@@ -27,8 +28,8 @@ public class MypageServiceImpl implements MypageService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(MypageServiceImpl.class);
 	
-	int[] followBadgeLevel = new int[] {0,1,30,50,100}; 
-	String[] followBadgeUrl = new String[] {"", "/moca/resources/badge/followBadge1.png", "/moca/resources/badge/followBadge2.png", "/moca/resources/badge/followBadge3.png", "/moca/resources/badge/followBadge4.png", "/moca/resources/badge/followBadge5.png"};
+	int[] followBadgeLevel = new int[] {0,10,30,50,100}; 
+	String[] followBadgeUrl = new String[] {"", "/resources/imgs/badge/followBadge1.png", "/resources/imgs/badge/followBadge2.png", "/resources/imgs/badge/followBadge3.png", "/resources/imgs/badge/followBadge4.png", "/resources/imgs/badge/followBadge5.png"};
 	
 	@Inject
 	AccountDao accountDao;	
@@ -280,6 +281,17 @@ public class MypageServiceImpl implements MypageService{
 		
 
 		return tagNameList;
+	}
+
+	@Override
+	public List<BadgeVo> getBadgeList(int account_id) {
+		try {
+			return accountDao.selectBadgeList(account_id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

@@ -73,6 +73,7 @@ public class MyPageController {
 		
 		
 		currentPageAccount.setLevelName(currentPageAccount.getAccountLevel());
+		currentPageAccount.setBadgeList(mypageService.getBadgeList(currentPageAccount.getAccount_id()));
 		model.addAttribute("currentPageAccount",currentPageAccount);
 		logger.debug(currentPageAccount.toString());
 		
@@ -92,11 +93,7 @@ public class MyPageController {
 		List<String> tagNameList = mypageService.getTagNameList();
 		
 		model.addAttribute("accountVo",accountVo);
-		
-		//해당 account 정보 가져오기 (그래프+배지 포함)
-		//일단은 기본적인 정보만 가져오기
-		
-		model.addAttribute("");
+
 		
 		//해당 account의 내가 쓴 리뷰 가져오기
 		model.addAttribute("reviewVoList", mypageService.getMyReviewListLimit(accountVo.getAccount_id(), accountId, 0));

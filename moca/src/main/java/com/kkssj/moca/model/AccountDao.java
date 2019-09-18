@@ -3,6 +3,7 @@ package com.kkssj.moca.model;
 import java.sql.SQLException;
 import java.util.List;
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.BadgeVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
 public interface AccountDao {
@@ -94,7 +95,10 @@ public interface AccountDao {
 	int selectFollowCountByFollowing(int followingAccount) throws SQLException;
 	
 	//자신의 출석수 조회
-	int selectAttendanceCountByAccountId(int account_id);
+	int selectAttendanceCountByAccountId(int account_id) throws SQLException;
+	
+	//배지 리스트 조회
+	List<BadgeVo> selectBadgeList(int account_id) throws SQLException;
 	
 
 }
