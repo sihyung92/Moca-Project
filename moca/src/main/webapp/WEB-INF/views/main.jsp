@@ -6,19 +6,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1", user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css?ver=2"/>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
 <style type="text/css">
-/* Header */
+	body{
+		background-color: rgba(246,245,239,0.5);
+	}
+/* body header */
 	/* 템플릿 헤더 CSS(투명 설정 / 검색창 없애기) */
 	#header .navbar{
 		background-image: none;
 		background-color:transparent;
 		border: none;
-		box-shadow: none;		
+		box-shadow: none;	
 	}
 	#header .navbar-header, #header .collapse{
 		background-color: transparent;
@@ -30,10 +33,10 @@
 	#header{
 		position: relative;
 		height: 500px;
-		background-image: url("resources/imgs/background.jpg");
+		background-image: url("resources/imgs/main_background5.jpg");
 		background-size: cover;
 	}
-	#searchBar_main{
+	#searchBar_main{								/* form 태그 */
 		font-size: 0;
 		background-color: lightgray;
 		position: absolute;
@@ -41,7 +44,7 @@
 		left: 50%;
    	 	transform: translate(-50%, -50%);
 	}
-	#searchBar_main .form-control{
+	#searchBar_main .form-control{					/* 검색어 input 태그 */
 		font-size: 20px;
 		height: 50px;
 		width: 500px;
@@ -50,71 +53,48 @@
 	#searchBar_main button{
 		font-size: 25px;
 	}
-/* Body */
-	body{
+/* body content */	
+	/* 모카픽 추천 캐러셀 */
+	.mocaPick-list{
+		color: dimgray;
+	}	
+	.mocaPick-list .bx-wrapper{
+		border: none;
+		box-shadow: none;
+		margin-bottom: 50px;
+		z-index: 3;
+		border: lightgray 1px solid;
+		border-radius: 2px;
 		background-color: rgba(246,245,239,0.5);
 	}
-	/* 캐러셀 */
-	.slider{
-		width: 1300px;
-	}
-	.slider .store{
-		background-color: pink;
-		display: inline-block;
-		border: black 1px solid;
+	.bx-wrapper .bx-viewport .mocaPick .store{
+		height: 200px;		
 	}	
-	.carousel-control {
-	  position: absolute;
-	  top: 0;
-	  bottom: 0;
-	  left: 0;
-	  width: 3%;
-	  font-size: 20px;
-	  color: #fff;
-	  text-align: center;
-	  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-	  background-color: rgba(0, 0, 0, 0);
-	  filter: alpha(opacity=50);
-	  opacity: 0;
-	}
-	.mocaPick{
-		background-color: red;	
-	}
-	.mocaPick .carousel{
-		border: 2px aqua solid;
-	}
-	.mocaPick .carousel-inner{
-		background-color: lavender;
-	}
-	.mocaPick .item{
-		background-color: orange;
-		border: 3px yellow solid;
-		height: auto;
-	}
-	.mocaPick .item-content{
-		display: inline-block;
-		float: left;
- 		width:20%;
-		height:20%;
-	}
-	.mocaPick img{
- 		width: 100%;
-		height: 100%; 
-		display:none;
-		border: black solid 1px;
-	}
-
-	.mocaPick img:nth-child(2){
-		display:block;
-	}
-	.overlay{
-		background-color: rgba(0,0,0,0.5); 
+	.bx-wrapper .bx-viewport .mocaPick .store .storeInfo{
 		position: absolute;
 		z-index: 2;
-		color: white;
+		height: 60px;
+		bottom: -60px;
 	}
-	.overlay span{
-		color: brown;
+	.storeInfo .mocaPick-storeName{
+		font-size: 17px;
+		font-weight: bold;
+	}
+	.storeInfo .mocaPick-averageLevel{
+		font-size: 16px;
+		color: rgb(198,161,83);
+	}
+	.bx-wrapper .bx-viewport .mocaPick .store img{
+		display: none;
+		width: 100%;
+		height: auto;	
+		position: relative;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%,-50%);
+	}
+	.bx-wrapper .bx-viewport .mocaPick .store img:nth-child(1){
+		display: block;
 	}
 	/* 인기 리뷰, 최근 리뷰 */
 	#review-list{
@@ -165,6 +145,36 @@
 	.review-text-content{
 		font-size: 15px;
 	}
+	
+	@media (max-width: 768px){
+		.bx-wrapper{
+			margin-bottom: 20px;
+		}
+		#header{
+			position: relative;
+			height: 250px;
+			background-image: url("resources/imgs/main_background5.jpg");
+			background-size: cover;
+		}
+		#searchBar_main{
+			font-size: 0;
+			background-color: lightgray;
+			position: absolute;
+			top: 70%;
+			left: 50%;
+	   	 	transform: translate(-50%, -50%);
+	   	 	width: 80%;
+		} 
+		#searchBar_main .form-control{
+			font-size: 20px;
+			height: 50px;
+			width: 100%;
+			border-radius: 25px;
+		}
+		#searchBar_main button{
+			font-size: 25px;
+		}
+	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -174,13 +184,31 @@
 	var lat, lng;	
 	var slide;
     window.onload = function () {  
+        $('div#header+div').css('padding-top', '10px');
+        $(window).width();
    	 	//bxSlider 시작 
-    	$('.slider').bxSlider({
+   	 	
+    	$('.mocaPick').bxSlider({
+    		pager: false,
+    		autoReload: true,
+    		//captions: true,
+    		slideMargin: 1,
     		minSlides: 1,
     		maxSlides: 7,
-    		moveSlides: 3,
-    		slideWidth: 300
-    	});       
+    		moveSlides: 3,    		
+    		slideWidth: 300,
+    		onSliderLoad: function(){
+        		$('.bx-viewport').css('height', '260px');
+            },
+    		onSliderResize: function(){
+        		$('.bx-viewport').css('height', '260px');
+            }
+    	});     	
+    	//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
+    	$('.store').on('mousedown', function(){
+        	store_id = $(this).children().first().attr('alt').split(" ")[0];
+			window.location.href="./stores/"+store_id;
+        });  
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
         $('.mocaPick li a').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
@@ -188,7 +216,7 @@
 		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
     	$(window).on("scroll", updateData);
     	//스크롤 위치에 따라 헤더 배경 토글
-    	$(window).on("scroll", changeHeaderColor);
+    	$(window).on("scroll", changeHeaderColor);    	
     };//onload() 끝  
     
     //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
@@ -242,13 +270,25 @@
     //스크롤 위치에 따라 헤더 배경색 변경
     function changeHeaderColor(){
     	var position = $(window).scrollTop();
-    	if(position > 438){
-        	$('#searchBar').show();
-        	$('#header .navbar').css('background-color', 'rgba(255,255,255)');
+    	var width = $(window).width();
+    	if(width>768){
+    		if(position > 438){
+            	$('#searchBar').show();
+            	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
+            }else{
+            	$('#searchBar').hide();
+            	$('#header .navbar').css('background-color', 'transparent');
+            }
         }else{
-        	$('#searchBar').hide();
-        	$('#header .navbar').css('background-color', 'transparent');
+        	if(position > 188){
+            	$('#searchBar').show();
+            	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
+            }else{
+            	$('#searchBar').hide();
+            	$('#header .navbar').css('background-color', 'transparent');
+            }
         }
+    	
     };
 	</script>
 </head>
@@ -257,7 +297,7 @@
 	<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 	<form id="searchBar_main" class="form-inline" action="<c:url value="/stores"/>">
       <div class="form-group">
-        <input type="text" name="keyword" id="keyword" class="form-control" placeholder="카페를 검색해보세요:D" size="50">	
+        <input type="text" name="keyword" id="keyword_main" class="form-control" placeholder="카페를 검색해보세요:D"/>	
   		<input type="hidden" name="filter" value="distance"/>
       </div>
       <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
@@ -267,122 +307,130 @@
 	<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
 	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>
 <!-- 카페 추천 캐러샐(bxSlider)-->
- 	<c:forEach items="${storesList}" var="list" varStatus="status" begin="0" end="0">
-		<c:if test="${not empty list}">
-			<c:set var="length" value="${fn:length(list)}"/>
-			<c:set var="index" value="${status.index}"/>
-			<c:set var="name" value="${listNames[index]}"/>
-				<h5>${name}: 총 가게 ${length}개</h5>
-				<div class="slider row">
-					<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
-					    <div class="store col-md-3">
-					    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
-						</div>
-					</c:forEach>
-				</div>
-		</c:if>
-	</c:forEach> 
-
-
+	<div class="mocaPick-list">
+	 	<c:forEach items="${storesList}" var="list" varStatus="status">
+			<c:if test="${not empty list}">
+				<c:set var="length" value="${fn:length(list)}"/>
+				<c:set var="index" value="${status.index}"/>
+				<c:set var="name" value="${listNames[index]}"/>
+					<h5>${name}: 총 가게 ${length}개</h5>
+					<div class="mocaPick">
+						<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
+						    <div class="store">
+						    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main1" title="${store.name} <fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/>">
+						    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main2">
+						    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main3">
+								<div class="storeInfo">
+					     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;<span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></span><br/>			     			
+					     			<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span><span>${store.viewCnt}</span>
+						     		<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span>${store.reviewCnt}</span><br/>
+					     			<%-- <span>${store.roadAddress}</span> --%>
+				     			</div>
+							</div>
+						</c:forEach>
+					</div>
+			</c:if>
+		</c:forEach> 
+	</div>
 <!-- 카페 추천 캐러샐(부트스트랩)-->
-	<c:forEach items="${storesList}" var="list" varStatus="status" begin="0" end="0">
+ <%-- 	<c:foreach items="${storeslist}" var="list" varstatus="status" begin="0" end="0">
 		<c:if test="${not empty list}">		
 			<c:set var="length" value="${fn:length(list)}"/>
 			<c:set var="index" value="${status.index}"/>
-			<c:set var="name" value="${listNames[index]}"/>
-	 		<div class="mocaPick">
+			<c:set var="name" value="${listnames[index]}"/>
+	 		<div class="mocapick">
 				<h5>${name}</h5>
-				<div class="carousel slide" id="mocaPick_${index}" data-ride="carousel">
-				  <!-- Indicators -->
+				<div class="carousel slide" id="mocapick_${index}" data-ride="carousel">
+				  <!-- indicators -->
 				  <ol class="carousel-indicators">
-				    <li data-target="#mocaPick_${index}" data-slide-to="0" class="active"></li>
+				    <li data-target="#mocapick_${index}" data-slide-to="0" class="active"></li>
 				    <c:if test="${length gt 5}">
-				   	 	<li data-target="#mocaPick_${index}" data-slide-to="1"></li>
+				   	 	<li data-target="#mocapick_${index}" data-slide-to="1"></li>
 				    </c:if>
 				    <c:if test="${length gt 10}">
-				    	<li data-target="#mocaPick_${index}" data-slide-to="2"></li>
+				    	<li data-target="#mocapick_${index}" data-slide-to="2"></li>
 				    </c:if>
 				  </ol>		
-				  <!-- Wrapper for slides -->
+				  <!-- wrapper for slides -->
 				  <div class="carousel-inner" role="listbox">
 				    <div class="item active">
-				     	<c:forEach items="${list}" var="store" begin="0" end="4" > 					     	
-					     	<div class="item-content"><a href="./stores/${store.store_Id }">
-					     		<%-- <div class="overlay">
+				     	<c:foreach items="${list}" var="store" begin="0" end="4" > 					     	
+					     	<div class="item-content"><a href="./stores/${store.store_id }">
+					     		<div class="overlay">
 					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatnumber value="${store.averagelevel}" pattern="0.0"/></span></h4>					     			
 						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewcnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewcnt}
 							     		</h5>
-						     			<h6>${store.roadAddress}</h6>
+						     			<h6>${store.roadaddress}</h6>
 					     			</div>
-					     		</div> --%>
-					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
+					     		</div>
+					     		<img src="${store.storeimg1}<c:if test="${store.storeimg1 eq null}">${defaultimg }</c:if>" alt="${store.name }_main1">
+					     		<img src="${store.storeimg2}<c:if test="${store.storeimg2 eq null}">${defaultimg }</c:if>" alt="${store.name }_main2">
+					     		<img src="${store.storeimg3}<c:if test="${store.storeimg3 eq null}">${defaultimg }</c:if>" alt="${store.name }_main3">					     	
 					     	</a></div>					     	
-				     	</c:forEach>
+				     	</c:foreach>
 				    </div>
 				    <c:if test="${length gt 5}">
 				    <div class="item">
 			    		<c:set var="end">9</c:set>
 				     	<c:if test="${length lt 10}"><c:set var="end">${length-1 }</c:set></c:if>
-				     	<c:forEach items="${list}" var="store" begin="${end-4 }" end="${end }">				     	
-					     	<div class="item-content"><a href="./stores/${store.store_Id }">
-					     		<%-- <div class="overlay">
+				     	<c:foreach items="${list}" var="store" begin="${end-4 }" end="${end }">				     	
+					     	<div class="item-content"><a href="./stores/${store.store_id }">
+					     		<div class="overlay">
 					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatnumber value="${store.averagelevel}" pattern="0.0"/></span></h4>					     			
 						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewcnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewcnt}
 							     		</h5>
-						     			<h6>${store.roadAddress}</h6>
+						     			<h6>${store.roadaddress}</h6>
 					     			</div>
-					     		</div> --%>
-					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
+					     		</div>
+					     		<img src="${store.storeimg1}<c:if test="${store.storeimg1 eq null}">${defaultimg }</c:if>" alt="${store.name }_main1">
+					     		<img src="${store.storeimg2}<c:if test="${store.storeimg2 eq null}">${defaultimg }</c:if>" alt="${store.name }_main2">
+					     		<img src="${store.storeimg3}<c:if test="${store.storeimg3 eq null}">${defaultimg }</c:if>" alt="${store.name }_main3">					     	
 					     	</a></div>					     	
-				     	</c:forEach>				     
+				     	</c:foreach>				     
 				    </div>
 				    </c:if>     
 				    <c:if test="${length gt 10}">	
 					   <div class="item">
-				     		<c:forEach items="${list}" var="store" begin="${length-5 }" end="${length-1 }"> 					     	
-					     	<div class="item-content"><a href="./stores/${store.store_Id }">
-					     		<%-- <div class="overlay">
+				     		<c:foreach items="${list}" var="store" begin="${length-5 }" end="${length-1 }"> 					     	
+					     	<div class="item-content"><a href="./stores/${store.store_id }">
+					     		<div class="overlay">
 					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
+						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatnumber value="${store.averagelevel}" pattern="0.0"/></span></h4>					     			
 						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
+						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewcnt}
+							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewcnt}
 							     		</h5>
-						     			<h6>${store.roadAddress}</h6>
+						     			<h6>${store.roadaddress}</h6>
 					     			</div>
-					     		</div> --%>
-					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
+					     		</div>
+					     		<img src="${store.storeimg1}<c:if test="${store.storeimg1 eq null}">${defaultimg }</c:if>" alt="${store.name }_main1">
+					     		<img src="${store.storeimg2}<c:if test="${store.storeimg2 eq null}">${defaultimg }</c:if>" alt="${store.name }_main2">
+					     		<img src="${store.storeimg3}<c:if test="${store.storeimg3 eq null}">${defaultimg }</c:if>" alt="${store.name }_main3">					     	
 					     	</a></div>					     	
-				     		</c:forEach>						   	
+				     		</c:foreach>						   	
 					    </div> 
 					</c:if> 	  		   
 				</div>	
-				  <!-- Controls -->
-				  <a class="left carousel-control" href="#mocaPick_${index}" role="button" data-slide="prev">
+				  <!-- controls -->
+				  <a class="left carousel-control" href="#mocapick_${index}" role="button" data-slide="prev">
 				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-				    <span class="sr-only">Previous</span>
+				    <span class="sr-only">previous</span>
 				  </a>
-				  <a class="right carousel-control" href="#mocaPick_${index}" role="button" data-slide="next">
+				  <a class="right carousel-control" href="#mocapick_${index}" role="button" data-slide="next">
 				    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-				    <span class="sr-only">Next</span>
+				    <span class="sr-only">next</span>
 				  </a>
 				</div>
 			</div>
 		</c:if>
-	</c:forEach>
-<br/><br/>
+	</c:foreach>
+<br/><br/> --%>
 <!-- 인기 리뷰 / 최근 리뷰 시작 -->
 <c:if test="${not empty recentReviews }">
 <!-- <c:if test="${not empty bestReviews }"></c:if>	-->

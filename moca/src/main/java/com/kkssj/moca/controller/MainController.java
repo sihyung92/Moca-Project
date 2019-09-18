@@ -102,26 +102,26 @@ public class MainController {
 		}
 		
 		alist = mainService.getHitStoresList(variables);	//Hit Stores추천
-		if(alist.size()>4) {
+		if(alist.size()>0) {
 			listNames.add("지금 뜨는 카페");
 			storesList.add(alist);
 		}
 		
 		alist = mainService.getBestStoresList();		//Best Stores추천
-		if(alist.size()>4) {			
+		if(alist.size()>0) {			
 			listNames.add("한주간 베스트 카페");
 			storesList.add(alist);
 		} 
 		 
 		alist = mainService.getTrendStoresList("예쁜");		//Trend Stores
-		if(alist.size()>4) {			
+		if(alist.size()>0) {			
 			listNames.add("흑당흑당 카페카페(미구현)");
 			storesList.add(alist);
 		}
 		
 		if(variables!=null) {
 			alist = mainService.getTakeoutStoresList(variables);		//TakeOut Stores
-			if(alist.size()>4) {			
+			if(alist.size()>0) {			
 				listNames.add("주변의 테이크아웃 전문점");
 				storesList.add(alist);
 			}
@@ -129,7 +129,7 @@ public class MainController {
 		 
 		if(id>0) {
 			alist = mainService.getFollowersStoresList(id);		//Follower's pick Stores
-			if(alist.size()>4) {			
+			if(alist.size()>0) {			
 				listNames.add("팔로워가 추천하는 카페");
 				storesList.add(alist); 
 			} 

@@ -21,6 +21,59 @@
   filter: alpha(opacity=50);
   opacity: 0;
 }
+	/* .carousel-control {
+	  position: absolute;
+	  top: 0;
+	  bottom: 0;
+	  left: 0;
+	  width: 3%;
+	  font-size: 20px;
+	  color: #fff;
+	  text-align: center;
+	  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+	  background-color: rgba(0, 0, 0, 0);
+	  filter: alpha(opacity=50);
+	  opacity: 0;
+	}
+	.mocaPick{
+		background-color: red;	
+	}
+	.mocaPick .carousel{
+		border: 2px aqua solid;
+	}
+	.mocaPick .carousel-inner{
+		background-color: lavender;
+	}
+	.mocaPick .item{
+		background-color: orange;
+		border: 3px yellow solid;
+		height: auto;
+	}
+	.mocaPick .item-content{
+		display: inline-block;
+		float: left;
+ 		width:20%;
+		height:20%;
+	}
+	.mocaPick img{
+ 		width: 100%;
+		height: 100%; 
+		display:none;
+		border: black solid 1px;
+	}
+
+	.mocaPick img:nth-child(2){
+		display:block;
+	}
+	.overlay{
+		background-color: rgba(0,0,0,0.5); 
+		position: absolute;
+		z-index: 2;
+		color: white;
+	}
+	.overlay span{
+		color: brown;
+	} */
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript">
