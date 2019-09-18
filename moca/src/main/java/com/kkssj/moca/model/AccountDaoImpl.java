@@ -225,4 +225,9 @@ public class AccountDaoImpl implements AccountDao {
 	public int selectFollowCountByFollowing(int followingAccount) throws SQLException {
 		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectFollowCountByFollowing", followingAccount);
 	}
+
+	@Override
+	public int selectAttendanceCountByAccountId(int account_id) {
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectAttendanceCountByAccountId", account_id);
+	}
 }

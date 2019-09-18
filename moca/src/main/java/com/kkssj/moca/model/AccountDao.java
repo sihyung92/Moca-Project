@@ -93,5 +93,8 @@ public interface AccountDao {
 	//자신의 follow수 조회
 	int selectFollowCountByFollowing(int followingAccount) throws SQLException;
 	
+	//자신의 출석수 조회
+	int selectAttendanceCountByAccountId(int account_id);
+	
 
 }

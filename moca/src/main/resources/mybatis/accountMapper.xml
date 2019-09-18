@@ -131,4 +131,8 @@
   	GROUP BY FOLLOWING
   ]]>
   </select>
+  
+  <select id="selectAttendanceCountByAccountId" resultType="Integer">
+  	SELECT COUNT(*) FROM EXPERIENCELOG el WHERE el.ACCOUNT_ID = #{ACCOUNT_ID} AND el.CLASSIFICATION='출석'
+  </select>
 </mapper>

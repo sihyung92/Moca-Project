@@ -375,7 +375,7 @@ public class StoreServiceImpl implements StoreService{
 			}
 			
 			if(level != 0) {
-				accountDao.insertBadge(account_id, "리뷰수" , level, reviewBadgeUrl[level]);
+				accountDao.insertBadge(account_id, "리뷰" , level, reviewBadgeUrl[level]);
 			}
 			logger.debug(callWhere+", reviewCount=" +reviewCount+", level=" +level);
 			
