@@ -4,7 +4,7 @@
 .navbar{z-index:1002;border:none;border-bottom:1px solid transparent;}
 .container-fluid{padding:5px;}
 #nav-static-height{width:100%;z-index:1001;position:fixed !important;}
-
+.navbar-toggle{border: none;}   
  
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
 .modal-backdrop.in{z-index:10;}/*이게 있어야 로그인창이 제일 위에 올라옴..*/
