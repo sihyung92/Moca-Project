@@ -10,6 +10,12 @@
 .clickableSvgCss{
 	cursor: pointer;
 }
+.clickableThumbnailCss{
+	cursor: pointer;
+}
+.review-content .clickableSvgCss{
+	width:1.5em;
+}
 .clickableSvgCss:hover{
 	
 }
@@ -51,7 +57,13 @@
     text-overflow: ellipsis;
     float:left;
 }
-.more-review-content-btn{display:none;white-space:nowrap;float:right;}
+.more-review-content-btn{display:none;white-space:nowrap;}
+
+.more-review-content-btn img{
+	width: 1em;
+	margin-left:2px;
+	margin-right: 10px;
+}
    
 .reviewThumbnailGroup .reviewThumbnail{
    	display: inline-block;

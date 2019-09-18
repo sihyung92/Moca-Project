@@ -305,7 +305,7 @@ var addReviewImgae = function(reviewRow, reviewVo){
 
 	for(var i=0; i<reviewVo.imageList.length; i++){
 		var oldReviewThumbnail = reviewThumbnail.html();
-		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail clickableSvgCss"><img src="'+
+		reviewThumbnail.html(oldReviewThumbnail+'<div class="reviewThumbnail clickableThumbnailCss"><img src="'+
 				reviewVo.imageList[i].thumbnailUrl
 				+'" alt="Image" class="img-thumbnail" id="'+
 				reviewVo.imageList[i].uu_id
@@ -626,20 +626,21 @@ var callReviewDataMore = function(){
 	var reviewData = $('.more-review-content');
     reviewData.each( function() {
        
-       var btnMoreReview = $(this).parent().siblings('.more-review-content-btn');
-
+       var btnMoreReview = $(this).parent().find('.more-review-content-btn');
+       console.log(btnMoreReview);
+       
        if( $(this).outerHeight() > 41 ){
            
        	$(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
           $(this).addClass('moreData');
           btnMoreReview.show();
           btnMoreReview.on("click",function(){
-             $(this).siblings('.review-content-div').find('.more-review-content').toggleClass('moreData').promise().done(function(){
+             $(this).parent().find('.more-review-content').toggleClass('moreData').promise().done(function(){
                   if($(this).hasClass("moreData") === false){
-                	  btnMoreReview.text("접기");
+                	  btnMoreReview.html('<img src="/moca/resources/imgs/icons/chevron-top.svg">'+"접기");
                   	$(this).css({ 'height': '100%', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
 	              }else{
-	            	  btnMoreReview.text("더보기");
+	            	  btnMoreReview.html('<img src="/moca/resources/imgs/icons/chevron-bottom.svg">'+"더보기");
 	            	 $(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
 		          }
              });
