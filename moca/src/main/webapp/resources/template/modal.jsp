@@ -355,14 +355,9 @@
                                     <div>
                                     <label for="SQ<%=rqVo.getQuestion_id()%>"><%=rqVo.getQuestion() %></label><br>
                                 <%
-			                                	int q=1;
 			                                if(rqVo.getAnswer()!=null){
 			                                	ArrayList ans = (ArrayList)session.getAttribute("ans"+rqVo.getQuestion_id());
 			                                	if(ans!=null){
-			                                		for(int j=0;j<ans.size();j=j+2){	                                   			
-                               
-		                                			q++;
-		                                			}
                           		%>
 													<div class="qArea" style="display: inline-block">
 														<img id="<%=i %>an1p" alt="#" src="/moca/resources/imgs/an1p.png"/><img id="<%=i %>an2p" alt="#" src="/moca/resources/imgs/an2p.png"/><img id="<%=i %>an3p" alt="#" src="/moca/resources/imgs/an3p.png"/><img id="<%=i %>an4p" alt="#" src="/moca/resources/imgs/an4p.png"/><img id="<%=i %>an5p" alt="#" src="/moca/resources/imgs/an5p.png"/>
@@ -372,9 +367,8 @@
                           		<%
 			                                    }
 	                             			}else{
-                               						q++;
                                	%>
-                               				<input type="text" class="essential-selective-info" name="SQ<%=rqVo.getQuestion_id() %>" />
+                               				<input id="an<%=i %>qVal" type="text" class="essential-selective-info" name="SQ<%=rqVo.getQuestion_id() %>" />
                                	<%
 			                                }
 			                                    out.print("</div>");

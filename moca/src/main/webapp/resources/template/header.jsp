@@ -114,6 +114,22 @@
                 });
                 $('#essentialNo').click(function(){
                     $('#info-rule').css('height','200px');
+                    
+                    $('#essential-info').hide();
+                    if(document.f.barista[0].checked){
+                        document.f.barista[0].checked=false;
+                    }else if(document.f.barista[1].checked){
+                        document.f.barista[1].checked=false;
+                    }
+                    
+                    if(document.f.gender[0].checked){
+                        document.f.gender[0].checked=false;
+                    }else if(document.f.gender[1].checked){
+                        document.f.gender[1].checked=false;
+                    }
+                    
+                    $('#birthday').val("");
+                    
                 });
                 $('#selectiveYes').click(function(){
                     $('#info-rule-selective').css('height','50px');
@@ -121,6 +137,14 @@
                 });
                 $('#selectiveNo').click(function(){
                     $('#info-rule-selective').css('height','200px');
+                    
+                    $('#selective-info').hide();
+                    for(var i=0;i<50;i++){
+                        for(var j=1;j<6;j++){
+                            $('#'+i+'an'+j+'p').attr({src:"/moca/resources/imgs/an"+j+"p.png"});
+                        }
+                        $('#an'+i+'qVal').val("");
+                    }
                 });
             }
                                 
