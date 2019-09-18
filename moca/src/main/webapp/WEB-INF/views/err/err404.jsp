@@ -55,7 +55,7 @@
 
 </head>
 <body>
-	
+	<div class="error_div">
 	<div class="row Big-Font">
 	  <div class="col-md-8">Error Code <span style="color: red">404</span></div>
 	  <div class="col-md-8 col-md-offset-1">페이지를 찾을 수 없습니다!</div>
@@ -66,7 +66,7 @@
         <span class="Sma-Font">찾으시려는 페이지는 주소를 잘못 입력하였거나 페이지 주소의 변경 또는 삭제 등의 이유로 페이지를 찾을 수 없습니다.</span><br>
         <span class="Sma-Font">입력하신 페이지의 주소와 경로가 정확한지 한 번 더 확인 후 이용하시기 바랍니다.</span><br>
     </div>
-    
+    </div>
     <div><button>이전페이지</button></div>
 </body>
 <script type="text/javascript">
