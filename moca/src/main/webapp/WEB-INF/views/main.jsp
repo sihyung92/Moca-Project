@@ -120,6 +120,10 @@
 	#review-list{
 		color: dimgray;
 	}
+	.bx-wrapper{
+		position : static;
+	}
+	
 	#bestReview-list, #recentReview-list{
 		border: lightgray 1px solid;
 		border-radius: 2px;
@@ -168,7 +172,8 @@
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
+<script src="resources/js/jquery.bxslider-rahisified.js"></script>
+<link rel="stylesheet" href="resources/css/jquery.bxslider.css">
 <script type="text/javascript">
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
@@ -255,121 +260,35 @@
 	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>
 <!-- 카페 추천 캐러샐(bxSlider)-->
  	<c:forEach items="${storesList}" var="list" varStatus="status" begin="0" end="0">
+				<div class="row">
 		<c:if test="${not empty list}">
 			<c:set var="length" value="${fn:length(list)}"/>
 			<c:set var="index" value="${status.index}"/>
 			<c:set var="name" value="${listNames[index]}"/>
 				<h5>${name}: 총 가게 ${length}개</h5>
-				<div class="slider row">
-					<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
-					    <div class="store col-md-3">
-					    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
-						</div>
-					</c:forEach>
-				</div>
+					<div class="slider">
+						<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
+						    <div class="store col-md-3">
+						    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
+							</div>
+						</c:forEach>
+					</div>
 		</c:if>
-	</c:forEach> 
-
-
-<!-- 카페 추천 캐러샐(부트스트랩)-->
-	<c:forEach items="${storesList}" var="list" varStatus="status" begin="0" end="0">
-		<c:if test="${not empty list}">		
+		<c:if test="${not empty list}">
 			<c:set var="length" value="${fn:length(list)}"/>
 			<c:set var="index" value="${status.index}"/>
 			<c:set var="name" value="${listNames[index]}"/>
-	 		<div class="mocaPick">
-				<h5>${name}</h5>
-				<div class="carousel slide" id="mocaPick_${index}" data-ride="carousel">
-				  <!-- Indicators -->
-				  <ol class="carousel-indicators">
-				    <li data-target="#mocaPick_${index}" data-slide-to="0" class="active"></li>
-				    <c:if test="${length gt 5}">
-				   	 	<li data-target="#mocaPick_${index}" data-slide-to="1"></li>
-				    </c:if>
-				    <c:if test="${length gt 10}">
-				    	<li data-target="#mocaPick_${index}" data-slide-to="2"></li>
-				    </c:if>
-				  </ol>		
-				  <!-- Wrapper for slides -->
-				  <div class="carousel-inner" role="listbox">
-				    <div class="item active">
-				     	<c:forEach items="${list}" var="store" begin="0" end="4" > 					     	
-					     	<div class="item-content"><a href="./stores/${store.store_Id }">
-					     		<%-- <div class="overlay">
-					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
-						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
-							     		</h5>
-						     			<h6>${store.roadAddress}</h6>
-					     			</div>
-					     		</div> --%>
-					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
-					     	</a></div>					     	
-				     	</c:forEach>
-				    </div>
-				    <c:if test="${length gt 5}">
-				    <div class="item">
-			    		<c:set var="end">9</c:set>
-				     	<c:if test="${length lt 10}"><c:set var="end">${length-1 }</c:set></c:if>
-				     	<c:forEach items="${list}" var="store" begin="${end-4 }" end="${end }">				     	
-					     	<div class="item-content"><a href="./stores/${store.store_Id }">
-					     		<%-- <div class="overlay">
-					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
-						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
-							     		</h5>
-						     			<h6>${store.roadAddress}</h6>
-					     			</div>
-					     		</div> --%>
-					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
-					     	</a></div>					     	
-				     	</c:forEach>				     
-				    </div>
-				    </c:if>     
-				    <c:if test="${length gt 10}">	
-					   <div class="item">
-				     		<c:forEach items="${list}" var="store" begin="${length-5 }" end="${length-1 }"> 					     	
-					     	<div class="item-content"><a href="./stores/${store.store_Id }">
-					     		<%-- <div class="overlay">
-					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></h4>					     			
-						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewCnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewCnt}
-							     		</h5>
-						     			<h6>${store.roadAddress}</h6>
-					     			</div>
-					     		</div> --%>
-					     		<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3">					     	
-					     	</a></div>					     	
-				     		</c:forEach>						   	
-					    </div> 
-					</c:if> 	  		   
-				</div>	
-				  <!-- Controls -->
-				  <a class="left carousel-control" href="#mocaPick_${index}" role="button" data-slide="prev">
-				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-				    <span class="sr-only">Previous</span>
-				  </a>
-				  <a class="right carousel-control" href="#mocaPick_${index}" role="button" data-slide="next">
-				    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-				    <span class="sr-only">Next</span>
-				  </a>
-				</div>
-			</div>
+				<h5>${name}: 총 가게 ${length}개</h5>
+					<div class="slider">
+						<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
+						    <div class="store col-md-3">
+						    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1">
+							</div>
+						</c:forEach>
+					</div>
 		</c:if>
-	</c:forEach>
-<br/><br/>
+				</div>
+	</c:forEach> 
 <!-- 인기 리뷰 / 최근 리뷰 시작 -->
 <c:if test="${not empty recentReviews }">
 <!-- <c:if test="${not empty bestReviews }"></c:if>	-->

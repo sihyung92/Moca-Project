@@ -9,16 +9,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Insert title here</title>
 <style type="text/css">
-	/*
-		body에 padding-top줘야함 - header fixed된 후.
-	*/
+	
+	#header{
+		background-size: cover;
+	}
 	#searchBar{
 		display: none;
-	}
+	} 
+	
 	#search{
 		text-align: center;
-		padding : 30px 0px 30px 0px;
-		background-image: url("resources/imgs/store3.jpg");
+		padding-top:82px;
+		background-color: rgba(246,245,239,0.5);
 	}
 	#search p {
 		padding-top : 5px;
@@ -27,29 +29,27 @@
 	#search .form-inline{
 		display : inline-table;
 	}
-	#content{
-		background-color : rgb(#416020);
-	}
+
 	#keyword2{
-		width : 500px;
+		/* width : 500px; */
 	}
 	
 	#filter_sort{
 		padding-top : 10px;
 	}
 	
-	#filter_sort>span{
-		color : white;
+	#content{
+		background-color: rgba(246,245,239,0.5);
 	}
 	
 	#mapContainer{
 		padding-top : 10px;
-		height : 100%;
-		background-color : floralwhite;
 	}
+	
 	#mapContainer button{
 		font-family : 나눔고딕,Nanum Gothic;
 	}
+	
 	#mapContainer #map{
 		height : 600px;
 	}
@@ -79,7 +79,7 @@
 		display : inline-block;
 		overflow : hidden;
 		width: 100%;
-		height: 100px;
+		height: 150px;
 		object-fit: fill;
 	}
 	
@@ -127,6 +127,9 @@
 	@media (max-width:991px){
 		.links img{
 			height : 200px;
+		}
+		#keyword2{
+			/* width : 250px; */
 		}
 	}
 </style>
@@ -205,6 +208,20 @@
 		var totalCount = $('.links').size()-1; //총 가게수, paging 함수내에서 인덱스로 활용되기때문에 -1
 		paging(totalCount, 1); //
 		</c:if>
+		
+		var mql = window.matchMedia("screen and (max-width: 991px)");
+
+		mql.addListener(function(e) {
+		    if(e.matches) {
+		        console.log('모바일 화면 입니다.');
+		        $('#search_input_group').removeClass('input-group-lg')
+		    } else {
+		        console.log('데스크탑 화면 입니다.');
+		        $('#search_input_group').addClass('input-group-lg')
+		    }
+		});
+		
+		$(window).on('scroll', changeHeaderColor); 
     };//onload 끝-
 
     //리스트 클릭 이벤트
@@ -327,6 +344,7 @@
 						    map.setBounds(bounds);	
 						}else{
 							alert("검색 결과 없습니다");	//////여기 수정해야되-------
+							$('#warning_noResult').text("검색 결과가 없습니다!");
 						}					    							
 				    }
 				},
@@ -364,8 +382,8 @@
 					$(store.children()[0]).find('img').attr('src', ele.storeImg1);
 				var spans = $(store.children()[0]).children('span');
 				$(spans[0]).html(ele.name+"&nbsp;<h4>"+ele.averageLevel+"</h4>");
-				$(spans[1]).html("&nbsp;"+ele.reviewCnt+"&nbsp;");
-				$(spans[2]).html("&nbsp;"+ele.viewCnt);
+				$(spans[1]).html(ele.reviewCnt);
+				$(spans[2]).html(ele.viewCnt);
 				var distance;
 				if(ele.distance>=1000){
 					distance = (ele.distance/1000).toFixed(1)+"km";
@@ -470,13 +488,32 @@
 				next.off('click').click(clickNext);
 			}	
 			pageNum=null;
-			$( 'html, body' ).animate( { scrollTop : 220 }, 200 );
+			$('html, body').animate( { scrollTop : 113 }, 200 );
 		}
 		
 		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).on("click",goPage);
 		$('.pagination>li:nth-child(2)').click();
 		$('#page').show();
 	};
+	
+    //스크롤 위치에 따라 헤더 배경색 변경
+    function changeHeaderColor(){
+    	var position = $(window).scrollTop();
+    	var width = $(window).width();
+    	if(width>991){
+    		if(position > 113){
+            	$('#searchBar').show();
+            }else{
+            	$('#searchBar').hide();
+            }
+        }else{
+        	if(position > 99){
+            	$('#searchBar').show();
+            }else{
+            	$('#searchBar').hide();
+            }
+        }
+    };
 	</script>	
 </head>
 <body>
@@ -794,36 +831,46 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
-        <button type="button" class="btn btn-primary" id="region_modal_btn">필터 적용</button>
+        <button type="button" class="btn btn-default" id="region_modal_btn">필터 적용</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <div id="header">
-		<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
-</div>
-<div id="content" class="container-fluid">
+	<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 	<div id="search" class="row">
 		<form class="form-inline" action="stores">
-			<div class="input-group input-group-lg">	
+			<div class="input-group input-group-lg col-md-12">
 				<input type="text" name="keyword" class="form-control" id="keyword2" placeholder="검색어를 입력해주세요." value="${keyword}"/>
-				<span class="input-group-btn">
-					<button id="searchBtn2" class="btn btn-default" type="submit"><small>검 색</small></button><br/>
-				</span>
+				<%-- <span class="btn">
+					<button id="searchBtn2" class="btn btn-default" type="submit"><img style="weight:20px; height: 20px;" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button><br/>
+				</span> --%>
 			</div>
-				<div id="filter_sort" class="filter">
-					<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
-					<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
-					<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
-					<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}"> checked="checked"</c:if>><span>거리순</span>
+				<div id="filter_sort" class="filter col-md-12">
+					<div class="btn-group" data-toggle="buttons">
+	                    <label class="btn btn-default">
+							<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
+	                    </label>
+	                    <label class="btn btn-default">
+							<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
+	                    </label>
+	                    <label class="btn btn-default">
+							<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
+	                    </label>
+	                    <label class="btn btn-default">
+							<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}"> checked="checked"</c:if>><span>거리순</span>
+	                    </label>
+	                </div>
 					<!-- 모달 트리거 버튼-->
-					<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#region_modal"><span class="glyphicon glyphicon-filter">지역필터</span></button>
+					<button type="button" class="btn btn-default" data-toggle="modal" data-target="#region_modal"><img style="weight:10px; height: 10px;" src="<c:url value="/resources/imgs/icons/filter.svg"/>">지역필터</span></button>
 				</div>
 				<input type="hidden" name="region" id="region1" disabled="disabled"/>
 				<input type="hidden" name="region" id="region2" disabled="disabled"/>
 				<c:if test="${not empty msg_changedFilter}"><p>원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</p></c:if>		
 		</form>
 	</div>
+</div>
+<div id="content" class="container-fluid" style="padding-top : 0">
 	<div class="row">			
 		<c:if test="${not empty storeList }">
 			<div id="mapContainer" class="col-xs-12 col-md-6">
@@ -846,7 +893,7 @@
 						<input type="hidden" name="store_Id" value="">
 						<input type="hidden" name="kakaoId" value="">
 						<input type="hidden" class="name" name="name" value=""><span class="bold"></span><br/>
-						<span class="glyphicon glyphicon glyphicon-pencil span_viewCnts" aria-hidden="true"></span><span class="glyphicon glyphicon glyphicon-eye-open span_viewCnts" aria-hidden="true"></span><br/>
+						<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/edit.svg"/>">&nbsp;<span></span>&nbsp;&nbsp;<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/eye.svg"/>">&nbsp;<span></span><br/>
 						<input type="hidden" class="roadAddress" name="roadAddress" value=""><span class="span_roadAddress"></span><br/>
 						<input type="hidden" name="address" value="">
 						<input type="hidden" name="tel" value="">
@@ -866,7 +913,7 @@
 						<input type="hidden" name="store_Id" value="${bean.store_Id}">
 						<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
 						<input type="hidden" class="name" name="name" value="${bean.name}"><span class="bold">${bean.name }&nbsp;<h4>${bean.averageLevel}</h4></span><br/>
-						<span class="glyphicon glyphicon glyphicon-pencil span_viewCnts" aria-hidden="true">&nbsp;${bean.reviewCnt} </span><span class="glyphicon glyphicon glyphicon-eye-open span_viewCnts" aria-hidden="true">&nbsp;${bean.viewCnt}</span><br/>
+						<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/edit.svg"/>">&nbsp;<span>${bean.reviewCnt}</span>&nbsp;&nbsp;<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/eye.svg"/>">&nbsp;<span>${bean.viewCnt}</span><br/>
 						<input type="hidden" class="roadAddress" name="roadAddress" value="${bean.roadAddress}"><span class="span_roadAddress">${distance} ${bean.roadAddress }</span><br/>
 						<input type="hidden" name="address" value="${bean.address}">
 						<input type="hidden" name="tel" value="${bean.tel}">
