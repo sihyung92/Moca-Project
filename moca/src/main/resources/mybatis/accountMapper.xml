@@ -119,12 +119,14 @@
   	UPDATE ACCOUNT SET FOLLOWINGCOUNT=FOLLOWINGCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
   </update>
   
-  <select id="selectReviewCountByAccountId" parameterType="Integer" resultType="Integer">
-   SELECT count(*) FROM REVIEW r GROUP BY r.ACCOUNT_ID HAVING r.ACCOUNT_ID = #{ACCOUNT_ID}
-  </select>
+
   
   <insert id="insertBadge">
   	INSERT INTO BADGE(ACCOUNT_ID , CLASSIFICATION, BADGELEVEL) 	VALUES(#{ACCOUNT_ID},#{CLASSIFICATION}, #{BADGELEVEL})
 	ON DUPLICATE KEY UPDATE BADGELEVEL = #{BADGELEVEL};
   </insert>
+  
+  <select id="selectFollowCountByFollowing">
+  	SELECT COUNT(*) FROM follow WHERE FOLLOWING = #{FOLLOWING } GROUP BY FOLLOWING
+  </select>
 </mapper>

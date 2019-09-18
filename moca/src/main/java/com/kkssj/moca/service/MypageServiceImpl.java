@@ -27,6 +27,8 @@ public class MypageServiceImpl implements MypageService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(MypageServiceImpl.class);
 	
+	int[] followBadgeLevel = new int[] {0,10,30,50,100}; 
+	
 	@Inject
 	AccountDao accountDao;	
 	
@@ -144,6 +146,8 @@ public class MypageServiceImpl implements MypageService{
 				if(accountVo.getExp() >= accountVo.getMaxExp()) {
 					accountDao.updateAccountlevel(following);
 				}
+				
+				badgeManage(following , "following");
 			}
 			
 			return accountDao.insertFollow(follower,following);
@@ -151,6 +155,24 @@ public class MypageServiceImpl implements MypageService{
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	private void badgeManage(int followingAccount, String callWhere) throws SQLException {
+		int level = 0;
+		if(callWhere.equals("following")) {// 리뷰를 작성했을때
+			int followCount = accountDao.selectFollowCountByFollowing(followingAccount);
+			
+			for (int i = 0; i < followBadgeLevel.length; i++) {
+				if(followBadgeLevel[i] == followCount) {
+					level = i;
+				}
+			}
+			
+			if(level != 0) {
+				accountDao.insertBadge(followingAccount, "팔로우" , level);
+			}
+		}
+		
 	}
 
 	@Override

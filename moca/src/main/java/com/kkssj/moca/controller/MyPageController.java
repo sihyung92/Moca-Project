@@ -71,23 +71,17 @@ public class MyPageController {
 			logger.debug(accountVo.toString());
 		}
 		
-		AccountVo currentPageAccount1 = mypageService.getAccountInfo(accountId);
-		//탈퇴한 회원이거나 DB에 없는 회원번호를 호출했을 때
-		if(currentPageAccount1==null) {
-			//오류페이지로(현재는 메인페이지로 이동)
-			return "redirect:/";
-		}
 		
-		currentPageAccount1.setLevelName(currentPageAccount1.getAccountLevel());
-		model.addAttribute("currentPageAccount",currentPageAccount1);
-		logger.debug(currentPageAccount1.toString());
+		currentPageAccount.setLevelName(currentPageAccount.getAccountLevel());
+		model.addAttribute("currentPageAccount",currentPageAccount);
+		logger.debug(currentPageAccount.toString());
 		
 		//세션의 id값과 path로 받아온 id값이 일치하는 지 확인
 		if(accountId==accountVo.getAccount_id()) {
 			//isMine을 1로
 			accountVo.setIsMine(1);
-			accountVo.setExp(currentPageAccount1.getExp());
-			accountVo.setAccountLevel(currentPageAccount1.getAccountLevel());
+			accountVo.setExp(currentPageAccount.getExp());
+			accountVo.setAccountLevel(currentPageAccount.getAccountLevel());
 			accountVo.setMaxExp();
 			accountVo.setMinExp();
 			logger.debug(accountVo.toString());
@@ -101,6 +95,7 @@ public class MyPageController {
 		
 		//해당 account 정보 가져오기 (그래프+배지 포함)
 		//일단은 기본적인 정보만 가져오기
+		
 		model.addAttribute("");
 		
 		//해당 account의 내가 쓴 리뷰 가져오기

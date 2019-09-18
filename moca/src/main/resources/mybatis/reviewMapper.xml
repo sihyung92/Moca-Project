@@ -175,8 +175,12 @@
   	UPDATE REVIEWIMAGE ri SET ri.VIEWS = ri.VIEWS+1 WHERE ri.UU_ID = #{UU_ID}
   </update>
   
-  <select id="selectLikeHateCountByAccountId">
-  	
+  <select id="selectLikeHateCountByAccountId" resultType="Integer">
+  	SELECT count(*) FROM LIKEHATE l JOIN REVIEW r on l.REVIEW_ID = r.REVIEW_ID WHERE r.ACCOUNT_ID = #{ACCOUNT_ID } GROUP BY r.ACCOUNT_ID	
+  </select>
+  
+  <select id="selectReviewCountByAccountId" parameterType="Integer" resultType="Integer">
+   SELECT count(*) FROM REVIEW r GROUP BY r.ACCOUNT_ID HAVING r.ACCOUNT_ID = #{ACCOUNT_ID}
   </select>
   
 </mapper>

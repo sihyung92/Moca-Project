@@ -219,4 +219,9 @@ public class AccountDaoImpl implements AccountDao {
 		map.put("BADGELEVEL", level);
 		return sqlSession.insert("com.kkssj.moca.model.AccountDao.insertBadge", map);
 	}
+
+	@Override
+	public int selectFollowCountByFollowing(int followingAccount) throws SQLException {
+		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectFollowCountByFollowing", followingAccount);
+	}
 }

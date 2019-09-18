@@ -285,4 +285,5 @@ public class ReviewDaoImpl implements ReviewDao {
 		return sqlSession.selectOne("com.kkssj.moca.model.ReviewDao.selectLikeHateCountByAccountId", account_id);
 	}
 
+
 }

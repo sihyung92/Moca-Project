@@ -344,6 +344,7 @@ public class StoreServiceImpl implements StoreService{
 				//store reviewCnt
 				storeDao.updateReviewCount(reviewVo.getStore_id(), 1);
 				
+				
 				// 방금 입력한 reviewVo를 리턴
 				return reviewVo;
 			}
@@ -361,7 +362,7 @@ public class StoreServiceImpl implements StoreService{
 	
 	private void badgeManage(int account_id, String callWhere) throws SQLException {
 		int level = 0;
-		if(callWhere.equals("review")) {
+		if(callWhere.equals("review")) {// 리뷰를 작성했을때
 			int reviewCount = reviewDao.selectReviewCountByAccountId(account_id);
 			
 			for (int i = 0; i < reviewBadgeLevel.length; i++) {
@@ -371,12 +372,25 @@ public class StoreServiceImpl implements StoreService{
 			}
 			
 			if(level != 0) {
-				accountDao.insertBadge(account_id, "리뷰" , level);
+				accountDao.insertBadge(account_id, "리뷰수" , level);
 			}
-		}else if(callWhere.equals("likeHate")) {
+			logger.debug(callWhere+", reviewCount=" +reviewCount+", level=" +level);
+			
+		}else if(callWhere.equals("likeHate")) {// 좋아요를 받았을때
 			int likeHateCount = reviewDao.selectLikeHateCountByAccountId(account_id);
+			
+			for (int i = 0; i < likeHateBadgeLevel.length; i++) {
+				if(likeHateBadgeLevel[i] == likeHateCount) {
+					level = i;
+				}
+			}
+
+			if(level != 0) {
+				accountDao.insertBadge(account_id, "리뷰좋아요" , level);
+			}
 		}
 		
+		logger.debug(callWhere+", " + level);
 		
 	}
 	private int syncStoreTag(int store_id, List<String> tagList) throws SQLException {
