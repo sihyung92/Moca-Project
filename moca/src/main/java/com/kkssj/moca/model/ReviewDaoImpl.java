@@ -96,22 +96,14 @@ public class ReviewDaoImpl implements ReviewDao {
 
 	//review 테이블에 likeCount값 수정
 	@Override
-	public int updateLikeCount(int review_id, int likeCount) throws SQLException{
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("REVIEW_ID", review_id);
-		map.put("LIKECOUNT", likeCount);
-		logger.debug("REVIEW_ID:"+review_id+ ", LIKECOUNT:"+likeCount);		
-		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeCount", map);
+	public int updateLikeCount(int review_id) throws SQLException{
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateLikeCount", review_id);
 	}
 
 	//review 테이블에 hateCount값 수정
 	@Override
-	public int updateHateCount(int review_id, int hateCount) throws SQLException{
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("REVIEW_ID", review_id);
-		map.put("HATECOUNT", hateCount);
-		logger.debug("REVIEW_ID:"+review_id+ ", HATECOUNT:"+hateCount);		
-		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateHateCount", map);
+	public int updateHateCount(int review_id) throws SQLException{		
+		return sqlSession.update("com.kkssj.moca.model.ReviewDao.updateHateCount", review_id);
 	}
 
 	//review 테이블에 likeCount, hateCount값 조회

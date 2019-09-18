@@ -101,11 +101,11 @@
   
   <update id="updateReviewCount" parameterType="map">
 	UPDATE ACCOUNT a 
-		SET a.REVIEWCOUNT = (
-			SELECT count(*) 
-			FROM REVIEW r
-			WHERE r.ACCOUNT_ID =#{ACCOUNT_ID }
-		)
+	SET a.REVIEWCOUNT = (
+		SELECT count(*) 
+		FROM REVIEW r
+		WHERE r.ACCOUNT_ID =#{ACCOUNT_ID }
+	)
 	WHERE a.ACCOUNT_ID =#{ACCOUNT_ID }
   </update>
   

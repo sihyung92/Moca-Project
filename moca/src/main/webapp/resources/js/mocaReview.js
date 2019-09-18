@@ -126,7 +126,8 @@ var saveReview = function(fileBuffer){
 		contentType : false,  
 		processData : false,
 		cache : false,
-		timeout : 600000,
+		timeout : 60000,
+
 		beforeSend:function(){
 			
 			
@@ -179,6 +180,8 @@ var displayNoneReviewerOrStoreInfo = function(reviewRow, callWhere){
 }
 
 var setReviewerInfo = function(reviewRow, reviewVo){
+	test = reviewVo
+	console.log(test)
 	//store 페이지일 때
 	if(reviewVo.thumbnailImage==null){
 		reviewRow.find('.accountProfile').attr('src','/moca/resources/imgs/basicProfile.png');
@@ -190,7 +193,7 @@ var setReviewerInfo = function(reviewRow, reviewVo){
 
 	reviewRow.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
 	reviewRow.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
-	reviewRow.find('.reviewer-reviewse').text(reviewVo.reviewCount) 	//리뷰수
+	reviewRow.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
 }
 
 var setStoreInfo = function(reviewRow, reviewVo){
@@ -505,10 +508,7 @@ var moreReviewList = function(startNum,callWhere) {
 				}else if(callWhere =='mypage'){
 					//mypage일 때
 					setStoreInfo(newReview, reviewVo)
-					
 				}
-				
-
 				
 				setReviewInfo(newReview, reviewVo);
 				
@@ -632,7 +632,6 @@ var callReviewDataMore = function(){
     reviewData.each( function() {
        
        var btnMoreReview = $(this).parent().find('.more-review-content-btn');
-       console.log(btnMoreReview);
        
        if( $(this).outerHeight() > 41 ){
            
@@ -665,6 +664,7 @@ var addLikeHate = function(reviewId, isLike){
 	$.ajax({
 		type: 'POST',
 		url: '/moca/likeHates/' + reviewId,
+		async: false,
 		data: {
 			"isLike": isLike
 		},

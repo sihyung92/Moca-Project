@@ -43,10 +43,22 @@
   </delete>
   
   <update id="updateLikeCount" parameterType="map">
-  	UPDATE REVIEW SET likeCount = #{LIKECOUNT} WHERE review_id = #{REVIEW_ID}
+	UPDATE REVIEW r
+	SET r.LIKECOUNT = (
+		SELECT count(*) FROM LIKEHATE lh 
+		WHERE lh.REVIEW_ID =#{REVIEW_ID} AND lh.ISLIKE=1 
+	) 
+	WHERE r.REVIEW_ID = #{REVIEW_ID}
+	LIMIT 1	
   </update>
   <update id="updateHateCount" parameterType="map">
-  	UPDATE REVIEW SET hateCount = #{HATECOUNT} WHERE review_id = #{REVIEW_ID}
+	UPDATE REVIEW r
+	SET r.LIKECOUNT = (
+		SELECT count(*) FROM LIKEHATE lh 
+		WHERE lh.REVIEW_ID =#{REVIEW_ID} AND lh.ISLIKE=-1 
+	) 
+	WHERE r.REVIEW_ID = #{REVIEW_ID}
+	LIMIT 1
   </update>
   <select id="selectLikeHateCount" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
   	SELECT likeCount, hateCount FROM REVIEW WHERE review_id = #{id}

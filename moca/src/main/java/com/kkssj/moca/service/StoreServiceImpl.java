@@ -765,7 +765,7 @@ public class StoreServiceImpl implements StoreService{
 			int likeAccountId = reviewDao.selectAccountIdOfReviewByReviewId(review_id);
 			
 			if(isLike ==1) {
-				result = reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()+1);
+				result = reviewDao.updateLikeCount(review_id);
 				
 				//자기아이디 자기가 좋아요 누르면 제외
 				if(likeAccountId!=accountId) {
@@ -784,7 +784,7 @@ public class StoreServiceImpl implements StoreService{
 				}
 			}else { 
 				classification = "리뷰싫어요클릭";
-				result = reviewDao.updateHateCount(review_id, reviewVo.getHateCount()+1) ;
+				result = reviewDao.updateHateCount(review_id) ;
 			}
 			
 			//자기아이디 자기가 좋아요 누르면 제외
@@ -825,6 +825,7 @@ public class StoreServiceImpl implements StoreService{
 			int likeAccountId = reviewDao.selectAccountIdOfReviewByReviewId(review_id);
 			
 			if(isLike ==1) {
+				result = reviewDao.updateLikeCount(review_id);
 				
 				//자기아이디 자기가 좋아요 취소하면 제외
 				if(likeAccountId!=accountId) {
@@ -842,9 +843,9 @@ public class StoreServiceImpl implements StoreService{
 					badgeManage(likeAccountId, "likeHate");
 				}
 				
-				result = reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()-1);
+				
 			}else { 
-				result =  reviewDao.updateHateCount(review_id, reviewVo.getHateCount()-1);
+				result =  reviewDao.updateHateCount(review_id);
 			}
 			
 			//자기아이디 자기가 좋아요 취소하면 제외
@@ -876,8 +877,8 @@ public class StoreServiceImpl implements StoreService{
 		try {
 			reviewDao.updateLikeHate(review_id, accountId, isLike);
 			ReviewVo reviewVo = reviewDao.selectLikeHateCount(review_id);
-			reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()+isLike) ;
-			reviewDao.updateHateCount(review_id, reviewVo.getHateCount()-isLike) ;
+			reviewDao.updateLikeCount(review_id) ;
+			reviewDao.updateHateCount(review_id) ;
 			return 1;
 			
 		} catch (SQLException e) {
@@ -893,8 +894,8 @@ public class StoreServiceImpl implements StoreService{
 			int review_id;
 			for (int i = 0; i < list.size(); i++) {
 				review_id = list.get(i).getReview_id();
-				reviewDao.updateLikeCount(review_id, reviewDao.selectLikeHateLike(review_id));
-				reviewDao.updateHateCount(review_id, reviewDao.selectLikeHateHate(review_id));
+				reviewDao.updateLikeCount(review_id);
+				reviewDao.updateHateCount(review_id);
 			}
 			
 			return 1;
