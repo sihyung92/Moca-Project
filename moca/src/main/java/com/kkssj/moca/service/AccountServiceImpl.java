@@ -37,26 +37,6 @@ public class AccountServiceImpl implements AccountService {
 				
 				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//입력된 값으로 새로 조회해온다.
 				return compareVo;
-			}else if(compareVo.hashCode()!=accountVo.hashCode()){	//HashCode로 비교한다 / 데이터가 있기는 한데 email이나 변동 가능한 값이 다른지 비교후 다르다면 JSON => VO로 수정한다. 현재 는 작동 안될듯.
-				accountDao.updateUser(accountVo.getPlatformType(),accountVo);
-				compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());	//변경된 값으로 새로 조회해온다.
-				
-				//오늘날짜로 "로그인"이 하나도 없을 경우만
-				if(accountDao.selectExpLogByAccountId(compareVo.getAccount_id(), "로그인")==0) {
-					//로그인 exp 증가
-					accountDao.updateAccountExp(compareVo.getAccount_id(), 2);
-					accountDao.insertExpLog(compareVo.getAccount_id(), "로그인", 2);
-					accountDao.updateAttendanceCount(compareVo.getAccount_id());
-					
-					//포인트가 레벨업 할만큼 쌓였는지 검사
-					AccountVo accountVoForExp = accountDao.selectByaccountId(compareVo.getAccount_id());
-					accountVoForExp.setMaxExp();
-					if(accountVoForExp.getExp() >= accountVoForExp.getMaxExp()) {
-						accountDao.updateAccountlevel(accountVoForExp.getAccount_id());
-					}
-				}
-				
-				return compareVo;
 			}else {	//DB에 데이터도 있으며 값도 다르지 않은 경우 다시 이 DB속 VO(compareVo)를 리턴해준다(이때는 account_id가 제대로 설정된 VO로 받아옴)
 				
 				//오늘날짜로 "로그인"이 하나도 없을 경우만

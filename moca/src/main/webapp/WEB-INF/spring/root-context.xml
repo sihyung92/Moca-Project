@@ -10,7 +10,7 @@
 	p:driverClassName="org.gjt.mm.mysql.Driver"
 	p:url="jdbc:mysql://ec2-13-209-48-91.ap-northeast-2.compute.amazonaws.com:3306/mocadb?characterEncoding=utf8"
 	p:username="moca" 
-	p:password="Sfh!asFsk@plzDonthack@HckersFckers!!@"
+	p:password=""
 	/>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
