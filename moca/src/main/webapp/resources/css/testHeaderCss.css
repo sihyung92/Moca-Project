@@ -96,6 +96,18 @@ nav select:-webkit-autofill:focus {
 z-index:1000;
  background-color: rgba(0,0,0,0.3);}
 
+/*error page*/
+@font-face {font-family:"잘난체";src:url("/moca/resources/fonts/Jalnan.ttf");}
+.Big-Font{font-family : "잘난체";font-size: 40px;text-align:center;}
+.Mid-Font{font-family : "잘난체";font-size: 30px;}
+.Sma-Font{font-family : "잘난체";font-size: 15px;}
+.Nom-Font{font-family : "잘난체";font-size: 20px;}
+.Lar-Font{font-family : "잘난체";font-size: 24px;}
+.error_div{margin:10% auto;width:55%;}
+#error404{overflow:hidden;display : block;width:80%;margin: 5px auto;}
+.error_div a{text-decoration: none;color:#CCC;}
+
+
 /*#footer*/
 #footer ul, ol, li{list-style:none;}
  #footer{
