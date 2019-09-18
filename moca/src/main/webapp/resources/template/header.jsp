@@ -58,6 +58,11 @@
 				return false;
 			}
 		});
+
+		//상단으로
+		$('#btn_go_top').click(function(){
+          $('html').animate({ scrollTop: 0 }, 600);
+        });
         
         //미리 설정할 사항들
         $('#nav-static-height').css('height','60px');
@@ -389,3 +394,4 @@
 		<jsp:include page="../../resources/template/modal.jsp" flush="true"></jsp:include>
 	</div>
 </nav>
+<button id="btn_go_top"></button>

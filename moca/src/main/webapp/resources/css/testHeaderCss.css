@@ -51,6 +51,36 @@ nav select:-webkit-autofill:focus {
 }
 .navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:transparant;}
 
+
+/*상단으로 가는 버튼*/
+#btn_go_top{
+   /*display:inline-block;
+   display:none;*/
+   display:block;
+   position:fixed;
+   background:url("/moca/resources/imgs/icons/chevron-top.svg") 0 0 no-repeat;   
+   bottom:15px;
+   right:15px;
+   z-index:999;
+   width:40px;
+   height:40px;
+   border:none;
+   background-size:40px auto;
+   text-indent:-9999px;
+}
+/*modal 1~5 버튼*/
+.qArea .btn-primary{box-shadow:none;border:none;}
+
+.an1p{background: linear-gradient( to right, #62BD7A, #B0D47F );}
+.an2p{background: linear-gradient( to right, #B0D47F, #FEEA83 );}
+.an3p{background: linear-gradient( to right, #FEEA83, #FEEA83 );}
+.an4p{background: linear-gradient( to right, #FEEA83, #FAA976 );}
+.an5p{background: linear-gradient( to right, #FAA976, #F7686A );}
+.qArea .btn{color:#000;border-top:1px solid rgba(0,0,0,0.2);border-bottom:1px solid rgba(0,0,0,0.2);border-radius: 100px;padding-inline-start: 25px;padding-inline-end: 25px;}
+.anOff{background: #FFF;}
+.qArea .btn-primary:hover{background-color:rgba(0,0,0,0.2)}
+.qArea .btn-primary:focus{background-color:none;}
+
 /*stores_search
 #filter_region > span{display:inline-block;border-radius:5px;margin:2px;padding:3px; border:2px solid rgba(107,122,41,1);}
 #filter_region > span:hover{background-color:rgba(107,122,41,1);color:#FFFFFF;}
@@ -86,13 +116,13 @@ nav select:-webkit-autofill:focus {
 /*스크롤바*/
 ::-webkit-scrollbar-track
 { -webkit-box-shadow: none;
- border-radius: 10px;
+ border-radius: 8px;
  background-color: transparant;}
 ::-webkit-scrollbar
-{ width: 12px;
+{ width: 10px;
  background-color: transparant;}
 ::-webkit-scrollbar-thumb
-{ border-radius: 10px;
+{ border-radius: 8px;
 z-index:1000;
  background-color: rgba(0,0,0,0.3);}
 
