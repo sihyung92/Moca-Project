@@ -10,12 +10,8 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=7"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=14"/>" />
 	<style type="text/css">
-		body{
-			background: rgba(246,245,239,0.5);
-			font-family: 'Noto Sans KR', sans-serif;
-		}
 		.jumbotron{
 			background: rgba(234,231,220,0.4);
 			padding-top: 0 ;
@@ -44,81 +40,10 @@
 			margin-bottom: 2em;
 		}
 		
-		/* 리뷰 내용 더보기 */
-		.review-data{overflow:hidden;}
-     	.review-data .more-review-content.hidden{
-	         white-space:nowrap;
-	         word-wrap:normal;
-	         width:90%;
-	         overflow:hidden;
-	         text-overflow: ellipsis;
-	         float:left;
-	      }
-	    .more-review-content-btn{display:none;white-space:nowrap;float:right;}
-	    
-	    .reviewThumbnailGroup .reviewThumbnail{
-	    	display: inline-block;
-	    }
-	    
-	    .reviewThumbnailGroup img{
-	    	width:100px;
-	    	height: 100px;
-			object-fit: cover;
-			overflow: hidden;
-	    }
-	    
-	    
-	    
-	    .modal-content {
-		  position: relative;
-		  background-color: #fefefe;
-		  margin: auto;
-		  padding: 0;
-		  width: 90%;
-		  max-width: 1200px;
-		}
         //그 스토어페이지랑 메인페이지랑 로그인 사이즈가 다른 이유가 클래스 설정이 이상해서임 이거 제발 추가해야함
-    .modal-login{
-            width:100%;
-    }
-		#reviewDetailDiv {
-		  overflow:hidden;
-		  text-align: center;
-		  background-color: black;
-		  padding: 2px 16px;
-		  color: white;
-		}
-		#reviewThumbnailGroup{
-			text-align: center;
-			background-color: black;
-			padding: 2px 16px;
-			color: white;
-		}
-		#reviewThumbnailGroup .clickedImg {
-	    	border: 5px solid red;
+	    .modal-login{
+	            width:100%;
 	    }
-	    /* Next & previous buttons */
-		#preReviewImgBtn,
-		#nextReviewImgBtn {
-		  cursor: pointer;
-		  position: absolute;
-		  top: 50%;
-		  width: auto;
-		  padding: 16px;
-		  margin-top: -50px;
-		  font-weight: bold;
-		  font-size: 20px;
-		  transition: 0.6s ease;
-		  border-radius: 0 3px 3px 0;
-		  user-select: none;
-		  -webkit-user-select: none;
-		}
-		
-		/* Position the "next button" to the right */
-		#nextReviewImgBtn{
-		  right: 0;
-		  border-radius: 3px 0 0 3px;
-		}
 		
 		/* 카페 관리자의 사진 수정 */
 		.storeImgGroup  .storeImg{
@@ -174,7 +99,7 @@
 			width:20%;
 		}
 		.review-header{
-			background-color: #fffff5;
+			background-color: rgba(234,231,220,0.4);
 			padding: 20px;
 			border-radius: 10px 20px;
 			margin: 10px 0px;
@@ -301,63 +226,7 @@
 		
 		.panel-default{
 			border:none;
-			background: #fffff5;
-		}
-		
-		.follows-div, .reviews-div{
-			display: inline;
-			font-size: 12pt;
-		}
-		.follows-div{
-			padding-right: 8px;
-		}
-		.follows-div img, .reviews-div img{
-			width:15px;
-		}
-		
-		.editDeleteGroup {
-		    position: relative;
-		    top: -20px;
-		    left: 95%;
-		    width: 100%;
-		}
-		
-		.review-level div{
-			padding-right: 15px;
-		}
-		
-		.review-level {
-			padding-bottom: 5px;
-			margin-bottom: 10px;
-			border-bottom: 2px solid rgba(234,231,220,1);
-		}
-		
-		.write-date-div{
-			margin: 10px 0px;
-		}
-		
-		.reviewInfo-write-date{
-			background: rgba(234,231,220,1);
-			padding: 2px 12px;
-		}
-		
-		.reviewInfo-review-content{
-			padding: 2px;
-			font-size: 110%;
-			font-family: 'Noto Sans KR', sans-serif;
-			background: none;
-			border: none;
-			margin: 0px;
-		}
-		.review-content-div{
-			padding-bottom:10px;
-			margin-bottom: 10px;
-			border-bottom: 2px solid rgba(234,231,220,1);
-		}
-		
-		.average-level-div {
-		    text-align: center;
-		    padding-top: 12%;
+			background: rgba(234,231,220,0.4);;
 		}
 		
 }
@@ -895,7 +764,7 @@
 			      labels: ["5", "4", "3", "2", "1"],
 			      datasets: [
 			        {
-			          backgroundColor: ["#C6A153", "#C6A153","#C6A153","#C6A153","#C6A153"],
+			          backgroundColor: ["#e2ac33", "#e2ac33","#e2ac33","#e2ac33","#e2ac33"],
 			          borderWidth : 0,
 			          data: levelCntVal
 			        }
@@ -1081,7 +950,7 @@
 							<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
 							<c:forEach items="${tags}" var="tag">
 								<c:if test="${tag ne ''}">
-									<button type="button" class="btn btn-default btn-sm">#${tag}</button>
+									<button type="button" class="btn tagCustomBtn btn-sm">#${tag}</button>
 								</c:if>
 							</c:forEach>
 						</div>
@@ -1143,10 +1012,10 @@
 								<c:if test="${not empty StoreImgList}">
 									<c:forEach items="${StoreImgList}" var="StoreImg" varStatus="status">
 										<c:if test="${status.index eq 0}">
-											<div class="item clickableSvgCss active <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
+											<div class="item clickableThumbnailCss active <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<c:if test="${status.index ne 0}">
-											<div class="item clickableSvgCss <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
+											<div class="item clickableThumbnailCss <c:if test="${StoreImg.path eq 'store'}"><c:out value="StoreImg"></c:out></c:if>" >
 										</c:if>
 										<img src="<c:url value="${StoreImg.url }" />" alt="..." class="d-block w-100">
 							</div>
@@ -1206,7 +1075,7 @@
 							</h4>
 						</div>
 						<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-							<div class="panel-body">
+							<div class="panel-body" style="border:none;">
 								<div>
 									<span id="wifiInfo">
 										<c:if test="${storeVo.wifi eq 0}"><img src="<c:url value="/resources/imgs/icons/wifi-none.svg"/>"></c:if>
@@ -1311,11 +1180,11 @@
 							<div class="reviewer-info col-xs-2 text-center" >
 								<div class="profile-div">
 									<c:if test="${empty reviewVo.thumbnailImage}">
-										<img class="accountProfile img-circle clickableSvgCss" src="<c:url value="/resources/imgs/basicProfile.png"/>" 
+										<img class="accountProfile img-circle clickableThumbnailCss" src="<c:url value="/resources/imgs/basicProfile.png"/>" 
 										alt="profile" style="width:100px;" onclick="location.href='/moca/mypage/${reviewVo.account_id}'"  >
 									</c:if>
 									<c:if test="${not empty reviewVo.thumbnailImage}">
-										<img class="accountProfile img-circle clickableSvgCss"  src="<c:url value="${reviewVo.thumbnailImage }" />" 
+										<img class="accountProfile img-circle clickableThumbnailCss"  src="<c:url value="${reviewVo.thumbnailImage }" />" 
 										alt="profile" style="width:100px;" onclick="location.href='/moca/mypage/${reviewVo.account_id}'" >
 									</c:if>
 								</div>
@@ -1331,36 +1200,39 @@
 									<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
 								</div>
 							</div>
-
-
 							<div class="review-info col-xs-8"> 
 								<div class="row">
 									<div class="review-level">
 										<div class="taste-level-div">
 											<label>맛</label>
-											<span class="taste-level">${reviewVo.tasteLevel }</span>점
+											<span class="taste-level">${reviewVo.tasteLevel }</span>
 										</div>
 										<div class="price-level-div">
 											<label>가격</label>
-											<span class="price-level">${reviewVo.priceLevel }</span>점
+											<span class="price-level">${reviewVo.priceLevel }</span>
 										</div>
 										<div class="service-level-div">
 											<label>서비스</label>
-											<span class="service-level">${reviewVo.serviceLevel }</span>점
+											<span class="service-level">${reviewVo.serviceLevel }</span>
 										</div>
 										<div class="mood-level-div">
 											<label>분위기</label>
-											<span class="mood-level">${reviewVo.moodLevel }</span>점
+											<span class="mood-level">${reviewVo.moodLevel }</span>
 										</div>
 										<div class="convenience-level-div">
 											<label>편의성</label>
-											<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
+											<span class="convenience-level">${reviewVo.convenienceLevel }</span>
+										</div>
+										<div class="average-level-div" style="display: block;">
+											<label for="average_level">평균</label>
+											<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>
 										</div>
 									</div>
+									
 									<div class="reviewThumbnailGroup">
 										<c:forEach items="${reviewVo.imageList}" var="reviewImg">
 											<div class="reviewThumbnail">
-												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail clickableSvgCss" id="${reviewImg.uu_id}">
+												<img src="${reviewImg.thumbnailUrl}" alt="Image" class="img-thumbnail clickableThumbnailCss" id="${reviewImg.uu_id}">
 											</div>
 										</c:forEach>
 									</div>
@@ -1406,7 +1278,6 @@
 									</div>
 								</div>
 							</div>
-
 							<div class="average-level-div  col-xs-2">
 								<label for="average_level">평균</label>
 								<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>점

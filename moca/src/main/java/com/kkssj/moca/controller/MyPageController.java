@@ -71,7 +71,6 @@ public class MyPageController {
 			logger.debug(accountVo.toString());
 		}
 		
-		
 		currentPageAccount.setLevelName(currentPageAccount.getAccountLevel());
 		currentPageAccount.setBadgeList(mypageService.getBadgeList(currentPageAccount.getAccount_id()));
 		model.addAttribute("currentPageAccount",currentPageAccount);

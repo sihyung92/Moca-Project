@@ -21,7 +21,7 @@ public class AccountServiceImpl implements AccountService {
 	
 	int[] attandanceBadgeLevel = new int[] {0,10,30,50,100}; 
 	String[] attandanceBadgeUrl = new String[] {"","/resources/imgs/badge/attendanceBadge1.png","/resources/imgs/badge/attendanceBadge2.png","/resources/imgs/badge/attendanceBadge3.png","/resources/imgs/badge/attendanceBadge4.png","/resources/imgs/badge/attendanceBadge5.png"};
-	
+
 	/*-----------------------------------------------------------------------------*/
 	
 	@Override
@@ -53,7 +53,6 @@ public class AccountServiceImpl implements AccountService {
 					}
 					
 					badgeManage(accountVoForExp.getAccount_id(), "attendance");
-					
 					
 				}
 				return compareVo;

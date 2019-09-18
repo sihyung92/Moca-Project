@@ -125,7 +125,7 @@
 		<img class="btn-edit clickableSvgCss" src="<c:url value="/resources/imgs/icons/compose.svg"/>"> 
 		<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 	</div>
-	<div class="reviewer-info col-md-2">
+	<div class="reviewer-info col-md-2 text-center">
 		<div class="profile-div">
 			<c:if test="${empty accountVo.thumbnailImage}">
 				<img class="accountProfile img-circle clickableSvgCss" src="<c:url value="/resources/imgs/basicProfile.png"/>" alt="profile" style="width:100px;">
@@ -135,7 +135,6 @@
 			</c:if>
 		</div>
 		<div class="nickName-div">
-			<label>별명</label>	
 			<span class="reviewer-nickName">${accountVo.nickname }</span>
 		</div>
 		<div class="follows-div">
@@ -161,38 +160,40 @@
 		<div class="review-level">
 			<div class="taste-level-div">
 				<label>맛</label>
-				<span class="taste-level"></span>점
+				<span class="taste-level"></span>
 			</div>
 			<div class="price-level-div">
 				<label>가격</label>
-				<span class="price-level"></span>점
+				<span class="price-level"></span>
 			</div>
 			<div class="service-level-div">
 				<label>서비스</label>
-				<span class="service-level"></span>점
+				<span class="service-level"></span>
 			</div>
 			<div class="mood-level-div">
 				<label>분위기</label>
-				<span class="mood-level"></span>점
+				<span class="mood-level"></span>
 			</div>
 			<div class="convenience-level-div">
 				<label>편의성</label>
-				<span class="convenience-level"></span>점
+				<span class="convenience-level"></span>
+			</div>
+			<div class="average-level-div" style="display: block;">
+				<label for="average_level">평균</label>
+				<div class="reviewAverageLevel"></div><span class="average-level"></span>
 			</div>
 		</div>
 		<div class="reviewThumbnailGroup">
 		</div>
 		<div class="review-data">
 			<div class="write-date-div">
-				<label>작성일</label>
 				<span class="reviewInfo-write-date"></span>
 			</div>
-			<div class="review-content-div">
-				<label>리뷰 내용</label>
-				<span class="reviewInfo-review-content"></span>
-				<span class="more-review-content-btn">더보기</span>
-			</div>
 			<div class="review-tags-div"></div>
+			<div class="review-content-div">
+				<pre class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</pre>
+				<span class="more-review-content-btn"><img src="<c:url value="/resources/imgs/icons/chevron-bottom.svg"/>">더보기</span>
+			</div>
 		</div>
 		<div class="form-group like-hate">
 			<div class="btn-group" data-toggle="buttons">
@@ -204,11 +205,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="average-level-div  col-md-2">
-		<label for="average_level">평균</label>
-		<div class="reviewAverageLevel"></div><span class="average-level"></span>점
-	</div>								
-	<br><br><br>
 	
 	<!-- clone할 tag element -->
 	<a class="review-tag" id="review-tag-div" href="#" style="display:none;"></a>	

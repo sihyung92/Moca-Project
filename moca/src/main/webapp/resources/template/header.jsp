@@ -11,6 +11,10 @@
     %>
 <!--//css 설정-->
     <style type="text/css">
+    	body{
+			background: rgba(246,245,239,0.5);
+			font-family: 'Noto Sans KR', sans-serif;
+		}
         .modal .modal-body {
             max-height: 500px;
             overflow-y: auto;

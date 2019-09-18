@@ -524,7 +524,8 @@ var moreReviewList = function(startNum,callWhere) {
 					
 				$('.review-content').append(newReview);	//리뷰에 추가
 				
-				ratyStartAveragelevel(reviewVo)
+				ratyStartAveragelevel(reviewVo);
+				
 			}
 			
 			
@@ -536,6 +537,10 @@ var moreReviewList = function(startNum,callWhere) {
 
 				showDetailReviewImg(this);
 			});
+			
+			
+			//내용더보기
+			callReviewDataMore();
 		},
 		error: function(request,status,error) {
 			alert('ajax 통신 실패');
@@ -631,7 +636,7 @@ var callReviewDataMore = function(){
        
        if( $(this).outerHeight() > 41 ){
            
-       	$(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
+       	$(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block', 'white-space':'pre-line' });
           $(this).addClass('moreData');
           btnMoreReview.show();
           btnMoreReview.on("click",function(){
