@@ -8,11 +8,10 @@
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" 
 	p:driverClassName="org.gjt.mm.mysql.Driver"
-	p:url="jdbc:mysql://ec2-13-209-48-91.ap-northeast-2.compute.amazonaws.com:3306/mocadb?characterEncoding=utf8" 
+	p:url="jdbc:mysql://ec2-13-209-48-91.ap-northeast-2.compute.amazonaws.com:3306/mocadb?characterEncoding=utf8"
 	p:username="moca" 
-	p:password="Aj@4y88!37fFkkkssc"
+	p:password="Sfh!asFsk@plzDonthack@HckersFckers!!@"
 	/>
-	<!-- 외부 노출 절대 금지 -->
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
  	p:dataSource-ref="dataSource"
