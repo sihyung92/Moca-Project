@@ -9,14 +9,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Insert title here</title>
 <style type="text/css">
-	
 	#header{
 		background-size: cover;
 	}
 	#searchBar{
 		display: none;
 	} 
-	
 	#search{
 		text-align: center;
 		padding-top:82px;
@@ -33,7 +31,6 @@
 	#keyword2{
 		/* width : 500px; */
 	}
-	
 	#filter_sort{
 		padding-top : 10px;
 	}
@@ -495,7 +492,6 @@
 		$('.pagination>li:nth-child(2)').click();
 		$('#page').show();
 	};
-	
     //스크롤 위치에 따라 헤더 배경색 변경
     function changeHeaderColor(){
     	var position = $(window).scrollTop();
