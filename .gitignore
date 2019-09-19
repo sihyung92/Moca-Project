@@ -5,6 +5,7 @@ bin/
 .settings/
 .classpath
 MoneySaver.java
+.root-context.xml
 
 # Compiled class file
 *.class
