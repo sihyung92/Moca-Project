@@ -261,6 +261,7 @@
 		        			"thumbnailImage":JSON.stringify(res.properties.thumbnail_image),
 		        			"email":JSON.stringify(res.kakao_account.email),
 	        			};
+                      
 	        	$.ajax({
 					type: 'post',
 					url: '/moca/login/'+acc_Id,

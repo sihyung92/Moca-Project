@@ -32,8 +32,9 @@ public class AccountServiceImpl implements AccountService {
 			AccountVo compareVo =accountDao.selectUser(accountVo.getPlatformType(), accountVo.getPlatformId());
 			
 			if(compareVo==null) {	//로그인시 카카오로부터 받은 JSON => VO 로 조회한 값이 없다면
-
-				if(accountVo.getProfileImage().equals("https://ssl.pstatic.net/static/pwe/address/img_profile.png")) {
+				
+				String tempProfile=accountVo.getProfileImage();
+				if("https://ssl.pstatic.net/static/pwe/address/img_profile.png".equals(tempProfile)) {
 					accountVo.setProfileImage("");
 					accountVo.setThumbnailImage("");
 				}
