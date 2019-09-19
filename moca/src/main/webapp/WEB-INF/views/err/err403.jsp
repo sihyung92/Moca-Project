@@ -29,5 +29,5 @@
 	    	<div><a href="<c:url value="/"/>">메인페이지</a></div>
     	</div>
     </div>
-  </body>
+</body>
 </html>
