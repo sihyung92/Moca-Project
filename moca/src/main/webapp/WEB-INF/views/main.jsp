@@ -215,8 +215,8 @@
             }
     	});     	
     	//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
-    	$('.store').on('mousedown', function(){
-        	store_id = $(this).children().first().attr('alt').split(" ")[0];
+    	$('.store .mocaPick-img-list img').on('mousedown', function(){
+        	store_id = $(this).attr('alt').split(" ")[0];
 			window.location.href="./stores/"+store_id;
         });  
 
