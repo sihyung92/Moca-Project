@@ -210,7 +210,7 @@ var setReviewerInfo = function(reviewRow, reviewVo){
 
 var setStoreInfo = function(reviewRow, reviewVo){
 	if(reviewVo.storeLogoImg==null){
-		reviewRow.find('.store-info img').attr('src','/moca/resources/imgs/logoDefault.png');
+		reviewRow.find('.store-info img').attr('src','/moca/resources/imgs/logo/noneCirclelogo.png');
 	}else{
 		reviewRow.find('.store-info img').attr('src',reviewVo.storeLogoImg);
 	}
@@ -661,7 +661,7 @@ var callReviewDataMore = function(){
              $(this).parent().find('.more-review-content').toggleClass('moreData').promise().done(function(){
                   if($(this).hasClass("moreData") === false){
                 	  btnMoreReview.html('<img src="/moca/resources/imgs/icons/chevron-top.svg">'+"접기");
-                  	$(this).css({ 'height': '100%', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
+                  	$(this).css({ 'height': 'auto', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
 	              }else{
 	            	  btnMoreReview.html('<img src="/moca/resources/imgs/icons/chevron-bottom.svg">'+"더보기");
 	            	 $(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
