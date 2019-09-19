@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.kkssj.moca.model.entity.StoreVo;
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.BadgeVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
 public interface MypageService{
@@ -42,6 +43,9 @@ public interface MypageService{
 
 	//tag 이름 가져오기
 	List<String> getTagNameList();
+
+	//배지 리스트 가져오기
+	List<BadgeVo> getBadgeList(int account_id);
 	
 
 }

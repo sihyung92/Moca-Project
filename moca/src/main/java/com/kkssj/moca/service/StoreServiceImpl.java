@@ -45,6 +45,13 @@ public class StoreServiceImpl implements StoreService{
 	AccountDao accountDao;
 	
 	
+	int[] reviewBadgeLevel = new int[] {0,10,30,50,100}; 
+	int[] reviewLikeBadgeLevel = new int[] {0,10,30,50,100}; 
+	
+	String[] reviewBadgeUrl = new String[] {"","/resources/imgs/badge/reviewBadge1.png","/resources/imgs/badge/reviewBadge2.png","/resources/imgs/badge/reviewBadge3.png","/resources/imgs/badge/reviewBadge4.png","/resources/imgs/badge/reviewBadge5.png"};
+	String[] reviewLikeBadgeUrl = new String[] {"", "/resources/imgs/badge/likeBadge1.png", "/resources/imgs/badge/likeBadge2.png", "/resources/imgs/badge/likeBadge3.png", "/resources/imgs/badge/likeBadge4.png", "/resources/imgs/badge/likeBadge5.png"};
+	
+	
 	//////////////////////////////
 	//Store
 
@@ -147,14 +154,17 @@ public class StoreServiceImpl implements StoreService{
 				logger.debug(result.get(i).getOriginName());
 			}
 			if(storeImgUrlMap!=null) {
+				System.out.println();
 				for(int i=0; i<storeImgUrlMap.size(); i++) {
 					ImageVo imageVo = new ImageVo();
 					imageVo.setPath("store");				
 					imageVo.setUrl(storeImgUrlMap.get("storeImg"+(i+1)));
 					//url로 imageVo에 필요한 부분 넣기
 					imageVo.setImageVo(imageVo.getUrl());
+					logger.debug(imageVo.toString());
 					result.add(imageVo);
 				}
+				System.out.println();
 			}
 			Collections.reverse(result);
 			logger.debug(result.toString());
@@ -330,12 +340,16 @@ public class StoreServiceImpl implements StoreService{
 				}
 				
 				//account의 reviewcnt를 증가시켜줌
-				accountDao.updateReviewCount(accountVo.getAccount_id(),1);
+				accountDao.updateReviewCount(accountVo.getAccount_id());
+				
+				//배지 check 및 부여
+				badgeManage(accountVo.getAccount_id(), "review");
 				
 				
 				///////////////////////////
 				//store reviewCnt
 				storeDao.updateReviewCount(reviewVo.getStore_id(), 1);
+				
 				
 				// 방금 입력한 reviewVo를 리턴
 				return reviewVo;
@@ -352,6 +366,39 @@ public class StoreServiceImpl implements StoreService{
 		return null;
 	}
 	
+	private void badgeManage(int account_id, String callWhere) throws SQLException {
+		int level = 0;
+		if(callWhere.equals("review")) {// 리뷰를 작성했을때
+			int reviewCount = reviewDao.selectReviewCountByAccountId(account_id);
+			
+			for (int i = 0; i < reviewBadgeLevel.length; i++) {
+				if(reviewBadgeLevel[i] == reviewCount) {
+					level = i;
+				}
+			}
+			
+			if(level != 0) {
+				accountDao.insertBadge(account_id, "리뷰" , level, reviewBadgeUrl[level]);
+			}
+			logger.debug(callWhere+", reviewCount=" +reviewCount+", level=" +level);
+			
+		}else if(callWhere.equals("likeHate")) {// 좋아요를 받았을때
+			int likeHateCount = reviewDao.selectLikeHateCountByAccountId(account_id);
+			
+			for (int i = 0; i < reviewLikeBadgeLevel.length; i++) {
+				if(reviewLikeBadgeLevel[i] == likeHateCount) {
+					level = i;
+				}
+			}
+
+			if(level != 0) {
+				accountDao.insertBadge(account_id, "리뷰좋아요" , level, reviewLikeBadgeUrl[level]);
+			}
+		}
+		
+		logger.debug(callWhere+", " + level);
+		
+	}
 	private int syncStoreTag(int store_id, List<String> tagList) throws SQLException {
 		//태그 종류와 해당 태그의 입력횟수를 저장하는 map
 		Map<String, Integer> tagsCount = new HashMap<String, Integer>();
@@ -574,12 +621,14 @@ public class StoreServiceImpl implements StoreService{
 			syncStoreTag(reviewVo.getStore_id(),tagList);
 			
 			//account의 reviewcnt를 감소시켜줌
-			accountDao.updateReviewCount(reviewVo.getAccount_id(),-1);
+			accountDao.updateReviewCount(reviewVo.getAccount_id());
 			
 			//카페에 대한 levelCnt 수정(삭제)
 			double beforeAveragelevel1 = reviewDao.selectAverageLevelByReviewId(reviewVo.getReview_id());
 			String BeforelevelCntColumn1 = setLevelCntColumn(beforeAveragelevel1);
 			storeDao.updateLevelCnt(reviewVo.getStore_id(), BeforelevelCntColumn1, -1);
+			
+			badgeManage(reviewVo.getAccount_id(), "review");
 			
 			///////////////////////////
 			//store reviewCnt
@@ -706,9 +755,6 @@ public class StoreServiceImpl implements StoreService{
 	}
 	
 	
-	
-	
-	
 	///////////////////////////////
 	//likeHate
 	@Override
@@ -722,7 +768,7 @@ public class StoreServiceImpl implements StoreService{
 			int likeAccountId = reviewDao.selectAccountIdOfReviewByReviewId(review_id);
 			
 			if(isLike ==1) {
-				result = reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()+1);
+				result = reviewDao.updateLikeCount(review_id);
 				
 				//자기아이디 자기가 좋아요 누르면 제외
 				if(likeAccountId!=accountId) {
@@ -736,10 +782,12 @@ public class StoreServiceImpl implements StoreService{
 					if(accountVo.getExp() >= accountVo.getMaxExp()) {
 						accountDao.updateAccountlevel(likeAccountId);
 					}
+					
+					badgeManage(likeAccountId, "likeHate");
 				}
 			}else { 
 				classification = "리뷰싫어요클릭";
-				result = reviewDao.updateHateCount(review_id, reviewVo.getHateCount()+1) ;
+				result = reviewDao.updateHateCount(review_id) ;
 			}
 			
 			//자기아이디 자기가 좋아요 누르면 제외
@@ -780,6 +828,7 @@ public class StoreServiceImpl implements StoreService{
 			int likeAccountId = reviewDao.selectAccountIdOfReviewByReviewId(review_id);
 			
 			if(isLike ==1) {
+				result = reviewDao.updateLikeCount(review_id);
 				
 				//자기아이디 자기가 좋아요 취소하면 제외
 				if(likeAccountId!=accountId) {
@@ -793,11 +842,13 @@ public class StoreServiceImpl implements StoreService{
 					if(accountVo.getExp() < accountVo.getMinExp()) {
 						accountDao.updateAccountlevelDown(likeAccountId);
 					}
+					
+					badgeManage(likeAccountId, "likeHate");
 				}
 				
-				result = reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()-1);
+				
 			}else { 
-				result =  reviewDao.updateHateCount(review_id, reviewVo.getHateCount()-1);
+				result =  reviewDao.updateHateCount(review_id);
 			}
 			
 			//자기아이디 자기가 좋아요 취소하면 제외
@@ -829,8 +880,8 @@ public class StoreServiceImpl implements StoreService{
 		try {
 			reviewDao.updateLikeHate(review_id, accountId, isLike);
 			ReviewVo reviewVo = reviewDao.selectLikeHateCount(review_id);
-			reviewDao.updateLikeCount(review_id, reviewVo.getLikeCount()+isLike) ;
-			reviewDao.updateHateCount(review_id, reviewVo.getHateCount()-isLike) ;
+			reviewDao.updateLikeCount(review_id) ;
+			reviewDao.updateHateCount(review_id) ;
 			return 1;
 			
 		} catch (SQLException e) {
@@ -846,8 +897,8 @@ public class StoreServiceImpl implements StoreService{
 			int review_id;
 			for (int i = 0; i < list.size(); i++) {
 				review_id = list.get(i).getReview_id();
-				reviewDao.updateLikeCount(review_id, reviewDao.selectLikeHateLike(review_id));
-				reviewDao.updateHateCount(review_id, reviewDao.selectLikeHateHate(review_id));
+				reviewDao.updateLikeCount(review_id);
+				reviewDao.updateHateCount(review_id);
 			}
 			
 			return 1;

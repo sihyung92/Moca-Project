@@ -10,9 +10,6 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=4"/>" />
 	<style type="text/css">
-	body{
-		background:#f6f5ef;
-	}
 	#userGraph{
 		margin-top:70px;
 	}
@@ -25,9 +22,10 @@
 	}
 	
 	#userBadge{
+		height:150px;
 		margin-top:20px;
 		padding:20px;
-		border-top: 3px ridge rgba(193,140,88,0.6) ;
+		background : rgba(246,245,239,1);
 	}
 	#userBadge img{
 		margin-right: 10px;
@@ -45,16 +43,30 @@
 			display: inline-block;
 			width:100%;
 		}
+		
+		.followInfo, .likeStore, .favoriteStore{
+			text-align: center;
+			margin-right: 3rem;
+			margin-bottom: 3em;
+		    background-color: white;
+		    padding: 1em;
+		    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+		}
+		.likeStore, .favoriteStore{
+			padding: 3em;
+		}
+		
+		#followingDiv, #followerDiv, #likeDiv, #favoriteDiv{
+			margin-top: 3em;
+		}
+		
 		#followerDiv>div{
 			display: inline;
 			margin:0px 3px;
 		}
+		
 		.inlineBlock{
 			display: inline;
-		}
-		.followInfo{
-			text-align: center;
-			margin-right: 3rem;
 		}
 		
 		/*글리피콘 사이즈*/
@@ -72,12 +84,21 @@
 			text-align: center;
 		}
 		
+		#needBadgeSpan{
+			color: #c0c0c0;
+		    position: relative;
+		    top: 35%;
+		    left: 40%;
+		    font-weight: bold;
+		}
+		
+		
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=8"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=10"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -280,11 +301,14 @@
 						$('#followerDiv>div>div.followInfo').show();
 						$('#followInfo').hide();
 						
-						haveFollowerInfo =true;
+						
 					},
 					error: function(request,status,error) {
-
+						console.log(request.status);
 					}
+					
+				}).always(function(){
+					haveFollowerInfo =true;
 				})
 
 			}else if($(this).index() ==2 && !haveFollowingInfo){
@@ -306,11 +330,14 @@
 						$('#followingDiv>div>div.followInfo').show();
 						$('#followInfo').hide();
 						
-						haveFollowingInfo =true;
+						
 					},
 					error: function(request,status,error) {
-
+						console.log(request.status);
 					}
+					
+				}).always(function(){
+					haveFollowingInfo =true;
 				})
 
 			}else if($(this).index() ==3 && !haveLikeInfo){
@@ -320,36 +347,23 @@
 					type: 'GET',
 					url: '/moca/likeStores/'+id,
 					success: function(likeStoreList) {
-						haveLikeInfo =true;						
+											
 						for(var idx in likeStoreList){
-							var newStore = $('#storeTemplate').clone(true);
-							
-							newStore.css('display', '');
-							newStore.removeAttr('id');
-							newStore.addClass('likeStore')
-							newStore.find('.storeId').html(likeStoreList[idx].store_Id);
-							if(likeStoreList[idx].logoImg !=null){
-								newStore.find('.storeLogoDiv img').attr('src' ,likeStoreList[idx].logoImg)
-							}
-							newStore.find('.storeName').html(likeStoreList[idx].name);
-							newStore.find('.storeAddress').html(likeStoreList[idx].address);
-							newStore.find('.storeLevel').html(likeStoreList[idx].averageLevel);
-				
-							newStore.attr('href', "/moca/stores/"+likeStoreList[idx].store_Id );
-				
-							newStore.click(function(){
-								window.location.href = '/moca/stores/'+$(this).find('.storeId').html();
-							})
-				
+							var newStore = makeNewStore(likeStoreList[idx]);
+
 							$('#likeDiv').append(newStore);
 							$('#likeDiv').append('<br>')
+							$.fn.raty.start(likeStoreList[idx].averageLevel, '#storeAverageLevel-'+likeStoreList[idx].store_Id);
 						}
 						
 					},
-					error: function(error) {
-				
+					error: function(request,status,error) {
+						console.log(request.status);
 					}
-				})	
+					
+				}).always(function(){
+					haveLikeInfo =true;	
+				})
 
 			}else if($(this).index() ==4 && !haveFavoriteInfo){
 
@@ -358,39 +372,24 @@
 					type: 'GET',
 					url: '/moca/favoriteStores/'+id,
 					success: function(favoriteStoreList) {
-						haveFavoriteInfo =true;
+						
 						
 						for(var idx in favoriteStoreList){
-							
-							
-							var newStore = $('#storeTemplate').clone(true);
-							test = newStore
-							
-							newStore.css('display', '');
-							newStore.removeAttr('id');
-							newStore.addClass('favoriteStore')
-							newStore.find('.storeId').html(favoriteStoreList[idx].store_Id);
-							if(favoriteStoreList[idx].logoImg !=null){
-								newStore.find('.storeLogoDiv img').attr('src' ,favoriteStoreList[idx].logoImg)
-							}
-							newStore.find('.storeName').html(favoriteStoreList[idx].name);
-							newStore.find('.storeAddress').html(favoriteStoreList[idx].address);
-							newStore.find('.storeLevel').html(favoriteStoreList[idx].averageLevel);
-
-							newStore.attr('href', "/moca/stores/"+favoriteStoreList[idx].store_Id );
-
-							newStore.click(function(){
-								window.location.href = '/moca/stores/'+$(this).find('.storeId').html();
-							})
+							var newStore = makeNewStore(favoriteStoreList[idx]);
 
 							$('#favoriteDiv').append(newStore);
 							$('#favoriteDiv').append('<br>')
+							$.fn.raty.start(favoriteStoreList[idx].averageLevel, '#storeAverageLevel-'+favoriteStoreList[idx].store_Id);
 						}
 						
 					},
-					error: function(error) {
-
+					error: function(request,status,error) {
+						console.log(request.status);
+						$('#favoriteDiv').append()
 					}
+					
+				}).always(function(){
+					haveFavoriteInfo =true;
 				})
 		    }
 		})		
@@ -514,6 +513,40 @@
 		
     });
 
+	var makeNewStore = function(store){
+		var newStore = $('#storeTemplate').clone(true);
+		
+		newStore.css('display', '');
+		newStore.removeAttr('id');
+		newStore.addClass('likeStore')
+		newStore.find('.storeId').html(store.store_Id);
+		if(store.logoImg !=null){
+			newStore.find('.storeLogoDiv img').attr('src' ,store.logoImg)
+		}
+		newStore.find('.storeName').html(store.name);
+		newStore.find('.storeAddress').html(store.address);
+
+		var newStoreId = 'storeAverageLevel-'+store.store_Id;
+		newStore.find('.storeAverageLevel').attr('id',newStoreId);
+		newStore.find('.storeAverageLevel').raty({
+			half:true,
+			readOnly:  true,
+			starHalf:   'star-half.png',
+			starOff:    'star-off.png',
+			starOn:     'star-on.png',  
+		});
+		
+		newStore.find('.storeLevel').html(int2Double(store.averageLevel));
+
+		newStore.attr('href', "/moca/stores/"+store.store_Id );
+
+		newStore.click(function(){
+			window.location.href = '/moca/stores/'+$(this).find('.storeId').html();
+		})
+
+		return newStore;
+	}
+
 	//회원정보 수정 때 userImage change되면
 	var userImageChange = function(){
 		const userImageUpdateInput = document.getElementById('userImageUpdateInput');
@@ -588,9 +621,12 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12" id="userBadge">
-					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
-					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
-					<img class="img-circle" src="<c:url value="/resources/imgs/logo.png"/>" alt="badge" style="width:100px;">
+					<c:forEach items="${currentPageAccount.badgeList }" var="badgeVo">
+						<img class="img-circle" alt="badge" src="<c:url value="${badgeVo.badgeUrl}"/>" style="width: 100px">
+					</c:forEach>
+					<c:if test="${empty currentPageAccount.badgeList}">
+						<span id="needBadgeSpan">뱃지를 모아주세요</span>
+					</c:if>
 				</div>
 			</div>
 				
@@ -598,7 +634,7 @@
 			
 		</div>
 	<div class="row">
-			<div class="col-md-8 col-md-offset-2">
+			<div class="col-xs-8 col-xs-offset-2">
 				<ul id="mypageTab" class="nav nav-tabs">
 					<li role="presentation" class="nav-item active">
 						<a class="nav-link active" data-toggle="tab" href="#myReviewDiv">내 게시글</a>
@@ -613,7 +649,7 @@
 						<a class="nav-link" data-toggle="tab"  href="#likeDiv">좋아하는 카페</a>
 					</li>
 					<li role="presentation" class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#favoriteDiv">즐겨찾는 카페</a>
+						<a class="nav-link" data-toggle="tab" href="#favoriteDiv">가고싶은 카페</a>
 					</li>				
 					
 				</ul>
@@ -631,18 +667,18 @@
 											<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 										</div>
 									</c:if>
-									<div class="store-info col-md-2" >
+									<div class="store-info col-md-2 text-center" >
 										<div class="storeLogo-div">
 											<!-- store logo 이미지 -->
 											<c:if test="${empty reviewVo.storeLogoImg}">
-												<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
-													alt="logo" class="img-circle" style="width: 100px; height:100px;" 
-													onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+												<img src="<c:url value="/resources/imgs/logo/noneCirclelogo.png"/>"
+													alt="logo" class="img-circle clickableSvgCss" style="width: 100px; height:100px;" 
+													onclick="location.href='/moca/stores/${reviewVo.store_id}'" >
 											</c:if>
 											<c:if test="${not empty reviewVo.storeLogoImg}">
 												<img src="<c:url value="${reviewVo.storeLogoImg }" />" alt="logo"
-													class="img-circle" style="width: 100px; height:100px;"
-													onclick="location.href='/moca/stores/${reviewVo.store_id}'" style="cursor:pointer;">
+													class="img-circle clickableSvgCss" style="width: 100px; height:100px;"
+													onclick="location.href='/moca/stores/${reviewVo.store_id}'" >
 											</c:if>
 										</div>
 										<div class="storeName-div">
@@ -651,8 +687,34 @@
 										</div>
 									</div>
 
-									<div class="review-info col-md-8"> 
+									<div class="review-info col-md-9"> 
 										<div class="row">
+											<div class="review-level">
+												<div class="taste-level-div">
+													<label>맛</label>
+													<span class="taste-level">${reviewVo.tasteLevel }</span>
+												</div>
+												<div class="price-level-div">
+													<label>가격</label>
+													<span class="price-level">${reviewVo.priceLevel }</span>
+												</div>
+												<div class="service-level-div">
+													<label>서비스</label>
+													<span class="service-level">${reviewVo.serviceLevel }</span>
+												</div>
+												<div class="mood-level-div">
+													<label>분위기</label>
+													<span class="mood-level">${reviewVo.moodLevel }</span>
+												</div>
+												<div class="convenience-level-div">
+													<label>편의성</label>
+													<span class="convenience-level">${reviewVo.convenienceLevel }</span>
+												</div>
+												<div class="average-level-div" style="display: block;">
+													<label for="average_level">평균</label>
+													<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>
+												</div>
+											</div>
 											<div class="reviewThumbnailGroup">
 												<c:forEach items="${reviewVo.imageList}" var="reviewImg">
 													<div class="reviewThumbnail">
@@ -660,37 +722,9 @@
 													</div>
 												</c:forEach>
 											</div>
-											<div class="review-level">
-												<div class="taste-level-div">
-													<label>맛</label>
-													<span class="taste-level">${reviewVo.tasteLevel }</span>점
-												</div>
-												<div class="price-level-div">
-													<label>가격</label>
-													<span class="price-level">${reviewVo.priceLevel }</span>점
-												</div>
-												<div class="service-level-div">
-													<label>서비스</label>
-													<span class="service-level">${reviewVo.serviceLevel }</span>점
-												</div>
-												<div class="mood-level-div">
-													<label>분위기</label>
-													<span class="mood-level">${reviewVo.moodLevel }</span>점
-												</div>
-												<div class="convenience-level-div">
-													<label>편의성</label>
-													<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
-												</div>
-											</div>
 											<div class="review-data">
 												<div class="write-date-div">
-													<label>작성일</label>
 													<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
-												</div>
-												<div class="review-content-div">
-													<label>리뷰 내용</label>
-													<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
-													<span class="more-review-content-btn">더보기</span>
 												</div>
 												<div class="review-tags-div">
 													<c:forEach items="${reviewVo.tagMap}" var="i">
@@ -698,6 +732,10 @@
 															<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
 														</c:if>
 													</c:forEach>
+												</div>
+												<div class="review-content-div">
+													<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+													<span class="more-review-content-btn">더보기</span>
 												</div>
 											</div>
 											<div class="form-group like-hate">
@@ -720,16 +758,10 @@
 															<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 														</c:otherwise>
 													</c:choose>
-			
 													<input type="number" class="hate-count" readonly value=${reviewVo.hateCount }>
 												</div>
 											</div>
 										</div>
-									</div>
-		
-									<div class="average-level-div  col-md-2">
-										<label for="average_level">평균</label>
-										<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>점
 									</div>
 								</div>
 							</c:forEach>
@@ -779,7 +811,7 @@
 	<div class="row" id="storeTemplate" style="display : none;" style="cursor:pointer;">
 		<span class="storeId" style="display:none;"></span>
 		<div class="storeLogoDiv col-md-2 col-md-offset-1">
-			<img src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle" style="width:100px;">
+			<img src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle clickableSvgCss" style="width:100px;">
 		</div>
 		<div class="storeInfoDiv col-md-5">
 			<div class="storeNameDiv">
@@ -790,7 +822,9 @@
 			</div>
 		</div>
 		<div class="storeLevelDiv col-md-3">
-			평점 : <span class="storeLevel">5.5</span>
+			<label for="storeLevel">평균</label>
+			<div class="storeAverageLevel"></div>
+			<span class="storeLevel"></span>
 		</div>
 	</div>
 	<!--followDiv  -->
@@ -798,6 +832,11 @@
 		<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle" style="width:10rem;"><br>
 		<b><span id="nickName">별명</span></b><br>
 		<small>Lv.<span id="accountLevel">3</span></small><br>
+	</div>
+	
+	<!-- 접근 제한 Div -->
+	<div class="" id="accessDeny">
+		
 	</div>
 	
 	<!--회원정보 수정 모달 -->

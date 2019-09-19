@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.BadgeVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
 @Repository
@@ -183,12 +184,9 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public int updateReviewCount(int account_id, int cnt) throws SQLException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("ACCOUNT_ID", account_id);
-		map.put("CNT", cnt);
-		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateReviewCount",map);
-	}
+	public int updateReviewCount(int account_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateReviewCount",account_id);
+  }
 
 	@Override
 	public int updateAttendanceCount(int account_id) throws SQLException {
@@ -196,18 +194,37 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public int updateFollowCount(int account_id, int cnt) throws SQLException {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("ACCOUNT_ID", account_id);
-		map.put("CNT", cnt);
-		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowCount",map);
+	public int updateFollowCount(int account_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowCount",account_id);
 	}
 
 	@Override
-	public int updateFollowingCount(int account_id, int cnt) throws SQLException {
+	public int updateFollowingCount(int account_id) throws SQLException {
+		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowingCount",account_id);
+	}
+
+	@Override
+	public int insertBadge(int account_id, String classification, int level, String badgeUrl) throws SQLException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("ACCOUNT_ID", account_id);
-		map.put("CNT", cnt);
-		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateFollowingCount",map);
+		map.put("CLASSIFICATION", classification);
+		map.put("BADGELEVEL", level);
+		map.put("BADGEURL", badgeUrl);
+		return sqlSession.insert("com.kkssj.moca.model.AccountDao.insertBadge", map);
+	}
+
+	@Override
+	public int selectFollowCountByFollowing(int followingAccount) throws SQLException {
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectFollowCountByFollowing", followingAccount);
+	}
+
+	@Override
+	public int selectAttendanceCountByAccountId(int account_id) {
+		return sqlSession.selectOne("com.kkssj.moca.model.AccountDao.selectAttendanceCountByAccountId", account_id);
+	}
+
+	@Override
+	public List<BadgeVo> selectBadgeList(int account_id) throws SQLException {
+		return sqlSession.selectList("com.kkssj.moca.model.AccountDao.selectBadgeList", account_id);
 	}
 }

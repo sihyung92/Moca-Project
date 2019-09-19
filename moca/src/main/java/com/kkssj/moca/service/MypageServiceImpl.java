@@ -19,6 +19,7 @@ import com.kkssj.moca.util.UploadFileUtils;
 import com.kkssj.moca.model.ReviewDao;
 import com.kkssj.moca.model.StoreDao;
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.BadgeVo;
 import com.kkssj.moca.model.entity.ImageVo;
 import com.kkssj.moca.model.entity.ReviewVo;
 
@@ -26,6 +27,9 @@ import com.kkssj.moca.model.entity.ReviewVo;
 public class MypageServiceImpl implements MypageService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(MypageServiceImpl.class);
+	
+	int[] followBadgeLevel = new int[] {0,10,30,50,100}; 
+	String[] followBadgeUrl = new String[] {"", "/resources/imgs/badge/followBadge1.png", "/resources/imgs/badge/followBadge2.png", "/resources/imgs/badge/followBadge3.png", "/resources/imgs/badge/followBadge4.png", "/resources/imgs/badge/followBadge5.png"};
 	
 	@Inject
 	AccountDao accountDao;	
@@ -35,6 +39,8 @@ public class MypageServiceImpl implements MypageService{
 	
 	@Inject
 	StoreDao storeDao;
+	
+	
 
 	@Override
 	public List<StoreVo> getFavoriteStoreList(int accountId) {
@@ -129,14 +135,15 @@ public class MypageServiceImpl implements MypageService{
 	@Override
 	public int addFollow(int follower, int following) {
 		try {
+			int result = accountDao.insertFollow(follower,following);
 			if(follower!=following) {
 				//팔로우 받은사람 포인트 up
 				accountDao.updateAccountExp(following, 7);
 				accountDao.insertExpLog(following, "팔로우받음", 7);
 				
 				//각각의 팔로워, 팔로잉 count 증가
-				accountDao.updateFollowCount(following, 1);
-				accountDao.updateFollowingCount(follower, 1);
+				accountDao.updateFollowCount(following);	//팔로잉인 사람의 팔로워가 증가
+				accountDao.updateFollowingCount(follower);	//팔로워인 사람의 팔로잉이 증가
 				
 				//포인트가 레벨업 할만큼 쌓였는지 검사
 				AccountVo accountVo = accountDao.selectByaccountId(following);
@@ -144,13 +151,33 @@ public class MypageServiceImpl implements MypageService{
 				if(accountVo.getExp() >= accountVo.getMaxExp()) {
 					accountDao.updateAccountlevel(following);
 				}
+				
+				badgeManage(following , "following");
 			}
 			
-			return accountDao.insertFollow(follower,following);
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	private void badgeManage(int followingAccount, String callWhere) throws SQLException {
+		int level = 0;
+		if(callWhere.equals("following")) {// 리뷰를 작성했을때
+			int followCount = accountDao.selectFollowCountByFollowing(followingAccount);
+			
+			for (int i = 0; i < followBadgeLevel.length; i++) {
+				if(followBadgeLevel[i] == followCount) {
+					level = i;
+				}
+			}
+			
+			if(level != 0) {
+				accountDao.insertBadge(followingAccount, "팔로우" , level, followBadgeUrl[level]);
+			}
+		}
+		
 	}
 
 	@Override
@@ -163,8 +190,8 @@ public class MypageServiceImpl implements MypageService{
 				accountDao.insertExpLog(following, "팔로우취소됨", -7);
 				
 				//각각의 팔로워, 팔로잉 count 감소
-				accountDao.updateFollowCount(following, -1);
-				accountDao.updateFollowingCount(follower, -1);
+				accountDao.updateFollowCount(following);
+				accountDao.updateFollowingCount(follower);
 				
 				//취소된 포인트로 레벨 down을 해야하는지
 				AccountVo accountVo = accountDao.selectByaccountId(following);
@@ -254,6 +281,17 @@ public class MypageServiceImpl implements MypageService{
 		
 
 		return tagNameList;
+	}
+
+	@Override
+	public List<BadgeVo> getBadgeList(int account_id) {
+		try {
+			return accountDao.selectBadgeList(account_id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

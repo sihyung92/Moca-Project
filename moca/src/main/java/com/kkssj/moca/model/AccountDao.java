@@ -3,6 +3,7 @@ package com.kkssj.moca.model;
 import java.sql.SQLException;
 import java.util.List;
 import com.kkssj.moca.model.entity.AccountVo;
+import com.kkssj.moca.model.entity.BadgeVo;
 import com.kkssj.moca.model.entity.StoreVo;
 
 public interface AccountDao {
@@ -76,15 +77,28 @@ public interface AccountDao {
 	int selectExpLogByAccountId(int accountId, String classification) throws SQLException;
 	
 	//해당 acoount의 reviewcount 증감
-	int updateReviewCount(int account_id, int cnt) throws SQLException;
+	int updateReviewCount(int account_id) throws SQLException;
 	
 	//해당 acoount의 AttendanceCount 증가
 	int updateAttendanceCount(int account_id) throws SQLException;
 	
 	//해당 acoount의 FollowCount 증감
-	int updateFollowCount(int account_id, int cnt) throws SQLException;
+	int updateFollowCount(int account_id) throws SQLException;
 	
 	//해당 acoount의 FollowingCount 증감
-	int updateFollowingCount(int account_id, int cnt) throws SQLException;
+	int updateFollowingCount(int account_id) throws SQLException;
+	
+	//배지 추가
+	int insertBadge(int account_id, String classification, int level, String badgeUrl) throws SQLException;
+	
+	//자신의 follow수 조회
+	int selectFollowCountByFollowing(int followingAccount) throws SQLException;
+	
+	//자신의 출석수 조회
+	int selectAttendanceCountByAccountId(int account_id) throws SQLException;
+	
+	//배지 리스트 조회
+	List<BadgeVo> selectBadgeList(int account_id) throws SQLException;
+	
 
 }

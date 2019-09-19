@@ -100,7 +100,13 @@
   </select>
   
   <update id="updateReviewCount" parameterType="map">
-  	UPDATE ACCOUNT SET REVIEWCOUNT=REVIEWCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+	UPDATE ACCOUNT a 
+	SET a.REVIEWCOUNT = (
+		SELECT count(*) 
+		FROM REVIEW r
+		WHERE r.ACCOUNT_ID =#{ACCOUNT_ID }
+	)
+	WHERE a.ACCOUNT_ID =#{ACCOUNT_ID }
   </update>
   
   <select id="selectByaccountId" parameterType="Integer" resultType="com.kkssj.moca.model.entity.AccountVo">
@@ -108,15 +114,57 @@
   </select>
   
   <update id="updateAttendanceCount" parameterType="Integer">
-  	UPDATE ACCOUNT SET ATTENDANCECOUNT=ATTENDANCECOUNT+1 WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  	UPDATE ACCOUNT a 
+	SET a.ATTENDANCECOUNT = (
+		SELECT count(*) 
+		FROM EXPERIENCELOG el 
+		WHERE el.CLASSIFICATION='출석' AND el.ACCOUNT_ID =#{ACCOUNT_ID }
+	) 
+	WHERE a.ACCOUNT_ID=#{ACCOUNT_ID }
   </update>
   
-  <update id="updateFollowCount" parameterType="map">
-  	UPDATE ACCOUNT SET FOLLOWCOUNT=FOLLOWCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  <update id="updateFollowCount" parameterType="Integer">
+  <![CDATA[
+	UPDATE ACCOUNT a 
+	SET a.FOLLOWCOUNT = (
+		SELECT count(*) 
+		FROM FOLLOW f 
+		WHERE f.FOLLOWING =#{ACCOUNT_ID} AND f.FOLLOWER <> f.FOLLOWING
+	)
+	WHERE a.ACCOUNT_ID = #{ACCOUNT_ID}
+  ]]>
   </update>
   
-  <update id="updateFollowingCount" parameterType="map">
-  	UPDATE ACCOUNT SET FOLLOWINGCOUNT=FOLLOWINGCOUNT+#{CNT} WHERE ACCOUNT_ID=#{ACCOUNT_ID}
+  <update id="updateFollowingCount" parameterType="Integer">
+  <![CDATA[
+	UPDATE ACCOUNT a 
+	SET a.FOLLOWINGCOUNT = (
+		SELECT count(*) 
+		FROM FOLLOW f 
+		WHERE f.FOLLOWER =#{ACCOUNT_ID} AND f.FOLLOWER <> f.FOLLOWING
+	)
+	WHERE a.ACCOUNT_ID = #{ACCOUNT_ID}
+  ]]>
   </update>
-
+  
+  <insert id="insertBadge">
+  	INSERT INTO BADGE(ACCOUNT_ID, CLASSIFICATION, BADGELEVEL, BADGEURL) VALUES(#{ACCOUNT_ID},#{CLASSIFICATION}, #{BADGELEVEL}, #{BADGEURL})
+	ON DUPLICATE KEY UPDATE BADGELEVEL = #{BADGELEVEL};
+  </insert>
+  
+  <select id="selectFollowCountByFollowing" resultType="Integer">
+  <![CDATA[
+  	SELECT COUNT(*) FROM FOLLOW 
+  	WHERE FOLLOWING = #{FOLLOWING } AND FOLLOWING <> FOLLOWER
+  	GROUP BY FOLLOWING
+  ]]>
+  </select>
+  
+  <select id="selectAttendanceCountByAccountId" resultType="Integer">
+  	SELECT COUNT(*) FROM EXPERIENCELOG el WHERE el.ACCOUNT_ID = #{ACCOUNT_ID} AND el.CLASSIFICATION='출석'
+  </select>
+  
+  <select id="selectBadgeList" parameterType="Integer" resultType="com.kkssj.moca.model.entity.BadgeVo">
+  	SELECT CLASSIFICATION, BADGELEVEL, BADGEURL FROM BADGE b WHERE b.ACCOUNT_ID = #{ACCOUNT_ID }
+  </select>
 </mapper>

@@ -10,8 +10,76 @@
 .clickableSvgCss{
 	cursor: pointer;
 }
+.clickableThumbnailCss{
+	cursor: pointer;
+}
+.review-content .clickableSvgCss{
+	width:25px;
+	height: 25px;
+}
 .clickableSvgCss:hover{
 	
+}
+
+/*review 관련 css*/
+.follows-div, .reviews-div{
+	display: inline;
+	font-size: 12pt;
+}
+.follows-div{
+	padding-right: 8px;
+}
+.follows-div img, .reviews-div img{
+	width:15px;
+}
+
+.editDeleteGroup {
+    position: relative;
+    top: -20px;
+    left: 95%;
+    width: 100%;
+}
+
+.review-level div{
+	padding-right: 15px;
+}
+
+.review-level {
+	padding-bottom: 5px;
+	margin-bottom: 10px;
+	border-bottom: 2px solid rgba(234,231,220,1);
+}
+
+.write-date-div{
+	margin: 10px 0px;
+}
+
+.reviewInfo-write-date{
+	background: rgba(234,231,220,1);
+	padding: 2px 12px;
+}
+
+.reviewInfo-review-content{
+	padding: 2px;
+	font-size: 110%;
+	font-family: 'Noto Sans KR', sans-serif;
+	background: none;
+	border: none;
+	margin: 0px;
+}
+.review-content-div{
+	padding-bottom:10px;
+	margin-bottom: 10px;
+	border-bottom: 2px solid rgba(234,231,220,1);
+}
+
+.average-level-div {
+    display: block;
+}
+
+.reviewAverageLevel{
+	position: relative;
+    top: -2px;
 }
 
  /*custom 버튼 css*/
@@ -23,15 +91,22 @@
  	background: #f0f0f0;
  }
  *:focus{ outline:none; }
+ 
+ /*tag custom 버튼 css*/
+ .tagCustomBtn{
+ 	background: #f1d699;
+	transition: 0.3s;
+ }
+ .tagCustomBtn:hover {
+ 	background: #e2ac33;
+ 	color:white;
+ }
 
 /* br태그 대신 margin */
 .reviewCnt:first-child{
 	margin-top: 3em;
 }
 
-.review-content img{
-	cursor: pointer;
-}
 .reviewCnt{
 	margin-bottom: 3em;
 	background-color:white;
@@ -54,7 +129,13 @@
     text-overflow: ellipsis;
     float:left;
 }
-.more-review-content-btn{display:none;white-space:nowrap;float:right;}
+.more-review-content-btn{display:none;white-space:nowrap;}
+
+.more-review-content-btn img{
+	width: 1em;
+	margin-left:2px;
+	margin-right: 10px;
+}
    
 .reviewThumbnailGroup .reviewThumbnail{
    	display: inline-block;

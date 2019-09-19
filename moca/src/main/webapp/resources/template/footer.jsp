@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    
-
         <div class="align">
             <ul class="link">
                 <li><a href="#">회사소개</a><span>|</span></li>
@@ -32,8 +30,5 @@
                 <a href="//blog.co.kr" target="_black" class="icon-ic_blog"><img src=""></a>
                
             </div>
-            
+     
         </div>
-
-
-

@@ -28,6 +28,7 @@
 		display : inline-table;
 	}
 
+
 	#keyword2{
 		/* width : 500px; */
 	}
@@ -482,7 +483,6 @@
 				next.off('click').click(clickNext);
 			}	
 			pageNum=null;
-
 			$('html, body').animate( { scrollTop : 113 }, 200 );
 		}
 		
@@ -490,7 +490,6 @@
 		$('.pagination>li:nth-child(2)').click();
 		$('#page').show();
 	};
-
     //스크롤 위치에 따라 헤더 배경색 변경
     function changeHeaderColor(){
     	var position = $(window).scrollTop();
@@ -864,6 +863,7 @@
 				<c:if test="${not empty msg_changedFilter}"><p>원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</p></c:if>		
 		</form>
 	</div>
+
 </div>
 <div id="content" class="container-fluid" style="padding-top : 0">
 	<div class="row">			

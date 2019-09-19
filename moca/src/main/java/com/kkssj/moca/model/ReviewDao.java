@@ -17,9 +17,9 @@ public interface ReviewDao {
 
 	int deleteLikeHate(int review_id, int accountId) throws SQLException;
 
-	int updateLikeCount(int review_id, int likeCount) throws SQLException;
+	int updateLikeCount(int review_id) throws SQLException;
 	
-	int updateHateCount(int review_id, int hateCount) throws SQLException;
+	int updateHateCount(int review_id) throws SQLException;
 	
 	ReviewVo selectLikeHateCount(int review_id) throws SQLException;
 
@@ -76,4 +76,8 @@ public interface ReviewDao {
 	List<Double> selectReviewAverageLevelByStoreId(Integer store_id);
 
 	int updateReviewImageViews(String uu_id);
+
+	int selectReviewCountByAccountId(int account_id) throws SQLException;
+
+	int selectLikeHateCountByAccountId(int account_id) throws SQLException;
 }

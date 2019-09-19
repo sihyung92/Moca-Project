@@ -43,10 +43,22 @@
   </delete>
   
   <update id="updateLikeCount" parameterType="map">
-  	UPDATE REVIEW SET likeCount = #{LIKECOUNT} WHERE review_id = #{REVIEW_ID}
+	UPDATE REVIEW r
+	SET r.LIKECOUNT = (
+		SELECT count(*) FROM LIKEHATE lh 
+		WHERE lh.REVIEW_ID =#{REVIEW_ID} AND lh.ISLIKE=1 
+	) 
+	WHERE r.REVIEW_ID = #{REVIEW_ID}
+	LIMIT 1	
   </update>
   <update id="updateHateCount" parameterType="map">
-  	UPDATE REVIEW SET hateCount = #{HATECOUNT} WHERE review_id = #{REVIEW_ID}
+	UPDATE REVIEW r
+	SET r.LIKECOUNT = (
+		SELECT count(*) FROM LIKEHATE lh 
+		WHERE lh.REVIEW_ID =#{REVIEW_ID} AND lh.ISLIKE=-1 
+	) 
+	WHERE r.REVIEW_ID = #{REVIEW_ID}
+	LIMIT 1
   </update>
   <select id="selectLikeHateCount" parameterType="Integer" resultType="com.kkssj.moca.model.entity.ReviewVo">
   	SELECT likeCount, hateCount FROM REVIEW WHERE review_id = #{id}
@@ -174,5 +186,18 @@
   <update id="updateReviewImageViews" parameterType="String">
   	UPDATE REVIEWIMAGE ri SET ri.VIEWS = ri.VIEWS+1 WHERE ri.UU_ID = #{UU_ID}
   </update>
+  
+  <select id="selectLikeHateCountByAccountId" resultType="Integer">
+  <![CDATA[
+  	SELECT count(*) 
+  	FROM LIKEHATE l JOIN REVIEW r on l.REVIEW_ID = r.REVIEW_ID 
+  	WHERE r.ACCOUNT_ID = #{ACCOUNT_ID} AND r.ACCOUNT_ID <> l.ACCOUNT_ID
+  	GROUP BY r.ACCOUNT_ID	
+  ]]>
+  </select>
+  
+  <select id="selectReviewCountByAccountId" parameterType="Integer" resultType="Integer">
+   SELECT count(*) FROM REVIEW r GROUP BY r.ACCOUNT_ID HAVING r.ACCOUNT_ID = #{ACCOUNT_ID}
+  </select>
   
 </mapper>
