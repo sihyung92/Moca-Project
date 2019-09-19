@@ -146,55 +146,48 @@ public class MainController {
 	}
 	
 	//추천 정보 추가로 받기
-	@RequestMapping("/getmorepicks")
-	public String getMorePicks(HttpSession session,HttpServletResponse response, Model model) {
-		long enterTime = System.currentTimeMillis();
-		//뷰 처리용: 전달할 추천 리스트 이름 목록
-		List<String> listNames = new ArrayList<String>(); 
-		//뷰 처리용: 각 추천 리스트를 담은 리스트
-		List<List<StoreVo>> storesList = new ArrayList<List<StoreVo>>();
-		//DB 처리용: DB에서 리턴 받은 추천 카페 StoreVo 임시 저장용 리스트
+	@ResponseBody
+	@RequestMapping("/getmorepicks/{idx}")
+	public Map<String, List<StoreVo>> getMorePicks(@PathVariable int idx, HttpSession session,HttpServletResponse response, Model model) {
+		long enterTime = System.currentTimeMillis();		
+		//뷰 처리용: DB에서 리턴 받은 추천 카페 StoreVo 임시 저장
 		List<StoreVo> alist = new ArrayList<StoreVo>();		
-		logger.debug("추가 추천!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
-		
-		if(tagNames.size()==0) {
-			response.setStatus(418); //I'M_A_TEAPOT
-		}
-		
-		if(!rating.isEmpty()) {		//별점 추천(맛있는, 분위기 좋은, 가격이 착한)
+		//뷰 처리용: 추천 캐러셀 이름 & 리스트 목록
+		Map<String, List<StoreVo>> mocaPick = new HashMap<String, List<StoreVo>>();
+		logger.debug("추가 추천!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		logger.debug("idx: "+ idx);
+		if(idx==0) {		//별점 추천(맛있는, 분위기 좋은, 가격이 착한)
 			Set<String> ratingNames = rating.keySet();
-			Iterator<String> ite = ratingNames.iterator();
-			
+			Iterator<String> ite = ratingNames.iterator();			
 			while(ite.hasNext()) {
 				String ratingName = ite.next();
 				variables.put("ratingName", ratingName);
 				alist=mainService.getStoresListByRating(variables);		
-				if(alist.size()>4) {
-					listNames.add(rating.get(ratingName));
-					storesList.add(alist); 							
+				if(alist.size()>6) {
+					mocaPick.put(rating.get(ratingName), alist);					
 				}
 			}
-			rating.clear();
-		}else {		//태그 추천(ex: #예쁜, #혼자가기좋은)
-			int end=10;
-			if(tagNames.size()<10) end = tagNames.size();			
-			for(int i=0; i<end; i++) {
-				String tag = tagNames.get(0); 
-				tagNames.remove(0);
+		}else {		//태그 추천(ex: #예쁜, #혼자가기좋은)	
+			int start = (idx-1)*3;
+			int end = start +3;
+			if(start >= tagNames.size()) {
+				response.setStatus(418); //I'M_A_TEAPOT
+				return null;
+			}
+			if(end > tagNames.size()) end = tagNames.size();
+			for(int i=start; i<end; i++) {
+				String tag = tagNames.get(i); 
 				variables.put("tag", tag);
 				alist=mainService.getStoresListByTag(variables);		
-				if(alist.size()>4) {
-					listNames.add("#"+tag);
-					storesList.add(alist); 
+				if(alist.size()>6) {
+					mocaPick.put("#"+tag, alist);
 				}
 			}
 		}			
-		
-		model.addAttribute("listNames",listNames);
-		model.addAttribute("storesList",storesList);
+
 		long afterTime = System.currentTimeMillis();
 		logger.debug("추가 추천 데이터 로딩 걸린 시간은 :"+(afterTime-enterTime)/1000D);
-		return "converter"; 
+		return mocaPick;
 	}
 	
 	//boardController혹은bbsController 이동예정~!

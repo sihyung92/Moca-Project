@@ -55,39 +55,45 @@
 	}
 /* body content */	
 	/* 모카픽 추천 캐러셀 */
-	.mocaPick-list{
+	.mocaPick-container{
 		color: dimgray;
 	}	
-	.mocaPick-list .bx-wrapper{
+	.mocaPick-container .bx-wrapper{
 		border: none;
 		box-shadow: none;
 		margin-bottom: 50px;
 		z-index: 3;
-		border: lightgray 1px solid;
+		border: rgba(236,235,229,1) 1px solid;
 		border-radius: 2px;
-		background-color: rgba(246,245,239,0.5);
-	}
-	.bx-wrapper .bx-viewport .mocaPick .store{
-		height: 200px;		
+		background-color: rgba(236,235,229,0.5);
 	}	
-	.bx-wrapper .bx-viewport .mocaPick .store .storeInfo{
+	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-storeInfo{
 		position: absolute;
 		z-index: 2;
-		height: 60px;
-		bottom: -60px;
+		height: 50px;
+		bottom: -50px;
+		padding: 5px;
 	}
-	.storeInfo .mocaPick-storeName{
-		font-size: 17px;
+	.mocaPick-storeInfo .mocaPick-storeName{
+		font-size: 16px;
 		font-weight: bold;
 	}
-	.storeInfo .mocaPick-averageLevel{
-		font-size: 16px;
+	.mocaPick-storeInfo .mocaPick-averageLevel{
+		font-size: 15px;
+		font-weight: bold;
 		color: rgb(198,161,83);
 	}
-	.bx-wrapper .bx-viewport .mocaPick .store img{
+	.mocaPick-storeInfo .mocaPick-cnt{
+		font-size: 12px;
+	}
+	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-img-list{
+		height: 200px;
+		overflow:hidden;
+	}
+	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-img-list img{
 		display: none;
 		width: 100%;
-		height: auto;	
+		height: auto;
 		position: relative;
 		top: 50%;
 		left: 50%;
@@ -97,17 +103,17 @@
 		display: block;
 	}
 	/* 인기 리뷰, 최근 리뷰 */
-	#review-list{
+	#review-container{
 		color: dimgray;
 	}
-	#bestReview-list, #recentReview-list{
-		border: lightgray 1px solid;
+	#bestReview-container, #recentReview-container{
+		border: rgba(236,235,229,1) 1px solid;
 		border-radius: 2px;
 		overflow-y : scroll;
 		height : 400px;
 	}
 	.review{
-		background-color: rgba(236,235,229,1);
+		background-color: rgba(236,235,229,0.5);
 		padding: 10px;
 		margin-bottom: 2px;
 		overflow: hidden;
@@ -127,12 +133,12 @@
 		margin-top: 3px;
 		margin-left: 10px; 
 	}
-	#review-list a{
+	#review-container a{
 		color: dimgray;
 		font-weight: bold;
 	    font-size: 20px;
 	}
- 	#review-list a:hover{
+ 	#review-container a:hover{
 		text-decoration: none;		
 	}
 	.review-text-averageLevel{
@@ -145,7 +151,7 @@
 	.review-text-content{
 		font-size: 15px;
 	}
-	
+/* 미디어 쿼리 */	
 	@media (max-width: 768px){
 		.bx-wrapper{
 			margin-bottom: 20px;
@@ -183,25 +189,29 @@
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
 	var slide;
+	var idx=0;
     window.onload = function () {  
+        //헤더 fix 속성에 따른 body 패딩값 삭제
         $('div#header+div').css('padding-top', '10px');
-        $(window).width();
-   	 	//bxSlider 시작 
-   	 	
+    	//스크롤 위치에 따라 헤더 배경 토글
+    	$(window).on("scroll", changeHeaderColor); 
+		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
+    	$(window).on("scroll", updateData);
+    	   	
+   	 	//캐러셀(bxSlider) 시작    	 	
     	$('.mocaPick').bxSlider({
     		pager: false,
     		autoReload: true,
-    		//captions: true,
     		slideMargin: 1,
     		minSlides: 1,
-    		maxSlides: 7,
+    		maxSlides: 15,
     		moveSlides: 3,    		
     		slideWidth: 300,
     		onSliderLoad: function(){
-        		$('.bx-viewport').css('height', '260px');
+        		$('.bx-viewport').css('height', '250px');
             },
     		onSliderResize: function(){
-        		$('.bx-viewport').css('height', '260px');
+        		$('.bx-viewport').css('height', '250px');
             }
     	});     	
     	//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
@@ -209,14 +219,12 @@
         	store_id = $(this).children().first().attr('alt').split(" ")[0];
 			window.location.href="./stores/"+store_id;
         });  
+
+        
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
         $('.mocaPick li a').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
         $('.mocaPick li a').on("mouseleave", mouseLeave);
-		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
-    	$(window).on("scroll", updateData);
-    	//스크롤 위치에 따라 헤더 배경 토글
-    	$(window).on("scroll", changeHeaderColor);    	
     };//onload() 끝  
     
     //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
@@ -247,28 +255,35 @@
         	var position = $(window).scrollTop();	//스크롤바 위치로 페이지 위치 판단
         	var updatePoint = $(document).height()*3/5;        	
             if(position>updatePoint){
-            	$(window).off("scroll");
+                alert("데이터 가져오기 이벤트!");
+            	$(window).off("scroll", updateData);
+            	var template = $($('#mocaPick-template').html());
     			$.ajax({
-    				url:"getmorepicks",
-    				dataType:"html",
+    				url:"getmorepicks/"+idx,
+    				dataType:"json",
     				success:function(data){
-        				$('body').append(data);
+        				idx++;
+        				$(data).each(function(idx, ele){
+            				console.log(ele.key);
+							template.first().text();
+            			});
+        				//$('.mocaPick-container')[1].append(template);
         				//기존 캐러셀 mouseEnter/Leave 이벤트 해제 & 추가
-        				$('.mocaPick li a').off("mouseenter", mouseEnter);
-        				$('.mocaPick li a').off("mouseleave", mouseLeave);
-        				$('.mocaPick li a').on("mouseenter", mouseEnter);
-        				$('.mocaPick li a').on("mouseleave", mouseLeave);
+        				//$('.mocaPick li a').off("mouseenter", mouseEnter);
+        				//$('.mocaPick li a').off("mouseleave", mouseLeave);
+        				//$('.mocaPick li a').on("mouseenter", mouseEnter);
+        				//$('.mocaPick li a').on("mouseleave", mouseLeave);
         				$(window).on("scroll", updateData);        			
     				},
     				error: function(e){
         				alert("에러콜백");
-        				$(window).off("scroll");
+        				$(window).off("scroll", updateData);
         			}
     			});
             };
     };      
     //스크롤 위치에 따라 헤더 배경색 변경
-    function changeHeaderColor(){
+    function changeHeaderColor(){        
     	var position = $(window).scrollTop();
     	var width = $(window).width();
     	if(width>768){
@@ -305,9 +320,9 @@
 </div>
 <div id="content" class="container-fluid">
 	<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
-	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>
-<!-- 카페 추천 캐러샐(bxSlider)-->
-	<div class="mocaPick-list">
+	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>	
+<!-- 카페 추천(mocaPick) 캐러셀-->	
+	<div class="mocaPick-container">
 	 	<c:forEach items="${storesList}" var="list" varStatus="status">
 			<c:if test="${not empty list}">
 				<c:set var="length" value="${fn:length(list)}"/>
@@ -317,13 +332,15 @@
 					<div class="mocaPick">
 						<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
 						    <div class="store">
-						    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main1" title="${store.name} <fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/>">
-						    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main2">
-						    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main3">
-								<div class="storeInfo">
+						    	<div class="mocaPick-img-list">
+							    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main1" title="${store.name}">
+							    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main2">
+							    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main3">
+						    	</div>
+								<div class="mocaPick-storeInfo">
 					     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;<span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></span><br/>			     			
-					     			<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span><span>${store.viewCnt}</span>
-						     		<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span>${store.reviewCnt}</span><br/>
+					     			<span class="glyphicon glyphicon-eye-open mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt">${store.viewCnt}</span>
+						     		<span class="glyphicon glyphicon-pencil mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt">${store.reviewCnt}</span><br/>
 					     			<%-- <span>${store.roadAddress}</span> --%>
 				     			</div>
 							</div>
@@ -331,164 +348,82 @@
 					</div>
 			</c:if>
 		</c:forEach> 
-	</div>
-<!-- 카페 추천 캐러샐(부트스트랩)-->
- <%-- 	<c:foreach items="${storeslist}" var="list" varstatus="status" begin="0" end="0">
-		<c:if test="${not empty list}">		
-			<c:set var="length" value="${fn:length(list)}"/>
-			<c:set var="index" value="${status.index}"/>
-			<c:set var="name" value="${listnames[index]}"/>
-	 		<div class="mocapick">
-				<h5>${name}</h5>
-				<div class="carousel slide" id="mocapick_${index}" data-ride="carousel">
-				  <!-- indicators -->
-				  <ol class="carousel-indicators">
-				    <li data-target="#mocapick_${index}" data-slide-to="0" class="active"></li>
-				    <c:if test="${length gt 5}">
-				   	 	<li data-target="#mocapick_${index}" data-slide-to="1"></li>
-				    </c:if>
-				    <c:if test="${length gt 10}">
-				    	<li data-target="#mocapick_${index}" data-slide-to="2"></li>
-				    </c:if>
-				  </ol>		
-				  <!-- wrapper for slides -->
-				  <div class="carousel-inner" role="listbox">
-				    <div class="item active">
-				     	<c:foreach items="${list}" var="store" begin="0" end="4" > 					     	
-					     	<div class="item-content"><a href="./stores/${store.store_id }">
-					     		<div class="overlay">
-					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatnumber value="${store.averagelevel}" pattern="0.0"/></span></h4>					     			
-						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewcnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewcnt}
-							     		</h5>
-						     			<h6>${store.roadaddress}</h6>
-					     			</div>
-					     		</div>
-					     		<img src="${store.storeimg1}<c:if test="${store.storeimg1 eq null}">${defaultimg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeimg2}<c:if test="${store.storeimg2 eq null}">${defaultimg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeimg3}<c:if test="${store.storeimg3 eq null}">${defaultimg }</c:if>" alt="${store.name }_main3">					     	
-					     	</a></div>					     	
-				     	</c:foreach>
-				    </div>
-				    <c:if test="${length gt 5}">
-				    <div class="item">
-			    		<c:set var="end">9</c:set>
-				     	<c:if test="${length lt 10}"><c:set var="end">${length-1 }</c:set></c:if>
-				     	<c:foreach items="${list}" var="store" begin="${end-4 }" end="${end }">				     	
-					     	<div class="item-content"><a href="./stores/${store.store_id }">
-					     		<div class="overlay">
-					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatnumber value="${store.averagelevel}" pattern="0.0"/></span></h4>					     			
-						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewcnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewcnt}
-							     		</h5>
-						     			<h6>${store.roadaddress}</h6>
-					     			</div>
-					     		</div>
-					     		<img src="${store.storeimg1}<c:if test="${store.storeimg1 eq null}">${defaultimg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeimg2}<c:if test="${store.storeimg2 eq null}">${defaultimg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeimg3}<c:if test="${store.storeimg3 eq null}">${defaultimg }</c:if>" alt="${store.name }_main3">					     	
-					     	</a></div>					     	
-				     	</c:foreach>				     
-				    </div>
-				    </c:if>     
-				    <c:if test="${length gt 10}">	
-					   <div class="item">
-				     		<c:foreach items="${list}" var="store" begin="${length-5 }" end="${length-1 }"> 					     	
-					     	<div class="item-content"><a href="./stores/${store.store_id }">
-					     		<div class="overlay">
-					     			<div>
-						     			<h4>${store.name}&nbsp;&nbsp;<span><fmt:formatnumber value="${store.averagelevel}" pattern="0.0"/></span></h4>					     			
-						     			<h5>
-						     				<span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>${store.viewcnt}
-							     			<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>${store.reviewcnt}
-							     		</h5>
-						     			<h6>${store.roadaddress}</h6>
-					     			</div>
-					     		</div>
-					     		<img src="${store.storeimg1}<c:if test="${store.storeimg1 eq null}">${defaultimg }</c:if>" alt="${store.name }_main1">
-					     		<img src="${store.storeimg2}<c:if test="${store.storeimg2 eq null}">${defaultimg }</c:if>" alt="${store.name }_main2">
-					     		<img src="${store.storeimg3}<c:if test="${store.storeimg3 eq null}">${defaultimg }</c:if>" alt="${store.name }_main3">					     	
-					     	</a></div>					     	
-				     		</c:foreach>						   	
-					    </div> 
-					</c:if> 	  		   
-				</div>	
-				  <!-- controls -->
-				  <a class="left carousel-control" href="#mocapick_${index}" role="button" data-slide="prev">
-				    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-				    <span class="sr-only">previous</span>
-				  </a>
-				  <a class="right carousel-control" href="#mocapick_${index}" role="button" data-slide="next">
-				    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-				    <span class="sr-only">next</span>
-				  </a>
+	</div><!-- mocaPick 캐러셀 끝-->	
+<!-- 인기 리뷰 / 최근 리뷰 시작 -->
+	<c:if test="${not empty recentReviews }">
+	<!-- <c:if test="${not empty bestReviews }"></c:if>	-->
+		<div class="row" id="review-container">
+			<!-- 인기 리뷰 -->
+			<div class="col-sx-12 col-md-6">	
+				<h4>&nbsp;인기 리뷰</h4>
+				<div id="bestReview-container">
+					<c:forEach items="${bestReviews }" var="bean">
+						<div class="review">
+							<a href="./stores/${bean.store_id}">
+								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
+								<span class="review-text-averageLevel">${bean.averageLevel}</span>
+							</a><br/>
+							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+							<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+							<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
+							<c:if test="${not empty bean.imageList }">
+								<div class="review-img-list">
+									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
+									  	<img src="${img.url }" alt="${img.originName }">		  				  	
+							  		</c:forEach>
+								</div>
+							</c:if>
+							<span class="review-text-content col-md-12">${bean.reviewContent }</span>				
+						</div>
+					</c:forEach>
 				</div>
 			</div>
-		</c:if>
-	</c:foreach>
-<br/><br/> --%>
-<!-- 인기 리뷰 / 최근 리뷰 시작 -->
-<c:if test="${not empty recentReviews }">
-<!-- <c:if test="${not empty bestReviews }"></c:if>	-->
-	<div class="row" id="review-list">
-		<!-- 인기 리뷰 -->
-		<div class="col-sx-12 col-md-6">	
-			<h4>&nbsp;인기 리뷰</h4>
-			<div id="bestReview-list">
-				<c:forEach items="${bestReviews }" var="bean">
-					<div class="review">
-						<a href="./stores/${bean.store_id}">
-							<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
-							<span class="review-text-averageLevel">${bean.averageLevel}</span>
-						</a><br/>
-						&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
-						<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
-						<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
-						<c:if test="${not empty bean.imageList }">
-							<div class="review-img-list">
-								<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
-								  	<img src="${img.url }" alt="${img.originName }">		  				  	
-						  		</c:forEach>
-							</div>
-						</c:if>
-						<span class="review-text-content col-md-12">${bean.reviewContent }</span>				
-					</div>
-				</c:forEach>
+			<!-- 최신 리뷰 -->
+			<div class="col-sx-12 col-md-6">	
+				<h4>&nbsp;최신 리뷰</h4>
+				<div id="recentReview-container">
+					<c:forEach items="${recentReviews }" var="bean">
+						<div class="review">
+							<a href="./stores/${bean.store_id}">
+								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
+								<span class="review-text-averageLevel">${bean.averageLevel}</span>
+							</a><br/>			
+							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+							<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+							<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
+							<c:if test="${not empty bean.imageList }">
+								<div class="review-img-list">
+									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
+								  		<img src="${img.url }" alt="${img.originName }">		  				  	
+							  		</c:forEach>
+								</div>
+							</c:if>
+							<span class="review-text-content col-md-12">${bean.reviewContent }</span>			
+						</div>
+					</c:forEach>
+				</div>
+			</div>
+		</div>	
+	</c:if><!-- 인기 리뷰 / 최근 리뷰 끝 -->	
+<!-- 카페 추천(mocaPick) 캐러셀 추가 -->	
+	<div class="mocaPick-container" id="mocaPick-template">
+		<h5></h5>
+		<div class="mocaPick">	
+		    <div class="store">
+		    	<%-- <div class="mocaPick-img-list">
+			    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main1" title="${store.name}">
+			    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main2">
+			    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main3">
+		    	</div>
+				<div class="mocaPick-storeInfo">
+	     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;<span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></span><br/>			     			
+	     			<span class="glyphicon glyphicon-eye-open mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt">${store.viewCnt}</span>
+		     		<span class="glyphicon glyphicon-pencil mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt">${store.reviewCnt}</span><br/>
+	     			<span>${store.roadAddress}</span>
+	    		</div> --%>
 			</div>
 		</div>
-		<!-- 최신 리뷰 -->
-		<div class="col-sx-12 col-md-6">	
-			<h4>&nbsp;최신 리뷰</h4>
-			<div id="recentReview-list">
-				<c:forEach items="${recentReviews }" var="bean">
-					<div class="review">
-						<a href="./stores/${bean.store_id}">
-							<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
-							<span class="review-text-averageLevel">${bean.averageLevel}</span>
-						</a><br/>			
-						&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
-						<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
-						<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
-						<c:if test="${not empty bean.imageList }">
-							<div class="review-img-list">
-								<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
-							  		<img src="${img.url }" alt="${img.originName }">		  				  	
-						  		</c:forEach>
-							</div>
-						</c:if>
-						<span class="review-text-content col-md-12">${bean.reviewContent }</span>			
-					</div>
-				</c:forEach>
-			</div>
-		</div>
-	</div>	
-</c:if>
-<br/><br/>
-<!-- 인기 리뷰 / 최근 리뷰 끝 -->	
+	</div><!-- mocaPick 캐러셀 추가 끝-->
 </div>
 </body>
 </html>
