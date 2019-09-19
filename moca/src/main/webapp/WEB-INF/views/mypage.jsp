@@ -22,6 +22,7 @@
 	}
 	
 	#userBadge{
+		height:150px;
 		margin-top:20px;
 		padding:20px;
 		background : rgba(246,245,239,1);
@@ -42,16 +43,30 @@
 			display: inline-block;
 			width:100%;
 		}
+		
+		.followInfo, .likeStore, .favoriteStore{
+			text-align: center;
+			margin-right: 3rem;
+			margin-bottom: 3em;
+		    background-color: white;
+		    padding: 1em;
+		    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+		}
+		.likeStore, .favoriteStore{
+			padding: 3em;
+		}
+		
+		#followingDiv, #followerDiv, #likeDiv, #favoriteDiv{
+			margin-top: 3em;
+		}
+		
 		#followerDiv>div{
 			display: inline;
 			margin:0px 3px;
 		}
+		
 		.inlineBlock{
 			display: inline;
-		}
-		.followInfo{
-			text-align: center;
-			margin-right: 3rem;
 		}
 		
 		/*글리피콘 사이즈*/
@@ -69,13 +84,21 @@
 			text-align: center;
 		}
 		
+		#needBadgeSpan{
+			color: #c0c0c0;
+		    position: relative;
+		    top: 35%;
+		    left: 40%;
+		    font-weight: bold;
+		}
+		
 		
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=8"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=10"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -587,8 +610,11 @@
 			<div class="row">
 				<div class="col-md-12" id="userBadge">
 					<c:forEach items="${currentPageAccount.badgeList }" var="badgeVo">
-						<img class="img=circle" alt="badge" src="<c:url value="${badgeVo.badgeUrl}"/>" style="width: 100px">
+						<img class="img-circle" alt="badge" src="<c:url value="${badgeVo.badgeUrl}"/>" style="width: 100px">
 					</c:forEach>
+					<c:if test="${empty currentPageAccount.badgeList}">
+						<span id="needBadgeSpan">뱃지를 모아주세요</span>
+					</c:if>
 				</div>
 			</div>
 				
@@ -596,7 +622,7 @@
 			
 		</div>
 	<div class="row">
-			<div class="col-md-8 col-md-offset-2">
+			<div class="col-xs-8 col-xs-offset-2">
 				<ul id="mypageTab" class="nav nav-tabs">
 					<li role="presentation" class="nav-item active">
 						<a class="nav-link active" data-toggle="tab" href="#myReviewDiv">내 게시글</a>
@@ -629,11 +655,11 @@
 											<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 										</div>
 									</c:if>
-									<div class="store-info col-md-2" >
+									<div class="store-info col-md-2 text-center" >
 										<div class="storeLogo-div">
 											<!-- store logo 이미지 -->
 											<c:if test="${empty reviewVo.storeLogoImg}">
-												<img src="<c:url value="/resources/imgs/logoDefault.png"/>"
+												<img src="<c:url value="/resources/imgs/logo/noneCirclelogo.png"/>"
 													alt="logo" class="img-circle clickableSvgCss" style="width: 100px; height:100px;" 
 													onclick="location.href='/moca/stores/${reviewVo.store_id}'" >
 											</c:if>
@@ -649,8 +675,34 @@
 										</div>
 									</div>
 
-									<div class="review-info col-md-8"> 
+									<div class="review-info col-md-9"> 
 										<div class="row">
+											<div class="review-level">
+												<div class="taste-level-div">
+													<label>맛</label>
+													<span class="taste-level">${reviewVo.tasteLevel }</span>
+												</div>
+												<div class="price-level-div">
+													<label>가격</label>
+													<span class="price-level">${reviewVo.priceLevel }</span>
+												</div>
+												<div class="service-level-div">
+													<label>서비스</label>
+													<span class="service-level">${reviewVo.serviceLevel }</span>
+												</div>
+												<div class="mood-level-div">
+													<label>분위기</label>
+													<span class="mood-level">${reviewVo.moodLevel }</span>
+												</div>
+												<div class="convenience-level-div">
+													<label>편의성</label>
+													<span class="convenience-level">${reviewVo.convenienceLevel }</span>
+												</div>
+												<div class="average-level-div" style="display: block;">
+													<label for="average_level">평균</label>
+													<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>
+												</div>
+											</div>
 											<div class="reviewThumbnailGroup">
 												<c:forEach items="${reviewVo.imageList}" var="reviewImg">
 													<div class="reviewThumbnail">
@@ -658,37 +710,9 @@
 													</div>
 												</c:forEach>
 											</div>
-											<div class="review-level">
-												<div class="taste-level-div">
-													<label>맛</label>
-													<span class="taste-level">${reviewVo.tasteLevel }</span>점
-												</div>
-												<div class="price-level-div">
-													<label>가격</label>
-													<span class="price-level">${reviewVo.priceLevel }</span>점
-												</div>
-												<div class="service-level-div">
-													<label>서비스</label>
-													<span class="service-level">${reviewVo.serviceLevel }</span>점
-												</div>
-												<div class="mood-level-div">
-													<label>분위기</label>
-													<span class="mood-level">${reviewVo.moodLevel }</span>점
-												</div>
-												<div class="convenience-level-div">
-													<label>편의성</label>
-													<span class="convenience-level">${reviewVo.convenienceLevel }</span>점
-												</div>
-											</div>
 											<div class="review-data">
 												<div class="write-date-div">
-													<label>작성일</label>
 													<span class="reviewInfo-write-date">${reviewVo.writeDate }</span>
-												</div>
-												<div class="review-content-div">
-													<label>리뷰 내용</label>
-													<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
-													<span class="more-review-content-btn">더보기</span>
 												</div>
 												<div class="review-tags-div">
 													<c:forEach items="${reviewVo.tagMap}" var="i">
@@ -696,6 +720,10 @@
 															<a class="review-tag" href="/moca/stores?keyword=%23${i.key }&filter=distance">#${i.key }</a>	
 														</c:if>
 													</c:forEach>
+												</div>
+												<div class="review-content-div">
+													<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
+													<span class="more-review-content-btn">더보기</span>
 												</div>
 											</div>
 											<div class="form-group like-hate">
@@ -718,16 +746,10 @@
 															<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 														</c:otherwise>
 													</c:choose>
-			
 													<input type="number" class="hate-count" readonly value=${reviewVo.hateCount }>
 												</div>
 											</div>
 										</div>
-									</div>
-		
-									<div class="average-level-div  col-md-2">
-										<label for="average_level">평균</label>
-										<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>점
 									</div>
 								</div>
 							</c:forEach>

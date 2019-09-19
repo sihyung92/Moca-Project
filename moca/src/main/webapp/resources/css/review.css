@@ -14,7 +14,8 @@
 	cursor: pointer;
 }
 .review-content .clickableSvgCss{
-	width:1.5em;
+	width:25px;
+	height: 25px;
 }
 .clickableSvgCss:hover{
 	

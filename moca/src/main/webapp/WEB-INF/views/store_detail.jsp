@@ -7,10 +7,12 @@
 <head>
 	<meta charset="utf-8">
 	<title>moca</title>
+	<link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
+	<link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=14"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=15"/>" />
 	<style type="text/css">
 		.jumbotron{
 			background: rgba(234,231,220,0.4);
@@ -220,6 +222,15 @@
 			padding-top: 20px;
 		}
 		
+		.StoreImg span{
+	   	 	width: 100%;
+		    position: absolute;
+		    top:0px;
+		    background: rgba(234,231,220,0.5);
+		    padding: 3px;
+		    display: block;
+		}
+		
 		.panel-default > .panel-heading {
 			background: rgba(234,231,220,1);
 		}
@@ -227,6 +238,26 @@
 		.panel-default{
 			border:none;
 			background: rgba(234,231,220,0.4);;
+		}
+		
+		.customStoreEditBtn {
+		    background: #f1d699;
+		    transition: 0.3s;
+		    box-shadow: none;
+		    border: 3px solid #e2ac33;
+		    border-radius: 10px;
+		}
+		
+		.customStoreEditBtn:hover{
+			background: #e2ac33;
+			color: white;
+		}
+		
+		#isManagerSpan{
+			background: rgba(234,231,220,1);
+		    padding: 2px 22px;
+		    font-size: 110%;
+		    font-weight: bold;
 		}
 		
 }
@@ -237,7 +268,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=4"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=5"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -944,7 +975,11 @@
 								<img id="favoriteStoreBtn" class="clickableSvgCss" src="<c:url value="/resources/imgs/icons/bookmark-fill.svg"/>">		
 							</c:if>					
 						</div>
-
+						<c:if test="${storeVo.isManager eq 1}">
+							<div>
+								<span id="isManagerSpan">내가 관리하는 카페 입니다.</span>	
+							</div>
+						</c:if>
 						<div id="storeTagDiv">
 							<!-- 태그 -->
 							<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
@@ -956,20 +991,16 @@
 						</div>
 						
 						<!-- 로고 & 카페이름-->
-						<!-- 이미지 호스팅 할 건지, 데이터 베이스에 넣을건지 -->
 						<h1>
 							<c:if test="${empty storeVo.logoImg}">
-								<img id="storeLogo" src="<c:url value="/resources/imgs/moca1.png"/>" alt="logo" class="img-circle" style="width:100px; height:100px;">
+								<img id="storeLogo" src="<c:url value="/resources/imgs/logo/noneCirclelogo.png"/>" alt="logo" class="img-circle" style="width:100px; height:100px;">
 							</c:if>
 							<c:if test="${not empty storeVo.logoImg}">
 								<img id="storeLogo" src="<c:url value="${storeVo.logoImg }" />" alt="logo" class="img-circle" style="width:100px; height:100px;">
-							</c:if>
-							&nbsp;${storeVo.name}
+							</c:if>${storeVo.name}
 						</h1>
 						<c:if test="${storeVo.isManager eq 1}">
-							<button id="showEditStoreLogoBtn">수정</button>
-							<span>내가 관리하는 카페 입니다.</span>	
-												
+							<button id="showEditStoreLogoBtn" class="customStoreEditBtn">로고 수정</button>
 						</c:if>
 					</div>
 				</div>
@@ -1058,7 +1089,7 @@
 				</div>
 				<!-- 갖고있는 이미지의 개수만큼  캐러셀 끝-->
 				<c:if test="${storeVo.isManager eq 1}">
-					<button id="editStoreImgsBtn">수정</button>
+					<button id="editStoreImgsBtn" class="customStoreEditBtn">대표이미지 수정</button>
 				</c:if>
 			</div>
 		</div>
@@ -1120,7 +1151,7 @@
 				</div>
 			</div>
 			<div class="col-xs-4">
-				<div id="map" style="width:100%;height:22em;"></div>
+				<div id="map" style="width:100%;height:20em;"></div>
 			</div>
 		</div>
 		<div class="row">
@@ -1177,7 +1208,7 @@
 									<img class="btn-delete clickableSvgCss" src="<c:url value="/resources/imgs/icons/trash.svg"/>">
 								</div>
 							</c:if>
-							<div class="reviewer-info col-xs-2 text-center" >
+							<div class="reviewer-info col-md-2 text-center" >
 								<div class="profile-div">
 									<c:if test="${empty reviewVo.thumbnailImage}">
 										<img class="accountProfile img-circle clickableThumbnailCss" src="<c:url value="/resources/imgs/basicProfile.png"/>" 
@@ -1200,7 +1231,7 @@
 									<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
 								</div>
 							</div>
-							<div class="review-info col-xs-8"> 
+							<div class="review-info col-md-9"> 
 								<div class="row">
 									<div class="review-level">
 										<div class="taste-level-div">
@@ -1277,12 +1308,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="average-level-div  col-xs-2">
-								<label for="average_level">평균</label>
-								<div class="reviewAverageLevel" id="reviewAverageLevel-${reviewVo.review_id }"></div><span class="average-level">${reviewVo.averageLevel }</span>점
 							</div>								
-							<br><br><br>
 						</div>
 					</c:forEach>
 				</div>
@@ -1439,7 +1465,7 @@
 		</div>
 		
 		<!-- storeImg clone -->
-		<div class="storeImg" id="storeImgTemplate">
+		<div class="storeImg" id="storeImgTemplate" style="display:none;">
 			<img alt="Image">
 			<span class="glyphicon glyphicon-remove storeImgDeleteSpan" aria-hidden="true"></span>
 		</div>
