@@ -320,27 +320,11 @@
 					success: function(likeStoreList) {
 						haveLikeInfo =true;						
 						for(var idx in likeStoreList){
-							var newStore = $('#storeTemplate').clone(true);
-							
-							newStore.css('display', '');
-							newStore.removeAttr('id');
-							newStore.addClass('likeStore')
-							newStore.find('.storeId').html(likeStoreList[idx].store_Id);
-							if(likeStoreList[idx].logoImg !=null){
-								newStore.find('.storeLogoDiv img').attr('src' ,likeStoreList[idx].logoImg)
-							}
-							newStore.find('.storeName').html(likeStoreList[idx].name);
-							newStore.find('.storeAddress').html(likeStoreList[idx].address);
-							newStore.find('.storeLevel').html(likeStoreList[idx].averageLevel);
-				
-							newStore.attr('href', "/moca/stores/"+likeStoreList[idx].store_Id );
-				
-							newStore.click(function(){
-								window.location.href = '/moca/stores/'+$(this).find('.storeId').html();
-							})
-				
+							var newStore = makeNewStore(likeStoreList[idx]);
+
 							$('#likeDiv').append(newStore);
 							$('#likeDiv').append('<br>')
+							$.fn.raty.start(likeStoreList[idx].averageLevel, '#storeAverageLevel-'+likeStoreList[idx].store_Id);
 						}
 						
 					},
@@ -359,30 +343,11 @@
 						haveFavoriteInfo =true;
 						
 						for(var idx in favoriteStoreList){
-							
-							
-							var newStore = $('#storeTemplate').clone(true);
-							test = newStore
-							
-							newStore.css('display', '');
-							newStore.removeAttr('id');
-							newStore.addClass('favoriteStore')
-							newStore.find('.storeId').html(favoriteStoreList[idx].store_Id);
-							if(favoriteStoreList[idx].logoImg !=null){
-								newStore.find('.storeLogoDiv img').attr('src' ,favoriteStoreList[idx].logoImg)
-							}
-							newStore.find('.storeName').html(favoriteStoreList[idx].name);
-							newStore.find('.storeAddress').html(favoriteStoreList[idx].address);
-							newStore.find('.storeLevel').html(favoriteStoreList[idx].averageLevel);
-
-							newStore.attr('href', "/moca/stores/"+favoriteStoreList[idx].store_Id );
-
-							newStore.click(function(){
-								window.location.href = '/moca/stores/'+$(this).find('.storeId').html();
-							})
+							var newStore = makeNewStore(favoriteStoreList[idx]);
 
 							$('#favoriteDiv').append(newStore);
 							$('#favoriteDiv').append('<br>')
+							$.fn.raty.start(favoriteStoreList[idx].averageLevel, '#storeAverageLevel-'+favoriteStoreList[idx].store_Id);
 						}
 						
 					},
@@ -512,6 +477,40 @@
 		
     });
 
+	var makeNewStore = function(store){
+		var newStore = $('#storeTemplate').clone(true);
+		
+		newStore.css('display', '');
+		newStore.removeAttr('id');
+		newStore.addClass('likeStore')
+		newStore.find('.storeId').html(store.store_Id);
+		if(store.logoImg !=null){
+			newStore.find('.storeLogoDiv img').attr('src' ,store.logoImg)
+		}
+		newStore.find('.storeName').html(store.name);
+		newStore.find('.storeAddress').html(store.address);
+
+		var newStoreId = 'storeAverageLevel-'+store.store_Id;
+		newStore.find('.storeAverageLevel').attr('id',newStoreId);
+		newStore.find('.storeAverageLevel').raty({
+			half:true,
+			readOnly:  true,
+			starHalf:   'star-half.png',
+			starOff:    'star-off.png',
+			starOn:     'star-on.png',  
+		});
+		
+		newStore.find('.storeLevel').html(int2Double(store.averageLevel));
+
+		newStore.attr('href', "/moca/stores/"+store.store_Id );
+
+		newStore.click(function(){
+			window.location.href = '/moca/stores/'+$(this).find('.storeId').html();
+		})
+
+		return newStore;
+	}
+
 	//회원정보 수정 때 userImage change되면
 	var userImageChange = function(){
 		const userImageUpdateInput = document.getElementById('userImageUpdateInput');
@@ -611,7 +610,7 @@
 						<a class="nav-link" data-toggle="tab"  href="#likeDiv">좋아하는 카페</a>
 					</li>
 					<li role="presentation" class="nav-item">
-						<a class="nav-link" data-toggle="tab" href="#favoriteDiv">즐겨찾는 카페</a>
+						<a class="nav-link" data-toggle="tab" href="#favoriteDiv">가고싶은 카페</a>
 					</li>				
 					
 				</ul>
@@ -788,7 +787,9 @@
 			</div>
 		</div>
 		<div class="storeLevelDiv col-md-3">
-			평점 : <span class="storeLevel">5.5</span>
+			<label for="storeLevel">평균</label>
+			<div class="storeAverageLevel"></div>
+			<span class="storeLevel"></span>
 		</div>
 	</div>
 	<!--followDiv  -->

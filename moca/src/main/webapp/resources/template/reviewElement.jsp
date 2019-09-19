@@ -179,8 +179,9 @@
 				<span class="convenience-level"></span>
 			</div>
 			<div class="average-level-div" style="display: block;">
-				<label for="average_level">평균</label>
-				<div class="reviewAverageLevel"></div><span class="average-level"></span>
+				<label for="average-level">평균</label>
+				<div class="reviewAverageLevel"></div>
+				<span class="average-level"></span>
 			</div>
 		</div>
 		<div class="reviewThumbnailGroup">
