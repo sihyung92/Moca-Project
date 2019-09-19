@@ -1,0 +1,179 @@
+@charset "UTF-8";
+ 
+/*html{overflow-x:hidden; overflow-y:auto;}*/
+.navbar-default{background-image:none;border-radius:0px;background-color:#FFFFFF;}
+#header .navbar-collapse{padding-right:0px;}
+.navbar{z-index:1002;border:none;border-bottom:1px solid transparent;}
+/*.container-fluid{padding:5px; padding-right:0px;}*/
+#nav-static-height{width:100%;z-index:1001;position:fixed !important;}
+#bs-example-navbar-collapse-1{background-color:#FFFFFF;}
+.navbar-toggle{border: none;}   
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
+.modal-backdrop.in{z-index:10;}/*이게 있어야 로그인창이 제일 위에 올라옴..*/
+.dropdown-menu{border:none;}
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
+.btn-default{box-shadow:none;background-image:none;border:none;text-shadow:none;background-color:rgba(242,174,46,0.85);}
+.btn-default:hover, .btn-default:focus{border-color:none;}
+
+/*검색창*/
+#search_div{display:grid;grid-template-columns:95% 5%;}
+#searchBtn{padding:6px 2px 2px 2px;display:block;background-color:transparent; border:none;}
+.navbar-default .form-control{border-radius:0px;border:none; box-shadow:none;border-bottom:1px solid rgba(0,0,0,0.85);}
+#hiddenSearch{border:unset;}
+#icon-search{width:20px;}
+#hiddenSearch:hover{background-color:unset;}
+#keyword:-internal-autofill-selected {background-color:rgba(247,247,235,1.0) !important;}/*아 왜안돼ㅠㅠ*/
+      /* Change Autocomplete styles in Chrome*/
+nav input:-webkit-autofill,
+nav input:-webkit-autofill:hover, 
+nav input:-webkit-autofill:focus,
+nav textarea:-webkit-autofill,
+nav textarea:-webkit-autofill:hover,
+nav textarea:-webkit-autofill:focus,
+nav select:-webkit-autofill,
+nav select:-webkit-autofill:hover,
+nav select:-webkit-autofill:focus {
+  border: none;
+  -webkit-text-fill-color: black;
+  -webkit-box-shadow: 0 0 0px 1000px #FFFFFF inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+#hiddenSearch button{background-color:transparent; border:none;position: relative;}
+/* .searchBar{display:none;} */
+
+.form-control{width:100%;}/*display:inline-block;*/
+/*패드 크기*/
+@media (min-width:768px) {
+	.navbar-default .form-control{width:300px;}
+	#beMoca{display:none;}
+	.searchBar{display:block;}
+}
+
+/*데스크톱 크기*/
+@media(min-width:986px){
+	.navbar-default .form-control{width:auto;}
+	#beMoca{display:block;}
+}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:#FFFFFF;}
+
+
+/*상단으로 가는 버튼*/
+#btn_go_top{
+   /*display:inline-block;
+   display:none;*/
+   display:block;
+   position:fixed;
+   background:url("/moca/resources/imgs/icons/chevron-top.svg") 5px 5px no-repeat;
+   bottom:15px;
+   right:15px;
+   z-index:999;
+   width:40px;
+   height:40px;
+   border:none;
+   background-size:30px auto;
+   text-indent:-9999px;
+   padding:unset;
+}
+#btn_layer{ background-color: rgba(0,0,0, 0.4);top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+   border-radius:10px;
+}
+/*modal 1~5 버튼*/
+.qArea .btn-primary{box-shadow:none;border:none;}
+
+.an1p{background: linear-gradient( to right, #62BD7A, #B0D47F );}
+.an2p{background: linear-gradient( to right, #B0D47F, #FEEA83 );}
+.an3p{background: linear-gradient( to right, #FEEA83, #FEEA83 );}
+.an4p{background: linear-gradient( to right, #FEEA83, #FAA976 );}
+.an5p{background: linear-gradient( to right, #FAA976, #F7686A );}
+.qArea .btn{color:#000;border-top:1px solid rgba(0,0,0,0.2);border-bottom:1px solid rgba(0,0,0,0.2);border-radius: 100px;padding-inline-start: 25px;padding-inline-end: 25px;}
+.anOff{background: #FFF;}
+.qArea .btn-primary:hover{background-color:rgba(0,0,0,0.2)}
+.qArea .btn-primary:focus{background-color:none;}
+
+/*stores_search
+#filter_region > span{display:inline-block;border-radius:5px;margin:2px;padding:3px; border:2px solid rgba(107,122,41,1);}
+#filter_region > span:hover{background-color:rgba(107,122,41,1);color:#FFFFFF;}
+#filter_region > span.on{background-color:rgba(107,122,41,1);color:#FFFFFF;}
+.region_list{
+		display : none;
+	}
+.seoul{
+		display : inline-block;
+	}
+*/
+
+/*modal-body > radio box
+.modal-content .modal-body .radio-inline{
+
+}
+.modal-content .modal-body input[type="checkbox"]:after{}
+.modal-content>.modal-body input[type="checkbox"]{
+	display: inline-block;
+  width: 100%;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: rgb(107,122,41);
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: #e6e6e6;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+*/
+/*스크롤바*/
+::-webkit-scrollbar-track
+{ -webkit-box-shadow: none;
+ border-radius: 8px;
+ background-color: transparant;}
+::-webkit-scrollbar
+{ width: 10px;
+ background-color: transparant;}
+::-webkit-scrollbar-thumb
+{ border-radius: 8px;
+z-index:1000;
+ background-color: rgba(0,0,0,0.3);}
+
+/*error page*/
+@font-face {font-family:"잘난체";src:url("/moca/resources/fonts/Jalnan.ttf");}
+.Big-Font{font-family : "잘난체";font-size: 40px;text-align:center;}
+.Mid-Font{font-family : "잘난체";font-size: 30px;}
+.Sma-Font{font-family : "잘난체";font-size: 15px;}
+.Nom-Font{font-family : "잘난체";font-size: 20px;}
+.Lar-Font{font-family : "잘난체";font-size: 24px;}
+.error_div{margin:10% auto;width:55%;}
+#error404{overflow:hidden;display : block;width:80%;margin: 5px auto;}
+.error_div a{text-decoration: none;color:#CCC;}
+
+
+/*#footer*/
+#footer ul, ol, li{list-style:none;}
+ #footer{
+       overflow: hidden;
+       clear: both;
+       position: relative;
+       margin-top: 120px;
+       padding: 63px 31px 40px 31px;
+       border-top: 1px solid rgba(0,0,0,0.08);
+       background: rgb(245,245,245);
+       font-size: 13px;
+       line-height: 20px;
+       color: rgba(0,0,0,0.38); }
+#footer .align {width: 1024px;margin: 0 auto;}
+#footer.show {opacity: 1;visibility: visible;}
+#footer .link li {float: left;margin-bottom: 0;line-height: normal;font-style:normal;}
+#footer .link li a {color: rgba(0,0,0,0.87);}
+#footer .link li span{display:inline-block;position:relative;top:-2px;width:24px;font-size:11px;text-align:center}
+#footer p{padding:37px 0 24px 0;}
+#footer p b{display:inline-block;margin-right:10px}
+#footer address {line-height: 22px;}
+#footer address span{display:block;padding-bottom:7px}
+#footer .ico{overflow: hidden;margin-top: 20px;padding: 20px 0 5px 0;border-top: 1px solid rgba(0,0,0,0.04);margin: 26px 0 0 0}
+#footer .ico a {margin-right: 25px;font-size: 30px;}
+#footer .ico a {display: inline-block;float: left;margin-right: 10px;font-size: 22px;color: rgba(0,0,0,0.48);}

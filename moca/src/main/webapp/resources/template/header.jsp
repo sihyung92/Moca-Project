@@ -3,11 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!-- kss 공통 header  -->
-    <%
-    	if(response.getStatus() == response.SC_NOT_FOUND){
-    		response.sendRedirect("/err/noneMeanErrPage");
-    	}
-    %>
+    
 <!--//css 설정-->
     <style type="text/css">
     	body{
@@ -34,8 +30,12 @@
             height: 20px;
         }
         
+        div#header+div{
+        	padding-top:62px;
+        }
     </style>
-    
+
+<link rel="stylesheet" type="text/css" href="/moca/resources/css/testHeaderCss.css"/>
 <!-- naver API -->
     <script type="text/javascript" src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js"></script>
 <!-- kakao API -->
@@ -50,6 +50,7 @@
         
         //키워드 검사
 		$('#searchBtn').click(function(){
+			
 			var keyword = $('#keyword').val();
 			keyword = keyword.trim();		
 			//검색어가 없거나 태그가 2개 이상일 때,			
@@ -58,10 +59,15 @@
 				$('#keyword').attr('placeholder', '잘못된 키워드 입니다... :(');
 				return false;
 			}else{
-				$(this).parent().submit();
+				$(this).parent().parent().parent().parent().submit();
 				return false;
 			}
 		});
+
+		//상단으로
+		$('#btn_go_top').click(function(){
+          $('html').animate({ scrollTop: 0 }, 600);
+        });
         
         //미리 설정할 사항들
         $('#nav-static-height').css('height','60px');
@@ -129,14 +135,12 @@
             }
                                 
             var userName = '${sessionScope.login.nickname}';                
-            var thumbnailImg = null;
+            var thumbnailImg = '${sessionScope.login.thumbnailImage}';
 
-            if('${sessionScope.login.thumbnailImage}'==null){
+            if(thumbnailImg == ''){
                 thumbnailImg = '/moca/resources/imgs/nonProgileImage.png';
-            }else{
-                thumbnailImg = '${sessionScope.login.thumbnailImage}'; 
             }
-            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" alt="" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
+            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
             $('#replace-to-icon').replaceWith('<li></li>');
             $('#replace-to-logout').replaceWith('<li><a href="#" id="moca-logout">로그아웃</a></li>');
 
@@ -162,10 +166,42 @@
         //signOut();
         //설문 버튼 처리
         
+        
+        
+        //하나짜리임 hiddenSearch~ 랑 window~ 랑
+    	$('.hiddenSearch').each(function(){	
+    		$(this).click(function(){
+    			if ($(this).hasClass('open')){
+    				$('.searchBar').hide();
+    				$(this).removeClass('open'); 
+    			}
+    	 		else{
+    	 			$(this).removeClass('open');
+    	 			$('.searchBar').show();
+    	 			$(this).addClass('open');
+    			}
+    		});
+    	});
+       $(window).on('resize',function(){
+           if($('.navbar-header').width()>760||$('.navbar-header').width()==59){
+               if($('.hiddenSearch').hasClass('open')){
+                    $('.searchBar').hide();
+                    $(this).removeClass('open'); 
+                }
+                else{
+                    $(this).removeClass('open');
+                    $('.searchBar').show();
+                    $(this).addClass('open');
+                }
+            }
+       });
+   
+        
+        
+        
+        
     });
-    
-    
-    //함수 정의
+
     function redirToHome(){
     	location.replace("http://localhost:8080/moca/home2")
 	}
@@ -303,20 +339,26 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+      <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button aria-hidden="true"><img id="icon-search" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button></div>
       <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
-
+	      <form id="searchBar" class="navbar-form navbar-left searchBar" action="<c:url value="/stores"/>">
+	        <div class="form-group">
+			<div id="search_div">
+				<div>
+		          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
+				  <input type="hidden" name="filter" value="distance"/>
+			  	</div>
+			  	<div>
+	          		<button id="searchBtn" type="submit" role="submit" class="icon-search" aria-hidden="true"><img id="icon-search" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button>
+	          	</div>
+			</div>
+	        </div>
+	      </form>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <form id="searchBar" class="navbar-form navbar-left" action="<c:url value="/stores"/>">
-	        <div class="form-group">
-	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
-			  <input type="hidden" name="filter" value="distance"/>
-	        </div>
-	        <button id="searchBtn" type="submit" class="btn btn-default">Submit</button>
-	      </form>
         <ul class="nav navbar-nav navbar-right">
-            <li ><a href="#">moca의 카페가 되어주세요!</a></li>
+            <li><a href="#" id="beMoca">moca의 카페가 되어주세요!</a></li>
             <li id="replace-to-userName"></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mypage<span class="caret"></span></a>
@@ -362,3 +404,4 @@
 		<jsp:include page="../../resources/template/modal.jsp" flush="true"></jsp:include>
 	</div>
 </nav>
+<button id="btn_go_top"><div id="btn_layer"></div></button>

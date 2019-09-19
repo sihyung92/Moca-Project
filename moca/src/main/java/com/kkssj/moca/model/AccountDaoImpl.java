@@ -186,7 +186,7 @@ public class AccountDaoImpl implements AccountDao {
 	@Override
 	public int updateReviewCount(int account_id) throws SQLException {
 		return sqlSession.update("com.kkssj.moca.model.AccountDao.updateReviewCount",account_id);
-	}
+  }
 
 	@Override
 	public int updateAttendanceCount(int account_id) throws SQLException {

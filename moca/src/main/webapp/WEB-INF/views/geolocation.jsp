@@ -5,6 +5,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="resources/css/loader.css">
+<style type="text/css">
+	#content{
+		width:100%;
+		text-align : center;
+	}
+	
+	.loader{
+	}
+	
+	#loader_info{
+	}
+	
+</style>
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
 //GeoLocation API에서 현재 위치의 위도&경도 얻기
@@ -62,12 +76,20 @@
 	</script>
 </head>
 <body>
-<h1>정확한 검색 결과를 위해 위치 정보 접근을 허용해주세요 :)</h1>
-	<form class="navbar-form navbar-left">
-	    <div class="form-group">
-	          <input type="hidden" name="lng" class="lng"/>
-			  <input type="hidden" name="lat" class="lat"/>		
-	   	</div>
-	</form>
+<form class="navbar-form navbar-left">
+    <div class="form-group">
+          <input type="hidden" name="lng" class="lng"/>
+		  <input type="hidden" name="lat" class="lat"/>		
+   	</div>
+</form>
+<div class="container-fluid" id="content">
+	<div class="loader">
+	Loading...
+	</div>
+	<div class="col-md-12" id="loader_info">
+		<h4>. . .위치 정보를 받아오는 중입니다. . .</h4>
+		<h4>정확한 검색 결과를 위해 위치 정보 수집을 허용해 주세요 :) </h4>
+	</div>
+</div>	
 </body>
 </html>

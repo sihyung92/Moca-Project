@@ -43,6 +43,7 @@ public class AccountServiceImpl implements AccountService {
 					//출석 exp 증가
 					accountDao.updateAccountExp(compareVo.getAccount_id(), 2);
 					accountDao.insertExpLog(compareVo.getAccount_id(), "출석", 2);
+
 					accountDao.updateAttendanceCount(compareVo.getAccount_id());
 					
 					//포인트가 레벨업 할만큼 쌓였는지 검사
@@ -51,9 +52,7 @@ public class AccountServiceImpl implements AccountService {
 					if(accountVoForExp.getExp() >= accountVoForExp.getMaxExp()) {
 						accountDao.updateAccountlevel(accountVoForExp.getAccount_id());
 					}
-					
 					badgeManage(accountVoForExp.getAccount_id(), "attendance");
-					
 				}
 				return compareVo;
 			}
@@ -63,7 +62,6 @@ public class AccountServiceImpl implements AccountService {
 		}
 		return null;
 	}
-	
 	private void badgeManage(int account_id, String callWhere) throws SQLException {
 		int level = 0;
 		if(callWhere.equals("attendance")) {// 리뷰를 작성했을때

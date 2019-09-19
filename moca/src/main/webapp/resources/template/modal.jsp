@@ -327,11 +327,7 @@
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="male" value="1"> 남
                                 </label>
-                                    <div class="progress">
-                                      <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                                        60%
-                                      </div>
-                                    </div>
+                                
                                 <label class="radio-inline">
                                     <input class="essential-collect-info" type="radio" name="gender" id="female" value="2"> 여
                                 </label><br><br>
@@ -364,13 +360,28 @@
 			                                	ArrayList ans = (ArrayList)session.getAttribute("ans"+rqVo.getQuestion_id());
 			                                	if(ans!=null){
 			                                		for(int j=0;j<ans.size();j=j+2){	                                   			
-                                %>
-				                                    <label class="radio-inline forSort">
-						                           		<input class="essential-selective-info" type="radio" name="SQ<%=rqVo.getQuestion_id() %>" id="SQ<%=rqVo.getQuestion_id() %>_<%=q %>" value="<%=q%>"> <%=ans.get(j+1) %>
-						                            </label>
-                                <%
+                               
 		                                			q++;
 		                                			}
+                          		%>
+													<div class="qArea" style="display: inline-block">
+														<!-- 
+														<img id="<%=i %>an1p" alt="#" src="/moca/resources/imgs/an1p.png"/><img id="<%=i %>an2p" alt="#" src="/moca/resources/imgs/an2p.png"/><img id="<%=i %>an3p" alt="#" src="/moca/resources/imgs/an3p.png"/><img id="<%=i %>an4p" alt="#" src="/moca/resources/imgs/an4p.png"/><img id="<%=i %>an5p" alt="#" src="/moca/resources/imgs/an5p.png"/>
+														 -->
+														 <!-- img -> label로 변경 -->
+														 <div class="btn-group" data-toggle="buttons">
+													<%
+														for(int j=1;j<6;j++){
+													%>	
+														<label id="<%=i %>an<%=j %>p"class="btn btn-primary an<%=j %>p anOff"><%=j %></label>
+													<%
+														}
+													%>
+														</div>
+														<input id="an<%=i %>qVal" type="hidden" name="SQ<%=rqVo.getQuestion_id() %>" value=""/>
+					                                </div>
+                          						
+                          		<%
 			                                    }
 	                             			}else{
                                						q++;
@@ -454,6 +465,33 @@
 					}
                     
                 });
+            });
+        }
+               
+    //설문조사시 선택지 
+        selectiveProgressBar();
+        
+    //함수 정의
+        function selectiveProgressBar(){
+        	var idx = 50; // 적당히 큰 수
+	    	for(var k=0;k<idx;k++){
+	            for(var i=1;i<6;i++){
+	                anpClick(i,k);
+	            }
+    		}
+        }
+        function anpClick(num,idx){
+            $('#'+idx+'an'+num+'p').click(function(){
+                for(var i=1;i<6;i++){
+                    if(i<=num){
+                        //$('#'+idx+'an'+i+'p').attr({src:"/moca/resources/imgs/an"+i+".png"});
+                        $('#'+idx+'an'+i+'p').removeClass('anOff');
+                    }else{
+                        //$('#'+idx+'an'+i+'p').attr({src:"/moca/resources/imgs/an"+i+"p.png"});
+                        $('#'+idx+'an'+i+'p').addClass('anOff');
+                    }
+                }
+                $('#an'+idx+'qVal').val(num);
             });
         }
     </script>
