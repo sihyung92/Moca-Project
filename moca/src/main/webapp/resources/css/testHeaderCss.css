@@ -1,11 +1,14 @@
 @charset "UTF-8";
  
+/*html{overflow-x:hidden; overflow-y:auto;}*/
 .navbar-default{background-image:none;border-radius:0px;background-color:#FFFFFF;}
+#header .navbar-collapse{padding-right:0px;}
 .navbar{z-index:1002;border:none;border-bottom:1px solid transparent;}
-.container-fluid{padding:5px;}
+/*.container-fluid{padding:5px; padding-right:0px;}*/
 #nav-static-height{width:100%;z-index:1001;position:fixed !important;}
+#bs-example-navbar-collapse-1{background-color:#FFFFFF;}
 .navbar-toggle{border: none;}   
- 
+
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
 .modal-backdrop.in{z-index:10;}/*이게 있어야 로그인창이 제일 위에 올라옴..*/
 .dropdown-menu{border:none;}
@@ -14,9 +17,11 @@
 .btn-default:hover, .btn-default:focus{border-color:none;}
 
 /*검색창*/
-#searchBtn{background-color:transparent; border:none;}
+#search_div{display:grid;grid-template-columns:95% 5%;}
+#searchBtn{display:block;background-color:transparent; border:none;}
 .navbar-default .form-control{border-radius:0px;border:none; box-shadow:none;border-bottom:1px solid rgba(0,0,0,0.85);}
 #hiddenSearch{border:unset;}
+
 #hiddenSearch:hover{background-color:unset;}
 #keyword:-internal-autofill-selected {background-color:rgba(247,247,235,1.0) !important;}/*아 왜안돼ㅠㅠ*/
       /* Change Autocomplete styles in Chrome*/
@@ -35,8 +40,9 @@ nav select:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 #hiddenSearch button{background-color:transparent; border:none;position: relative;}
-.searchBar{display:none;}
-.form-control{display:inline-block;width:95%;}
+/* .searchBar{display:none;} */
+
+.form-control{width:100%;}/*display:inline-block;*/
 /*패드 크기*/
 @media (min-width:768px) {
 	.navbar-default .form-control{width:300px;}
@@ -49,7 +55,7 @@ nav select:-webkit-autofill:focus {
 	.navbar-default .form-control{width:auto;}
 	#beMoca{display:block;}
 }
-.navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:transparant;}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:#FFFFFF;}
 
 
 /*상단으로 가는 버튼*/
@@ -58,15 +64,23 @@ nav select:-webkit-autofill:focus {
    display:none;*/
    display:block;
    position:fixed;
-   background:url("/moca/resources/imgs/icons/chevron-top.svg") 0 0 no-repeat;   
+   background:url("/moca/resources/imgs/icons/chevron-top.svg") 5px 5px no-repeat;
    bottom:15px;
    right:15px;
    z-index:999;
    width:40px;
    height:40px;
    border:none;
-   background-size:40px auto;
+   background-size:30px auto;
    text-indent:-9999px;
+   padding:unset;
+}
+#btn_layer{ background-color: rgba(0,0,0, 0.4);top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+   border-radius:10px;
 }
 /*modal 1~5 버튼*/
 .qArea .btn-primary{box-shadow:none;border:none;}
