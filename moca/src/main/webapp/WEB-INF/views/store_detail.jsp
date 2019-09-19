@@ -244,7 +244,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=12"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=14"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -806,7 +806,7 @@
 							<c:set var="tags" value="${fn:split(storeVo.tag,'#')}" />
 							<c:forEach items="${tags}" var="tag">
 								<c:if test="${tag ne ''}">
-									<button type="button" class="btn tagCustomBtn btn-sm">#${tag}</button>
+									<button type="button" class="btn tagCustomBtn btn-sm" onclick="location.href='/moca/stores?keyword=%23${tag}&filter=distance'">#${tag}</button>
 								</c:if>
 							</c:forEach>
 						</div>

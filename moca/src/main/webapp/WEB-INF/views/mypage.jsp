@@ -587,7 +587,7 @@
 			<div class="row">
 				<div class="col-md-12" id="userBadge">
 					<c:forEach items="${currentPageAccount.badgeList }" var="badgeVo">
-						<img class="img=circle" alt="badge" src="<c:url value="${badgeVo.badgeUrl}"/>" style="width: 100px">
+						<img class="img-circle" alt="badge" src="<c:url value="${badgeVo.badgeUrl}"/>" style="width: 100px">
 					</c:forEach>
 				</div>
 			</div>

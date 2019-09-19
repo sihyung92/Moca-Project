@@ -1078,10 +1078,8 @@ var addTag2Review = function(reviewVo, selectedReview){
 			var newTag = $('#review-tag-div').clone(true);
 			newTag.css('display','');
 			newTag.removeAttr('id');
-			
 			newTag.text('#'+reviewTagsArr[tagIdx])	//값 넣어주기
-			newTag.attr('href', '#')	/// search와 연결
-			
+			newTag.attr('href', '/moca/stores?keyword=%23'+reviewTagsArr[tagIdx]+'&filter=distance')	/// search와 연결
 			selectedReview.find('.review-tags-div').append(newTag);			
 		}
 	}
