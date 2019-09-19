@@ -12,7 +12,7 @@ html{overflow-x:hidden; overflow-y:auto;}
 /*.container-fluid{padding:5px; padding-right:0px;}*/
 #nav-static-height{width:100%;z-index:1001;position:fixed !important;}
 #bs-example-navbar-collapse-1{background-color:#FFFFFF;}
-.navbar-toggle{border: none;}   
+.navbar-toggle{border: none;} 
 .navbar-brand{padding: 5px 15px}
 .navbar-brand>img{height:inherit;}
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{box-shadow:none;background-color:rgba(242,174,46,0.85);background-image:none;}
