@@ -53,7 +53,7 @@ var startNum = 0;
 var reviewVoListLength=false;
 
 
-var reviewWritable =true;
+var isEditable =true;
 
 ////////////////////////////
 //함수부
@@ -119,8 +119,8 @@ var saveReview = function(fileBuffer){
 		}
 	}
 	
-	if(reviewWritable){
-		reviewWritable = false;
+	if(isEditable){
+		isEditable = false;
 		
 		$('#progress_loading').show();
 		
@@ -164,11 +164,10 @@ var saveReview = function(fileBuffer){
 			},
 			error: function(request,status,error) {
 				respondHttpStatus(request.status);
-			},
-			complete : function(){
-				//로딩바를 숨겨준다.
-				$('#progress_loading').hide();
 			}
+		}).always(function(){
+			//로딩바를 숨겨준다.
+			$('#progress_loading').hide();
 		})
 	}
 }
@@ -411,43 +410,50 @@ var editReview = function(){
 	
 	reviewFormObj = $(reviewForm).serializeObject();
 
-	//ajax 통신 - post방식으로 추가
-	$.ajax({
-		type: 'POST',
-		url: '/moca/reviews/'+reviewFormObj.review_id,
-		enctype : 'multipart/form-data',
-		data: reviewFormData,
-		dataType : "json",
-		contentType : false,  
-		processData : false,
-		cache : false,
-		timeout : 600000,
-		success: function(reviewVo) {
-			
-			addReviewImgae(editReviewRow, reviewVo);
-			
-			//리뷰 정보 set
-			setReviewInfo(editReviewRow, reviewVo);
-
-			
-			//태그
-			editReviewRow.find('.review-tags-div').text('');		
-			addTag2Review(reviewVo, editReviewRow);
-			
-			//평균 점수
-			setReviewAverageLevel(editReviewRow, reviewVo);
-			ratyStartAveragelevel(reviewVo)
-
-			
-			$('#reviewModal').modal("hide");	//모달창 닫기
-			
-			delThumbnail = "" //delThumbnail 초기화
-			
-		},
-		error: function(request,status,error) {
-			respondHttpStatus(request.status);
-		}
-	})
+	if( isEditable ){
+		isEditable = false;
+		$('#progress_loading').show();
+		//ajax 통신 - post방식으로 추가
+		$.ajax({
+			type: 'POST',
+			url: '/moca/reviews/'+reviewFormObj.review_id,
+			enctype : 'multipart/form-data',
+			data: reviewFormData,
+			dataType : "json",
+			contentType : false,  
+			processData : false,
+			cache : false,
+			timeout : 600000,
+			success: function(reviewVo) {
+				
+				addReviewImgae(editReviewRow, reviewVo);
+				
+				//리뷰 정보 set
+				setReviewInfo(editReviewRow, reviewVo);
+				
+				
+				//태그
+				editReviewRow.find('.review-tags-div').text('');		
+				addTag2Review(reviewVo, editReviewRow);
+				
+				//평균 점수
+				setReviewAverageLevel(editReviewRow, reviewVo);
+				ratyStartAveragelevel(reviewVo)
+				
+				
+				$('#reviewModal').modal("hide");	//모달창 닫기
+				
+				delThumbnail = "" //delThumbnail 초기화
+					
+			},
+			error: function(request,status,error) {
+				respondHttpStatus(request.status);
+			}
+		}).always(function(){
+			//로딩바를 숨겨준다.
+			$('#progress_loading').hide();
+		})
+	}
 
 }
 //(리뷰) 더보기 누를때

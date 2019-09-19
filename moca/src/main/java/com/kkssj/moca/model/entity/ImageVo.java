@@ -149,9 +149,10 @@ public class ImageVo {
 		setPath(path);
 		setUu_id(uu_idOriginName.split("_")[0]);
 		if(uu_idOriginName.contains("thumbnail")) {
-			setOriginName(uu_idOriginName.split("_")[2]);		
+			setOriginName(uu_idOriginName.split("_thumbnail_")[1]);		
 		}else {
-			setOriginName(uu_idOriginName.split("_")[1]);
+			//UUID의 길이 36, 언더바(_)의 길이 1 해서 37 이후로 잡음
+			setOriginName(uu_idOriginName.substring(37));
 		}
 		
 		setFileName();
