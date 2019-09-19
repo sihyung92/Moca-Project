@@ -192,8 +192,6 @@ var displayNoneReviewerOrStoreInfo = function(reviewRow, callWhere){
 }
 
 var setReviewerInfo = function(reviewRow, reviewVo){
-	test = reviewVo
-	console.log(test)
 	//store 페이지일 때
 	if(reviewVo.thumbnailImage==null){
 		reviewRow.find('.accountProfile').attr('src','/moca/resources/imgs/basicProfile.png');
@@ -481,9 +479,7 @@ var moreReviewList = function(startNum,callWhere) {
 			"startNum": startNum
 		},
 		success: function(reviewVoList) {
-	
-			console.log('ajax 통신 성공')
-			
+
 			//갖고오는 이미지 length가 3개 미만일 때
 			if(reviewVoList.length<3){
 				$('#moreReview').hide();
@@ -595,7 +591,6 @@ var deleteReview = function(review_id) {
 		url: '/moca/reviews/'+review_id,
 		data: {"storeId":storeId},
 		success: function() {
-			console.log('ajax 통신 성공')
 			$('.storeReviewCount').text($('.storeReviewCount').eq(0).text()*1-1);
 		},
 		error: function(request,status,error) {
@@ -688,7 +683,6 @@ var addLikeHate = function(reviewId, isLike){
 			"isLike": isLike
 		},
 		success: function() {
-			console.log('ajax 통신 성공 - 좋아요')
 			//ajax 통신 성공시
 			
 			if(isLike ==1){
@@ -717,7 +711,6 @@ var changeLikeHate = function(reviewId, isLike){
 			"isLike": isLike
 		},
 		success: function() {
-			console.log('ajax 통신 성공')
 			
 			if(isLike ==1){
 				hateCount.val(Number(hateCount.val()) - 1);
@@ -749,7 +742,6 @@ var cancelLikeHate = function(reviewId, isLike){
 			"isLike": isLike
 		},
 		success: function() {
-			console.log('ajax 통신 성공')
 			if(isLike ==1){
 				toggleSvgFill(likeBtn);
 				likeCount.val(Number(likeCount.val()) - 1);
@@ -834,7 +826,6 @@ var upReviewImageViews = function(url){
 			"url": url
 		},
 		success: function() {
-			console.log('ajax 통신 성공')
 		},
 		error: function(request,status,error) {
 			respondHttpStatus(request.status);
@@ -906,9 +897,7 @@ var toggleSvgFill = function(svgElement){
 	svgElement.attr('src', srcValue)
 }
 
-var isClickedSvg = function(svgElement){
-	//console.log(svgElement,"isClickedSvg"+ (svgElement.attr('src').indexOf('-none') !=-1 || svgElement.attr('src').indexOf('-fill') !=-1));
-	
+var isClickedSvg = function(svgElement){	
 	//클릭된 상태
 	if(svgElement.attr('src').indexOf('-none') !=-1 || svgElement.attr('src').indexOf('-fill') !=-1){
 		return true;

@@ -296,7 +296,6 @@
 					contentType: "application/json; charset=UTF-8",
 					error: function(errorMsg) {
 						alert('이미 로그아웃되어 있습니다.');
-                        console.log(errorMsg);
                         alert(JSON.stringify(errorMsg));
                         
 				   		Kakao.Auth.logout();
@@ -339,7 +338,7 @@
 			alert("업로드에 실패했습니다. 파일은 10개까지만 등록가능합니다.");
 		}else if(status==415){ //Unsupported Media Type(이미지 파일을 업로드 하지 않았을때)		
 			alert("사진 파일만 업로드 가능합니다.");
-		}else if(status==423){ // Locked(로그인 안된 경우)
+		}else if(status==401){ // Unauthorized(로그인 안된 경우)
 			$('.modal').modal('hide')		
 			alert("로그인 후 이용가능합니다.");
 			$('#Login-Modal').modal('show')

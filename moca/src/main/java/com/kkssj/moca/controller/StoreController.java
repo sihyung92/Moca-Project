@@ -161,7 +161,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		////////////////////////////////
@@ -204,7 +204,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 
@@ -276,7 +276,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		////////////////////////////////
@@ -322,7 +322,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		
@@ -345,7 +345,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		
@@ -371,7 +371,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		
@@ -394,7 +394,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		
@@ -446,7 +446,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		
@@ -499,7 +499,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		reviewVo.setAccount_id(accountVo.getAccount_id());
@@ -548,7 +548,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		logger.debug("store_id : "+store_id);
@@ -584,7 +584,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		
@@ -612,7 +612,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		
@@ -636,7 +636,7 @@ public class StoreController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
 		
