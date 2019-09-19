@@ -184,8 +184,7 @@
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="resources/js/jquery.bxslider-rahisified.js"></script>
-<link rel="stylesheet" href="resources/css/jquery.bxslider.css">
+<script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 <script type="text/javascript">
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
