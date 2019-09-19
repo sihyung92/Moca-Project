@@ -1,11 +1,11 @@
-#gitIgnore¾÷µ¥ÀÌÆ®
+#gitIgnoreÂ¾Ã·ÂµÂ¥Ã€ÃŒÃ†Â®
 *.txt
 target/
 bin/
 .settings/
 .classpath
 MoneySaver.java
-.root-context.xml
+root-context.xml
 
 # Compiled class file
 *.class
