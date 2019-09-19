@@ -55,6 +55,9 @@
 	}
 /* body content */	
 	/* 모카픽 추천 캐러셀 */
+	.mocaPick-template{
+		display: none;
+	}
 	.mocaPick-container{
 		color: dimgray;
 	}	
@@ -186,6 +189,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 <script type="text/javascript">
+	<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
+	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>	
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
 	var slide;
@@ -215,18 +220,18 @@
             }
     	});     	
     	//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
-    	$('.store .mocaPick-img-list img').on('mousedown', function(){
-        	store_id = $(this).attr('alt').split(" ")[0];
-			window.location.href="./stores/"+store_id;
-        });  
-
-        
+    	$('.store .mocaPick-img-list img').on('mousedown', goDetail);        
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
         $('.mocaPick li a').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
         $('.mocaPick li a').on("mouseleave", mouseLeave);
     };//onload() 끝  
-    
+
+    //이미지 클릭 시 디테일 페이지로 이동 이벤트
+	function goDetail(){
+		store_id = $(this).parent().prev().attr('value');
+		window.location.href="./stores/"+store_id;
+	};    
     //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
     function mouseEnter(){
               var overlay = $(this).children('.overlay');
@@ -255,19 +260,67 @@
         	var position = $(window).scrollTop();	//스크롤바 위치로 페이지 위치 판단
         	var updatePoint = $(document).height()*3/5;        	
             if(position>updatePoint){
-                alert("데이터 가져오기 이벤트!");
             	$(window).off("scroll", updateData);
-            	var template = $($('#mocaPick-template').html());
+            	var template = $('.mocaPick-template').clone();
+            	template.removeClass("mocaPick-template");
     			$.ajax({
     				url:"getmorepicks/"+idx,
     				dataType:"json",
-    				success:function(data){
+    				success:function(result){
         				idx++;
-        				$(data).each(function(idx, ele){
-            				console.log(ele.key);
-							template.first().text();
-            			});
-        				//$('.mocaPick-container')[1].append(template);
+        				for(var listName in result){      
+            				var mocaPick = $('<div class="mocaPick"></div>'); 
+            				var list = result[listName];	//추천별 리스트 배열
+            				//추천별 카페 리스트 HTML 생성
+            				for(var i=0; i<list.length; i++){                		
+            					var store = $(template).clone();
+            					//
+            					$(store).children('input').attr('value', list[i].store_Id);
+								//카페의 이미지 추가	
+	            				var imgs = $(store).children('.mocaPick-img-list').children();		//mocaPick-img-list div의 이미지 태그 배열
+		            			$(imgs[0]).attr('src', list[i].storeImg1);
+		            			$(imgs[1]).attr('src', list[i].storeImg2);
+		            			$(imgs[2]).attr('src', list[i].storeImg3);
+		            			//디폴트 이미지, 이미지 정보, 타이틀 지정
+	            				for(var j=0; j<3; j++){
+		            				if($(imgs[j]).attr('src')==null){
+		            					$(imgs[j]).attr('src', '${defaultImg}');
+			            			}
+		            				$(imgs[j]).attr('alt', list[i].name+'_main'+j);
+	                				$(imgs[j]).attr('title', list[i].name); 
+		            			}
+		            			//카페 정보 추가 
+		            			var info = $(store).children('.mocaPick-storeInfo');   
+		            			$(info).children('.mocaPick-storeName').html(list[i].name+'&nbsp;&nbsp;');
+		            			$(info).children('.mocaPick-averageLevel').text((list[i].averageLevel).toFixed(1));
+		            			$(info).children('.mocaPick-viewCnt').text(list[i].viewCnt);
+		            			$(info).children('.mocaPick-reviewCnt').text(list[i].reviewCnt); 
+		            			$(info).children('.mocaPick-address').text(list[i].roadAddress);
+		            			mocaPick.append($(store));	
+                    		}
+                    		//mocaPick.before('<h5>'+listName+'</h5>');	이건 왜 안되나요....푸
+                    		$('#mocaPick-container2').append('<h5>'+listName+'</h5>');	//카페 추천 타이틀 추가
+                    		$('#mocaPick-container2').append(mocaPick);		//캐러셀 컨테이너에 추천 리스트 추가
+                    		//캐러셀 적용
+                    		$('.mocaPick').bxSlider({
+                        		pager: false,
+                        		autoReload: true,
+                        		slideMargin: 1,
+                        		minSlides: 1,
+                        		maxSlides: 15,
+                        		moveSlides: 3,    		
+                        		slideWidth: 300,
+                        		onSliderLoad: function(){
+                            		$('.bx-viewport').css('height', '250px');
+                                },
+                        		onSliderResize: function(){
+                            		$('.bx-viewport').css('height', '250px');
+                                }
+                        	});  
+                    		//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
+                    		$('.store .mocaPick-img-list img').off('mousedown', goDetail);
+                        	$('.store .mocaPick-img-list img').on('mousedown', goDetail);
+        				}
         				//기존 캐러셀 mouseEnter/Leave 이벤트 해제 & 추가
         				//$('.mocaPick li a').off("mouseenter", mouseEnter);
         				//$('.mocaPick li a').off("mouseleave", mouseLeave);
@@ -276,7 +329,6 @@
         				$(window).on("scroll", updateData);        			
     				},
     				error: function(e){
-        				alert("에러콜백");
         				$(window).off("scroll", updateData);
         			}
     			});
@@ -319,8 +371,6 @@
     </form>
 </div>
 <div id="content" class="container-fluid">
-	<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
-	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>	
 <!-- 카페 추천(mocaPick) 캐러셀-->	
 	<div class="mocaPick-container">
 	 	<c:forEach items="${storesList}" var="list" varStatus="status">
@@ -332,16 +382,17 @@
 					<div class="mocaPick">
 						<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
 						    <div class="store">
-						    	<div class="mocaPick-img-list">
-							    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main1" title="${store.name}">
-							    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main2">
-							    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main3">
+						    	<input type="hidden" value="${store.store_Id}"/>
+						    	<div class="mocaPick-img-list">						    		
+							    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1" title="${store.name}">
+							    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2" title="${store.name}">
+							    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3" title="${store.name}">
 						    	</div>
 								<div class="mocaPick-storeInfo">
-					     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;<span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></span><br/>			     			
-					     			<span class="glyphicon glyphicon-eye-open mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt">${store.viewCnt}</span>
-						     		<span class="glyphicon glyphicon-pencil mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt">${store.reviewCnt}</span><br/>
-					     			<%-- <span>${store.roadAddress}</span> --%>
+					     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;</span><span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span><br/>			     			
+					     			<span class="glyphicon glyphicon-eye-open mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt mocaPick-viewCnt">${store.viewCnt}</span>
+						     		<span class="glyphicon glyphicon-pencil mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt mocaPick-reviewCnt">${store.reviewCnt}</span><br/>
+					     			<%-- <span class="mocaPick-address">${store.roadAddress}</span> --%>
 				     			</div>
 							</div>
 						</c:forEach>
@@ -406,23 +457,23 @@
 		</div>	
 	</c:if><!-- 인기 리뷰 / 최근 리뷰 끝 -->	
 <!-- 카페 추천(mocaPick) 캐러셀 추가 -->	
-	<div class="mocaPick-container" id="mocaPick-template">
-		<h5></h5>
-		<div class="mocaPick">	
-		    <div class="store">
-		    	<%-- <div class="mocaPick-img-list">
-			    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main1" title="${store.name}">
-			    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main2">
-			    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.store_Id} ${store.name }_main3">
-		    	</div>
-				<div class="mocaPick-storeInfo">
-	     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;<span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span></span><br/>			     			
-	     			<span class="glyphicon glyphicon-eye-open mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt">${store.viewCnt}</span>
-		     		<span class="glyphicon glyphicon-pencil mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt">${store.reviewCnt}</span><br/>
-	     			<span>${store.roadAddress}</span>
-	    		</div> --%>
-			</div>
-		</div>
+	<!-- 캐러셀 추가용 템플릿 -->
+	<div class="store mocaPick-template">
+		<input type="hidden" value=""/>
+    	<div class="mocaPick-img-list">
+	    	<img src="" alt="" title="">
+	    	<img src="" alt="" title="">
+	    	<img src="" alt="" title="">
+    	</div>
+		<div class="mocaPick-storeInfo">
+    			<span class="mocaPick-storeName"></span><span class="mocaPick-averageLevel"></span><br/>			     			
+    			<span class="glyphicon glyphicon-eye-open mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt mocaPick-viewCnt"></span>
+     		<span class="glyphicon glyphicon-pencil mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt mocaPick-reviewCnt"></span><br/>
+    			<!-- <span class="mocaPick-address"></span> -->
+   		</div>
+	</div>
+	<!-- 추가 캐러셀 등록할 컨테이너 -->
+	<div class="mocaPick-container" id="mocaPick-container2">	    
 	</div><!-- mocaPick 캐러셀 추가 끝-->
 </div>
 </body>
