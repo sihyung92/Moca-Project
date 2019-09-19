@@ -46,6 +46,7 @@
         
         //키워드 검사
 		$('#searchBtn').click(function(){
+			
 			var keyword = $('#keyword').val();
 			keyword = keyword.trim();		
 			//검색어가 없거나 태그가 2개 이상일 때,			
@@ -54,10 +55,15 @@
 				$('#keyword').attr('placeholder', '잘못된 키워드 입니다... :(');
 				return false;
 			}else{
-				$(this).parent().parent().submit();
+				$(this).parent().parent().parent().parent().submit();
 				return false;
 			}
 		});
+
+		//상단으로
+		$('#btn_go_top').click(function(){
+          $('html').animate({ scrollTop: 0 }, 600);
+        });
         
         //미리 설정할 사항들
         $('#nav-static-height').css('height','60px');
@@ -198,7 +204,7 @@
     	});
        $(window).on('resize',function(){
            if($('.navbar-header').width()>760||$('.navbar-header').width()==59){
-               if($('hiddenSearch').hasClass('open')){
+               if($('.hiddenSearch').hasClass('open')){
                     $('.searchBar').hide();
                     $(this).removeClass('open'); 
                 }
@@ -353,19 +359,24 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button class="glyphicon glyphicon-search" aria-hidden="true"></button></div>
+      <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button aria-hidden="true"><img id="icon-search" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button></div>
       <a class="navbar-brand" href="<c:url value="/"/>">moca</a>
     </div>
-	<!-- 깃 이그노어? -->
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <form id="searchBar" class="navbar-form navbar-left" action="<c:url value="/stores"/>">
+	      <form id="searchBar" class="navbar-form navbar-left searchBar" action="<c:url value="/stores"/>">
 	        <div class="form-group">
-	          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
-			  <input type="hidden" name="filter" value="distance"/>
-	        <button id="searchBtn" type="submit" role="submit" class="glyphicon glyphicon-search" aria-hidden="true"></button>
+			<div id="search_div">
+				<div>
+		          <input type="text" name="keyword" id="keyword" class="form-control" placeholder="Search" size="50">	
+				  <input type="hidden" name="filter" value="distance"/>
+			  	</div>
+			  	<div>
+	          		<button id="searchBtn" type="submit" role="submit" class="icon-search" aria-hidden="true"><img id="icon-search" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button>
+	          	</div>
+			</div>
 	        </div>
 	      </form>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav navbar-right">
             <li><a href="#" id="beMoca">moca의 카페가 되어주세요!</a></li>
             <li id="replace-to-userName"></li>
@@ -413,3 +424,4 @@
 		<jsp:include page="../../resources/template/modal.jsp" flush="true"></jsp:include>
 	</div>
 </nav>
+<button id="btn_go_top"><div id="btn_layer"></div></button>

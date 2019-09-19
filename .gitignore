@@ -1,4 +1,4 @@
-#gitIgnore������Ʈ
+#gitIgnore 
 *.txt
 target/
 bin/

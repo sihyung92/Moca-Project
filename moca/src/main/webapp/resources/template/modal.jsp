@@ -280,8 +280,20 @@
 			                                	if(ans!=null){
                           		%>
 													<div class="qArea" style="display: inline-block">
+														<!-- 
 														<img id="<%=i %>an1p" alt="#" src="/moca/resources/imgs/an1p.png"/><img id="<%=i %>an2p" alt="#" src="/moca/resources/imgs/an2p.png"/><img id="<%=i %>an3p" alt="#" src="/moca/resources/imgs/an3p.png"/><img id="<%=i %>an4p" alt="#" src="/moca/resources/imgs/an4p.png"/><img id="<%=i %>an5p" alt="#" src="/moca/resources/imgs/an5p.png"/>
-					                                    <input id="an<%=i %>qVal" type="hidden" name="SQ<%=rqVo.getQuestion_id() %>" value=""/>
+														 -->
+														 <!-- img -> label로 변경 -->
+														 <div class="btn-group" data-toggle="buttons">
+													<%
+														for(int j=1;j<6;j++){
+													%>	
+														<label id="<%=i %>an<%=j %>p"class="btn btn-primary an<%=j %>p anOff"><%=j %></label>
+													<%
+														}
+													%>
+														</div>
+														<input id="an<%=i %>qVal" type="hidden" name="SQ<%=rqVo.getQuestion_id() %>" value=""/>
 					                                </div>
                           						
                           		<%
@@ -388,9 +400,11 @@
             $('#'+idx+'an'+num+'p').click(function(){
                 for(var i=1;i<6;i++){
                     if(i<=num){
-                        $('#'+idx+'an'+i+'p').attr({src:"/moca/resources/imgs/an"+i+".png"});
+                        //$('#'+idx+'an'+i+'p').attr({src:"/moca/resources/imgs/an"+i+".png"});
+                        $('#'+idx+'an'+i+'p').removeClass('anOff');
                     }else{
-                        $('#'+idx+'an'+i+'p').attr({src:"/moca/resources/imgs/an"+i+"p.png"});
+                        //$('#'+idx+'an'+i+'p').attr({src:"/moca/resources/imgs/an"+i+"p.png"});
+                        $('#'+idx+'an'+i+'p').addClass('anOff');
                     }
                 }
                 $('#an'+idx+'qVal').val(num);
