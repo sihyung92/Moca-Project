@@ -278,11 +278,14 @@
 						$('#followerDiv>div>div.followInfo').show();
 						$('#followInfo').hide();
 						
-						haveFollowerInfo =true;
+						
 					},
 					error: function(request,status,error) {
-
+						console.log(request.status);
 					}
+					
+				}).always(function(){
+					haveFollowerInfo =true;
 				})
 
 			}else if($(this).index() ==2 && !haveFollowingInfo){
@@ -304,11 +307,14 @@
 						$('#followingDiv>div>div.followInfo').show();
 						$('#followInfo').hide();
 						
-						haveFollowingInfo =true;
+						
 					},
 					error: function(request,status,error) {
-
+						console.log(request.status);
 					}
+					
+				}).always(function(){
+					haveFollowingInfo =true;
 				})
 
 			}else if($(this).index() ==3 && !haveLikeInfo){
@@ -318,7 +324,7 @@
 					type: 'GET',
 					url: '/moca/likeStores/'+id,
 					success: function(likeStoreList) {
-						haveLikeInfo =true;						
+											
 						for(var idx in likeStoreList){
 							var newStore = makeNewStore(likeStoreList[idx]);
 
@@ -328,10 +334,13 @@
 						}
 						
 					},
-					error: function(error) {
-				
+					error: function(request,status,error) {
+						console.log(request.status);
 					}
-				})	
+					
+				}).always(function(){
+					haveLikeInfo =true;	
+				})
 
 			}else if($(this).index() ==4 && !haveFavoriteInfo){
 
@@ -340,7 +349,7 @@
 					type: 'GET',
 					url: '/moca/favoriteStores/'+id,
 					success: function(favoriteStoreList) {
-						haveFavoriteInfo =true;
+						
 						
 						for(var idx in favoriteStoreList){
 							var newStore = makeNewStore(favoriteStoreList[idx]);
@@ -351,9 +360,13 @@
 						}
 						
 					},
-					error: function(error) {
-
+					error: function(request,status,error) {
+						console.log(request.status);
+						$('#favoriteDiv').append()
 					}
+					
+				}).always(function(){
+					haveFavoriteInfo =true;
 				})
 		    }
 		})		
@@ -797,6 +810,11 @@
 		<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle" style="width:10rem;"><br>
 		<b><span id="nickName">별명</span></b><br>
 		<small>Lv.<span id="accountLevel">3</span></small><br>
+	</div>
+	
+	<!-- 접근 제한 Div -->
+	<div class="" id="accessDeny">
+		
 	</div>
 	
 	<!--회원정보 수정 모달 -->
