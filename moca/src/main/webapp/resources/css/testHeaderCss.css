@@ -18,10 +18,10 @@
 
 /*검색창*/
 #search_div{display:grid;grid-template-columns:95% 5%;}
-#searchBtn{display:block;background-color:transparent; border:none;}
+#searchBtn{padding:6px 2px 2px 2px;display:block;background-color:transparent; border:none;}
 .navbar-default .form-control{border-radius:0px;border:none; box-shadow:none;border-bottom:1px solid rgba(0,0,0,0.85);}
 #hiddenSearch{border:unset;}
-
+#icon-search{width:20px;}
 #hiddenSearch:hover{background-color:unset;}
 #keyword:-internal-autofill-selected {background-color:rgba(247,247,235,1.0) !important;}/*아 왜안돼ㅠㅠ*/
       /* Change Autocomplete styles in Chrome*/
