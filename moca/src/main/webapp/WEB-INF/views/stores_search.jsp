@@ -8,7 +8,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
+<link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
 <style type="text/css">
+	@font-face { font-family: 'NanumGothic';
+		src: url('resources/fonts/NanumGothic.eot');
+		src: url('resources/fonts/NanumGothic.eot') format('embedded-opentype'),
+			url('resources/fonts/NanumGothic.woff') format('woff');
+	}
+	html, body{
+		height : 100%;
+	}
+	
+	input:focus,
+	select:focus,
+	textarea:focus,
+	button:focus,
+	a:focus{
+	    outline-color: rgba(0,0,0,0.2);
+	}
+	button:active{
+	    outline: none !important;
+	}
 	#header{
 		background-size: cover;
 	}
@@ -16,26 +37,41 @@
 		display: none;
 	} 
 	#search{
+		font-family : "NanumGothic", sans-serif;
 		text-align: center;
 		padding-top:82px;
-		background-color: rgba(246,245,239,0.5);
 	}
 	#search p {
 		padding-top : 5px;
-		color : white;
 	}
 	#search .form-inline{
 		display : inline-table;
 	}
 
-
+	#search #searchBtn2{
+		position : absolute;
+		right : 3%;
+		background-color : transparent;
+	}
+	
 	#keyword2{
-		/* width : 500px; */
+	    background: white;
+	    border-radius: 22px;
+	    border : 1px solid lightgray;
+	    font-size: 18px;
+	    line-height: 21px;
+	    padding-inline-start: 20px;
+        bottom: 0;
+	    top: 0;
+		width : 100%;
+		height : 40px;
 	}
 	#filter_sort{
 		padding-top : 10px;
 	}
-	
+	#filter_sort btn{
+		font-family : "NanumGothic", sans-serif;
+	}
 	#content{
 		background-color: rgba(246,245,239,0.5);
 	}
@@ -45,7 +81,7 @@
 	}
 	
 	#mapContainer button{
-		font-family : 나눔고딕,Nanum Gothic;
+		font-family : "NanumGothic",sans-serif;
 	}
 	
 	#mapContainer #map{
@@ -53,7 +89,7 @@
 	}
 	
 	.overlay{
-		font-family: 나눔고딕,Nanum Gothic;
+		font-family: "NanumGothic",sans-serif;
 		width: 300px;
 		padding : 2px;
 	}
@@ -65,11 +101,23 @@
 	.bold{
 		font-weight : bold; 
 	}
+	#result_stores{
+		margin-top: 6px;
+	}
+	.links_container{
+		font-family: "NanumGothic",sans-serif;
+		text-align : center;
+	}
 	
 	.links{
-		padding : 10px;
-		font-family: 나눔고딕,Nanum Gothic;
+		cursor : pointer;
 		overflow : hidden;
+		padding : 3px 0px 3px;
+		width : 100%;
+		margin : 5px 0px 5px;
+		text-align : center;
+	    background-color: #fff;
+	    box-shadow: 1px 1px 2px 1px lightgrey;
 	}
 	
 	.links img{
@@ -78,21 +126,23 @@
 		overflow : hidden;
 		width: 100%;
 		height: 150px;
-		object-fit: fill;
+		object-fit: contain;
 	}
 	
-	.links .span_roadAddress {
+	.links .span_roadAddress, span.bold {
 		overflow : hidden;
 		white-space : nowrap;
 	}
-	
 	.links .span_viewCnts{
 		display : inline;
 	}
 	
-	.links span h4{
-		display : inline;
+	.score{
+		margin-top : 1px;
+		padding : 0px 1px;
+		display : inline-block;
 		color : orange;
+		border : 1px solid orange;
 	}
 	
 	.label{
@@ -101,6 +151,7 @@
 	.center{
 		color : black;
 	}
+	
 	#filter_region .region_list div.btn{
 		margin-top : 5px;
 	}
@@ -108,29 +159,67 @@
 	#filter_region .region_list{
 		display : none;
 	}
+	
 	#filter_region .region_list.seoul{
 		display : block;
 	}
+	
 	.warning{
 		text-align: center;
 		margin : 0 auto;
-		font-family: 나눔고딕,Nanum Gothic;
-		font-size : 25px;
+		font-family: "NanumGothic",sans-serif;
+		font-size : 28px;
 	}
+	
 	#page{
 		display : none;
 		text-align: center;
+	}
+	.pagination > li > a, .pagination > li > span{
+	color :#775218;
+	background-color :  rgba(246,245,239,0.1);
+	}
+	.pagination > li > a:hover, .pagination > li > span:hover{
+		color :#775218;
+	}
+	.pagination > .disabled > span, .pagination > .disabled > span:hover,
+	.pagination > .disabled > span:focus, .pagination > .disabled > a,
+	.pagination > .disabled > a:hover, .pagination > .disabled > a:focus{
+		color : #775218;
+		background-color :  rgba(246,245,239,0.1);
+	}
+	.pagination > .active > a, .pagination > .active > span, 
+	.pagination > .active > a:hover, .pagination > .active > span:hover, 
+	.pagination > .active > a:focus, .pagination > .active > span:focus{
+		background-color: #A48437;
+	    border-color: #A48437;
+	}
+
+	.nav-pills > li > a{
+	    color: #775218;
+	}
+	
+	.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+	    color: #fff;
+	    background-color: #A48437;
 	}
 	
 	@media (max-width:991px){
 		.links img{
 			height : 200px;
 		}
+		#mapContainer #map{
+			height : 50%;
+			min-height : 200px;
+		}
+	}
+	@media (max-width:450px){
+		.links{
+			font-size : 10px;
+		}
 	}
 </style>
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
-<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
-<link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e63ece9668927d2e8027037f0aeb06b5"></script>
 <script type="text/javascript">
@@ -196,27 +285,18 @@
 		$('#re-search').click(function(){
 			$('#search form input[name="keyword"]').attr("name", "");
 			$('#search form').append('<input type="hidden" name="keyword" value="\'${keyword}\'"/>');
+			$('#search form').append('<input type="hidden" name="keyword" value="\'${keyword}\'"/>');
 			$('#search form').submit();
 		});
 		createMap();
 		<c:if test="${not empty storeList}">
-		var totalCount = $('.links').size()-1; //총 가게수, paging 함수내에서 인덱스로 활용되기때문에 -1
+		var totalCount = $('.links_container').size()-1; //총 가게수, paging 함수내에서 인덱스로 활용되기때문에 -1
 		paging(totalCount, 1); //
 		</c:if>
 
-		var mql = window.matchMedia("screen and (max-width: 991px)");
-
-		mql.addListener(function(e) {
-		    if(e.matches) {
-		        console.log('모바일 화면 입니다.');
-		        $('#search_input_group').removeClass('input-group-lg')
-		    } else {
-		        console.log('데스크탑 화면 입니다.');
-		        $('#search_input_group').addClass('input-group-lg')
-		    }
-		});
-		
-		$(window).on('scroll', changeHeaderColor); 
+		$(window).on('scroll', showHeaderSearch);
+		$(window).on('resize', mapResize);
+		mapResize();
     };//onload 끝-
 
     //리스트 클릭 이벤트
@@ -277,7 +357,7 @@
 				//오버레이 객체 생성
 				var content = '<div class= "overlay media"><div class ="logo media-left media-middle"><img width="70px" height="50px" ';
 				if(overlayList[i].logoImg=="" || overlayList[i].logoImg==null){
-					content+='src="https://moca-pictures.s3.ap-northeast-2.amazonaws.com/logo/MoCA-logo.png"/>';
+					content+='src="resources/imgs/logo/circleLogo.png"/>';
 				}else{
 					content+='src="'+overlayList[i].logoImg+'"/>';					
 				}
@@ -318,7 +398,7 @@
 		//맵 중심 좌표 변경 이벤트
 	//	$('#map').css({'position':'relative','z-index':0});
 		kakao.maps.event.addListener(map, 'center_changed', function() {
-		    $('#map_re-search').show().css({'position':'relative','top':'-50px','left':'40%','z-index':2});
+		    $('#map_re-search').show().css({'position':'relative','top':'-50px','left':'50%','z-index':'2','transform':'translateX(-50%)'});
 		});
 		//지도 내 재검색 기능
 		$('#map_re-search').click(function(){
@@ -339,13 +419,13 @@
 						    map.setBounds(bounds);	
 						}else{
 							alert("검색 결과 없습니다");	//////여기 수정해야되-------
-							$('#warning_noResult').text("검색 결과가 없습니다!");
+							$('#warning_noResult').text("검색 결과가 없습니다😥");
 						}					    							
 				    }
 				},
 				success: function(data){
 					if(data.length==0){
-						$('#warning_noResult').text("검색 결과가 없습니다!");
+						$('#warning_noResult').text("검색 결과가 없습니다😥");
 						$('#page').hide();
 					}
 					reload_map(data);
@@ -356,12 +436,12 @@
 
 		function reload_map(data){
 			overlayList=[];
-			var template = $($('.links')[0]).clone();
-			$('.links').remove();
+			var template = $($('.links_container')[0]).clone();
+			$('.links_container').remove();
 			$(data).each(function(idx, ele){			
 				var store = template.clone();
 				$(store).addClass('page-'+idx);
-				var inputs = $(store.children()[0]).children('input');
+				var inputs = $(store).children().children().children('input');
 				$(inputs[0]).val(ele.store_Id);
 				$(inputs[1]).val(ele.kakaoId);
 				$(inputs[2]).val(ele.name);
@@ -372,13 +452,15 @@
 				$(inputs[7]).val(ele.url);
 				$(inputs[8]).val(ele.xLocation);
 				$(inputs[9]).val(ele.yLocation);
-				$(store.children()[0]).find('img').attr('alt', ele.name + '대표이미지');
+				$($(store).children()[0]).find('img').attr('alt', ele.name + '대표이미지');
 				if(ele.storeImg1)
-					$(store.children()[0]).find('img').attr('src', ele.storeImg1);
-				var spans = $(store.children()[0]).children('span');
-				$(spans[0]).html(ele.name+"&nbsp;<h4>"+ele.averageLevel+"</h4>");
-				$(spans[1]).html(ele.reviewCnt);
-				$(spans[2]).html(ele.viewCnt);
+					$($(store).children()[0]).find('img').attr('src', ele.storeImg1);
+				var spans = $($(store).children()[0]).find('span');
+				console.log(spans);
+				$(spans[0]).html(ele.name);
+				$(spans[1]).html(ele.averageLevel);
+				$(spans[2]).html(ele.reviewCnt);
+				$(spans[3]).html(ele.viewCnt);
 				var distance;
 				if(ele.distance>=1000){
 					distance = (ele.distance/1000).toFixed(1)+"km";
@@ -387,7 +469,7 @@
 				}else{
 					distance = (ele.distance*1).toFixed(0)+"m";
 				}
-				$(spans[3]).text(distance +" "+ ele.roadAddress);
+				$(spans[4]).text(distance +" "+ ele.roadAddress);
 				$(store).appendTo('#result_stores .row').show();
 				$('#page').appendTo('#result_stores');
 				overlayList.push({'lat':ele.yLocation,'lng':ele.xLocation, 'store_Id': ele.store_Id, 'name':ele.name, 'roadAddress': ele.roadAddress, 'tel':ele.tel, 'tasteLevel':ele.tasteLevel,'priceLevel':ele.priceLevel, 'serviceLevel':ele.serviceLevel, 'moodLevel':ele.moodLevel, 'convenienceLevel':ele.convenienceLevel, 'logoImg':ele.logoImg});
@@ -408,9 +490,8 @@
 	
 //페이지 바 추가, 페이지에 해당하는 가게 노출 및 지도 처리f
 	function paging(totalCount,currentPage){
-		$('.links').hide(); //일단 가게 다 숨겨
+		$('.links_container').hide(); //일단 가게 다 숨겨
 		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).remove(); //페이지 바 초기화
-		console.log('paging 시작, count는 '+totalCount);
 		var countList = 10; //한 페이지에 들어갈 가게 수
 		var countPage = 10; //페이지 바에 들어갈 수 있는 최대 페이지 수
 		var totalPage = Math.floor(totalCount / countList); //총 페이지
@@ -440,7 +521,7 @@
 			$('li.page-'+pageNum).addClass('active');
 			var divPage= 'page-'+pageNum;
 			//console.log('page 클릭 이벤트, 페이지 넘버:'+pageNum+' divPage : '+divPage);
-			$('.links').hide();
+			$('.links_container').hide();
 			setMarkers(null);
 			bounds = new kakao.maps.LatLngBounds();
 			for(var i = (pageNum*countList)-countList; i <= pageNum*countList-1; i++){
@@ -483,15 +564,25 @@
 				next.off('click').click(clickNext);
 			}	
 			pageNum=null;
-			$('html, body').animate( { scrollTop : 113 }, 200 );
+			$('html, body').animate( { scrollTop : 112 }, 200 );
 		}
 		
 		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).on("click",goPage);
 		$('.pagination>li:nth-child(2)').click();
 		$('#page').show();
 	};
-    //스크롤 위치에 따라 헤더 배경색 변경
-    function changeHeaderColor(){
+    //스크롤 위치에 따라 헤더 searchBar show / hide
+    function mapResize(){
+    	var width = $(window).width();
+    	if(width<992){
+			var mapHeight = $(window).height()*1/2;
+			$('#map').css('height', mapHeight);
+    	}else{
+			$('#map').css('height', '600px');
+    	}
+    }
+    
+    function showHeaderSearch(){
     	var position = $(window).scrollTop();
     	var width = $(window).width();
     	if(width>991){
@@ -834,39 +925,38 @@
 	<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
 	<div id="search" class="row">
 		<form class="form-inline" action="stores">
-			<div class="input-group input-group-lg col-md-12">
-				<input type="text" name="keyword" class="form-control" id="keyword2" placeholder="검색어를 입력해주세요." value="${keyword}"/>
-				<%-- <span class="btn">
-					<button id="searchBtn2" class="btn btn-default" type="submit"><img style="weight:20px; height: 20px;" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button><br/>
-				</span> --%>
+			<div class="col-md-12">
+				<input type="text" name="keyword" class="" id="keyword2" placeholder="검색어를 입력해주세요." value="${keyword}"/>
+				<button id="searchBtn2" class="btn btn-default" type="submit"><img style="weight:20px; height: 20px;" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button><br/>
 			</div>
-				<div id="filter_sort" class="filter col-md-12">
-					<div class="btn-group" data-toggle="buttons">
-	                    <label class="btn btn-default">
-							<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
-	                    </label>
-	                    <label class="btn btn-default">
-							<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
-	                    </label>
-	                    <label class="btn btn-default">
-							<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
-	                    </label>
-	                    <label class="btn btn-default">
-							<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}"> checked="checked"</c:if>><span>거리순</span>
-	                    </label>
-	                </div>
-					<!-- 모달 트리거 버튼-->
-					<button type="button" class="btn btn-default" data-toggle="modal" data-target="#region_modal"><img style="weight:10px; height: 10px;" src="<c:url value="/resources/imgs/icons/filter.svg"/>">지역필터</span></button>
-				</div>
-				<input type="hidden" name="region" id="region1" disabled="disabled"/>
-				<input type="hidden" name="region" id="region2" disabled="disabled"/>
-				<c:if test="${not empty msg_changedFilter}"><p>원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</p></c:if>		
+			<div id="filter_sort" class="filter col-md-12">
+				<div class="btn-group" data-toggle="buttons">
+	                   <label class="btn btn-default">
+						<input type="radio" name="filter" value="averageLevel" <c:if test="${filter eq 'averageLevel'}">checked="checked"</c:if>><span>평점순</span>
+	                   </label>
+	                   <label class="btn btn-default">
+						<input type="radio" name="filter" value="reviewCnt" <c:if test="${filter eq 'reviewCnt'}">checked="checked"</c:if>><span>리뷰순</span>
+	                   </label>
+	                   <label class="btn btn-default">
+						<input type="radio" name="filter" value="viewCnt" <c:if test="${filter eq 'viewCnt'}">checked="checked"</c:if>><span>조회순</span>
+	                   </label>
+	                   <label class="btn btn-default">
+						<input type="radio" name="filter" value="distance" <c:if test="${filter eq 'distance'}"> checked="checked"</c:if>><span>거리순</span>
+	                   </label>
+	               </div>
+				<!-- 모달 트리거 버튼-->
+				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#region_modal"><img style="weight:10px; height: 10px;" src="<c:url value="/resources/imgs/icons/filter.svg"/>">지역필터</span></button>
+			</div>
+			<input type="hidden" name="region" id="region1" disabled="disabled"/>
+			<input type="hidden" name="region" id="region2" disabled="disabled"/>
+			<c:if test="${not empty msg_changedFilter}"><p>원하는 결과가 없나요? ${keyword }를 장소명으로 <a id="re-search" href="#">재검색</a>해보세요😉</p></c:if>		
 		</form>
 	</div>
 
 </div>
 <div id="content" class="container-fluid" style="padding-top : 0">
 	<div class="row">			
+		<c:if test="${empty storeList}"><div style="margin-top:30px" class="warning col-md-12">검색 결과가 없습니다😥</div></c:if>
 		<c:if test="${not empty storeList }">
 			<div id="mapContainer" class="col-xs-12 col-md-6">
 				<div id="map"></div>
@@ -876,47 +966,51 @@
 		<div id="result_stores" class="col-xs-12 col-md-6">
 			<div class="warning">
 				<span id="warning_changedFilter"><small>${msg_changedFilter}</small></span>
-				<span id="warning_noResult"><c:if test="${storeList[0] eq null}">검색 결과가 없습니다😥</c:if></span>
+				<span id="warning_noResult"></span>
 				<!-- <span id="warning_geo">
 					<strong>정확한 검색을 위해 위치 정보 접근을 허용해주세요:)</strong><br/>
 					<small>(현재 위치 정보가 없을 시, 강남역을 기준으로 검색됩니다!)</small>
 				</span> -->	
 			</div>			
-			<div style="display:none" class="links col-xs-6 col-md-6">
-					<form action="stores" method="post">
-						<img alt="대표 이미지" src="resources/imgs/storeImgDefault.png">
-						<input type="hidden" name="store_Id" value="">
-						<input type="hidden" name="kakaoId" value="">
-						<input type="hidden" class="name" name="name" value=""><span class="bold"></span><br/>
-						<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/edit.svg"/>">&nbsp;<span></span>&nbsp;&nbsp;<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/eye.svg"/>">&nbsp;<span></span><br/>
-						<input type="hidden" class="roadAddress" name="roadAddress" value=""><span class="span_roadAddress"></span><br/>
-						<input type="hidden" name="address" value="">
-						<input type="hidden" name="tel" value="">
-						<input type="hidden" name="category" value="">				
-						<input type="hidden" name="url" value="">
-						<input type="hidden" name="xLocation" value="">
-						<input type="hidden" name="yLocation" value="">	
-					</form>	
+			<div style="display:none" class="links_container col-xs-6 col-md-6">
+					<div class="links">
+						<form action="stores" method="post">
+							<img alt="대표 이미지" src="resources/imgs/logo/stampLogo.png">
+							<input type="hidden" name="store_Id" value="">
+							<input type="hidden" name="kakaoId" value="">
+							<input type="hidden" class="name" name="name" value=""><span class="bold"></span>&nbsp;<span class="score"></span><br/>
+							<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/edit.svg"/>">&nbsp;<span></span>&nbsp;&nbsp;<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/eye.svg"/>">&nbsp;<span></span><br/>
+							<input type="hidden" class="roadAddress" name="roadAddress" value=""><span class="span_roadAddress"></span><br/>
+							<input type="hidden" name="address" value="">
+							<input type="hidden" name="tel" value="">
+							<input type="hidden" name="category" value="">				
+							<input type="hidden" name="url" value="">
+							<input type="hidden" name="xLocation" value="">
+							<input type="hidden" name="yLocation" value="">	
+						</form>	
+					</div>
 			</div>
 			<div class= row>	
 			<c:forEach items="${storeList}" var="bean" varStatus="status">
 				<c:if test="${bean.distance ge 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance/1000}" pattern="#.0km"></fmt:formatNumber></c:if>
 				<c:if test="${bean.distance lt 1000.0}"><fmt:formatNumber var="distance" value="${bean.distance}" pattern="#m"></fmt:formatNumber></c:if>
-				<div class="links col-xs-6 col-md-6 page-${status.index }">
-					<form action="stores" method="post">
-						<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">resources/imgs/storeImgDefault.png</c:if>"/><br/>
-						<input type="hidden" name="store_Id" value="${bean.store_Id}">
-						<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
-						<input type="hidden" class="name" name="name" value="${bean.name}"><span class="bold">${bean.name }&nbsp;<h4>${bean.averageLevel}</h4></span><br/>
-						<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/edit.svg"/>">&nbsp;<span>${bean.reviewCnt}</span>&nbsp;&nbsp;<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/eye.svg"/>">&nbsp;<span>${bean.viewCnt}</span><br/>
-						<input type="hidden" class="roadAddress" name="roadAddress" value="${bean.roadAddress}"><span class="span_roadAddress">${distance} ${bean.roadAddress }</span><br/>
-						<input type="hidden" name="address" value="${bean.address}">
-						<input type="hidden" name="tel" value="${bean.tel}">
-						<input type="hidden" name="category" value="${bean.category}">				
-						<input type="hidden" name="url" value="${bean.url}">
-						<input type="hidden" name="xLocation" value="${bean.xLocation}">
-						<input type="hidden" name="yLocation" value="${bean.yLocation}">	
-					</form>	
+				<div class="links_container col-xs-6 col-md-6 page-${status.index }">
+					<div class="links">
+						<form action="stores" method="post">
+							<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">resources/imgs/logo/stampLogo.png</c:if>"/><br/>
+							<input type="hidden" name="store_Id" value="${bean.store_Id}">
+							<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
+							<input type="hidden" class="name" name="name" value="${bean.name}"><span class="bold">${bean.name }</span>&nbsp;<span class="score">${bean.averageLevel}</span><br/>
+							<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/edit.svg"/>">&nbsp;<span>${bean.reviewCnt}</span>&nbsp;&nbsp;<img style="width:12px; height:12px;" src="<c:url value="/resources/imgs/icons/eye.svg"/>">&nbsp;<span>${bean.viewCnt}</span><br/>
+							<input type="hidden" class="roadAddress" name="roadAddress" value="${bean.roadAddress}"><span class="span_roadAddress">${distance} ${bean.roadAddress }</span><br/>
+							<input type="hidden" name="address" value="${bean.address}">
+							<input type="hidden" name="tel" value="${bean.tel}">
+							<input type="hidden" name="category" value="${bean.category}">				
+							<input type="hidden" name="url" value="${bean.url}">
+							<input type="hidden" name="xLocation" value="${bean.xLocation}">
+							<input type="hidden" name="yLocation" value="${bean.yLocation}">	
+						</form>
+					</div>	
 				</div>	
 			</c:forEach>
 			</div>
