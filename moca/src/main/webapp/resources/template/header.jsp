@@ -363,7 +363,14 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button aria-hidden="true"><img id="icon-search" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button></div>
+      <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" >
+      	<button aria-hidden="true">
+	      	<svg id="i-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+		   		<circle cx="14" cy="14" r="12" />
+		    	<path d="M23 23 L30 30"  />
+			</svg>
+		</button>
+		</div>
       <a class="navbar-brand" href="<c:url value="/"/>"><img src="<c:url value="/resources/imgs/logo/mocaLineWhiteLogo.png"/>"></a>
     </div>
 	      <form id="searchBar" class="navbar-form navbar-left searchBar" action="<c:url value="/stores"/>">
@@ -374,7 +381,12 @@
 				  <input type="hidden" name="filter" value="distance"/>
 			  	</div>
 			  	<div>
-	          		<button id="searchBtn" type="submit" role="submit" class="icon-search" aria-hidden="true"><img id="icon-search" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button>
+	          		<button id="searchBtn" type="submit" role="submit" class="icon-search" aria-hidden="true">
+	          			<svg id="i-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+				   		<circle cx="14" cy="14" r="12" />
+				    	<path d="M23 23 L30 30"  />
+			</svg>
+	          		</button>
 	          	</div>
 			</div>
 	        </div>
