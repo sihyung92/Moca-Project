@@ -15,7 +15,6 @@ var updateStore = function(store_Id) {
 		"tel":checkTel,
 		"url":$('input[name="url"]').val()
 	};
-	console.log(param);
 
 	//카페 상세정보 수정
 	$.ajax({
@@ -29,7 +28,6 @@ var updateStore = function(store_Id) {
 			
 		},
 		success: function(data) {
-			console.log("카페상세정보 수정성공");
 			//카페 정보 바꿔주기
 			if (param.wifi == '0') {
 				setSvgNone($('#wifiInfo img'));
@@ -92,12 +90,10 @@ var editStoreImg = function(){
 	if(fileSize >0){
 		for(var i=0 ; i < fileSize ; i ++){
 			storeImgFormData.append("newStoreFiles",fileBuffer[i]);
-			console.log(i,fileBuffer[i]);
 		}
 	}
 	
 	var storeImgFormObj = $(form).serializeObject();
-	console.log(storeImgFormObj,storeImgFormData);
 	
 	if( isEditable ){
 		
@@ -115,11 +111,8 @@ var editStoreImg = function(){
 			processData : false,
 			cache : false,
 			timeout : 600000,
-			success: function(storeVo) {
-				console.log('ajax 통신 성공');
-				
+			success: function(storeVo) {				
 				location.reload();
-				
 			},
 			error: function(request,status,error) {
 				respondHttpStatus(request.status);
@@ -237,10 +230,7 @@ var editStoreLogo = function(){
 			cache : false,
 			timeout : 600000,
 			success: function(storeVo) {
-				console.log('ajax 통신 성공');
-				
 				location.reload();
-				
 			},
 			error: function(request,status,error) {
 				respondHttpStatus(request.status);
@@ -259,7 +249,6 @@ var editStoreLogo = function(){
 //storeInfo 수정확인을 누르기 전에 체크해야할 목록들
 var validationOpenTimeEndTime = function(){
     //영업 시작 시간이 종료 시간보다 늦습니다. 영업시간을 다시 확인해주세요.
-	console.log($(".timePattern").eq(0));
 	openTime = $(".timePattern").eq(0).val().split(":")[0];
     var openMin = $(".timePattern").eq(0).val().split(":")[1];
     endTime = $(".timePattern").eq(1).val().split(":")[0];
@@ -269,7 +258,6 @@ var validationOpenTimeEndTime = function(){
 	    return true;
 	}else if(openTime*1>=0 && openTime*1<24){
 		if((endTime*1 - openTime*1)<0){
-			console.log((endTime*1 - openTime*1));
 			if(endTime*1<4 && endtime*1>=0){
 				if(openTime*1 - endTime*1>0){
 					return true;

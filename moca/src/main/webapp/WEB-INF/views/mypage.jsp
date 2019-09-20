@@ -460,19 +460,14 @@
 					            alert(JSON.stringify(error));
 					        }
 						});
-						console.log('회원 삭제 성공');
 						window.location.href='/moca/'
 					},
 					error: function() {
-						console.log('회원 삭제 실패')
 						alert("탈퇴 실패")
 					}
 				});
 				
-			    //회원 탈퇴이유도 받았으면 좋겠다 (ver2)
-
-				
-			    console.log("삭제됨");
+			    ///회원 탈퇴이유도 받았으면 좋겠다 (ver2)
 			    $('#userInfoUpdate').modal("hide");
 			    //
 			}else{   //취소
@@ -501,8 +496,6 @@
 					success: function() {
 						$('#userInfo').find('img').attr('src',$('#userImage').find('img').attr('src'));
 						$('#userInfo').find('#nickName').html($('input[name=nickname]').val());
-						//$('#userInfo').find('#email').text($('#userInfo').find('input[name=nickname]').val());
-						console.log('회원정보 수정 성공');
 					},
 					error: function(request,status,error) {
 						console.log('회원정보 수정 실패');
@@ -775,6 +768,7 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="followerDiv">
+					
 						<div class="row">
 							<div class="col-md-10 col-md-offset-1 inlineBlock" >
 							</div>

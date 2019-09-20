@@ -187,7 +187,7 @@ public class MyPageController {
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
 			logger.debug("비회원인 경우");
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		int result=-1;
@@ -218,7 +218,7 @@ public class MyPageController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		int result=-1;
@@ -306,7 +306,7 @@ public class MyPageController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		//나의 마이페이지가 아닌 경우
@@ -333,7 +333,7 @@ public class MyPageController {
 		//비회원인 경우
 		if(accountVo ==null) {
 			accountVo = new AccountVo();
-			return new ResponseEntity<>(HttpStatus.LOCKED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		//나의 마이페이지가 아닌 경우
