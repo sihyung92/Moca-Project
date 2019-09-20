@@ -364,7 +364,7 @@
         <span class="icon-bar"></span>
       </button>
       <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" ><button aria-hidden="true"><img id="icon-search" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button></div>
-      <a class="navbar-brand" href="<c:url value="/"/>"><img src="<c:url value="/resources/imgs/logo/horizontalLogo.png"/>"></a>
+      <a class="navbar-brand" href="<c:url value="/"/>"><img src="<c:url value="/resources/imgs/logo/mocaLineWhiteLogo.png"/>"></a>
     </div>
 	      <form id="searchBar" class="navbar-form navbar-left searchBar" action="<c:url value="/stores"/>">
 	        <div class="form-group">
