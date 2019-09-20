@@ -88,10 +88,13 @@
 		border-radius: 2px;
 		background-color: rgba(236,235,229,0.5);
 	}	
-	.bx-wrapper .bx-viewport .mocaPick .store a{
+	.bx-wrapper .bx-viewport .mocaPick .store{
+	}
+	.bx-wrapper .bx-viewport .mocaPick .store a{		
 		color: dimgray;
 	}
 	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-storeInfo{
+		width: 300px;
 		position: absolute;
 		z-index: 2;
 		height: 50px;
@@ -205,20 +208,21 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.min.js"></script>
 <script type="text/javascript">
-	<c:set var="defaultImg"><c:url value="/resources/imgs/reviewDefault.png"/></c:set>
+	<c:set var="defaultImg"><c:url value="/resources/imgs/logo/horizontalLogo(letter).png"/></c:set>
 	<c:set var="defaultThum"><c:url value="/resources/imgs/basicProfile.png"/></c:set>	
 	//GeoLocation API에서 현재 위치의 위도&경도 얻기
 	var lat, lng;	
 	var slide;
 	var idx=0;
-    window.onload = function () {     	
+    window.onload = function () {      	  	
         //헤더 fix 속성에 따른 body 패딩값 삭제
         $('div#header+div').css('padding-top', '10px');
     	//스크롤 위치에 따라 헤더 배경 토글
     	$(window).on("scroll", changeHeaderColor); 
 		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
     	$(window).on("scroll", updateData);
-
+    	
+    	
     	//키워드 검사
 		$('#searchBar_main button').click(function(){
 			var keyword = $('#keyword_main').val();
@@ -252,9 +256,9 @@
     	//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
     	$('.mocaPick .store a').on('mousedown', goDetail);        
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
-        $('.mocaPick li a').on("mouseenter", mouseEnter);
+       // $('.mocaPick .store a').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
-        $('.mocaPick li a').on("mouseleave", mouseLeave);
+       // $('.mocaPick .store a').on("mouseleave", mouseLeave);
     };//onload() 끝  
 
     //이미지 클릭 시 디테일 페이지로 이동 이벤트
@@ -287,7 +291,7 @@
     //스크롤 이벤트
     function updateData(){     
         	var position = $(window).scrollTop();	//스크롤바 위치로 페이지 위치 판단
-        	var updatePoint = $(document).height()*3/5;        	
+        	var updatePoint = $(document).height()*3/5; //데이터 추가 기준 세팅        	   
             if(position>updatePoint){
             	$(window).off("scroll", updateData);
             	var template = $('.mocaPick-template').clone();
@@ -365,6 +369,7 @@
         			}
     			});
             };
+            pre_position=position;
     };      
     //스크롤 위치에 따라 헤더 배경색 변경
     function changeHeaderColor(){        
