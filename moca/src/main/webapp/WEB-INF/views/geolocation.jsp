@@ -7,17 +7,37 @@
 <title>Insert title here</title>
 <link rel="stylesheet" href="resources/css/loader.css">
 <style type="text/css">
+	html, body{
+		/* height: 100%; */
+	}
+	
 	#content{
 		width:100%;
 		text-align : center;
+		margin-top : 30%;
+		
 	}
 	
 	.loader{
+		position : absolute;
+		left : 50%;
+		top : 10%;
+		transform: translateX(-50%);
+		
 	}
-	
 	#loader_info{
+		position : absolute;
+		margin : 0 auto;
+		top:40%;
+		left:50%;
+		text-align:center;
+		transform: translateX(-50%);
 	}
-	
+	#loader_info img{
+		height : 200px;
+		width : auto;
+	}
+
 </style>
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <script type="text/javascript">
@@ -82,14 +102,13 @@
 		  <input type="hidden" name="lat" class="lat"/>		
    	</div>
 </form>
-<div class="container-fluid" id="content">
-	<div class="loader">
-	Loading...
-	</div>
-	<div class="col-md-12" id="loader_info">
-		<h4>. . .위치 정보를 받아오는 중입니다. . .</h4>
-		<h4>정확한 검색 결과를 위해 위치 정보 수집을 허용해 주세요 :) </h4>
-	</div>
-</div>	
+<div class="loader">
+Loading...
+</div>
+<div id="loader_info">
+	<img src="resources/imgs/logo/verticalLogo(moca).png">
+	<h4>. . .위치 정보를 받아오는 중입니다. . .</h4>
+	<h4>정확한 검색 결과를 위해 위치 정보 수집을 허용해 주세요 :) </h4>
+</div>
 </body>
 </html>
