@@ -89,14 +89,14 @@ public class MainController {
 		tagNames.remove(0); 		
 		
 		//별점 추천 기준 저장
-		rating.put("TASTELEVEL", "맛있는 카페");
-		rating.put("PRICELEVEL", "가격이 착한 카페");
-		rating.put("MOODLEVEL", "분위기 좋은 카페");
+		rating.put("TASTELEVEL", "맛잘알의 초이스");
+		rating.put("PRICELEVEL", "가성비 갑");
+		rating.put("MOODLEVEL", "감/성/충/만");
 
 		if(variables!=null) {
 			alist = mainService.getStoresNearBy(variables);		//근처 카페 추천
-			if(alist.size()>4) {
-				listNames.add("근처 카페 추천");
+			if(alist.size()>0) {
+				listNames.add("근처 추천 카페");
 				storesList.add(alist);
 			}
 		}
@@ -115,14 +115,14 @@ public class MainController {
 		 
 		alist = mainService.getTrendStoresList("예쁜");		//Trend Stores
 		if(alist.size()>0) {			
-			listNames.add("흑당흑당 카페카페(미구현)");
+			listNames.add("트렌드: 흑당흑당");
 			storesList.add(alist);
 		}
 		
 		if(variables!=null) {
 			alist = mainService.getTakeoutStoresList(variables);		//TakeOut Stores
 			if(alist.size()>0) {			
-				listNames.add("주변의 테이크아웃 전문점");
+				listNames.add("테이크아웃 전문점");
 				storesList.add(alist);
 			}
 		}		
@@ -130,7 +130,7 @@ public class MainController {
 		if(id>0) {
 			alist = mainService.getFollowersStoresList(id);		//Follower's pick Stores
 			if(alist.size()>0) {			
-				listNames.add("팔로워가 추천하는 카페");
+				listNames.add("팔로워 추천 카페");
 				storesList.add(alist); 
 			} 
 		}		
@@ -155,7 +155,6 @@ public class MainController {
 		//뷰 처리용: 추천 캐러셀 이름 & 리스트 목록
 		Map<String, List<StoreVo>> mocaPick = new HashMap<String, List<StoreVo>>();
 		logger.debug("추가 추천!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		logger.debug("idx: "+ idx);
 		if(idx==0) {		//별점 추천(맛있는, 분위기 좋은, 가격이 착한)
 			Set<String> ratingNames = rating.keySet();
 			Iterator<String> ite = ratingNames.iterator();			

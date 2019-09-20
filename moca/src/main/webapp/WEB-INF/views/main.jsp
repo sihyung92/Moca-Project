@@ -63,6 +63,7 @@
 		float: right;		
 		font-size: 23px;
 		background-color: transparent;
+		line-height: 25px;
 	}
 	#searchBar_main button:focus{
 		outline: none !important;
@@ -75,10 +76,15 @@
 	.mocaPick-container{
 		color: dimgray;
 	}	
+	.mocaPick-container h4{
+		font-weight: bold;
+		text-indent: 5px;
+		/* 	padding-inline-start: 5px; */
+	}
 	.mocaPick-container .bx-wrapper{
 		border: none;
 		box-shadow: none;
-		margin-bottom: 50px;
+		margin-bottom: 40px;
 		z-index: 3;
 		border: rgba(236,235,229,1) 1px solid;
 		border-radius: 2px;
@@ -120,10 +126,21 @@
 		display: block;
 	}
 	/* 인기 리뷰, 최근 리뷰 */
+	#review-container h4{
+		font-weight: bold;
+		text-indent: 5px;
+	}
 	#review-container{
 		color: dimgray;
+		margin-bottom: 40px;
+		padding-left: 10px;
+		padding-right: 10px;
 	}
-	#bestReview-container, #recentReview-container{
+	#review-container>div{
+		/* background-color: pink;*/
+	}
+	#bestReview, #recentReview{
+		/* background-color: blue; */
 		border: rgba(236,235,229,1) 1px solid;
 		border-radius: 2px;
 		overflow-y : scroll;
@@ -170,15 +187,18 @@
 	}
 /* 미디어 쿼리 */	
 	@media (max-width: 768px){
-		.bx-wrapper{
-			margin-bottom: 20px;
-		}
 		#header{
 			height: 250px;
 		}
 		#searchBar_main{   	 	
 			width: 80%;
 		} 
+		#review-container{
+			margin-bottom: 40px;
+		}
+		#recentReview-container{
+			margin-top: 40px;
+		}
 	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
@@ -191,7 +211,7 @@
 	var lat, lng;	
 	var slide;
 	var idx=0;
-    window.onload = function () {      	
+    window.onload = function () {     	
         //헤더 fix 속성에 따른 body 패딩값 삭제
         $('div#header+div').css('padding-top', '10px');
     	//스크롤 위치에 따라 헤더 배경 토글
@@ -309,7 +329,10 @@
 		            			mocaPick.append($(store));	
                     		}
                     		//mocaPick.before('<h5>'+listName+'</h5>');	이건 왜 안되나요....푸
-                    		$('#mocaPick-container2').append('<h5>'+listName+'</h5>');	//카페 추천 타이틀 추가
+                    		if(listName.includes('#')){
+								listName='<img style="height: 15px; width: 15px;" src="./resources/imgs/icons/tag.svg"/>'+listName.split("#")[1];
+                        	}
+                    		$('#mocaPick-container2').append('<h4>'+listName+'</h4>');	//카페 추천 타이틀 추가
                     		$('#mocaPick-container2').append(mocaPick);		//캐러셀 컨테이너에 추천 리스트 추가
                     		//캐러셀 적용
                     		$('.mocaPick').bxSlider({
@@ -375,10 +398,16 @@
 	<form id="searchBar_main" action="<c:url value="/stores"/>">
         <input type="text" name="keyword" id="keyword_main" placeholder="카페를 검색해보세요:D"/>	
   		<input type="hidden" name="filter" value="distance"/>
-     	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+     	<button type="submit" class="btn btn-default">
+     		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="25" height="25" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+			    <circle cx="14" cy="14" r="12" />
+			    <path d="M23 23 L30 30"  />
+			</svg>
+		</button>
     </form>
 </div>
 <div id="content" class="container-fluid">
+<!-- <object class="svgtest" type="image/svg+xml" data="./resources/imgs/icons/search.svg"></object> -->
 <!-- 카페 추천(mocaPick) 캐러셀-->	
 	<div class="mocaPick-container">
 	 	<c:forEach items="${storesList}" var="list" varStatus="status">
@@ -386,7 +415,7 @@
 				<c:set var="length" value="${fn:length(list)}"/>
 				<c:set var="index" value="${status.index}"/>
 				<c:set var="name" value="${listNames[index]}"/>
-					<h5>${name}: 총 가게 ${length}개</h5>
+					<h4>${name}</h4>
 					<div class="mocaPick">
 						<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
 						    <div class="store">
@@ -398,8 +427,16 @@
 						    	</div>
 								<div class="mocaPick-storeInfo">
 					     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;</span><span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span><br/>			     			
-					     			<span class="glyphicon glyphicon-eye-open mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt mocaPick-viewCnt">${store.viewCnt}</span>
-						     		<span class="glyphicon glyphicon-pencil mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt mocaPick-reviewCnt">${store.reviewCnt}</span><br/>
+					     			<svg id="i-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+									   	<circle cx="17" cy="15" r="1" />
+									    <circle cx="16" cy="16" r="6" />
+									    <path d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z" />
+									</svg>
+					     			<span class="mocaPick-cnt mocaPick-viewCnt">${store.viewCnt}</span>
+						     		<svg id="i-edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+									    <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
+									</svg>
+						     		<span class="mocaPick-cnt mocaPick-reviewCnt">${store.reviewCnt}</span><br/>
 					     			<%-- <span class="mocaPick-address">${store.roadAddress}</span> --%>
 				     			</div>
 							</div>
@@ -413,17 +450,41 @@
 	<!-- <c:if test="${not empty bestReviews }"></c:if>	-->
 		<div class="row" id="review-container">
 			<!-- 인기 리뷰 -->
-			<div class="col-sx-12 col-md-6">	
-				<h4>&nbsp;인기 리뷰</h4>
-				<div id="bestReview-container">
+			<div id="bestReview-container" class="col-sx-12 col-md-6">	
+				<h4>인기 리뷰&nbsp;<img style="height: 25px; width: 25px;" src="./resources/imgs/icons/compose.svg"/></h4>
+				<div id="bestReview">
 					<c:forEach items="${bestReviews }" var="bean">
 						<div class="review">
 							<a href="./stores/${bean.store_id}">
 								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
 								<span class="review-text-averageLevel">${bean.averageLevel}</span>
 							</a><br/>
-							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
 							<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+							<svg  id="thumbs-up" xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 32 32" >
+								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
+									M30,22.6c1.8-1.4,1.8-4.2,0-5.6c-0.1-0.1-0.1-0.1-0.1-0.2c0.3-0.7,0.3-1.5,0.1-2.2c-0.4-1.6-2-2.8-3.7-2.8c-2.5,0-4.9,0-7.4,0
+									c-0.1,0-0.1,0-0.2,0c0.1-0.2,0.3-0.4,0.4-0.5c0.8-1,1.6-2.1,2.2-3.2c0.5-0.9,0.8-1.8,0.8-2.8c0.1-1.1-0.2-2.1-0.8-3.1
+									c-0.4-0.5-0.8-0.9-1.5-1.1C19.6,1,19.3,1,19.1,1c-0.6-0.1-1.3-0.1-1.9,0.1c-0.4,0.1-0.6,0.4-0.7,0.7c0,0.2,0,0.3,0,0.5
+									c0,0.4-0.1,0.7-0.1,1.1c-0.3,1.5-1,2.7-2,3.8c-1.9,2.2-3.9,4.2-5.8,6.3l0.1,15.3c1.1,0.4,2.1,0.8,3.2,1.2c2.1,0.6,4.2,0.9,6.3,0.9
+									c2.1,0,4.2,0,6.3,0c1.1,0,2.1-0.3,2.9-1.1c0.8-0.7,1.3-1.6,1.2-2.6c0-0.1,0-0.2,0.1-0.3c1.4-1,1.9-2.7,1.3-4.3
+									C29.9,22.7,29.9,22.6,30,22.6z"/>
+								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
+									M8.5,13C6.5,13,3,13,0.9,13c0,5.8,0,11,0,16.8c2,0,5.6,0.1,7.6,0.1C8.5,20.8,8.5,16.5,8.5,13z"/>
+							</svg>
+							<span>${bean.likeCount}</span>
+							<svg id="thumbs-down" xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 32 32">
+								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
+									M30,9.4c1.8,1.4,1.8,4.2,0,5.6c-0.1,0.1-0.1,0.1-0.1,0.2c0.3,0.7,0.3,1.5,0.1,2.2c-0.4,1.6-2,2.8-3.7,2.8c-2.5,0-4.9,0-7.4,0
+									c-0.1,0-0.1,0-0.2,0c0.1,0.2,0.3,0.4,0.4,0.5c0.8,1,1.6,2.1,2.2,3.2c0.5,0.9,0.8,1.8,0.8,2.8c0.1,1.1-0.2,2.1-0.8,3.1
+									c-0.4,0.5-0.8,0.9-1.5,1.1c-0.3,0-0.5,0.1-0.8,0.1c-0.6,0.1-1.3,0.1-1.9-0.1c-0.4-0.1-0.6-0.4-0.7-0.7c0-0.2,0-0.3,0-0.5
+									c0-0.4-0.1-0.7-0.1-1.1c-0.3-1.5-1-2.7-2-3.8c-1.9-2.2-3.9-4.2-5.8-6.3L8.6,3.1c1.1-0.4,2.1-0.8,3.2-1.2C13.9,1.3,16,1,18.1,1
+									c2.1,0,4.2,0,6.3,0c1.1,0,2.1,0.3,2.9,1.1c0.8,0.7,1.3,1.6,1.2,2.6c0,0.1,0,0.2,0.1,0.3c1.4,1,1.9,2.7,1.3,4.3
+									C29.9,9.3,29.9,9.4,30,9.4z"/>
+								<path fill="none" stroke-width="2" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" d="
+									M8.5,19C6.5,19,3,19,0.9,19c0-5.8,0-11,0-16.8c2,0,5.6-0.1,7.6-0.1C8.5,11.2,8.5,15.5,8.5,19z"/>
+							</svg>
+							<span>${bean.hateCount}&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
 							<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
 							<c:if test="${not empty bean.imageList }">
 								<div class="review-img-list">
@@ -438,17 +499,41 @@
 				</div>
 			</div>
 			<!-- 최신 리뷰 -->
-			<div class="col-sx-12 col-md-6">	
-				<h4>&nbsp;최신 리뷰</h4>
-				<div id="recentReview-container">
+			<div id="recentReview-container" class="col-sx-12 col-md-6">	
+				<h4>최신 리뷰&nbsp;<img style="height: 25px; width: 25px;" src="./resources/imgs/icons/compose.svg"/></h4>
+				<div id="recentReview">
 					<c:forEach items="${recentReviews }" var="bean">
 						<div class="review">
 							<a href="./stores/${bean.store_id}">
 								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
 								<span class="review-text-averageLevel">${bean.averageLevel}</span>
 							</a><br/>			
-							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
 							<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+							<svg  id="thumbs-up" xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 32 32" >
+								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
+									M30,22.6c1.8-1.4,1.8-4.2,0-5.6c-0.1-0.1-0.1-0.1-0.1-0.2c0.3-0.7,0.3-1.5,0.1-2.2c-0.4-1.6-2-2.8-3.7-2.8c-2.5,0-4.9,0-7.4,0
+									c-0.1,0-0.1,0-0.2,0c0.1-0.2,0.3-0.4,0.4-0.5c0.8-1,1.6-2.1,2.2-3.2c0.5-0.9,0.8-1.8,0.8-2.8c0.1-1.1-0.2-2.1-0.8-3.1
+									c-0.4-0.5-0.8-0.9-1.5-1.1C19.6,1,19.3,1,19.1,1c-0.6-0.1-1.3-0.1-1.9,0.1c-0.4,0.1-0.6,0.4-0.7,0.7c0,0.2,0,0.3,0,0.5
+									c0,0.4-0.1,0.7-0.1,1.1c-0.3,1.5-1,2.7-2,3.8c-1.9,2.2-3.9,4.2-5.8,6.3l0.1,15.3c1.1,0.4,2.1,0.8,3.2,1.2c2.1,0.6,4.2,0.9,6.3,0.9
+									c2.1,0,4.2,0,6.3,0c1.1,0,2.1-0.3,2.9-1.1c0.8-0.7,1.3-1.6,1.2-2.6c0-0.1,0-0.2,0.1-0.3c1.4-1,1.9-2.7,1.3-4.3
+									C29.9,22.7,29.9,22.6,30,22.6z"/>
+								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
+									M8.5,13C6.5,13,3,13,0.9,13c0,5.8,0,11,0,16.8c2,0,5.6,0.1,7.6,0.1C8.5,20.8,8.5,16.5,8.5,13z"/>
+							</svg>
+							<span>${bean.likeCount}</span>
+							<svg id="thumbs-down" xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 32 32">
+								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
+									M30,9.4c1.8,1.4,1.8,4.2,0,5.6c-0.1,0.1-0.1,0.1-0.1,0.2c0.3,0.7,0.3,1.5,0.1,2.2c-0.4,1.6-2,2.8-3.7,2.8c-2.5,0-4.9,0-7.4,0
+									c-0.1,0-0.1,0-0.2,0c0.1,0.2,0.3,0.4,0.4,0.5c0.8,1,1.6,2.1,2.2,3.2c0.5,0.9,0.8,1.8,0.8,2.8c0.1,1.1-0.2,2.1-0.8,3.1
+									c-0.4,0.5-0.8,0.9-1.5,1.1c-0.3,0-0.5,0.1-0.8,0.1c-0.6,0.1-1.3,0.1-1.9-0.1c-0.4-0.1-0.6-0.4-0.7-0.7c0-0.2,0-0.3,0-0.5
+									c0-0.4-0.1-0.7-0.1-1.1c-0.3-1.5-1-2.7-2-3.8c-1.9-2.2-3.9-4.2-5.8-6.3L8.6,3.1c1.1-0.4,2.1-0.8,3.2-1.2C13.9,1.3,16,1,18.1,1
+									c2.1,0,4.2,0,6.3,0c1.1,0,2.1,0.3,2.9,1.1c0.8,0.7,1.3,1.6,1.2,2.6c0,0.1,0,0.2,0.1,0.3c1.4,1,1.9,2.7,1.3,4.3
+									C29.9,9.3,29.9,9.4,30,9.4z"/>
+								<path fill="none" stroke-width="2" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" d="
+									M8.5,19C6.5,19,3,19,0.9,19c0-5.8,0-11,0-16.8c2,0,5.6-0.1,7.6-0.1C8.5,11.2,8.5,15.5,8.5,19z"/>
+							</svg>
+							<span>${bean.hateCount}&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
 							<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
 							<c:if test="${not empty bean.imageList }">
 								<div class="review-img-list">
@@ -474,10 +559,18 @@
 	    	<img src="" alt="" title="">
     	</div>
 		<div class="mocaPick-storeInfo">
-    			<span class="mocaPick-storeName"></span><span class="mocaPick-averageLevel"></span><br/>			     			
-    			<span class="glyphicon glyphicon-eye-open mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt mocaPick-viewCnt"></span>
-     		<span class="glyphicon glyphicon-pencil mocaPick-cnt" aria-hidden="true"></span><span class="mocaPick-cnt mocaPick-reviewCnt"></span><br/>
-    			<!-- <span class="mocaPick-address"></span> -->
+   			<span class="mocaPick-storeName"></span><span class="mocaPick-averageLevel"></span><br/>			     			
+   			<svg id="i-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+			   	<circle cx="17" cy="15" r="1" />
+			    <circle cx="16" cy="16" r="6" />
+			    <path d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z" />
+			</svg>
+   			<span class="mocaPick-cnt mocaPick-viewCnt"></span>
+   			<svg id="i-edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+			    <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
+			</svg>
+    			<span class="mocaPick-cnt mocaPick-reviewCnt"></span><br/>
+   			<!-- <span class="mocaPick-address"></span> -->
    		</div>
 	</div>
 	<!-- 추가 캐러셀 등록할 컨테이너 -->
