@@ -558,13 +558,15 @@ var moreReviewList = function(startNum,callWhere) {
 			});
 			
 			
-			//내용더보기
-			callReviewDataMore();
+			
 		},
 		error: function(request,status,error) {
 			alert('ajax 통신 실패');
 		}
 
+	}).always(function(){
+		//내용더보기
+		callReviewDataMore();
 	})
 }
 
@@ -648,16 +650,20 @@ var deleteReviewImg = function(deleteBtn){
 //리뷰 내용 더보기
 var callReviewDataMore = function(){
 	var reviewData = $('.more-review-content');
-    reviewData.each( function() {
+	
+	reviewData.each( function() {
        
        var btnMoreReview = $(this).parent().find('.more-review-content-btn');
        
-       if( $(this).outerHeight() > 41 ){
-           
+       if( $(this).outerHeight() > 51 && $(this).hasClass("moreData") === false){
+        
+    	btnMoreReview.html('<img src="/moca/resources/imgs/icons/chevron-bottom.svg">'+"더보기");
        	$(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block', 'white-space':'pre-line' });
+       	if($(this).hasClass("moreData") === false){
           $(this).addClass('moreData');
+       	}
           btnMoreReview.show();
-          btnMoreReview.on("click",function(){
+          btnMoreReview.off("click").on("click",function(){
              $(this).parent().find('.more-review-content').toggleClass('moreData').promise().done(function(){
                   if($(this).hasClass("moreData") === false){
                 	  btnMoreReview.html('<img src="/moca/resources/imgs/icons/chevron-top.svg">'+"접기");
@@ -669,10 +675,6 @@ var callReviewDataMore = function(){
              });
           });
           
-       }else{
-           
-       	btnMoreReview.hide();
-       	
        }
     });
 };

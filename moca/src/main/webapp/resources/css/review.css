@@ -1,6 +1,29 @@
 @charset "UTF-8";
 /* 같이 쓰는 페이지 : store.jsp, mypage.jsp */
 
+/*반응형*/
+@media (max-width: 992px) {
+	.reviewer-info{
+		margin-bottom: 15px;
+		padding-bottom: 10px;
+		border-bottom: 2px solid rgba(234,231,220,1);
+	}
+	.store-info{
+		margin-bottom: 15px;
+		padding-bottom: 10px;
+		border-bottom: 2px solid rgba(234,231,220,1);
+	}
+	.review-info{
+		padding-left:15px !important;
+	}
+}
+
+
+/*리뷰 겹치는 부분 수정*/
+.review-info{
+	padding-left:50px;
+}
+
 /*더보기 버튼 css*/
 #moreReview{
 	font-size : 150%;
@@ -129,7 +152,11 @@
     text-overflow: ellipsis;
     float:left;
 }
-.more-review-content-btn{display:none;white-space:nowrap;}
+.more-review-content{
+	white-space: pre-wrap;
+}
+
+.more-review-content-btn{display:none;white-space:nowrap;cursor: pointer;}
 
 .more-review-content-btn img{
 	width: 1em;
