@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -139,6 +140,7 @@
 	var tagNameList;
 	
 	$(document).ready(function() { 
+			
 		if(accountId==0 && id=="mypage"){
 			respondHttpStatus(401);
 		}

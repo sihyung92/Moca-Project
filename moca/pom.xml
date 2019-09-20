@@ -48,6 +48,12 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>${org.aspectj-version}</version>
 		</dependency>	
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${org.aspectj-version}</version>
+		</dependency>
+
 		
 		<!-- Logging -->
 		<dependency>
@@ -192,8 +198,6 @@
 			<artifactId>imgscalr-lib</artifactId> 
 			<version>4.2</version> 
 		</dependency>
-		
-		
 		<!-- 트랜잭션 디펜던시!!!!!!!!!!! -->
 		<!-- Test -->
 		<dependency>

@@ -18,7 +18,7 @@ html{overflow-x:hidden; overflow-y:auto;}
 #bs-example-navbar-collapse-1{background-color:#FFFFFF;}
 .navbar-toggle{border: none;} 
 .navbar-brand{padding: 5px 15px}
-.navbar-brand>img{height:inherit;}
+.navbar-brand img{height:inherit;}
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{box-shadow:none;background-color:unset;background-image:none;}
 .modal-backdrop.in{z-index:10;}/*이게 있어야 로그인창이 제일 위에 올라옴..*/
 .dropdown-menu{border:none;}
