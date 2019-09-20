@@ -14,6 +14,7 @@
 <style type="text/css">
 	body{
 		background-color: rgba(246,245,239,0.5);
+		color: dimgray;
 	}
 /* body header */
 	/* 템플릿 헤더 CSS(투명 설정 / 검색창 없애기) */
@@ -73,9 +74,6 @@
 	.mocaPick-template{
 		display: none;
 	}
-	.mocaPick-container{
-		color: dimgray;
-	}	
 	.mocaPick-container h4{
 		font-weight: bold;
 		text-indent: 5px;
@@ -90,6 +88,9 @@
 		border-radius: 2px;
 		background-color: rgba(236,235,229,0.5);
 	}	
+	.bx-wrapper .bx-viewport .mocaPick .store a{
+		color: dimgray;
+	}
 	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-storeInfo{
 		position: absolute;
 		z-index: 2;
@@ -131,7 +132,6 @@
 		text-indent: 5px;
 	}
 	#review-container{
-		color: dimgray;
 		margin-bottom: 40px;
 		padding-left: 10px;
 		padding-right: 10px;
@@ -250,7 +250,7 @@
             }
     	});     	
     	//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
-    	$('.store .mocaPick-img-list img').on('mousedown', goDetail);        
+    	$('.mocaPick .store a').on('mousedown', goDetail);        
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
         $('.mocaPick li a').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
@@ -259,9 +259,8 @@
 
     //이미지 클릭 시 디테일 페이지로 이동 이벤트
 	function goDetail(){
-		store_id = $(this).parent().prev().attr('value');
-		window.location.href="./stores/"+store_id;
-	};    
+		window.location.href=$(this).attr('href');
+	}; 
     //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
     function mouseEnter(){
               var overlay = $(this).children('.overlay');
@@ -302,12 +301,12 @@
             				var mocaPick = $('<div class="mocaPick"></div>'); 
             				var list = result[listName];	//추천별 리스트 배열
             				//추천별 카페 리스트 HTML 생성
-            				for(var i=0; i<list.length; i++){                		
+            				for(var i=0; i<list.length; i++){               		
             					var store = $(template).clone();
-            					//
-            					$(store).children('input').attr('value', list[i].store_Id);
+            					//카페 디테일 페이지 연결
+            					$(store).children('a').attr('href', './stores/'+list[i].store_Id);
 								//카페의 이미지 추가	
-	            				var imgs = $(store).children('.mocaPick-img-list').children();		//mocaPick-img-list div의 이미지 태그 배열
+	            				var imgs = $(store).children('a').children('.mocaPick-img-list').children();		//mocaPick-img-list div의 이미지 태그 배열
 		            			$(imgs[0]).attr('src', list[i].storeImg1);
 		            			$(imgs[1]).attr('src', list[i].storeImg2);
 		            			$(imgs[2]).attr('src', list[i].storeImg3);
@@ -320,7 +319,7 @@
 	                				$(imgs[j]).attr('title', list[i].name); 
 		            			}
 		            			//카페 정보 추가 
-		            			var info = $(store).children('.mocaPick-storeInfo');   
+		            			var info = $(store).children('a').children('.mocaPick-storeInfo');   
 		            			$(info).children('.mocaPick-storeName').html(list[i].name+'&nbsp;&nbsp;');
 		            			$(info).children('.mocaPick-averageLevel').text((list[i].averageLevel).toFixed(1));
 		            			$(info).children('.mocaPick-viewCnt').text(list[i].viewCnt);
@@ -351,8 +350,8 @@
                                 }
                         	});  
                     		//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
-                    		$('.store .mocaPick-img-list img').off('mousedown', goDetail);
-                        	$('.store .mocaPick-img-list img').on('mousedown', goDetail);
+                    		$('.mocaPick .store a').off('mousedown', goDetail);
+                        	$('.mocaPick .store a').on('mousedown', goDetail);
         				}
         				//기존 캐러셀 mouseEnter/Leave 이벤트 해제 & 추가
         				//$('.mocaPick li a').off("mouseenter", mouseEnter);
@@ -419,26 +418,27 @@
 					<div class="mocaPick">
 						<c:forEach items="${list}" var="store" begin="0" end="${length-1}" > 		
 						    <div class="store">
-						    	<input type="hidden" value="${store.store_Id}"/>
-						    	<div class="mocaPick-img-list">						    		
-							    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1" title="${store.name}">
-							    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2" title="${store.name}">
-							    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3" title="${store.name}">
-						    	</div>
-								<div class="mocaPick-storeInfo">
-					     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;</span><span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span><br/>			     			
-					     			<svg id="i-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-									   	<circle cx="17" cy="15" r="1" />
-									    <circle cx="16" cy="16" r="6" />
-									    <path d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z" />
-									</svg>
-					     			<span class="mocaPick-cnt mocaPick-viewCnt">${store.viewCnt}</span>
-						     		<svg id="i-edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-									    <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
-									</svg>
-						     		<span class="mocaPick-cnt mocaPick-reviewCnt">${store.reviewCnt}</span><br/>
-					     			<%-- <span class="mocaPick-address">${store.roadAddress}</span> --%>
-				     			</div>
+							   	<a href="./stores/${store.store_Id}">
+							    	<div class="mocaPick-img-list">						    		
+								    	<img src="${store.storeImg1}<c:if test="${store.storeImg1 eq null}">${defaultImg }</c:if>" alt="${store.name }_main1" title="${store.name}">
+								    	<img src="${store.storeImg2}<c:if test="${store.storeImg2 eq null}">${defaultImg }</c:if>" alt="${store.name }_main2" title="${store.name}">
+								    	<img src="${store.storeImg3}<c:if test="${store.storeImg3 eq null}">${defaultImg }</c:if>" alt="${store.name }_main3" title="${store.name}">
+							    	</div>
+									<div class="mocaPick-storeInfo">									
+						     			<span class="mocaPick-storeName">${store.name}&nbsp;&nbsp;</span><span class="mocaPick-averageLevel"><fmt:formatNumber value="${store.averageLevel}" pattern="0.0"/></span><br/>			     			
+						     			<svg id="i-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+										   	<circle cx="17" cy="15" r="1" />
+										    <circle cx="16" cy="16" r="6" />
+										    <path d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z" />
+										</svg>
+						     			<span class="mocaPick-cnt mocaPick-viewCnt">${store.viewCnt}</span>
+							     		<svg id="i-edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+										    <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
+										</svg>
+							     		<span class="mocaPick-cnt mocaPick-reviewCnt">${store.reviewCnt}</span><br/>
+						     			<%-- <span class="mocaPick-address">${store.roadAddress}</span> --%>					     			
+					     			</div>
+					     		</a>
 							</div>
 						</c:forEach>
 					</div>
@@ -552,26 +552,27 @@
 <!-- 카페 추천(mocaPick) 캐러셀 추가 -->	
 	<!-- 캐러셀 추가용 템플릿 -->
 	<div class="store mocaPick-template">
-		<input type="hidden" value=""/>
-    	<div class="mocaPick-img-list">
-	    	<img src="" alt="" title="">
-	    	<img src="" alt="" title="">
-	    	<img src="" alt="" title="">
-    	</div>
-		<div class="mocaPick-storeInfo">
-   			<span class="mocaPick-storeName"></span><span class="mocaPick-averageLevel"></span><br/>			     			
-   			<svg id="i-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-			   	<circle cx="17" cy="15" r="1" />
-			    <circle cx="16" cy="16" r="6" />
-			    <path d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z" />
-			</svg>
-   			<span class="mocaPick-cnt mocaPick-viewCnt"></span>
-   			<svg id="i-edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-			    <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
-			</svg>
-    			<span class="mocaPick-cnt mocaPick-reviewCnt"></span><br/>
-   			<!-- <span class="mocaPick-address"></span> -->
-   		</div>
+		<a href="">
+	    	<div class="mocaPick-img-list">
+		    	<img src="" alt="" title="">
+		    	<img src="" alt="" title="">
+		    	<img src="" alt="" title="">
+	    	</div>
+			<div class="mocaPick-storeInfo">
+	   			<span class="mocaPick-storeName"></span><span class="mocaPick-averageLevel"></span><br/>			     			
+	   			<svg id="i-eye" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+				   	<circle cx="17" cy="15" r="1" />
+				    <circle cx="16" cy="16" r="6" />
+				    <path d="M2 16 C2 16 7 6 16 6 25 6 30 16 30 16 30 16 25 26 16 26 7 26 2 16 2 16 Z" />
+				</svg>
+	   			<span class="mocaPick-cnt mocaPick-viewCnt"></span>
+	   			<svg id="i-edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" fill="none" stroke="dimgray" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+				    <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z" />
+				</svg>
+	    			<span class="mocaPick-cnt mocaPick-reviewCnt"></span><br/>
+	   			<!-- <span class="mocaPick-address"></span> -->
+	   		</div>
+   		</a>
 	</div>
 	<!-- 추가 캐러셀 등록할 컨테이너 -->
 	<div class="mocaPick-container" id="mocaPick-container2">	    
