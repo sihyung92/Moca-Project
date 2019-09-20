@@ -36,22 +36,36 @@
 		background-image: url("resources/imgs/main_background5.jpg");
 		background-size: cover;
 	}
-	#searchBar_main{								/* form 태그 */
+	#searchBar_main{								/* form 태그 */	
 		font-size: 0;
-		background-color: lightgray;
 		position: absolute;
+		width: 500px;
+		height: 50px;
 		top: 70%;
 		left: 50%;
    	 	transform: translate(-50%, -50%);
 	}
-	#searchBar_main .form-control{					/* 검색어 input 태그 */
+	#searchBar_main #keyword_main{					/* 검색어 input 태그 */
+		padding-inline-start: 20px;
 		font-size: 20px;
 		height: 50px;
-		width: 500px;
+		width: 100%;
 		border-radius: 25px;
+		border: 4px solid rgb(190,200,51);
+	}
+	#searchBar_main #keyword_main:focus{
+		outline-color: lightgray;
 	}
 	#searchBar_main button{
-		font-size: 25px;
+		position: relative;
+		height: 50px;
+		top: -50px;
+		float: right;		
+		font-size: 23px;
+		background-color: transparent;
+	}
+	#searchBar_main button:focus{
+		outline: none !important;
 	}
 /* body content */	
 	/* 모카픽 추천 캐러셀 */
@@ -160,29 +174,11 @@
 			margin-bottom: 20px;
 		}
 		#header{
-			position: relative;
 			height: 250px;
-			background-image: url("resources/imgs/main_background5.jpg");
-			background-size: cover;
 		}
-		#searchBar_main{
-			font-size: 0;
-			background-color: lightgray;
-			position: absolute;
-			top: 70%;
-			left: 50%;
-	   	 	transform: translate(-50%, -50%);
-	   	 	width: 80%;
+		#searchBar_main{   	 	
+			width: 80%;
 		} 
-		#searchBar_main .form-control{
-			font-size: 20px;
-			height: 50px;
-			width: 100%;
-			border-radius: 25px;
-		}
-		#searchBar_main button{
-			font-size: 25px;
-		}
 	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
@@ -195,14 +191,28 @@
 	var lat, lng;	
 	var slide;
 	var idx=0;
-    window.onload = function () {  
+    window.onload = function () {      	
         //헤더 fix 속성에 따른 body 패딩값 삭제
         $('div#header+div').css('padding-top', '10px');
     	//스크롤 위치에 따라 헤더 배경 토글
     	$(window).on("scroll", changeHeaderColor); 
 		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
     	$(window).on("scroll", updateData);
-    	   	
+
+    	//키워드 검사
+		$('#searchBar_main button').click(function(){
+			var keyword = $('#keyword_main').val();
+			keyword = keyword.trim();		
+			//검색어가 없거나 태그가 2개 이상일 때,			
+			if(keyword=="" || keyword=="#" || keyword.indexOf('#') != keyword.lastIndexOf('#')){
+				$('#keyword_main').val("");
+				$('#keyword_main').attr('placeholder', '잘못된 키워드 입니다... :(');
+				return false;
+			}else{				
+				$(this).parent().submit();
+			}
+		});
+    	
    	 	//캐러셀(bxSlider) 시작    	 	
     	$('.mocaPick').bxSlider({
     		pager: false,
@@ -362,12 +372,10 @@
 <body>
 <div id="header">
 	<jsp:include page="../../resources/template/header.jsp" flush="true"></jsp:include>
-	<form id="searchBar_main" class="form-inline" action="<c:url value="/stores"/>">
-      <div class="form-group">
-        <input type="text" name="keyword" id="keyword_main" class="form-control" placeholder="카페를 검색해보세요:D"/>	
+	<form id="searchBar_main" action="<c:url value="/stores"/>">
+        <input type="text" name="keyword" id="keyword_main" placeholder="카페를 검색해보세요:D"/>	
   		<input type="hidden" name="filter" value="distance"/>
-      </div>
-      <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+     	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
     </form>
 </div>
 <div id="content" class="container-fluid">
