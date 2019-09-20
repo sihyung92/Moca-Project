@@ -12,7 +12,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=15"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=18"/>" />
 	<style type="text/css">
 		.jumbotron{
 			background: rgba(234,231,220,0.4);
@@ -188,10 +188,6 @@
 			font-size : 120%;
 		}
 		
-		.review-info{
-			padding-left:50px;
-		}
-		
 		.like-count, .hate-count{
 			width: 100px;
 		}
@@ -226,7 +222,7 @@
 	   	 	width: 100%;
 		    position: absolute;
 		    top:0px;
-		    background: rgba(234,231,220,0.5);
+		    background: rgba(234,231,220,0.8);
 		    padding: 3px;
 		    display: block;
 		}

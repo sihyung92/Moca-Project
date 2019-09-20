@@ -5,10 +5,12 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
 <head>
-	<title>Home</title>
+	<title>moca</title>
+	<link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
+	<link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=4"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=12"/>" />
 	<style type="text/css">
 	#userGraph{
 		margin-top:70px;
@@ -92,13 +94,19 @@
 		    font-weight: bold;
 		}
 		
+		.storeName{
+			font-size:110%;
+			font-weight: bold;
+			padding-top: 10px;
+    		display: block;
+		}
 		
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
 	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f2a5eb7ec5f8dd26e0ee0fbf1c68a6fc&libraries=services"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=10"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=23"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
@@ -132,12 +140,12 @@
 	
 	$(document).ready(function() { 
 		if(accountId==0 && id=="mypage"){
-			respondHttpStatus(423);
+			respondHttpStatus(401);
 		}
 
 		$('#Login-Modal').on('hidden.bs.modal', function () {
 			if(accountId==0 && id=="mypage"){
-				respondHttpStatus(423);
+				respondHttpStatus(401);
 			}
 		});
 		
@@ -146,6 +154,7 @@
 		bindReviewVariable();
 		storeTemplate = $('#storeTemplate')	//변수 바인딩
 
+		
 		//raty
 		bindRaty();
 		<c:forEach items="${reviewVoList }" var="reviewVo">
@@ -304,7 +313,9 @@
 						
 					},
 					error: function(request,status,error) {
-						console.log(request.status);
+						if(request.status==423){
+							whenAccessDeny($('#followerDiv'));
+						}
 					}
 					
 				}).always(function(){
@@ -333,7 +344,9 @@
 						
 					},
 					error: function(request,status,error) {
-						console.log(request.status);
+						if(request.status==423){
+							whenAccessDeny($('#followingDiv'));
+						}
 					}
 					
 				}).always(function(){
@@ -358,7 +371,9 @@
 						
 					},
 					error: function(request,status,error) {
-						console.log(request.status);
+						if(request.status==423){
+							whenAccessDeny($('#likeDiv'));
+						}
 					}
 					
 				}).always(function(){
@@ -384,8 +399,9 @@
 						
 					},
 					error: function(request,status,error) {
-						console.log(request.status);
-						$('#favoriteDiv').append()
+						if(request.status==423){
+							whenAccessDeny($('#favoriteDiv'));
+						}
 					}
 					
 				}).always(function(){
@@ -503,6 +519,18 @@
 				})
 			}
 		});
+
+		/* $('.more-review-content-btn').on("click",function(){
+            $(this).parent().find('.more-review-content').toggleClass('moreData').promise().done(function(){
+                 if($(this).hasClass("moreData") === false){
+                	 $(this).parent().find('.more-review-content-btn').html('<img src="/moca/resources/imgs/icons/chevron-top.svg">'+"접기");
+                 	$(this).css({ 'height': 'auto', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
+	              }else{
+	            	  $(this).parent().find('.more-review-content-btn').html('<img src="/moca/resources/imgs/icons/chevron-bottom.svg">'+"더보기");
+	            	 $(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
+		          }
+            });
+         }); */
 		
     });
 
@@ -555,7 +583,12 @@
 		$('#userImage').find('img').attr('src', URL.createObjectURL(userImage));
 		$('#userImage').find('img').css('width','110px').css('height','110px');
 	};
-   
+
+	var whenAccessDeny = function(whereAccessDeny){
+		var accessDeny = $('#accessDeny').clone();
+		accessDeny.css('display','block');
+		whereAccessDeny.prepend(accessDeny);
+	};   
 	</script>
 </head>
 <body>
@@ -727,8 +760,8 @@
 													</c:forEach>
 												</div>
 												<div class="review-content-div">
-													<span class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</span>
-													<span class="more-review-content-btn">더보기</span>
+													<pre class="reviewInfo-review-content more-review-content">${reviewVo.reviewContent }</pre>
+													<span class="more-review-content-btn"><img src="<c:url value="/resources/imgs/icons/chevron-bottom.svg"/>">더보기</span>
 												</div>
 											</div>
 											<div class="form-group like-hate">
@@ -781,10 +814,8 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="likeDiv">
-						<br>
 					</div>
 					<div class="tab-pane fade" id="favoriteDiv">
-						<br>						
 					</div>
 					
 				</div>
@@ -805,7 +836,7 @@
 	<div class="row" id="storeTemplate" style="display : none;" style="cursor:pointer;">
 		<span class="storeId" style="display:none;"></span>
 		<div class="storeLogoDiv col-md-2 col-md-offset-1">
-			<img src="<c:url value="/resources/imgs/logoDefault.png"/>" alt="logo" class="img-circle clickableSvgCss" style="width:100px;">
+			<img src="<c:url value="/resources/imgs/logo/noneCirclelogo.png"/>" alt="logo" class="img-circle clickableSvgCss" style="width:100px; height:100px;">
 		</div>
 		<div class="storeInfoDiv col-md-5">
 			<div class="storeNameDiv">
@@ -829,8 +860,9 @@
 	</div>
 	
 	<!-- 접근 제한 Div -->
-	<div class="" id="accessDeny">
-		
+	<div class="text-center" id="accessDeny" style="display: none;">
+		<img src="/moca/resources/imgs/icons/lock.svg"/>
+		<p><br>접근 제한된 정보입니다</p>
 	</div>
 	
 	<!--회원정보 수정 모달 -->
