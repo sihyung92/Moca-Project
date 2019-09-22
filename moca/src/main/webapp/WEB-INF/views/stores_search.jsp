@@ -23,11 +23,10 @@
 	input:focus,
 	select:focus,
 	textarea:focus,
-	button:focus,
 	a:focus{
 	    outline-color: rgba(0,0,0,0.2);
 	}
-	button:active{
+	button:active,	button:focus{
 	    outline: none !important;
 	}
 	#header{
@@ -438,8 +437,11 @@
 			overlayList=[];
 			var template = $($('.links_container')[0]).clone();
 			$('.links_container').remove();
+			$(template).appendTo('#result_stores .row');
 			$(data).each(function(idx, ele){			
 				var store = template.clone();
+				console.log($(store).attr('class'));
+				//$(store).attr('class',$(store).attr('class').replace(/\bpage-\d+\b/g, ''));
 				$(store).addClass('page-'+idx);
 				var inputs = $(store).children().children().children('input');
 				$(inputs[0]).val(ele.store_Id);
@@ -488,15 +490,15 @@
 	    }            
 	}
 	
-//페이지 바 추가, 페이지에 해당하는 가게 노출 및 지도 처리f
+//페이지 바 추가, 페이지에 해당하는 가게 노출 및 지도 처리
 	function paging(totalCount,currentPage){
-		$('.links_container').hide(); //일단 가게 다 숨겨
+		$('.links_container').hide(); //가게 패널 전체 숨김 처리
 		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).remove(); //페이지 바 초기화
 		var countList = 10; //한 페이지에 들어갈 가게 수
 		var countPage = 10; //페이지 바에 들어갈 수 있는 최대 페이지 수
 		var totalPage = Math.floor(totalCount / countList); //총 페이지
 		var startPage = (Math.floor((currentPage - 1)/10)) * 10 +1; //시작페이지
-		
+		console.log('total count :'+totalCount);
 		var endPage =  startPage + countPage - 1; //마지막페이지
 		//console.log('paging 도중, totalPage='+totalPage+' startPage='+startPage+' endPage='+endPage)
 		if (totalCount % countList > 0) {
