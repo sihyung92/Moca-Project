@@ -28,10 +28,6 @@ public class MainServiceImpl implements MainService{
 
 	@Override
 	public List<StoreVo> getHitStoresList(Map<String, String> variables) {
-		/*
-		 * List<StoreVo> list = storeDao.selectHitStoresList();
-		 * //list.get(1).setStoreImg1("null"); logger.debug(list.get(1).getStoreImg1());
-		 */
 		return storeDao.selectHitStoresList(variables);
 	}
 		

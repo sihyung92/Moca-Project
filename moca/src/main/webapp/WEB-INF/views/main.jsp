@@ -18,6 +18,9 @@
 	}
 /* body header */
 	/* 템플릿 헤더 CSS(투명 설정 / 검색창 없애기) */
+	#brandLogo{
+		content: url("resources/imgs/logo/mocaWhiteLogo.png");
+	}
 	#header .navbar{
 		background-image: none;
 		background-color:transparent;
@@ -47,7 +50,8 @@
    	 	transform: translate(-50%, -50%);
 	}
 	#searchBar_main #keyword_main{					/* 검색어 input 태그 */
-		padding-inline-start: 20px;
+		/* padding-inline-start: 20px; */
+		text-indent: 20px;
 		font-size: 20px;
 		height: 50px;
 		width: 100%;
@@ -115,13 +119,14 @@
 	}
 	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-img-list{
 		height: 200px;
+		position: relative;
 		overflow:hidden;
 	}
 	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-img-list img{
 		display: none;
 		width: 100%;
 		height: auto;
-		position: relative;
+		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%,-50%);
@@ -151,7 +156,7 @@
 	}
 	.review{
 		background-color: rgba(236,235,229,0.5);
-		padding: 10px;
+		padding: 10px 10px 0px;
 		margin-bottom: 2px;
 		overflow: hidden;
 	}
@@ -170,7 +175,7 @@
 		margin-top: 3px;
 		margin-left: 10px; 
 	}
-	#review-container a{
+	#review-container a:nth-child(1){
 		color: dimgray;
 		font-weight: bold;
 	    font-size: 20px;
@@ -183,10 +188,15 @@
 		color: rgb(198,161,83);
 	}
 	.review-text-userInfo{
+		color: dimgray;
 		font-size: 12px;
 	}
 	.review-text-content{
+		border: none;
 		font-size: 15px;
+		font-family: 'NanumGothic';
+		color: dimgray;
+		white-space: pre-wrap;
 	}
 /* 미디어 쿼리 */	
 	@media (max-width: 768px){
@@ -201,6 +211,13 @@
 		}
 		#recentReview-container{
 			margin-top: 40px;
+		}
+		#header .collapse, #searchBar{
+			background-color: rgba(255,255,255,0.7);
+			border: none;
+		}
+		#header #keyword{
+			background-color: transparent;
 		}
 	}
 </style>
@@ -221,7 +238,12 @@
     	$(window).on("scroll", changeHeaderColor); 
 		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
     	$(window).on("scroll", updateData);
-    	
+		//마우스 휠 내림 이벤트(모바일에서 활성화 시켜놓은 검색창 숨기기)
+    	$('body').on('mousewheel', function(e){
+            if($(window).width()<768 && e.originalEvent.wheelDelta > 0) {
+            	$('#searchBar').hide();
+            }
+        });        	
     	
     	//키워드 검사
 		$('#searchBar_main button').click(function(){
@@ -256,9 +278,9 @@
     	//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
     	$('.mocaPick .store a').on('mousedown', goDetail);        
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
-       // $('.mocaPick .store a').on("mouseenter", mouseEnter);
+       	$('.mocaPick .mocaPick-img-list').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
-       // $('.mocaPick .store a').on("mouseleave", mouseLeave);
+       	$('.mocaPick .mocaPick-img-list').on("mouseleave", mouseLeave);
     };//onload() 끝  
 
     //이미지 클릭 시 디테일 페이지로 이동 이벤트
@@ -267,8 +289,6 @@
 	}; 
     //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
     function mouseEnter(){
-              var overlay = $(this).children('.overlay');
-              overlay.show();
               var imgs = $(this).children('img');
               var i=0;
             	//이미지 슬라이드 함수
@@ -358,10 +378,10 @@
                         	$('.mocaPick .store a').on('mousedown', goDetail);
         				}
         				//기존 캐러셀 mouseEnter/Leave 이벤트 해제 & 추가
-        				//$('.mocaPick li a').off("mouseenter", mouseEnter);
-        				//$('.mocaPick li a').off("mouseleave", mouseLeave);
-        				//$('.mocaPick li a').on("mouseenter", mouseEnter);
-        				//$('.mocaPick li a').on("mouseleave", mouseLeave);
+        				$('.mocaPick .mocaPick-img-list').off("mouseenter", mouseEnter);
+        				$('.mocaPick .mocaPick-img-list').off("mouseleave", mouseLeave);
+        				$('.mocaPick .mocaPick-img-list').on("mouseenter", mouseEnter);
+        				$('.mocaPick .mocaPick-img-list').on("mouseleave", mouseLeave);
         				$(window).on("scroll", updateData);        			
     				},
     				error: function(e){
@@ -372,28 +392,30 @@
             pre_position=position;
     };      
     //스크롤 위치에 따라 헤더 배경색 변경
-    function changeHeaderColor(){        
+    function changeHeaderColor(e){        
     	var position = $(window).scrollTop();
     	var width = $(window).width();
-    	if(width>768){
-    		if(position > 438){
-            	$('#searchBar').show();
+    	if(width < 768){
+			if(position > 188){            	
             	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
+            	$('#brandLogo').css('content','url(resources/imgs/logo/mocaLineWhiteLogo.png)');
             }else{
-            	$('#searchBar').hide();
             	$('#header .navbar').css('background-color', 'transparent');
+            	$('#brandLogo').css('content','url(resources/imgs/logo/mocaWhiteLogo.png)');
             }
         }else{
-        	if(position > 188){
+        	if(position > 438){
             	$('#searchBar').show();
             	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
+            	$('#brandLogo').css('content','url(resources/imgs/logo/mocaLineWhiteLogo.png)');
             }else{
             	$('#searchBar').hide();
             	$('#header .navbar').css('background-color', 'transparent');
+            	$('#brandLogo').css('content','url(resources/imgs/logo/mocaWhiteLogo.png)');
             }
-        }
-    	
+        }    	
     };
+    
 	</script>
 </head>
 <body>
@@ -464,8 +486,11 @@
 								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
 								<span class="review-text-averageLevel">${bean.averageLevel}</span>
 							</a><br/>
-							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
-							<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+							&nbsp;<a href="./mypage/${bean.account_id }">
+								<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+								<span class="review-text-userInfo">${bean.nickName }</span>
+							</a>
+							<span>&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
 							<svg  id="thumbs-up" xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 32 32" >
 								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
 									M30,22.6c1.8-1.4,1.8-4.2,0-5.6c-0.1-0.1-0.1-0.1-0.1-0.2c0.3-0.7,0.3-1.5,0.1-2.2c-0.4-1.6-2-2.8-3.7-2.8c-2.5,0-4.9,0-7.4,0
@@ -494,11 +519,13 @@
 							<c:if test="${not empty bean.imageList }">
 								<div class="review-img-list">
 									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
-									  	<img src="${img.url }" alt="${img.originName }">		  				  	
+									  	<a href="./stores/${bean.store_id}"><img src="${img.url }" alt="${img.originName }"></a>	  				  	
 							  		</c:forEach>
 								</div>
 							</c:if>
-							<span class="review-text-content col-md-12">${bean.reviewContent }</span>				
+							<a href="./stores/${bean.store_id}">
+								<pre class="review-text-content col-md-12">${bean.reviewContent }</pre>	
+							</a>			
 						</div>
 					</c:forEach>
 				</div>
@@ -513,8 +540,11 @@
 								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
 								<span class="review-text-averageLevel">${bean.averageLevel}</span>
 							</a><br/>			
-							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
-							<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+							&nbsp;<a href="./mypage/${bean.account_id }">
+								<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+								<span class="review-text-userInfo">${bean.nickName }</span>
+							</a>
+							<span>&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
 							<svg  id="thumbs-up" xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 32 32" >
 								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
 									M30,22.6c1.8-1.4,1.8-4.2,0-5.6c-0.1-0.1-0.1-0.1-0.1-0.2c0.3-0.7,0.3-1.5,0.1-2.2c-0.4-1.6-2-2.8-3.7-2.8c-2.5,0-4.9,0-7.4,0
@@ -543,11 +573,13 @@
 							<c:if test="${not empty bean.imageList }">
 								<div class="review-img-list">
 									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
-								  		<img src="${img.url }" alt="${img.originName }">		  				  	
+								  		<a href="./stores/${bean.store_id}"><img src="${img.url }" alt="${img.originName }"></a>		  				  	
 							  		</c:forEach>
 								</div>
 							</c:if>
-							<span class="review-text-content col-md-12">${bean.reviewContent }</span>			
+							<a href="./stores/${bean.store_id}">
+								<pre class="review-text-content col-md-12">${bean.reviewContent }</pre>	
+							</a>		
 						</div>
 					</c:forEach>
 				</div>
