@@ -5,10 +5,14 @@ src: url('/moca/resources/fonts/NanumGothic.eot') format('embedded-opentype'),ur
 body{font-family: 'NanumGothic';}
 
 html{overflow-x:hidden; overflow-y:auto;}
+.navbar-collapse.in {
+    overflow-x: hidden;overflow-y: hidden;
+}
 #header .navbar-default .navbar-nav > li > a {
     color: #000;
     text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
 }
+#header .navbar-form{margin-top: 0px;margin-bottom: 0px;}
 #profile-icon{border:1px solid #fff;}
 .navbar-default{background-image:none;border-radius:0px;background-color:#FFFFFF;}
 #header .navbar-collapse{padding-right:0px;padding-top:3px;}
@@ -61,12 +65,14 @@ nav select:-webkit-autofill:focus {
 	.navbar-default .form-control{width:300px;}
 	#beMoca{display:none;}
 	.searchBar{display:block;}
+	#header .navbar-form{margin-top: 8px;margin-bottom: 8px;}
 }
 
 /*데스크톱 크기*/
 @media(min-width:1111px){/*986*/
 	.navbar-default .form-control{width:420px;}
 	#beMoca{display:block;}
+	#header .navbar-form{margin-top: 8px;margin-bottom: 8px;}
 }
 .navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:#FFFFFF;}
 
@@ -109,38 +115,6 @@ nav select:-webkit-autofill:focus {
 .qArea .btn-primary:hover{background-color:rgba(0,0,0,0.2)}
 .qArea .btn-primary:focus{background-color:none;}
 
-/*stores_search
-#filter_region > span{display:inline-block;border-radius:5px;margin:2px;padding:3px; border:2px solid rgba(107,122,41,1);}
-#filter_region > span:hover{background-color:rgba(107,122,41,1);color:#FFFFFF;}
-#filter_region > span.on{background-color:rgba(107,122,41,1);color:#FFFFFF;}
-.region_list{
-		display : none;
-	}
-.seoul{
-		display : inline-block;
-	}
-*/
-
-/*modal-body > radio box
-.modal-content .modal-body .radio-inline{
-
-}
-.modal-content .modal-body input[type="checkbox"]:after{}
-.modal-content>.modal-body input[type="checkbox"]{
-	display: inline-block;
-  width: 100%;
-  padding: 10px 15px;
-  cursor: pointer;
-  color: rgb(107,122,41);
-  border: 0;
-  border-radius: 0;
-  outline: 0;
-  background: #e6e6e6;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-*/
 /*스크롤바*/
 ::-webkit-scrollbar-track
 { -webkit-box-shadow: none;
@@ -178,13 +152,13 @@ z-index:1000;
        background: rgb(245,245,245);
        font-size: 13px;
        line-height: 20px;
-       color: rgba(0,0,0,0.38); }
+       color: rgba(0,0,0,0.38);}
 #footer .align {width: 1024px;margin: 0 auto;}
 #footer.show {opacity: 1;visibility: visible;}
 #footer .link li {float: left;margin-bottom: 0;line-height: normal;font-style:normal;}
 #footer .link li a {color: rgba(0,0,0,0.87);}
 #footer .link li span{display:inline-block;position:relative;top:-2px;width:24px;font-size:11px;text-align:center}
-#footer p{padding:37px 0 24px 0;}
+#footer p{padding:0px 0 24px 0;}
 #footer p b{display:inline-block;margin-right:10px}
 #footer address {line-height: 22px;}
 #footer address span{display:block;padding-bottom:7px}
