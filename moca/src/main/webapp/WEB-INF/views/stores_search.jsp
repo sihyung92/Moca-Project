@@ -234,16 +234,6 @@
  	var map, overlayList, bounds, pageNum;
  	var markers = new Array();
     window.onload = function () {
-   	    var tagList = ${tagList};
-   	    $("#keyword2").add("#keyword").autocomplete({
-  	        source: tagList,
-  	        focus: function(event, ui) {
-  	            return false;
-  	            //event.preventDefault();
-  	        }
-  	    });
-    	
-   	    $('#keyword').attr('placeholder','#을 입력하여 검색 가능한 태그를 확인해보세요!');
    	    
     	 //키워드 검사
 		$('#searchBtn2').click(function(){
@@ -258,6 +248,18 @@
 				$(this).parent().submit();
 			}
 		});
+				
+    	//태그 추천 기능 : #입력시 검색어 자동완성
+   	    var tagList = ${tagList};
+   	    $("#keyword2").add("#keyword").autocomplete({
+  	        source: tagList,
+  	        focus: function(event, ui) {
+  	            return false;
+  	            //event.preventDefault();
+  	        }
+  	    });
+   	    $('#keyword').attr('placeholder','#을 입력하여 검색 가능한 태그를 확인해보세요!');
+   	    
 //카페 리스트 클릭 이벤트(POST방식으로 디테일 페이지 이동)
         $('.links').on("click",toDetail);
 
@@ -314,8 +316,20 @@
 		$(window).on('scroll', showHeaderSearch);
 		$(window).on('resize', mapResize);
 		mapResize();
+		paintGray($('.score'));
     };//onload 끝-
-
+    
+    //비활성 점수 회색 처리
+	function paintGray(element){
+		element.each(function(idx,ele){
+			if($(ele).html()==0.0){
+				$(ele).css({'border-color':'gray','color':'gray'});
+			}else{
+				$(ele).css({'border-color':'orange','color':'orange'});
+			}
+		})
+	};
+	
     //리스트 클릭 이벤트
     function toDetail(){
         //구글에서 리뷰/별점 데이터 받아오기 테스트 중
@@ -428,14 +442,13 @@
 				data: {"filter":"${filter}", "keyword":"${keyword}", "rect": rect, "y":center.getLat(), "x": center.getLng()},
 				statusCode: {
 				    418: function(data) {
-					    console.log(data);
+					    //console.log(data);
 					    data=data.responseJSON;
 					    if(data!=""){
 					    	reload_map(data);
 							paging(data.length, 1);
 						    map.setBounds(bounds);	
 						}else{
-							alert("검색 결과 없습니다");	//////여기 수정해야되-------
 							$('#warning_noResult').text("검색 결과가 없습니다😥");
 						}					    							
 				    }
@@ -472,13 +485,12 @@
 				$(inputs[7]).val(ele.url);
 				$(inputs[8]).val(ele.xLocation);
 				$(inputs[9]).val(ele.yLocation);
-				$($(store).children()[0]).find('img').attr('alt', ele.name + '대표이미지');
+				$($(store).children()[0]).find('img').first().attr('alt', ele.name + '대표이미지');
 				if(ele.storeImg1)
-					$($(store).children()[0]).find('img').attr('src', ele.storeImg1);
+					$($(store).children()[0]).find('img').first().attr('src', ele.storeImg1);
 				var spans = $($(store).children()[0]).find('span');
-				console.log(spans);
 				$(spans[0]).html(ele.name);
-				$(spans[1]).html(ele.averageLevel);
+				$(spans[1]).html(ele.averageLevel.toFixed(1));
 				$(spans[2]).html(ele.reviewCnt);
 				$(spans[3]).html(ele.viewCnt);
 				var distance;
@@ -496,7 +508,8 @@
 			});
 			$('.links').on("click",toDetail);
 			setMarkers(null);
-			createElements();			
+			createElements();
+			paintGray($('.score'));
 		};    
 		</c:if>
 	};
@@ -621,6 +634,7 @@
             }
         }
     };
+    
 	</script>	
 </head>
 <body>
