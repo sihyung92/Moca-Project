@@ -93,14 +93,14 @@ public class StoreDaoImpl implements StoreDao {
 
 	@Override
 	public List<StoreVo> selectStoresNearBy(Map<String, String> variables) {
-		List<StoreVo> list = sqlSession.selectList("selectStoresNearBy",variables);
+		List<StoreVo> list = sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectStoresNearBy",variables);
 		logger.debug("DAO: 근처 카페 요청 후");
 		return list;
 	}
 
 	@Override
 	public List<StoreVo> selectTrendStoresList(String tagName) {
-		return sqlSession.selectList("selectByReviewTag",tagName);
+		return sqlSession.selectList("com.kkssj.moca.model.StoreDao.selectByReviewTag",tagName);
 	}
 	
 	public List<StoreVo> selectHitStoresList(Map<String, String> variables) {	
