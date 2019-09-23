@@ -997,7 +997,19 @@
 				<div class="links_container col-xs-6 col-md-6 page-${status.index }">
 					<div class="links">
 						<form action="stores" method="post">
-							<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}<c:if test="${bean.storeImg1 eq null}">resources/imgs/logo/stampLogo.png</c:if>"/><br/>
+							<c:if test="${bean.storeImg1 ne null}">
+								<img alt="${bean.name} 대표 이미지" src="${bean.storeImg1}"/>
+							</c:if>
+							<c:if test="${bean.storeImg1 eq null}">
+								<c:if test="${bean.logoImg ne null}">
+									<img alt="${bean.name} 대표 이미지" src="${bean.logoImg}"/>
+								</c:if>
+								<c:if test="${bean.logoImg eq null}">
+									<img alt="${bean.name} 대표 이미지" src="resources/imgs/logo/stampLogo.png"/>
+								</c:if>
+							</c:if>
+							<br/>
+							
 							<input type="hidden" name="store_Id" value="${bean.store_Id}">
 							<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
 							<input type="hidden" class="name" name="name" value="${bean.name}"><span class="bold">${bean.name }</span>&nbsp;<span class="score">${bean.averageLevel}</span><br/>
