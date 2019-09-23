@@ -62,6 +62,7 @@ public class StoreController {
 
 			// category 분류 후 분류된 카테고리로 set storeVo
 			storeVo.setCategory(changeCategory(storeVo.getCategory(), storeVo.getName()));
+			storeVo.setLogoImg(setUrlByCategory(storeVo.getName()));
 			logger.debug(storeVo.getCategory());
 			logger.debug(storeVo.toString());
 			storeVo = storeService.addStore(storeVo);
@@ -69,6 +70,38 @@ public class StoreController {
 		}
 		
  		return "redirect:stores/"+storeVo.getStore_Id();
+	}
+
+
+	private String setUrlByCategory(String storeName) {
+		String[][] storeNames = new String[][] {{"스타벅스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/starbucks.jpg"},
+												{"커피빈","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/coffeBean.jpg"},
+												{"이디아","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/ediya.jpg"},
+												{"투썸플레이스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/twoSomePlace.jpg"},
+												{"드롭탑","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/twoSomePlace.jpg"},
+												{"할리스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/hollys.jpg"},
+												{"풀바셋","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/paulBassett.jpg"},
+												{"파스쿠찌","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/pascucci.jpg"},
+												{"탐앤탐스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/tomntoms.jpg"},
+												{"빽다방","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/paiksCoffe.jpg"},
+												{"토프레소","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/topresso.jpg"},
+												{"만랩커피","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/10000lab.jpg"},
+												{"커피온리","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/coffeOnly.jpg"},
+												{"쥬씨","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/juicy.jpg"},
+												{"메가커피","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/megaCoffe.jpg"},
+												{"매머드커피","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/mmthCoffe.jpg"},
+												{"더리터","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/theLitter.jpg"},
+												{"더벤티","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/theVenti.jpg"}
+												};
+												
+		for (int i = 0; i < storeNames.length; i++) {
+			logger.debug(storeName +":"+storeNames[i][0]+"," +storeName.contains(storeNames[i][0]) );
+			if(storeName.contains(storeNames[i][0])) {
+				return storeNames[i][1];
+			}
+		}
+
+		return null;
 	}
 
 
