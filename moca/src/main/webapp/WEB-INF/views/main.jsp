@@ -115,13 +115,14 @@
 	}
 	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-img-list{
 		height: 200px;
+		position: relative;
 		overflow:hidden;
 	}
 	.bx-wrapper .bx-viewport .mocaPick .store .mocaPick-img-list img{
 		display: none;
 		width: 100%;
 		height: auto;
-		position: relative;
+		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%,-50%);
@@ -228,13 +229,12 @@
     	$(window).on("scroll", changeHeaderColor); 
 		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
     	$(window).on("scroll", updateData);
-		//검색창 마우스 휠 이벤트
+		//마우스 휠 내림 이벤트(모바일에서 활성화 시켜놓은 검색창 숨기기)
     	$('body').on('mousewheel', function(e){
             if($(window).width()<768 && e.originalEvent.wheelDelta > 0) {
             	$('#searchBar').hide();
             }
-        });
-        	
+        });        	
     	
     	//키워드 검사
 		$('#searchBar_main button').click(function(){
@@ -269,9 +269,9 @@
     	//캐러셀 mouseDown 이벤트(해당 카페 디테일 페이지로 이동)
     	$('.mocaPick .store a').on('mousedown', goDetail);        
         //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
-       // $('.mocaPick .store a').on("mouseenter", mouseEnter);
+       	$('.mocaPick .mocaPick-img-list').on("mouseenter", mouseEnter);
         //캐러셀 mouesLeave: 원복
-       // $('.mocaPick .store a').on("mouseleave", mouseLeave);
+       	$('.mocaPick .mocaPick-img-list').on("mouseleave", mouseLeave);
     };//onload() 끝  
 
     //이미지 클릭 시 디테일 페이지로 이동 이벤트
@@ -280,8 +280,6 @@
 	}; 
     //캐러셀 mouseEnter: 이미지 슬라이드 & 오버레이 이벤트
     function mouseEnter(){
-              var overlay = $(this).children('.overlay');
-              overlay.show();
               var imgs = $(this).children('img');
               var i=0;
             	//이미지 슬라이드 함수
@@ -371,10 +369,10 @@
                         	$('.mocaPick .store a').on('mousedown', goDetail);
         				}
         				//기존 캐러셀 mouseEnter/Leave 이벤트 해제 & 추가
-        				//$('.mocaPick li a').off("mouseenter", mouseEnter);
-        				//$('.mocaPick li a').off("mouseleave", mouseLeave);
-        				//$('.mocaPick li a').on("mouseenter", mouseEnter);
-        				//$('.mocaPick li a').on("mouseleave", mouseLeave);
+        				$('.mocaPick .mocaPick-img-list').off("mouseenter", mouseEnter);
+        				$('.mocaPick .mocaPick-img-list').off("mouseleave", mouseLeave);
+        				$('.mocaPick .mocaPick-img-list').on("mouseenter", mouseEnter);
+        				$('.mocaPick .mocaPick-img-list').on("mouseleave", mouseLeave);
         				$(window).on("scroll", updateData);        			
     				},
     				error: function(e){
