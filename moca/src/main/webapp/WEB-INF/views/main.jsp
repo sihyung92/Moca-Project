@@ -18,6 +18,9 @@
 	}
 /* body header */
 	/* 템플릿 헤더 CSS(투명 설정 / 검색창 없애기) */
+	#brandLogo{
+		content: url("resources/imgs/logo/mocaWhiteLogo.png");
+	}
 	#header .navbar{
 		background-image: none;
 		background-color:transparent;
@@ -47,7 +50,8 @@
    	 	transform: translate(-50%, -50%);
 	}
 	#searchBar_main #keyword_main{					/* 검색어 input 태그 */
-		padding-inline-start: 20px;
+		/* padding-inline-start: 20px; */
+		text-indent: 20px;
 		font-size: 20px;
 		height: 50px;
 		width: 100%;
@@ -152,7 +156,7 @@
 	}
 	.review{
 		background-color: rgba(236,235,229,0.5);
-		padding: 10px;
+		padding: 10px 10px 0px;
 		margin-bottom: 2px;
 		overflow: hidden;
 	}
@@ -171,7 +175,7 @@
 		margin-top: 3px;
 		margin-left: 10px; 
 	}
-	#review-container a{
+	#review-container a:nth-child(1){
 		color: dimgray;
 		font-weight: bold;
 	    font-size: 20px;
@@ -184,10 +188,15 @@
 		color: rgb(198,161,83);
 	}
 	.review-text-userInfo{
+		color: dimgray;
 		font-size: 12px;
 	}
 	.review-text-content{
+		border: none;
 		font-size: 15px;
+		font-family: 'NanumGothic';
+		color: dimgray;
+		white-space: pre-wrap;
 	}
 /* 미디어 쿼리 */	
 	@media (max-width: 768px){
@@ -387,19 +396,22 @@
     	var position = $(window).scrollTop();
     	var width = $(window).width();
     	if(width < 768){
-			if(position > 188){
-            	
+			if(position > 188){            	
             	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
+            	$('#brandLogo').css('content','url(resources/imgs/logo/mocaLineWhiteLogo.png)');
             }else{
             	$('#header .navbar').css('background-color', 'transparent');
+            	$('#brandLogo').css('content','url(resources/imgs/logo/mocaWhiteLogo.png)');
             }
         }else{
         	if(position > 438){
             	$('#searchBar').show();
             	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
+            	$('#brandLogo').css('content','url(resources/imgs/logo/mocaLineWhiteLogo.png)');
             }else{
             	$('#searchBar').hide();
             	$('#header .navbar').css('background-color', 'transparent');
+            	$('#brandLogo').css('content','url(resources/imgs/logo/mocaWhiteLogo.png)');
             }
         }    	
     };
@@ -474,8 +486,11 @@
 								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
 								<span class="review-text-averageLevel">${bean.averageLevel}</span>
 							</a><br/>
-							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
-							<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+							&nbsp;<a href="./mypage/${bean.account_id }">
+								<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+								<span class="review-text-userInfo">${bean.nickName }</span>
+							</a>
+							<span>&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
 							<svg  id="thumbs-up" xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 32 32" >
 								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
 									M30,22.6c1.8-1.4,1.8-4.2,0-5.6c-0.1-0.1-0.1-0.1-0.1-0.2c0.3-0.7,0.3-1.5,0.1-2.2c-0.4-1.6-2-2.8-3.7-2.8c-2.5,0-4.9,0-7.4,0
@@ -504,11 +519,13 @@
 							<c:if test="${not empty bean.imageList }">
 								<div class="review-img-list">
 									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
-									  	<img src="${img.url }" alt="${img.originName }">		  				  	
+									  	<a href="./stores/${bean.store_id}"><img src="${img.url }" alt="${img.originName }"></a>	  				  	
 							  		</c:forEach>
 								</div>
 							</c:if>
-							<span class="review-text-content col-md-12">${bean.reviewContent }</span>				
+							<a href="./stores/${bean.store_id}">
+								<pre class="review-text-content col-md-12">${bean.reviewContent }</pre>	
+							</a>			
 						</div>
 					</c:forEach>
 				</div>
@@ -523,8 +540,11 @@
 								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
 								<span class="review-text-averageLevel">${bean.averageLevel}</span>
 							</a><br/>			
-							&nbsp;<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
-							<span class="review-text-userInfo">${bean.nickName }&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
+							&nbsp;<a href="./mypage/${bean.account_id }">
+								<img class="review-img-profile" src="${bean.thumbnailImage }<c:if test="${bean.thumbnailImage eq null or bean.thumbnailImage eq ''}">${defaultThum }</c:if>" alt="${bean.nickName }"/>
+								<span class="review-text-userInfo">${bean.nickName }</span>
+							</a>
+							<span>&nbsp;&nbsp;&#124;&nbsp;&nbsp;</span>
 							<svg  id="thumbs-up" xmlns="http://www.w3.org/2000/svg" width="13px" height="13px" viewBox="0 0 32 32" >
 								<path fill="none" stroke="dimgray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="
 									M30,22.6c1.8-1.4,1.8-4.2,0-5.6c-0.1-0.1-0.1-0.1-0.1-0.2c0.3-0.7,0.3-1.5,0.1-2.2c-0.4-1.6-2-2.8-3.7-2.8c-2.5,0-4.9,0-7.4,0
@@ -553,11 +573,13 @@
 							<c:if test="${not empty bean.imageList }">
 								<div class="review-img-list">
 									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
-								  		<img src="${img.url }" alt="${img.originName }">		  				  	
+								  		<a href="./stores/${bean.store_id}"><img src="${img.url }" alt="${img.originName }"></a>		  				  	
 							  		</c:forEach>
 								</div>
 							</c:if>
-							<span class="review-text-content col-md-12">${bean.reviewContent }</span>			
+							<a href="./stores/${bean.store_id}">
+								<pre class="review-text-content col-md-12">${bean.reviewContent }</pre>	
+							</a>		
 						</div>
 					</c:forEach>
 				</div>
