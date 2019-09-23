@@ -1,6 +1,7 @@
 package com.kkssj.moca.controller;
 
 import java.net.MalformedURLException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class SearchController {
 	
 	
 	@RequestMapping(value = "/stores", method = RequestMethod.GET)
-	public String search(HttpSession session, HttpServletRequest request, String lng, String lat, String keyword, String filter, String[] region, Model model) throws MalformedURLException {
+	public String search(HttpSession session, HttpServletRequest request, String lng, String lat, String keyword, String filter, String[] region, Model model) throws MalformedURLException, SQLException {
 
 		long enterTime=System.currentTimeMillis();
 		//세션에 위치 정보 x, y값 저장 (geolocation 페이지에서 x, y좌표를 받아서 돌아온 경우)
@@ -134,6 +135,10 @@ public class SearchController {
 		if(keyword.startsWith("'") && keyword.endsWith("'")) {
 			keyword=keyword.substring(1, keyword.length()-1);
 		}
+		//검색어 자동완성 기능 : 검색가능한 태그들
+		List<String> tagList = searchService.getTagNameList();
+
+		model.addAttribute("tagList", tagList);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("storeList", storeList);
 		logger.debug("카카오 검색 총 갯수: "+(storeList.size()));

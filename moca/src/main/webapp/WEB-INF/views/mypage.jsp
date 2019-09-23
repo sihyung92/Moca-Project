@@ -23,7 +23,10 @@
 	#userGraph table tr{
 		height:30px;
 	}
-	
+	/*그 스토어페이지랑 메인페이지랑 로그인 사이즈가 다른 이유가 클래스 설정이 이상해서임 이거 제발 추가해야함*/
+	.modal-login{
+	    width:100%;
+	}
 	#userBadge{
 		height:150px;
 		margin-top:20px;

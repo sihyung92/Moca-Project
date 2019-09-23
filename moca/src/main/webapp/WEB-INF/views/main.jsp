@@ -175,7 +175,7 @@
 		margin-top: 3px;
 		margin-left: 10px; 
 	}
-	#review-container a:nth-child(1){
+	#review-container .review .review_storeName{
 		color: dimgray;
 		font-weight: bold;
 	    font-size: 20px;
@@ -197,6 +197,7 @@
 		font-family: 'NanumGothic';
 		color: dimgray;
 		white-space: pre-wrap;
+		background-color : transparent;
 	}
 /* 미디어 쿼리 */	
 	@media (max-width: 768px){
@@ -482,7 +483,7 @@
 				<div id="bestReview">
 					<c:forEach items="${bestReviews }" var="bean">
 						<div class="review">
-							<a href="./stores/${bean.store_id}">
+							<a class="review_storeName"href="./stores/${bean.store_id}">
 								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
 								<span class="review-text-averageLevel">${bean.averageLevel}</span>
 							</a><br/>
@@ -536,7 +537,7 @@
 				<div id="recentReview">
 					<c:forEach items="${recentReviews }" var="bean">
 						<div class="review">
-							<a href="./stores/${bean.store_id}">
+							<a class="review_storeName" href="./stores/${bean.store_id}">
 								<span class="review-text-storeName">${bean.storeName}&nbsp;</span>
 								<span class="review-text-averageLevel">${bean.averageLevel}</span>
 							</a><br/>			
