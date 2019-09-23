@@ -7,7 +7,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Insert title here</title>
+<title>moca</title>
+<link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
+<link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
 <style type="text/css">
@@ -90,10 +93,10 @@
 	.overlay{
 		font-family: "NanumGothic",sans-serif;
 		width: 300px;
-		padding : 2px;
 	}
 	
 	.overlay .center{
+		padding : 2px;
 		font-size : 8pt;
 	}
 	
@@ -220,13 +223,25 @@
 </style>
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e63ece9668927d2e8027037f0aeb06b5"></script>
 <script type="text/javascript">
  	var lat=${y};
  	var lng=${x};
  	var map, overlayList, bounds, pageNum;
  	var markers = new Array();
-    window.onload = function () {  
+    window.onload = function () {
+   	    var tagList = ${tagList};
+   	    $("#keyword2").add("#keyword").autocomplete({
+  	        source: tagList,
+  	        focus: function(event, ui) {
+  	            return false;
+  	            //event.preventDefault();
+  	        }
+  	    });
+    	
+   	    $('#keyword').attr('placeholder','#을 입력하여 검색 가능한 태그를 확인해보세요!');
+   	    
     	 //키워드 검사
 		$('#searchBtn2').click(function(){
 			var keyword = $('#keyword2').val();
@@ -577,9 +592,11 @@
     function mapResize(){
     	var width = $(window).width();
     	if(width<992){
+    	 	$('#keyword2').attr('placeholder', '# 입력으로 태그검색');
 			var mapHeight = $(window).height()*1/2;
 			$('#map').css('height', mapHeight);
     	}else{
+    	 	$('#keyword2').attr('placeholder', '#을 입력하여 검색 가능한 태그를 확인해보세요!');
 			$('#map').css('height', '600px');
     	}
     }
@@ -928,7 +945,7 @@
 	<div id="search" class="row">
 		<form class="form-inline" action="stores">
 			<div class="col-md-12">
-				<input type="text" name="keyword" class="" id="keyword2" placeholder="검색어를 입력해주세요." value="${keyword}"/>
+				<input type="text" name="keyword" class="" id="keyword2" placeholder="#을 입력하여 검색 가능한 태그를 확인해보세요!" value="${keyword}"/>
 				<button id="searchBtn2" class="btn btn-default" type="submit"><img style="weight:20px; height: 20px;" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button><br/>
 			</div>
 			<div id="filter_sort" class="filter col-md-12">
