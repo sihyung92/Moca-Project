@@ -202,6 +202,13 @@
 		#recentReview-container{
 			margin-top: 40px;
 		}
+		#header .collapse, #searchBar{
+			background-color: rgba(255,255,255,0.7);
+			border: none;
+		}
+		#header #keyword{
+			background-color: transparent;
+		}
 	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
@@ -221,7 +228,13 @@
     	$(window).on("scroll", changeHeaderColor); 
 		//스크롤 일정 이상 내려가면 추천 카페 데이터 추가	
     	$(window).on("scroll", updateData);
-    	
+		//검색창 마우스 휠 이벤트
+    	$('body').on('mousewheel', function(e){
+            if($(window).width()<768 && e.originalEvent.wheelDelta > 0) {
+            	$('#searchBar').hide();
+            }
+        });
+        	
     	
     	//키워드 검사
 		$('#searchBar_main button').click(function(){
@@ -372,28 +385,27 @@
             pre_position=position;
     };      
     //스크롤 위치에 따라 헤더 배경색 변경
-    function changeHeaderColor(){        
+    function changeHeaderColor(e){        
     	var position = $(window).scrollTop();
     	var width = $(window).width();
-    	if(width>768){
-    		if(position > 438){
-            	$('#searchBar').show();
+    	if(width < 768){
+			if(position > 188){
+            	
             	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
             }else{
-            	$('#searchBar').hide();
             	$('#header .navbar').css('background-color', 'transparent');
             }
         }else{
-        	if(position > 188){
+        	if(position > 438){
             	$('#searchBar').show();
             	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
             }else{
             	$('#searchBar').hide();
             	$('#header .navbar').css('background-color', 'transparent');
             }
-        }
-    	
+        }    	
     };
+    
 	</script>
 </head>
 <body>
