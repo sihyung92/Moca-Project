@@ -65,12 +65,14 @@ nav select:-webkit-autofill:focus {
 	.navbar-default .form-control{width:300px;}
 	#beMoca{display:none;}
 	.searchBar{display:block;}
+	#header .navbar-form{margin-top: 8px;margin-bottom: 8px;}
 }
 
 /*데스크톱 크기*/
 @media(min-width:1111px){/*986*/
 	.navbar-default .form-control{width:420px;}
 	#beMoca{display:block;}
+	#header .navbar-form{margin-top: 8px;margin-bottom: 8px;}
 }
 .navbar-default .navbar-collapse, .navbar-default .navbar-form{background-color:#FFFFFF;}
 
@@ -156,7 +158,7 @@ z-index:1000;
 #footer .link li {float: left;margin-bottom: 0;line-height: normal;font-style:normal;}
 #footer .link li a {color: rgba(0,0,0,0.87);}
 #footer .link li span{display:inline-block;position:relative;top:-2px;width:24px;font-size:11px;text-align:center}
-#footer p{padding:37px 0 24px 0;}
+#footer p{padding:0px 0 24px 0;}
 #footer p b{display:inline-block;margin-right:10px}
 #footer address {line-height: 22px;}
 #footer address span{display:block;padding-bottom:7px}
