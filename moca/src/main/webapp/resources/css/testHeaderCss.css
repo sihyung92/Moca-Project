@@ -5,10 +5,14 @@ src: url('/moca/resources/fonts/NanumGothic.eot') format('embedded-opentype'),ur
 body{font-family: 'NanumGothic';}
 
 html{overflow-x:hidden; overflow-y:auto;}
+.navbar-collapse.in {
+    overflow-x: hidden;overflow-y: hidden;
+}
 #header .navbar-default .navbar-nav > li > a {
     color: #000;
     text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
 }
+#header .navbar-form{margin-top: 0px;margin-bottom: 0px;}
 #profile-icon{border:1px solid #fff;}
 .navbar-default{background-image:none;border-radius:0px;background-color:#FFFFFF;}
 #header .navbar-collapse{padding-right:0px;padding-top:3px;}
@@ -109,38 +113,6 @@ nav select:-webkit-autofill:focus {
 .qArea .btn-primary:hover{background-color:rgba(0,0,0,0.2)}
 .qArea .btn-primary:focus{background-color:none;}
 
-/*stores_search
-#filter_region > span{display:inline-block;border-radius:5px;margin:2px;padding:3px; border:2px solid rgba(107,122,41,1);}
-#filter_region > span:hover{background-color:rgba(107,122,41,1);color:#FFFFFF;}
-#filter_region > span.on{background-color:rgba(107,122,41,1);color:#FFFFFF;}
-.region_list{
-		display : none;
-	}
-.seoul{
-		display : inline-block;
-	}
-*/
-
-/*modal-body > radio box
-.modal-content .modal-body .radio-inline{
-
-}
-.modal-content .modal-body input[type="checkbox"]:after{}
-.modal-content>.modal-body input[type="checkbox"]{
-	display: inline-block;
-  width: 100%;
-  padding: 10px 15px;
-  cursor: pointer;
-  color: rgb(107,122,41);
-  border: 0;
-  border-radius: 0;
-  outline: 0;
-  background: #e6e6e6;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-*/
 /*스크롤바*/
 ::-webkit-scrollbar-track
 { -webkit-box-shadow: none;

@@ -371,7 +371,7 @@
 			</svg>
 		</button>
 		</div>
-      <a class="navbar-brand" href="<c:url value="/"/>"><img src="<c:url value="/resources/imgs/logo/mocaLineWhiteLogo.png"/>"></a>
+      <a class="navbar-brand" href="<c:url value="/"/>"><img id="brandLogo" src="<c:url value="/resources/imgs/logo/mocaLineWhiteLogo.png"/>"></a>
     </div>
 	      <form id="searchBar" class="navbar-form navbar-left searchBar" action="<c:url value="/stores"/>">
 	        <div class="form-group">
