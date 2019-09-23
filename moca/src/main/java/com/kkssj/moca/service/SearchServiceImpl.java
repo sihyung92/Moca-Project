@@ -68,12 +68,7 @@ public class SearchServiceImpl implements SearchService {
 				currentVo.setStoreImg1(tempVo.getStoreImg2());
 			}	
 		}
-		
 		currentVo.setLogoImg(setUrlByCategory(currentVo.getCategory()));
-		
-		System.out.println();
-		logger.debug(currentVo.toString());
-		System.out.println();
 		return currentVo;
 	}
 	

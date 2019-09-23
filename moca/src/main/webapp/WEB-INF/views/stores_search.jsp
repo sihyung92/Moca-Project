@@ -1009,7 +1009,6 @@
 								</c:if>
 							</c:if>
 							<br/>
-							
 							<input type="hidden" name="store_Id" value="${bean.store_Id}">
 							<input type="hidden" name="kakaoId" value="${bean.kakaoId}">
 							<input type="hidden" class="name" name="name" value="${bean.name}"><span class="bold">${bean.name }</span>&nbsp;<span class="score">${bean.averageLevel}</span><br/>
