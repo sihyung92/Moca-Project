@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>moca</title>
+<title>모아봤어 카페정보! moca</title>
 <link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 <link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -41,6 +41,7 @@
 	#search{
 		font-family : "NanumGothic", sans-serif;
 		text-align: center;
+		font-weight : bold;
 		padding-top:82px;
 	}
 	#search p {
@@ -71,8 +72,9 @@
 	#filter_sort{
 		padding-top : 10px;
 	}
-	#filter_sort btn{
+	#filter_sort .btn{
 		font-family : "NanumGothic", sans-serif;
+		font-weight : bold;
 	}
 	#content{
 		background-color: rgba(246,245,239,0.5);
@@ -84,6 +86,7 @@
 	
 	#mapContainer button{
 		font-family : "NanumGothic",sans-serif;
+		font-weight : bold;
 	}
 	
 	#mapContainer #map{
