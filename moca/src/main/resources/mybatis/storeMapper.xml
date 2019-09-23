@@ -49,7 +49,12 @@
 	WHERE rs.STORE_ID=#{STORE_ID} order by r.WRITEDATE DESC limit #{LIMIT}
   </select>
   <insert id="insertOne" parameterType="com.kkssj.moca.model.entity.StoreVo">
+  	<if test="logoImg!=null">
+  	INSERT INTO STORE(name,kakaoid,address,roadaddress,xlocation,ylocation,url,category,logoImg) VALUES(#{name},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category},#{logoImg})
+  	</if>
+  	<if test="logoImg==null">
   	INSERT INTO STORE(name,kakaoid,address,roadaddress,xlocation,ylocation,url,category) VALUES(#{name},#{kakaoId},#{address},#{roadAddress},#{xLocation},#{yLocation},#{url},#{category})
+  	</if>
   </insert>
   <insert id="insertStoreInfoHistory" parameterType="map">
   	INSERT INTO STOREINFOHISTORY(STORE_ID,ACCOUNT_ID,renewaldate,url,opentime,endtime,wifi,parkinglot,dayoff,tel) 
