@@ -270,7 +270,7 @@
 	<!-- 차트 -->
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	<!-- mocaReview -->
-	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=5"/>"></script>
+	<script type="text/javascript" src="<c:url value="/resources/js/mocaReview.js?ver=10"/>"></script>
 	<!-- mocaStore -->
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<!-- raty -->
@@ -467,6 +467,14 @@
 			})
 			
 			reviewModalBtn.click(function(){
+				//로그인 되어 있는지 확인
+				if(accountId==0){
+					$('.modal').modal('hide');
+					alert("로그인 후 이용가능합니다.");
+					$('#Login-Modal').modal('show');
+					return false;
+				}
+				
 				//모달에 있는 데이터 없애고 
 				fileBuffer = [];
 				clearReviewModalData();

@@ -48,9 +48,7 @@
         if (navigator.geolocation){             		       
             var options = { timeout: 2000, maximumAge: 3000, enableHighAccuracy: true};	//highAccuracy true: 모바일 기기는 GPS로 위치 정보 확인             
             navigator.geolocation.getCurrentPosition(sucCall,  errCall, options);		//현재 위치 정보 얻기
-            console.log('navigator geolocation 작동');
         }else{
-            console.log('navigator geolocation 불능, googleApi로');
         	tryAPIGeolocation();
         }
     };
@@ -61,13 +59,11 @@
         lng = position.coords.longitude;	//경도        
 		$('.lat').val(lat);
 		$('.lng').val(lng);
-		console.log('lat : '+lat+' lng : '+lng);
 		$('form').submit();
     };
 
     // Error Callback(에러 메시지 출력)
     function errCall(error) {
-    	console.log('navi err,googleApi로');
         if(error.code == 1){}		//사용자가 거부한 상태 -> 나중에 허용 거부 푸는 페이지에서 활용하기!
     	tryAPIGeolocation();		//구글GeolocationAPI시도
     };
@@ -79,10 +75,8 @@
 			method: "post",
 			success: function(googleKey){
 				jQuery.post(googleKey, function(success) {
-					console.log('googleAPi success')
 			        apiGeolocationSuccess({coords: {latitude: success.location.lat, longitude: success.location.lng}});
 			    }).fail(function(err) {
-					console.log('googleAPi fail')
 			    	$('.lat').val("37.497900");
 					$('.lng').val("127.027637");
 				   	alert("지역 정보를 가져올 수 없습니다... :( 강남역을 기준으로 검색합니다");		//이 부분 정리하기
@@ -97,7 +91,6 @@
 	    lng = position.coords.longitude;	//경도
 		$('.lat').val(lat);
 		$('.lng').val(lng);
-		console.log('lat : '+lat+' lng : '+lng);
 		$('form').submit();
 	};
 	</script>

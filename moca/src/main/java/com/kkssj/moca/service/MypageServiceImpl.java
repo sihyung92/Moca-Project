@@ -138,12 +138,12 @@ public class MypageServiceImpl implements MypageService{
 			int result = accountDao.insertFollow(follower,following);
 			if(follower!=following) {
 				//팔로우 받은사람 포인트 up
-				accountDao.updateAccountExp(following, 7);
-				accountDao.insertExpLog(following, "팔로우받음", 7);
+//				accountDao.updateAccountExp(following, 7);
+//				accountDao.insertExpLog(following, "팔로우받음", 7);
 				
 				//각각의 팔로워, 팔로잉 count 증가
-				accountDao.updateFollowCount(following);	//팔로잉인 사람의 팔로워가 증가
-				accountDao.updateFollowingCount(follower);	//팔로워인 사람의 팔로잉이 증가
+//				accountDao.updateFollowCount(following);	//팔로잉인 사람의 팔로워가 증가
+//				accountDao.updateFollowingCount(follower);	//팔로워인 사람의 팔로잉이 증가
 				
 				//포인트가 레벨업 할만큼 쌓였는지 검사
 				AccountVo accountVo = accountDao.selectByaccountId(following);
@@ -183,15 +183,15 @@ public class MypageServiceImpl implements MypageService{
 	@Override
 	public int deleteFollow(int follower, int following) {
 		try {
-			
+			int result = accountDao.deleteFollow(follower,following);
 			if(follower!=following) {
 				//팔로우 취소된 사람 포인트 down
-				accountDao.updateAccountExp(following, -7);
-				accountDao.insertExpLog(following, "팔로우취소됨", -7);
+				//accountDao.updateAccountExp(following, -7);
+				//accountDao.insertExpLog(following, "팔로우취소됨", -7);
 				
 				//각각의 팔로워, 팔로잉 count 감소
-				accountDao.updateFollowCount(following);
-				accountDao.updateFollowingCount(follower);
+				//accountDao.updateFollowCount(following);
+				//accountDao.updateFollowingCount(follower);
 				
 				//취소된 포인트로 레벨 down을 해야하는지
 				AccountVo accountVo = accountDao.selectByaccountId(following);
@@ -201,7 +201,7 @@ public class MypageServiceImpl implements MypageService{
 				}
 			}
 			
-			return accountDao.deleteFollow(follower,following);
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

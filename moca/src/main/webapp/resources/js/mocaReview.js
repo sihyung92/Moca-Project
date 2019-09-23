@@ -174,7 +174,7 @@ var saveReview = function(fileBuffer){
 
 //리뷰 템플릿 가져오기
 var getReviewTemplate = function(){
-	//템플릭 가져오기
+	//템플릿 가져오기
 	var newReview = $('#reviewTemplate').clone(true);
 	newReview.css('display', '');
 	newReview.removeAttr('id')
@@ -230,8 +230,8 @@ var setReviewInfo = function(reviewRow, reviewVo){
 	
 	
 	var writeDate = new Date(reviewVo.writeDate);
-	reviewRow.find('.review-info .reviewInfo-write-date').text(date2Str(writeDate))
-	reviewRow.find('.review-info .reviewInfo-review-content').text(reviewVo.reviewContent)
+	reviewRow.find('.reviewInfo-write-date').text(date2Str(writeDate));
+	reviewRow.find('.review-info .reviewInfo-review-content').text(reviewVo.reviewContent);
 	
 	
 	//리뷰 내용
@@ -289,7 +289,10 @@ var addReviewInReviewContent = function(reviewVo) {
 	addReviewImgae(newReview, reviewVo);
 	
 	//작성자 정보 set
-	setReviewerInfo(newReview, reviewVo);
+	//setReviewerInfo(newReview, reviewVo);
+	newReview.find('.reviewer-nickName').text(reviewVo.nickName) 	//닉네임
+	newReview.find('.reviewer-followers').text(reviewVo.followCount) //팔로워수
+	newReview.find('.reviewer-reviews').text(reviewVo.reviewCount) 	//리뷰수
 	
 	//리뷰 정보(5가지 점수, 날짜) set
 	setReviewInfo(newReview, reviewVo);
@@ -336,14 +339,12 @@ var reviewData2ReviewModal = function(clickedEditBtn,storeName){
 
 	editReviewRow = $(clickedEditBtn).parents('.row').eq(0);
 
-	test = editReviewRow;
 	
 	//마이페이지에서만 제목을 따로 등록해야하기 때문
 	if((reviewModal.find('#reviewModalLabel').html().trim()=="에 대한 리뷰") && (storeName!=undefined)){
 		reviewModal.find('#reviewModalLabel').html(storeName+"에 대한 리뷰");
 	}
 	
-	test = editReviewRow;
 	//리뷰 아이디
 	reviewModal.find('#review_id').val(editReviewRow.find('.review-id').eq(0).val());
 	//스토어아이디

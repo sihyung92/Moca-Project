@@ -164,6 +164,7 @@ public class StoreController {
 		
 		List<String> tagNameList = storeService.getTagNameList();
 
+		logger.debug("accountVo!!!!"+accountVo.toString());
 		model.addAttribute("accountVo", accountVo);
 
 		//리뷰가져오기
@@ -464,13 +465,6 @@ public class StoreController {
     @ResponseBody
     @PostMapping(value ="/reviews")
     public ResponseEntity addReview(@RequestParam("file") MultipartFile[] files, ReviewVo reviewVo, HttpSession session){
-    	
-    	try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		////////////////////////////////
 		//account check
