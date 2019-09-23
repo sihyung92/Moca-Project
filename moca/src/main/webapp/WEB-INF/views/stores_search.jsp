@@ -7,10 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>모아봤어 카페정보! moca</title>
-<link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
-<link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<title>Insert title here</title>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css"/>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
 <style type="text/css">
@@ -26,10 +23,11 @@
 	input:focus,
 	select:focus,
 	textarea:focus,
+	button:focus,
 	a:focus{
 	    outline-color: rgba(0,0,0,0.2);
 	}
-	button:active,	button:focus{
+	button:active{
 	    outline: none !important;
 	}
 	#header{
@@ -41,7 +39,6 @@
 	#search{
 		font-family : "NanumGothic", sans-serif;
 		text-align: center;
-		font-weight : bold;
 		padding-top:82px;
 	}
 	#search p {
@@ -72,9 +69,8 @@
 	#filter_sort{
 		padding-top : 10px;
 	}
-	#filter_sort .btn{
+	#filter_sort btn{
 		font-family : "NanumGothic", sans-serif;
-		font-weight : bold;
 	}
 	#content{
 		background-color: rgba(246,245,239,0.5);
@@ -86,7 +82,6 @@
 	
 	#mapContainer button{
 		font-family : "NanumGothic",sans-serif;
-		font-weight : bold;
 	}
 	
 	#mapContainer #map{
@@ -96,10 +91,10 @@
 	.overlay{
 		font-family: "NanumGothic",sans-serif;
 		width: 300px;
+		padding : 2px;
 	}
 	
 	.overlay .center{
-		padding : 2px;
 		font-size : 8pt;
 	}
 	
@@ -226,15 +221,13 @@
 </style>
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e63ece9668927d2e8027037f0aeb06b5"></script>
 <script type="text/javascript">
  	var lat=${y};
  	var lng=${x};
  	var map, overlayList, bounds, pageNum;
  	var markers = new Array();
-    window.onload = function () {
-   	    
+    window.onload = function () {  
     	 //키워드 검사
 		$('#searchBtn2').click(function(){
 			var keyword = $('#keyword2').val();
@@ -248,18 +241,6 @@
 				$(this).parent().submit();
 			}
 		});
-				
-    	//태그 추천 기능 : #입력시 검색어 자동완성
-   	    var tagList = ${tagList};
-   	    $("#keyword2").add("#keyword").autocomplete({
-  	        source: tagList,
-  	        focus: function(event, ui) {
-  	            return false;
-  	            //event.preventDefault();
-  	        }
-  	    });
-   	    $('#keyword').attr('placeholder','#을 입력하여 검색 가능한 태그를 확인해보세요!');
-   	    
 //카페 리스트 클릭 이벤트(POST방식으로 디테일 페이지 이동)
         $('.links').on("click",toDetail);
 
@@ -316,20 +297,8 @@
 		$(window).on('scroll', showHeaderSearch);
 		$(window).on('resize', mapResize);
 		mapResize();
-		paintGray($('.score'));
     };//onload 끝-
-    
-    //비활성 점수 회색 처리
-	function paintGray(element){
-		element.each(function(idx,ele){
-			if($(ele).html()==0.0){
-				$(ele).css({'border-color':'gray','color':'gray'});
-			}else{
-				$(ele).css({'border-color':'orange','color':'orange'});
-			}
-		})
-	};
-	
+
     //리스트 클릭 이벤트
     function toDetail(){
         //구글에서 리뷰/별점 데이터 받아오기 테스트 중
@@ -442,13 +411,14 @@
 				data: {"filter":"${filter}", "keyword":"${keyword}", "rect": rect, "y":center.getLat(), "x": center.getLng()},
 				statusCode: {
 				    418: function(data) {
-					    //console.log(data);
+					    console.log(data);
 					    data=data.responseJSON;
 					    if(data!=""){
 					    	reload_map(data);
 							paging(data.length, 1);
 						    map.setBounds(bounds);	
 						}else{
+							alert("검색 결과 없습니다");	//////여기 수정해야되-------
 							$('#warning_noResult').text("검색 결과가 없습니다😥");
 						}					    							
 				    }
@@ -468,11 +438,8 @@
 			overlayList=[];
 			var template = $($('.links_container')[0]).clone();
 			$('.links_container').remove();
-			$(template).appendTo('#result_stores .row');
 			$(data).each(function(idx, ele){			
 				var store = template.clone();
-				console.log($(store).attr('class'));
-				//$(store).attr('class',$(store).attr('class').replace(/\bpage-\d+\b/g, ''));
 				$(store).addClass('page-'+idx);
 				var inputs = $(store).children().children().children('input');
 				$(inputs[0]).val(ele.store_Id);
@@ -485,12 +452,13 @@
 				$(inputs[7]).val(ele.url);
 				$(inputs[8]).val(ele.xLocation);
 				$(inputs[9]).val(ele.yLocation);
-				$($(store).children()[0]).find('img').first().attr('alt', ele.name + '대표이미지');
+				$($(store).children()[0]).find('img').attr('alt', ele.name + '대표이미지');
 				if(ele.storeImg1)
-					$($(store).children()[0]).find('img').first().attr('src', ele.storeImg1);
+					$($(store).children()[0]).find('img').attr('src', ele.storeImg1);
 				var spans = $($(store).children()[0]).find('span');
+				console.log(spans);
 				$(spans[0]).html(ele.name);
-				$(spans[1]).html(ele.averageLevel.toFixed(1));
+				$(spans[1]).html(ele.averageLevel);
 				$(spans[2]).html(ele.reviewCnt);
 				$(spans[3]).html(ele.viewCnt);
 				var distance;
@@ -508,8 +476,7 @@
 			});
 			$('.links').on("click",toDetail);
 			setMarkers(null);
-			createElements();
-			paintGray($('.score'));
+			createElements();			
 		};    
 		</c:if>
 	};
@@ -521,15 +488,15 @@
 	    }            
 	}
 	
-//페이지 바 추가, 페이지에 해당하는 가게 노출 및 지도 처리
+//페이지 바 추가, 페이지에 해당하는 가게 노출 및 지도 처리f
 	function paging(totalCount,currentPage){
-		$('.links_container').hide(); //가게 패널 전체 숨김 처리
+		$('.links_container').hide(); //일단 가게 다 숨겨
 		$('.pagination>li').not($('.pagination>li:first')).not($('.pagination>li:last')).remove(); //페이지 바 초기화
 		var countList = 10; //한 페이지에 들어갈 가게 수
 		var countPage = 10; //페이지 바에 들어갈 수 있는 최대 페이지 수
 		var totalPage = Math.floor(totalCount / countList); //총 페이지
 		var startPage = (Math.floor((currentPage - 1)/10)) * 10 +1; //시작페이지
-		console.log('total count :'+totalCount);
+		
 		var endPage =  startPage + countPage - 1; //마지막페이지
 		//console.log('paging 도중, totalPage='+totalPage+' startPage='+startPage+' endPage='+endPage)
 		if (totalCount % countList > 0) {
@@ -608,11 +575,9 @@
     function mapResize(){
     	var width = $(window).width();
     	if(width<992){
-    	 	$('#keyword2').attr('placeholder', '# 입력으로 태그검색');
 			var mapHeight = $(window).height()*1/2;
 			$('#map').css('height', mapHeight);
     	}else{
-    	 	$('#keyword2').attr('placeholder', '#을 입력하여 검색 가능한 태그를 확인해보세요!');
 			$('#map').css('height', '600px');
     	}
     }
@@ -634,7 +599,6 @@
             }
         }
     };
-    
 	</script>	
 </head>
 <body>
@@ -962,7 +926,7 @@
 	<div id="search" class="row">
 		<form class="form-inline" action="stores">
 			<div class="col-md-12">
-				<input type="text" name="keyword" class="" id="keyword2" placeholder="#을 입력하여 검색 가능한 태그를 확인해보세요!" value="${keyword}"/>
+				<input type="text" name="keyword" class="" id="keyword2" placeholder="검색어를 입력해주세요." value="${keyword}"/>
 				<button id="searchBtn2" class="btn btn-default" type="submit"><img style="weight:20px; height: 20px;" src="<c:url value="/resources/imgs/icons/search.svg"/>"></button><br/>
 			</div>
 			<div id="filter_sort" class="filter col-md-12">

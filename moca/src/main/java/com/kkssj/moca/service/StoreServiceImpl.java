@@ -341,7 +341,7 @@ public class StoreServiceImpl implements StoreService{
 				}
 				
 				//account의 reviewcnt를 증가시켜줌
-				accountDao.updateReviewCount(accountVo.getAccount_id());
+				//accountDao.updateReviewCount(accountVo.getAccount_id());
 				
 				//배지 check 및 부여
 				badgeManage(accountVo.getAccount_id(), "review");
@@ -349,7 +349,7 @@ public class StoreServiceImpl implements StoreService{
 				
 				///////////////////////////
 				//store reviewCnt
-				storeDao.updateReviewCount(reviewVo.getStore_id(), 1);
+				//storeDao.updateReviewCount(reviewVo.getStore_id(), 1);
 				
 				
 				// 방금 입력한 reviewVo를 리턴
@@ -622,18 +622,13 @@ public class StoreServiceImpl implements StoreService{
 			syncStoreTag(reviewVo.getStore_id(),tagList);
 			
 			//account의 reviewcnt를 감소시켜줌
-			accountDao.updateReviewCount(reviewVo.getAccount_id());
-			
-			//카페에 대한 levelCnt 수정(삭제)
-			double beforeAveragelevel1 = reviewDao.selectAverageLevelByReviewId(reviewVo.getReview_id());
-			String BeforelevelCntColumn1 = setLevelCntColumn(beforeAveragelevel1);
-			storeDao.updateLevelCnt(reviewVo.getStore_id(), BeforelevelCntColumn1, -1);
+			//accountDao.updateReviewCount(reviewVo.getAccount_id());
 			
 			badgeManage(reviewVo.getAccount_id(), "review");
 			
 			///////////////////////////
 			//store reviewCnt
-			storeDao.updateReviewCount(reviewVo.getStore_id(), -1);
+			//storeDao.updateReviewCount(reviewVo.getStore_id(), -1);
 			
 			//정상일 경우 return 1
 			return 1;

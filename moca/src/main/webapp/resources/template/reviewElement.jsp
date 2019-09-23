@@ -135,15 +135,15 @@
 			</c:if>
 		</div>
 		<div class="nickName-div">
-			<span class="reviewer-nickName"></span>
+			<span class="reviewer-nickName">${reviewVo.nickName}</span>
 		</div>
 		<div class="follows-div">
 			<img src="<c:url value="/resources/imgs/icons/user.svg"/>">
-			<span class="reviewer-followers"></span>
+			<span class="reviewer-followers">${reviewVo.followCount}</span>
 		</div>
 		<div class="reviews-div">
 			<img src="<c:url value="/resources/imgs/icons/edit.svg"/>">
-			<span class="reviewer-reviews"></span>
+			<span class="reviewer-reviews">${reviewVo.reviewCount}</span>
 		</div>
 	</div>
 	<div class="store-info col-md-2 text-center">

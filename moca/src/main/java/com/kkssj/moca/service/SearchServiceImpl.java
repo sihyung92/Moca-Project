@@ -1,6 +1,5 @@
 package com.kkssj.moca.service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -194,20 +193,5 @@ public class SearchServiceImpl implements SearchService {
 	public int addKeywordLog(LogVo logVo) {
 		return logDao.insertKeywordLog(logVo);	
 	}	
-	
-	@Override
-	public List<String> getTagNameList() throws SQLException {
-		List<String> tagNameList = null;
-		tagNameList = storeDao.selectTagList();
-		//review_id, store_id 제거
-		tagNameList.remove(0);
-		tagNameList.remove(0);
-		//javaScript에서 string배열로 받아서 사용할 수 있도록 javascript문자열 형태로 만들어줌
-		for(int i = 0 ; i < tagNameList.size(); i++) {
-			tagNameList.set(i, "\'#"+tagNameList.get(i)+"\'");
-		};
-		return tagNameList;
-	}
-	
 	
 }
