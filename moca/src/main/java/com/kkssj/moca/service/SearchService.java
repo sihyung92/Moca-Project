@@ -1,5 +1,6 @@
 package com.kkssj.moca.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -15,4 +16,5 @@ public interface SearchService {
 	List<StoreVo> getListFromKakaoAPI(String keyword, String[] region, String x, String y, String rect, Model model) ;
 	List<StoreVo> sort(List<StoreVo> alist, String filter);
 	int addKeywordLog(LogVo logVo);
+	List<String> getTagNameList() throws SQLException;
 }
