@@ -33,10 +33,10 @@
 		height:150px;
 		margin-top:20px;
 		padding:20px;
-		background : rgba(246,245,239,1);
 	}
 	#userBadge img{
-		margin-right: 10px;
+		margin-right: 5px;
+		margin-left: 5px;
 		margin-bottom : 10px;
 	}
 	
@@ -539,20 +539,7 @@
 					}
 				})
 			}
-		});
-
-		/* $('.more-review-content-btn').on("click",function(){
-            $(this).parent().find('.more-review-content').toggleClass('moreData').promise().done(function(){
-                 if($(this).hasClass("moreData") === false){
-                	 $(this).parent().find('.more-review-content-btn').html('<img src="/moca/resources/imgs/icons/chevron-top.svg">'+"접기");
-                 	$(this).css({ 'height': 'auto', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
-	              }else{
-	            	  $(this).parent().find('.more-review-content-btn').html('<img src="/moca/resources/imgs/icons/chevron-bottom.svg">'+"더보기");
-	            	 $(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
-		          }
-            });
-         }); */
-		
+		});		
     });
 
 	var makeNewStore = function(store){

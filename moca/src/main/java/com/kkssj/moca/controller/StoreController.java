@@ -78,7 +78,8 @@ public class StoreController {
 												{"커피빈","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/coffeBean.jpg"},
 												{"이디아","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/ediya.jpg"},
 												{"투썸플레이스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/twoSomePlace.jpg"},
-												{"드롭탑","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/dropTop.jpg"},
+												{"엔제리너스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/angelInUsCoffee.jpg"},
+												{"드롭탑","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/twoSomePlace.jpg"},
 												{"할리스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/hollys.jpg"},
 												{"풀바셋","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/paulBassett.jpg"},
 												{"파스쿠찌","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/pascucci.jpg"},
@@ -91,7 +92,8 @@ public class StoreController {
 												{"메가커피","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/megaCoffe.jpg"},
 												{"매머드커피","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/mmthCoffe.jpg"},
 												{"더리터","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/theLitter.jpg"},
-												{"더벤티","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/theVenti.jpg"}
+												{"더벤티","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/theVenti.jpg"},
+												{"블루보틀","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/blueBottle.jpg"}
 												};
 												
 		for (int i = 0; i < storeNames.length; i++) {
