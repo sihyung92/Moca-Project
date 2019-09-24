@@ -99,7 +99,9 @@
 <form class="navbar-form navbar-left">
     <div class="form-group">
           <input type="hidden" name="lng" class="lng"/>
-		  <input type="hidden" name="lat" class="lat"/>		
+		  <input type="hidden" name="lat" class="lat"/>	
+		  <input type="hidden" name="keyword" value="${keyword }"/>	
+		  <input type="hidden" name="filter" value="distance"/>	
    	</div>
 </form>
 <div class="loader">

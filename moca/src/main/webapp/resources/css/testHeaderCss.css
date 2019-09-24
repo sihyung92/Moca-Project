@@ -153,7 +153,7 @@ z-index:1000;
        font-size: 13px;
        line-height: 20px;
        color: rgba(0,0,0,0.38);}
-#footer .align {width: 1024px;margin: 0 auto;}
+#footer .align {width: 100%;;margin: 0 auto;}
 #footer.show {opacity: 1;visibility: visible;}
 #footer .link li {float: left;margin-bottom: 0;line-height: normal;font-style:normal;}
 #footer .link li a {color: rgba(0,0,0,0.87);}

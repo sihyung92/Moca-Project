@@ -650,9 +650,8 @@ public class StoreServiceImpl implements StoreService{
 			//프랜차이즈인 경우 or 서버 내부의 기본 이미지인 경우 이미지 삭제하지 않
 			String category = storeDao.selectCategoryByStoreId(store_Id);
 			logger.debug("delStoreLogo : "+delStoreLogo +", category" +category +",!category.contains(\"프랜차이즈\") " +!category.contains("프랜차이즈"));
-			if (!category.contains("프랜차이즈")) {
+			if (!category.contains("프랜차이즈") && !delStoreLogo.contains("/moca/resources/imgs/logo/")) {
 				String pathUu_idOriginName = delStoreLogo.split(".com/")[1];
-				String [] pathUu_idOriginName2 = pathUu_idOriginName.split("_");
 				s3.fileDelete(pathUu_idOriginName);	
 				s3.thumbnailFileDelete(pathUu_idOriginName);
 			}

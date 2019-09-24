@@ -168,15 +168,22 @@
 		border-radius: 50%;
 	}
 	.review .review-img-list{
+		position: relative;
 		font-size: 0;
 	}	
-	.review .review-img-list img{	
-		display:inline-block;
-		width:130px;
-		height:130px;
-		margin-top: 3px;
-		margin-left: 10px; 
+	.review .review-img-list .moreImg{
+		font-size: 13px;
+		color: rgb(140, 140, 140);
+		text-indent: 5px;
 	}
+	.review .review-img-list a{
+		display:none;
+	}	
+	.review .review-img-list img{
+		width:130px;
+		height:130px;	
+		margin:3px 3px 0px;
+	}	
 	#review-container .review .review_storeName{
 		color: dimgray;
 		font-weight: bold;
@@ -194,12 +201,27 @@
 		font-size: 12px;
 	}
 	.review-text-content{
+		height: auto;
+		line-height : 130%;
+		overflow: hidden;
 		border: none;
 		font-size: 15px;
 		font-family: 'NanumGothic';
 		color: dimgray;
 		white-space: pre-wrap;
-		background-color : transparent;
+		background-color: transparent;
+	}
+	.morecontent span {
+  		display: none;
+	}
+	.morelink {
+	    display: block;
+	    color: rgb(140, 140, 140);
+	    text-decoration: underline;
+	}
+	.morelink:hover, .morelink:visited{
+		color: rgb(140, 140, 140);
+		text-decoration: underline;
 	}
 /* 미디어 쿼리 */	
 	@media (max-width: 768px){
@@ -222,6 +244,12 @@
 		#header #keyword{
 			background-color: transparent;
 		}
+		#header #hiddenSearch svg{
+			stroke: white;
+		}
+		#header .navbar-toggle .icon-bar{
+			background-color: white;
+		}
 	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
@@ -234,7 +262,37 @@
 	var lat, lng;	
 	var slide;
 	var idx=0;
-    window.onload = function () {      	  	
+    window.onload = function () {
+        //리뷰 더보기 기능
+        var showChar = 200;
+        var moretext = "+더보기";
+        var lesstext = "접기";
+        $('#review-container .review .review-text-content').each(function() {
+            var content = $(this).html();     
+            if(content.length > showChar) {     
+                var c = content.substr(0, showChar);
+                var h = content.substr(showChar, content.length - showChar);
+                var html = c + '<span class="moreellipses">...&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+                $(this).html(html);
+            }     
+        });     
+        $(".morelink").click(function(){
+            if($(this).hasClass("less")) {
+                $(this).removeClass("less");
+                $(this).html(moretext);
+            } else {
+                $(this).addClass("less");
+                $(this).html(lesstext);
+            }
+            $(this).parent().prev().toggle();
+            $(this).prev().toggle();
+            return false;
+        });
+
+        //반응형 리뷰 이미지
+        changeReviewImgCnt();
+        $(window).on('resize', changeReviewImgCnt);
+        
         //헤더 fix 속성에 따른 body 패딩값 삭제
         $('div#header+div').css('padding-top', '10px');
     	//스크롤 위치에 따라 헤더 배경 토글
@@ -286,6 +344,25 @@
        	$('.mocaPick .mocaPick-img-list').on("mouseleave", mouseLeave);
     };//onload() 끝  
 
+  //반응형 리뷰 이미지
+    function changeReviewImgCnt(){
+    	var imglistWidth = $('#bestReview-container .review-img-list').first().css('width').replace('px','');
+    	console.log("width: "+imglistWidth);
+        var maxImgCnt = Math.floor(imglistWidth/136);
+        console.log("최대 이미지 갯수: "+maxImgCnt);
+        $('.review-img-list .review-img').hide();
+        $('.moreImg').hide();
+        for(var i=1; i<maxImgCnt+1; i++){
+        	$('.review-img-list .review-img').filter('.'+i).show();
+        }
+        $('.review-img-list').each(function(idx, ele){
+			var imgCnt = $(ele).find('.review-img').length;
+			if(imgCnt > maxImgCnt){
+				$(ele).find('.moreImg').css('display', 'block');
+			}
+        });
+    };
+    
     //이미지 클릭 시 디테일 페이지로 이동 이벤트
 	function goDetail(){
 		window.location.href=$(this).attr('href');
@@ -402,9 +479,13 @@
 			if(position > 188){            	
             	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
             	$('#brandLogo').css('content','url(resources/imgs/logo/mocaLineWhiteLogo.png)');
+            	$('#header #hiddenSearch svg').css('stroke', 'black');
+            	$('#header .navbar-toggle .icon-bar').css('background-color', 'black');
             }else{
             	$('#header .navbar').css('background-color', 'transparent');
             	$('#brandLogo').css('content','url(resources/imgs/logo/mocaWhiteLogo.png)');
+            	$('#header #hiddenSearch svg').css('stroke', 'white');
+            	$('#header .navbar-toggle .icon-bar').css('background-color', 'white');            	
             }
         }else{
         	if(position > 438){
@@ -418,7 +499,6 @@
             }
         }    	
     };
-    
 	</script>
 </head>
 <body>
@@ -522,13 +602,14 @@
 							<c:if test="${not empty bean.imageList }">
 								<div class="review-img-list">
 									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
-									  	<a href="./stores/${bean.store_id}"><img src="${img.url }" alt="${img.originName }"></a>	  				  	
+									  	<a class="review-img ${status.index }" href="./stores/${bean.store_id}"><img src="${img.url }" alt="${img.originName }"></a>	  				  	
 							  		</c:forEach>
+						  			<a class="moreImg" href="./stores/${bean.store_id}">
+											(클릭하여 사진 더보러 가기)
+							  		</a>							  			
 								</div>
 							</c:if>
-							<a href="./stores/${bean.store_id}">
-								<pre class="review-text-content col-md-12">${bean.reviewContent }</pre>	
-							</a>			
+							<pre class="review-text-content col-md-12">${bean.reviewContent }</pre>		
 						</div>
 					</c:forEach>
 				</div>
@@ -575,14 +656,15 @@
 							<span class="review-text-date"><small>${bean.writeDate }</small></span><br/>
 							<c:if test="${not empty bean.imageList }">
 								<div class="review-img-list">
-									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="3">
-								  		<a href="./stores/${bean.store_id}"><img src="${img.url }" alt="${img.originName }"></a>		  				  	
+									<c:forEach items="${bean.imageList }" var="img" varStatus="status" end="4">
+								  		<a class="review-img ${status.index }" href="./stores/${bean.store_id}"><img src="${img.url }" alt="${img.originName }"></a>		  				  	
 							  		</c:forEach>
+							  			<a class="moreImg" href="./stores/${bean.store_id}">
+											(클릭하여 사진 더보러 가기)
+							  			</a>
 								</div>
 							</c:if>
-							<a href="./stores/${bean.store_id}">
-								<pre class="review-text-content col-md-12">${bean.reviewContent }</pre>	
-							</a>		
+							<pre class="review-text-content col-md-12">${bean.reviewContent }</pre>		
 						</div>
 					</c:forEach>
 				</div>

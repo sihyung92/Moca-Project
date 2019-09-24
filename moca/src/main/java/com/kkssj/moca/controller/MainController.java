@@ -33,20 +33,7 @@ public class MainController {
 	private static final Logger logger = LoggerFactory.getLogger(MainController.class);		
 	private Map<String, String> variables = new HashMap<String, String>();		//DB 처리용: 전달할 변수 목룍	
 	private List<String> tagNames;
-	private Map<String, String> rating = new HashMap<String, String>();
-	
-	//안쓸지도 모르겠다!!
-	@RequestMapping(value="/geolocation", method = RequestMethod.GET)
-	public String getGeolocation(HttpSession session, String lat, String lng) {
-		session.removeAttribute("x");
-		session.removeAttribute("y");
-		if(lat ==null || lng ==null) {
-			return "geolocation";
-		}
-		session.setAttribute("x", lng);
-		session.setAttribute("y", lat);
-		return "redirect:/stores";
-	}
+	private Map<String, String> rating = new HashMap<String, String>();	
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(HttpSession session, HttpServletRequest request, HttpServletResponse response, String lng, String lat, Model model) throws SQLException {
@@ -95,33 +82,33 @@ public class MainController {
 
 		if(variables!=null) {
 			alist = mainService.getStoresNearBy(variables);		//근처 카페 추천
-			if(alist.size()>0) {
+			if(alist.size()>6) {
 				listNames.add("근처 추천 카페");
 				storesList.add(alist);
 			}
 		}
 		
 		alist = mainService.getHitStoresList(variables);	//Hit Stores추천
-		if(alist.size()>0) {
+		if(alist.size()>6) {
 			listNames.add("지금 뜨는 카페");
 			storesList.add(alist);
 		}
 		
 		alist = mainService.getBestStoresList();		//Best Stores추천
-		if(alist.size()>0) {			
+		if(alist.size()>6) {			
 			listNames.add("한주간 베스트 카페");
 			storesList.add(alist);
 		} 
 		 
 		alist = mainService.getTrendStoresList("예쁜");		//Trend Stores
-		if(alist.size()>0) {			
+		if(alist.size()>6) {			
 			listNames.add("트렌드: 흑당흑당");
 			storesList.add(alist);
 		}
 		
 		if(variables!=null) {
 			alist = mainService.getTakeoutStoresList(variables);		//TakeOut Stores
-			if(alist.size()>0) {			
+			if(alist.size()>6) {			
 				listNames.add("테이크아웃 전문점");
 				storesList.add(alist);
 			}
@@ -129,7 +116,7 @@ public class MainController {
 		 
 		if(id>0) {
 			alist = mainService.getFollowersStoresList(id);		//Follower's pick Stores
-			if(alist.size()>0) {			
+			if(alist.size()>6) {			
 				listNames.add("팔로워 추천 카페");
 				storesList.add(alist); 
 			} 

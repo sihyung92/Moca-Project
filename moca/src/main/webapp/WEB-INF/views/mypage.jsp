@@ -34,10 +34,10 @@
 		height:150px;
 		margin-top:20px;
 		padding:20px;
-		background : rgba(246,245,239,1);
 	}
 	#userBadge img{
-		margin-right: 10px;
+		margin-right: 5px;
+		margin-left: 5px;
 		margin-bottom : 10px;
 	}
 	
@@ -540,8 +540,7 @@
 					}
 				})
 			}
-		});
-		
+		});		
     });
 
 	var makeNewStore = function(store){
