@@ -6,13 +6,14 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<title>moca</title>
 	<link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 	<link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=18"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=7"/>" />
 	<style type="text/css">
 		.jumbotron{
 			background: rgba(234,231,220,0.4);
@@ -262,7 +263,19 @@
 		    font-weight: bold;
 		}
 		
-}
+		canvas{
+		  height:20rem !important;
+		  width: 100% !important;
+		}
+		
+		@media (max-width: 768px) {
+			.carousel .carousel-inner img {
+				width: 100%;
+				height: 40rem;
+				object-fit: cover;
+				overflow: hidden;
+			}
+		}
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
 	<script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js"/>"> </script> 	
@@ -749,8 +762,10 @@
 			      ]
 			    },
 			    options: {
-			      legend: { display: false },
-			      scales: {
+			    	responsive: true,
+			        maintainAspectRatio: false,
+			        legend: { display: false },
+			        scales: {
 			    	    xAxes: [
 			    	      {
 			    	    	ticks: {
@@ -784,6 +799,12 @@
 			    }
 			});
 
+
+			//내가관리하는카페 설명 툴팁 옵션
+			$('#managerGuide').popover({
+				trigger : 'hover',
+				html : true
+			});
 		});
 
 		
@@ -815,7 +836,7 @@
 	<div id="content">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-xs-8 col-xs-offset-2">
+				<div class="col-sm-8 col-sm-offset-2 col-xs-12">
 					<div class="jumbotron text-center">
 						<span id="storeId" style= "display: none;">${storeVo.store_Id }</span>
 						<div id="likeFavoriteDiv">
@@ -836,7 +857,13 @@
 						</div>
 						<c:if test="${storeVo.isManager eq 1}">
 							<div>
-								<span id="isManagerSpan">내가 관리하는 카페 입니다.</span>	
+								<span id="isManagerSpan">내가 관리하는 카페 입니다.
+								<span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-placement="bottom"
+								id="managerGuide" data-toggle="popover" title="어떤 걸 관리할 수 있나요?"
+								data-content="카페 로고와 대표이미지 최대 3장까지 수정 가능합니다.">
+								</span>
+								</span>
+								<br>	
 							</div>
 						</c:if>
 						<div id="storeTagDiv">
@@ -866,24 +893,24 @@
 			</div>
 			<div id="storeSummaryDiv">
 				<div class="row text-center">
-					<div class="col-xs-2 col-xs-offset-2">
+					<div class="col-sm-2 col-sm-offset-2 col-xs-12">
 						<div id="storeAverageLevelDiv">
 							<div id="storeAverageLevel"></div><span>${storeVo.averageLevel}</span>
 						</div>
 					</div>
-					<div class="col-xs-2">
+					<div class="col-sm-2 col-xs-12">
 						<div id="storeReviewCountDiv">
 							<img src="<c:url value="/resources/imgs/icons/edit.svg"/>">
 							<span class="storeReviewCount" style="font-size: 120%;font-weight: bold;">${storeVo.reviewCnt}</span>개의 리뷰
 						</div>
 					</div>
-					<div class="col-xs-2">
+					<div class="col-sm-2 col-xs-12">
 						<div id="storeLikeCountDiv">
 							<img src="<c:url value="/resources/imgs/icons/heart.svg"/>">
 							<span id="storeLikeCount">${storeVo.likeCnt}</span>명이 좋아하는
 						</div>
 					</div>
-					<div class="col-xs-2">
+					<div class="col-sm-2 col-xs-12">
 						<div id="storeFavoriteCountDiv">
 							<img src="<c:url value="/resources/imgs/icons/bookmark.svg"/>">
 							<span id="storeFavoriteCount">${storeVo.favoriteCnt}</span>명이 가고 싶어하는
@@ -893,7 +920,7 @@
 				<br><br>
 			</div>
 			<div class="row">
-				<div class="col-xs-8 col-xs-offset-2">
+				<div class="col-sm-8 col-sm-offset-2 col-xs-12">
 					<!-- 갖고있는 이미지의 개수만큼  캐러셀 시작-->						
 					<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
 					    <div class='carousel-outer'>
@@ -954,7 +981,7 @@
 		</div>
 		<div class="row">
 			<br>
-			<div class="col-xs-4 col-xs-offset-2">
+			<div class="col-sm-4 col-sm-offset-2 col-xs-12">
 				<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 					<div class="panel panel-default">
 						<div class="panel-heading" role="tab" id="headingOne">
@@ -968,11 +995,11 @@
 							<div class="panel-body" style="border:none;">
 								<div>
 									<span id="wifiInfo">
-										<c:if test="${storeVo.wifi eq 0}"><img src="<c:url value="/resources/imgs/icons/wifi-none.svg"/>"></c:if>
+										<c:if test="${storeVo.wifi ne 1}"><img src="<c:url value="/resources/imgs/icons/wifi-none.svg"/>"></c:if>
 										<c:if test="${storeVo.wifi eq 1}"><img src="<c:url value="/resources/imgs/icons/wifi.svg"/>"></c:if>
 									</span>
 									<span id="parkingLotInfo">
-										<c:if test="${storeVo.parkingLot eq 0}"><img src="<c:url value="/resources/imgs/icons/parking-none.svg"/>"></c:if>
+										<c:if test="${storeVo.parkingLot ne 1}"><img src="<c:url value="/resources/imgs/icons/parking-none.svg"/>"></c:if>
 										<c:if test="${storeVo.parkingLot eq 1}"><img src="<c:url value="/resources/imgs/icons/parking.svg"/>"></c:if>
 									</span>
 								</div>
@@ -1009,19 +1036,19 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-xs-4">
+			<div class="col-sm-4 col-xs-12">
 				<div id="map" style="width:100%;height:20em;"></div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-xs-8 col-xs-offset-2">
+			<div class="col-sm-8 col-sm-offset-2 col-xs-12">
 				<h1>리뷰<span class="storeReviewCount">(${storeVo.reviewCnt})</span></h1>
 				<div class="review-header">
 					<!-- 리뷰  -->
 					<div id="overAllLevel">
 						<!-- 스토어 전체 리뷰 평점 -->
 						<div class="row">
-							<div class="col-xs-6 overAllLevel-left">
+							<div class="col-sm-6 col-xs-12 overAllLevel-left">
 								<span>종합 평점</span>
 								<h3>${storeVo.averageLevel}</h3>
 								<div id="store-level"></div>
@@ -1042,16 +1069,16 @@
 								</tr>
 								</table>
 							</div>
-							<div class="col-xs-6"> 
-								<canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
+							<div class="col-sm-6 col-xs-12"> 
+								<canvas id="bar-chart-horizontal" height="40vw" width="100%"></canvas>
 							</div>
 						</div>						
 					</div>
 				</div>
 				
 
-				
-				<!-- Button trigger modal -->
+				</div>
+				<div class="col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
 				<div class="row text-center">
 				<button type="button" class="customBtn" data-toggle="modal" id="reviewModalBtn"  style="border: 2px solid #c0c0c0; padding: 10px;">
 					<img alt="more" src="<c:url value="/resources/imgs/icons/compose.svg"/>" style="width: 20px; padding-bottom: 5px; margin-right: 5px;">
@@ -1184,6 +1211,7 @@
 
 			</div>
 		</div>
+	</div>
 	</div>
 	</div>
 	

@@ -7,11 +7,13 @@
 <html>
 <head>
 	<title>moca</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	<link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 	<link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=12"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=14"/>" />
 	<style type="text/css">
 	#userGraph{
 		margin-top:70px;
@@ -31,10 +33,11 @@
 		height:150px;
 		margin-top:20px;
 		padding:20px;
-		background : rgba(246,245,239,1);
 	}
 	#userBadge img{
-		margin-right: 10px;
+		margin-right: 5px;
+		margin-left: 5px;
+		margin-bottom : 10px;
 	}
 	
 	#userInfo{
@@ -43,67 +46,75 @@
 	#userInfo button{
 		margin: 20px 0px;
 	}
-		#userInfo, #followInfo{
-			margin:20px auto;
-			text-align: center;
-			display: inline-block;
-			width:100%;
-		}
-		
-		.followInfo, .likeStore, .favoriteStore{
-			text-align: center;
-			margin-right: 3rem;
-			margin-bottom: 3em;
-		    background-color: white;
-		    padding: 1em;
-		    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-		}
-		.likeStore, .favoriteStore{
-			padding: 3em;
-		}
-		
-		#followingDiv, #followerDiv, #likeDiv, #favoriteDiv{
-			margin-top: 3em;
-		}
-		
-		#followerDiv>div{
-			display: inline;
-			margin:0px 3px;
-		}
-		
-		.inlineBlock{
-			display: inline;
-		}
-		
-		/*글리피콘 사이즈*/
-		.glyphicon-cog{
-			font-size: 2rem;
-		}
-		
-		.popover{
-			width: 400px;
-    		max-width: 400px;
-		}
-		
-		#userImage{
-			margin: 20px auto;
-			text-align: center;
-		}
-		
-		#needBadgeSpan{
-			color: #c0c0c0;
-		    position: relative;
-		    top: 35%;
-		    left: 40%;
-		    font-weight: bold;
-		}
-		
-		.storeName{
-			font-size:110%;
-			font-weight: bold;
-			padding-top: 10px;
-    		display: block;
-		}
+	#userInfo, #followInfo{
+		margin:20px auto;
+		text-align: center;
+		display: inline-block;
+		width:100%;
+	}
+	
+	.followInfo, .likeStore, .favoriteStore{
+		text-align: center;
+		margin-right: 3rem;
+		margin-bottom: 3em;
+	    background-color: white;
+	    padding: 1em;
+	    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	}
+	.likeStore, .favoriteStore{
+		padding: 3em;
+	}
+	
+	#followingDiv, #followerDiv, #likeDiv, #favoriteDiv{
+		margin-top: 3em;
+	}
+	
+	#followerDiv>div{
+		display: inline;
+		margin:0px 3px;
+	}
+	
+	.inlineBlock{
+		display: inline;
+	}
+	
+	/*글리피콘 사이즈*/
+	.glyphicon-cog{
+		font-size: 2rem;
+	}
+	
+	.popover{
+		width: 400px;
+   		max-width: 400px;
+	}
+	
+	#userImage{
+		margin: 20px auto;
+		text-align: center;
+	}
+	
+	#needBadgeSpan{
+		color: #c0c0c0;
+	    position: relative;
+	    top: 35%;
+	    left: 40%;
+	    font-weight: bold;
+	}
+	
+	.storeName{
+		font-size:110%;
+		font-weight: bold;
+		padding-top: 10px;
+   		display: block;
+	}
+	
+	.nav-tabs{
+		margin-top: 30px;
+	}
+	
+	.followed{
+		background-color: rgba(242,174,46,0.85);
+	}
 		
 	</style>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery-1.12.4.min.js"/>"> </script> 
@@ -284,7 +295,7 @@
 		
 		for ( var i = 0; i < followingList.length; i++) {
 			if(followId==followingList[i]){
-				$('#followBtn').attr('class','btn btn-success');
+				$('#followBtn').attr('class','btn followed');
 			}
 		}
 
@@ -418,11 +429,11 @@
 		$('#followBtn').click(function() {
 			var type;
 			
-			if($('#followBtn').attr('class')=='btn btn-default'){
+			if(!$('#followBtn').hasClass('followed')){
 				//팔로우 신청
 				type = 'POST';
 				
-			}else if($('#followBtn').attr('class')=='btn btn-success'){
+			}else{
 				//팔로우 취소
 				type = 'DELETE';
 			}
@@ -431,8 +442,13 @@
 				url: '/moca/follow/'+followId,
 				success: function() {
 					//타입에 따라서 팔로잉/팔로우 텍스트 변경
-					$('#followBtn').toggleClass("btn-success");
-					$('#followBtn').toggleClass('btn-default');
+					if(type == 'POST'){
+						$('#followBtn').attr('class', 'btn followed');
+					}else{
+						$('#followBtn').attr('class', 'btn');
+					}
+					
+					
 				},
 				error: function(request,status,error) {
 					respondHttpStatus(request.status);
@@ -523,20 +539,7 @@
 					}
 				})
 			}
-		});
-
-		/* $('.more-review-content-btn').on("click",function(){
-            $(this).parent().find('.more-review-content').toggleClass('moreData').promise().done(function(){
-                 if($(this).hasClass("moreData") === false){
-                	 $(this).parent().find('.more-review-content-btn').html('<img src="/moca/resources/imgs/icons/chevron-top.svg">'+"접기");
-                 	$(this).css({ 'height': 'auto', 'overflow':'default' ,'text-overflow': 'ellipsis', 'display':'block' });
-	              }else{
-	            	  $(this).parent().find('.more-review-content-btn').html('<img src="/moca/resources/imgs/icons/chevron-bottom.svg">'+"더보기");
-	            	 $(this).css({ 'height': '3em', 'overflow':'hidden' ,'text-overflow': 'ellipsis', 'display':'block' });
-		          }
-            });
-         }); */
-		
+		});		
     });
 
 	var makeNewStore = function(store){
@@ -611,7 +614,7 @@
 					</c:if>
 					<br>
 					<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width:110px; height:110px;"><br>
-					<button id="followBtn" class="btn btn-default" style="display:none;">팔로우</button><br>
+					<button id="followBtn" class="btn" style="display:none;">팔로우</button><br>
 					<span id="nickName">${currentPageAccount.nickname}</span><br>
 					Lv.<span id="accountLevel">${currentPageAccount.accountLevel}</span>
 					<span id="levelName">(${currentPageAccount.levelName})</span>
@@ -651,9 +654,11 @@
 				
 			</div>
 			<div class="row">
-				<div class="col-md-12" id="userBadge">
+				<div id="userBadge">
 					<c:forEach items="${currentPageAccount.badgeList }" var="badgeVo">
-						<img class="img-circle" alt="badge" src="<c:url value="${badgeVo.badgeUrl}"/>" style="width: 100px">
+						<div class="col-md-2 col-xs-4">
+							<img class="img-circle" alt="badge" src="<c:url value="${badgeVo.badgeUrl}"/>" style="width: 100px">
+						</div>
 					</c:forEach>
 					<c:if test="${empty currentPageAccount.badgeList}">
 						<span id="needBadgeSpan">뱃지를 모아주세요</span>
@@ -664,8 +669,8 @@
 			</div>
 			
 		</div>
-	<div class="row">
-			<div class="col-xs-8 col-xs-offset-2">
+		<div class="row">
+			<div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2">
 				<ul id="mypageTab" class="nav nav-tabs">
 					<li role="presentation" class="nav-item active">
 						<a class="nav-link active" data-toggle="tab" href="#myReviewDiv">내 게시글</a>

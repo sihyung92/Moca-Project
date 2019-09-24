@@ -27,7 +27,7 @@
 					</div> 
 					<div class="form-group">
 						<label for="review-content">후기</label>
-						<textarea class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
+						<textarea rows="5" class="form-control" name="reviewContent" id="review-content" placeholder="자세한 후기는 다른 고객의 이용에 많은 도움이 됩니다."></textarea>
 					</div>
 					<div class="form-group storeLevel level">
 						<label for="level">평점</label>
@@ -55,10 +55,12 @@
 					</div>
 					
 					<div class="form-group tagsCheckbox">
-						<c:forEach items="${tagNameList}" var="tagName">
-							<label class="checkbox-inline">
-								<input type="checkbox" name="tag" value="<c:out value="${tagName}"/>"><c:out value="${tagName}"/>
-							</label>
+						<c:forEach items="${tagNameList}" var="tagName" varStatus="status">
+							<div class="col-xs-5 col-md-3">
+								<label class="checkbox-inline">
+									<input type="checkbox" name="tag" value="<c:out value="${tagName}"/>"><c:out value="${tagName}"/>
+								</label>
+							</div>
 						</c:forEach>
 					</div>
 					<textarea class="form-control" name="tags" id="review-tags" style="display: none;"></textarea>
@@ -156,7 +158,8 @@
 			<span class="storeName">${reviewVo.storeName}</span>
 		</div>
 	</div>
-	<div class="review-info col-md-8">
+	<div class="review-info col-md-9">
+	<div class="row">
 		<div class="review-level">
 			<div class="taste-level-div">
 				<label>맛</label>
@@ -204,6 +207,7 @@
 				<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 				<input type="number" class="hate-count" value=0 readonly>
 			</div>
+		</div>
 		</div>
 	</div>
 	
