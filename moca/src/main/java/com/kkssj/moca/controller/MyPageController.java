@@ -314,8 +314,14 @@ public class MyPageController {
 			return new ResponseEntity<>(HttpStatus.LOCKED);
 		}
 		
-		int result = mypageService.editAccount(editAccountVo,userImage[0]);
+		logger.debug((userImage[0].getOriginalFilename()).isEmpty()+" : userImage");
+		int result=0;
 		
+		if((userImage[0].getOriginalFilename()).isEmpty()) {
+			result = mypageService.editAccount(editAccountVo,null);
+		}else {
+			result = mypageService.editAccount(editAccountVo,userImage[0]);			
+		}
 		
 		if(result==1) {
 			return new ResponseEntity<>(HttpStatus.OK);

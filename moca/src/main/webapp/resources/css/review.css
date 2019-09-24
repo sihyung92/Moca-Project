@@ -53,7 +53,17 @@
 	   padding-right: 2px;
 	}
 	.like-count, .hate-count {
-	    width: 70px;
+	    width: 70px !important;
+	}
+	
+	#reviewDetailImg{
+		max-width: 100% !important;
+		max-height: 100% !important;
+	}
+	
+	#reviewsDetailModal .reviewThumbnailGroup img{
+	   	width:70px !important;
+	   	height: 70px !important;
 	}
 }
 
@@ -227,6 +237,7 @@
 	padding: 0;
 	width: 90%;
 	max-width: 1200px;
+	max-height: -webkit-fill-available;
 }	
 #reviewDetailDiv {
 	overflow:hidden;
@@ -242,7 +253,7 @@
 	color: white;
 }
 #reviewThumbnailGroup .clickedImg {
-   	border: 5px solid red;
+   	border: 5px solid rgba(242,174,46,0.85);
 }
 
 
@@ -261,6 +272,7 @@
 	border-radius: 0 3px 3px 0;
 	user-select: none;
 	-webkit-user-select: none;
+	background: rgba(242,174,46,0.85);
 }
 
 /* Position the "next button" to the right */

@@ -108,13 +108,10 @@
 		  <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 		</button>
 		<div id="reviewThumbnailGroup" class="reviewThumbnailGroup">
-			
 		</div>
       </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal -->
-	
-	
 	
 	
 <!-- CLONE -->

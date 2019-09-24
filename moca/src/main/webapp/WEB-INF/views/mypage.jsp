@@ -13,7 +13,7 @@
 	<link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=14"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=16"/>" />
 	<style type="text/css">
 	#userGraph{
 		margin-top:70px;
@@ -25,6 +25,7 @@
 	#userGraph table tr{
 		height:30px;
 	}
+	
 	/*그 스토어페이지랑 메인페이지랑 로그인 사이즈가 다른 이유가 클래스 설정이 이상해서임 이거 제발 추가해야함*/
 	.modal-login{
 	    width:100%;
@@ -299,8 +300,6 @@
 			}
 		}
 
-
-		
 		$('#followInfo').hide();
 		$('#mypageTab li').click(function(){
 			//탭 클릭과 데이터 유무에 따른 tabContent 통신
@@ -444,11 +443,13 @@
 					//타입에 따라서 팔로잉/팔로우 텍스트 변경
 					if(type == 'POST'){
 						$('#followBtn').attr('class', 'btn followed');
+						var oldFollowCnt = $('#followCount').text()
+						$('#followCount').text((oldFollowCnt*1)+1);
 					}else{
 						$('#followBtn').attr('class', 'btn');
+						var oldFollowCnt = $('#followCount').text()
+						$('#followCount').text((oldFollowCnt*1)-1);
 					}
-					
-					
 				},
 				error: function(request,status,error) {
 					respondHttpStatus(request.status);
@@ -582,9 +583,8 @@
 		var userImage = userImageUpdateInput.files[0];
 		const fileName = userImage.name;
 		const fileEx = fileName.slice(fileName.indexOf(".") + 1).toLowerCase();
-	    if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
-	        alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
-	        resetFile();
+	    if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp" &&  fileEx != "jpeg"){
+	        alert("파일은 (jpg, jpeg, png, gif, bmp) 형식만 등록 가능합니다.");
 	        return false;
 	    }
 
@@ -646,7 +646,7 @@
 					<tr>
 						<td>${currentPageAccount.attendanceCount}</td>
 						<td>${currentPageAccount.reviewCount}</td>
-						<td>${currentPageAccount.followCount}</td>
+						<td id="followCount">${currentPageAccount.followCount}</td>
 						<td>${currentPageAccount.followingCount}</td>
 					</tr>
 				</table>

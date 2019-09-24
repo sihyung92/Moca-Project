@@ -13,7 +13,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Noto+Sans+KR&display=swap" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
-	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=7"/>" />
+	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/review.css?ver=14"/>" />
 	<style type="text/css">
 		.jumbotron{
 			background: rgba(234,231,220,0.4);
@@ -605,8 +605,8 @@
 					var fileEx = fileName.slice(fileName.lastIndexOf(".")+1).toLowerCase()
 					
 					//이미지 형식인 경우만 받아 들임
-					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
-		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp" && fileEx != "jpeg"){
+		                alert("파일은 (jpg, jpeg, png, gif, bmp) 형식만 등록 가능합니다.");
 		                return false;
 		            }
 				}
@@ -695,8 +695,8 @@
 					var fileEx = fileName.slice(fileName.lastIndexOf(".")+1).toLowerCase()
 					
 					//이미지 형식인 경우만 받아 들임
-					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp"){
-		                alert("파일은 (jpg, png, gif, bmp) 형식만 등록 가능합니다.");
+					if(fileEx != "jpg" && fileEx != "png" &&  fileEx != "gif" &&  fileEx != "bmp" && fileEx != "jpeg"){
+		                alert("파일은 (jpg, jpeg, png, gif, bmp) 형식만 등록 가능합니다.");
 		                return false;
 		            }
 				}
