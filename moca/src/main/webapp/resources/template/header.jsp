@@ -33,6 +33,16 @@
         div#header+div{
         	padding-top:62px;
         }
+        #mobileLogin{
+            color: #000;
+            text-shadow: -1px 0 #fff, 0 1px #fff, 1px 0 #fff, 0 -1px #fff;
+        }
+        #mobileLogin:hover{
+            background-color: transparent;
+        }
+        #mobileLogin:focus{
+            background-color: transparent;
+        }
     </style>
 
 <link rel="stylesheet" type="text/css" href="/moca/resources/css/testHeaderCss.css"/>
@@ -356,13 +366,12 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
+      <button id="mobileLogin" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">Mypage</button>
     	<!-- 
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-      </button>
        -->
       <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" >
       	<button aria-hidden="true">
