@@ -78,7 +78,7 @@ public class StoreController {
 												{"커피빈","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/coffeBean.jpg"},
 												{"이디아","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/ediya.jpg"},
 												{"투썸플레이스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/twoSomePlace.jpg"},
-												{"드롭탑","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/twoSomePlace.jpg"},
+												{"드롭탑","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/dropTop.jpg"},
 												{"할리스","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/hollys.jpg"},
 												{"풀바셋","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/paulBassett.jpg"},
 												{"파스쿠찌","https://team-moca.s3.ap-northeast-2.amazonaws.com/logo/pascucci.jpg"},
