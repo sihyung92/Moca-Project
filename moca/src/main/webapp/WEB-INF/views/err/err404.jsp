@@ -23,7 +23,9 @@
 	<script type="text/javascript" src="<c:url value="/resources/js/mocaStore.js?ver=19"/>"></script>
 	<script type="text/javascript" src="<c:url value="/resources/js/jquery.raty.js"/>"></script>
 <!-- Latest compiled and minified CSS -->
-<title>페이지를 찾을 수 없습니다</title>
+<title>moca : 페이지를 찾을 수 없습니다.</title>
+   <link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
+   <link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 
 </head>
 <body>

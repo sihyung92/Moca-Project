@@ -9,7 +9,9 @@
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.css"/>" />
 	<link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/testHeaderCss.css"/>" />
 	
-<title>페이지를 찾을 수 없습니다</title>
+<title>moca</title>
+   <link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
+   <link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 </head>
 <body>
 	<div class="error_div">

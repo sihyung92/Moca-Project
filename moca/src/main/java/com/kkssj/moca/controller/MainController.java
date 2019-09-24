@@ -100,11 +100,11 @@ public class MainController {
 			storesList.add(alist);
 		} 
 		 
-		alist = mainService.getTrendStoresList("예쁜");		//Trend Stores
-		if(alist.size()>6) {			
-			listNames.add("트렌드: 흑당흑당");
-			storesList.add(alist);
-		}
+//		alist = mainService.getTrendStoresList("예쁜");		//Trend Stores
+//		if(alist.size()>6) {			
+//			listNames.add("트렌드: 흑당흑당");
+//			storesList.add(alist);
+//		}
 		
 		if(variables!=null) {
 			alist = mainService.getTakeoutStoresList(variables);		//TakeOut Stores

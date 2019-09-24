@@ -534,6 +534,9 @@
 					success: function() {
 						$('#userInfo').find('img').attr('src',$('#userImage').find('img').attr('src'));
 						$('#userInfo').find('#nickName').html($('input[name=nickname]').val());
+						$('#profile-icon').attr({
+                            src:changedImg
+                        });
 					},
 					error: function(request,status,error) {
 						console.log('회원정보 수정 실패');
@@ -578,7 +581,9 @@
 	}
 
 	//회원정보 수정 때 userImage change되면
+	var changedImg = "";
 	var userImageChange = function(){
+		
 		const userImageUpdateInput = document.getElementById('userImageUpdateInput');
 		var userImage = userImageUpdateInput.files[0];
 		const fileName = userImage.name;
@@ -590,6 +595,7 @@
 
 		$('#userImage').find('img').attr('src', URL.createObjectURL(userImage));
 		$('#userImage').find('img').css('width','110px').css('height','110px');
+		changedImg = "" + URL.createObjectURL(userImage);
 	};
 
 	var whenAccessDeny = function(whereAccessDeny){
