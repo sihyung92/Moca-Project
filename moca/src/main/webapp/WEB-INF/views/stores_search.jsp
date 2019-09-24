@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>모아봤어 카페정보! moca</title>
+<title>moca</title>
 <link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 <link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -53,7 +53,8 @@
 
 	#search #searchBtn2{
 		position : absolute;
-		right : 3%;
+		right : 4%;
+		top : 2px;
 		background-color : transparent;
 	}
 	
@@ -77,7 +78,7 @@
 		font-weight : bold;
 	}
 	#content{
-		background-color: rgba(246,245,239,0.5);
+		background-color: transparent;
 	}
 	
 	#mapContainer{
@@ -234,7 +235,13 @@
  	var map, overlayList, bounds, pageNum;
  	var markers = new Array();
     window.onload = function () {
-   	    
+        //javascript에서의 media query
+        if (matchMedia("screen and (min-width: 451px)").matches) {
+        	 	$('.score').after();
+        	} else {
+        	 	$('.score').before();
+       	}
+        
     	 //키워드 검사
 		$('#searchBtn2').click(function(){
 			var keyword = $('#keyword2').val();
@@ -607,7 +614,6 @@
 		$('.pagination>li:nth-child(2)').click();
 		$('#page').show();
 	};
-    //스크롤 위치에 따라 헤더 searchBar show / hide
     function mapResize(){
     	var width = $(window).width();
     	if(width<992){
@@ -619,7 +625,8 @@
 			$('#map').css('height', '600px');
     	}
     }
-    
+
+    //스크롤 위치에 따라 헤더 searchBar show / hide
     function showHeaderSearch(){
     	var position = $(window).scrollTop();
     	var width = $(window).width();
