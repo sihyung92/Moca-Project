@@ -164,9 +164,9 @@
             if(thumbnailImg == ''){
                 thumbnailImg = '/moca/resources/imgs/nonProgileImage.png';
             }
-            $('#replace-to-userName').replaceWith('<li><a href="#"><img id="profile-icon" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
+            $('#replace-to-userName').replaceWith('<li><a href="/moca/mypage"><img id="profile-icon" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
             $('#replace-to-icon').replaceWith('<li></li>');
-            $('#replace-to-logout').replaceWith('<li><a href="#" id="moca-logout">로그아웃</a></li>');
+            $('#replace-to-logout').replaceWith('<li><a href="#" id="moca-logout">Log Out</a></li>');
 
             //로그아웃 이벤트를 달아줌.
             $('#moca-logout').click(kakaoLogout);
@@ -356,12 +356,14 @@
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
+    	<!-- 
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+       -->
       <div id="hiddenSearch" class="navbar-toggle collapsed hiddenSearch" >
       	<button aria-hidden="true">
 	      	<svg id="i-search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="20" height="20" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
@@ -395,19 +397,19 @@
         <ul class="nav navbar-nav navbar-right">
             <li><a href="#" id="beMoca">moca의 카페가 되어주세요!</a></li>
             <li id="replace-to-userName"></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mypage<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/moca/mypage" class="just-use-user">플로필</a></li>
-                    <li><a href="#" class="just-use-user">내 포인트</a></li>
-                    <li><a href="#" class="just-use-user">내 리뷰 보기</a></li>
-                    <li><a href="#" class="just-use-user">관심 카페 리스트</a></li>
-                    <li role="separator" class="divider just-use-user"></li>
-                    <li id="replace-to-logout"></li>
-                    <li id="replace-to-icon"><a id="login-btn" data-toggle="modal" data-target="#Login-Modal" role="button">Sign In</a></li>
-                </ul>
-            </li>
+            <%
+               if(session.getAttribute("login")!=null){
+            %>
+         <li id="replace-to-logout"></li>
+            <%
+               }else {
+            %>
+            <li><a id="login-btn" data-toggle="modal" data-target="#Login-Modal" role="button">Sign In</a></li>
+            <%
+               }
+            %>
         </ul>
+
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
     

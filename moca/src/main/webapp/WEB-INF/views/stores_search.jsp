@@ -311,7 +311,6 @@
 		$('#re-search').click(function(){
 			$('#search form input[name="keyword"]').attr("name", "");
 			$('#search form').append('<input type="hidden" name="keyword" value="\'${keyword}\'"/>');
-			$('#search form').append('<input type="hidden" name="keyword" value="\'${keyword}\'"/>');
 			$('#search form').submit();
 		});
 		createMap();
