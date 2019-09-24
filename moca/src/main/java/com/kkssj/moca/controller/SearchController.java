@@ -80,14 +80,20 @@ public class SearchController {
 			session.setAttribute("y", lat);
 		//geolocation페이지에서 위치 정보 받아 오기 (메인 페이지 첫 접근 시)
 		}else if(session.getAttribute("x") == null|| session.getAttribute("y") == null) {
+			model.addAttribute("keyword",keyword);
 			return "geolocation";
 		}		
 		//세션에서 현재 위치 x,y 값 받아오기
 		String x = (String)session.getAttribute("x");
 		String y = (String)session.getAttribute("y");
 		
+		//검색어 자동완성 기능 : 검색가능한 태그들
+		List<String> tagList = searchService.getTagNameList();
+
+		model.addAttribute("tagList", tagList);
+		
 		//0. URL을 통한 비정상 적인 접근 처리
-		if(keyword==null || filter==null ||  filter.equals("")) {
+		if(keyword==null ||keyword.equals("")|| filter==null ||  filter.equals("")) {
 			model.addAttribute("filter", "distance");
 			model.addAttribute("keyword", "");
 			model.addAttribute("msg_badRequest", "엥 뭐하셨어요...? 이러지 마시구, 다시 검색해주세요.");
@@ -135,10 +141,7 @@ public class SearchController {
 		if(keyword.startsWith("'") && keyword.endsWith("'")) {
 			keyword=keyword.substring(1, keyword.length()-1);
 		}
-		//검색어 자동완성 기능 : 검색가능한 태그들
-		List<String> tagList = searchService.getTagNameList();
 
-		model.addAttribute("tagList", tagList);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("storeList", storeList);
 		logger.debug("카카오 검색 총 갯수: "+(storeList.size()));
