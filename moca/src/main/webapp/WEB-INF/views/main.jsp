@@ -242,6 +242,12 @@
 		#header #keyword{
 			background-color: transparent;
 		}
+		#header #hiddenSearch svg{
+			stroke: white;
+		}
+		#header .navbar-toggle .icon-bar{
+			background-color: white;
+		}
 	}
 </style>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
@@ -471,9 +477,13 @@
 			if(position > 188){            	
             	$('#header .navbar').css('background-color', 'rgba(255,255,255, 1)');
             	$('#brandLogo').css('content','url(resources/imgs/logo/mocaLineWhiteLogo.png)');
+            	$('#header #hiddenSearch svg').css('stroke', 'black');
+            	$('#header .navbar-toggle .icon-bar').css('background-color', 'black');
             }else{
             	$('#header .navbar').css('background-color', 'transparent');
             	$('#brandLogo').css('content','url(resources/imgs/logo/mocaWhiteLogo.png)');
+            	$('#header #hiddenSearch svg').css('stroke', 'white');
+            	$('#header .navbar-toggle .icon-bar').css('background-color', 'white');            	
             }
         }else{
         	if(position > 438){
@@ -487,7 +497,6 @@
             }
         }    	
     };
-    
 	</script>
 </head>
 <body>
