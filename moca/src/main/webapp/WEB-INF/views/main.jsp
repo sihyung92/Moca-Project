@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <script type="text/javascript" src="resources/js/jquery-1.12.4.min.js"></script>
 <link rel="shortcut icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
+<title>moca</title>
 <link rel="icon" href="<c:url value="/resources/imgs/circleLogo.ico"/>" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap.css?ver=2"/>
 <link rel="stylesheet" type="text/css" href="resources/css/bootstrap-theme.css"/>
@@ -390,9 +391,10 @@
        
     //스크롤 이벤트
     function updateData(){     
-        	var position = $(window).scrollTop();	//스크롤바 위치로 페이지 위치 판단
-        	var updatePoint = $(document).height()*3/5; //데이터 추가 기준 세팅        	   
-            if(position>updatePoint){
+        var maxHeight = $(document).height();
+        var currentScroll = $(window).scrollTop() + $(window).height();
+
+        if (maxHeight <= currentScroll + 100) {
             	$(window).off("scroll", updateData);
             	var template = $('.mocaPick-template').clone();
             	template.removeClass("mocaPick-template");
