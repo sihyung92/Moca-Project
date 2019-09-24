@@ -537,6 +537,7 @@
 						$('#profile-icon').attr({
                             src:changedImg
                         });
+                        $('#profile-icon').contents(""+${login.nickname});
 					},
 					error: function(request,status,error) {
 						console.log('회원정보 수정 실패');
@@ -619,7 +620,12 @@
 					<span class="glyphicon glyphicon-cog" id="userInfoUpdateBtn" aria-hidden="true" style="float:right;"></span>
 					</c:if>
 					<br>
-					<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width:110px; height:110px;"><br>
+					<c:if test="${currentPageAccount.thumbnailImage ne '' && currentPageAccount.thumbnailImage ne null}">
+                  		<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width:110px; height:110px;"><br>
+		            </c:if>
+	                <c:if test="${currentPageAccount.thumbnailImage eq '' || currentPageAccount.thumbnailImage eq null}">
+						<img alt="basicProfile" src="/moca/resources/imgs/nonProgileImage.png" class="img-circle" style="width:110px; height:110px;"><br>
+               		</c:if>
 					<button id="followBtn" class="btn" style="display:none;">팔로우</button><br>
 					<span id="nickName">${currentPageAccount.nickname}</span><br>
 					Lv.<span id="accountLevel">${currentPageAccount.accountLevel}</span>

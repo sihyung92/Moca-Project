@@ -1,10 +1,9 @@
 package com.kkssj.moca.controller;
 
-import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -33,6 +32,9 @@ public class MyPageController {
 	
 	@Inject
 	MypageService mypageService;
+	
+	@Inject
+	AccountDao accountDao;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MyPageController.class);
 
@@ -323,9 +325,20 @@ public class MyPageController {
 			result = mypageService.editAccount(editAccountVo,userImage[0]);			
 		}
 		
+		try {
+			AccountVo refreshAccount = accountDao.selectByaccountId(accountVo.getAccount_id());
+			session.setAttribute("login", refreshAccount);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		if(result==1) {
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
+		
+		
+		
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 		
