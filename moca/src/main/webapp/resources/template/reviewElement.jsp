@@ -156,7 +156,8 @@
 			<span class="storeName">${reviewVo.storeName}</span>
 		</div>
 	</div>
-	<div class="review-info col-md-8">
+	<div class="review-info col-md-9">
+	<div class="row">
 		<div class="review-level">
 			<div class="taste-level-div">
 				<label>맛</label>
@@ -204,6 +205,7 @@
 				<img class="hate-btn clickableSvgCss" src="<c:url value="/resources/imgs/icons/thumbs-down.svg"/>">
 				<input type="number" class="hate-count" value=0 readonly>
 			</div>
+		</div>
 		</div>
 	</div>
 	

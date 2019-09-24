@@ -18,6 +18,37 @@
 	}
 }
 
+@media (max-width: 768px) {
+	#likeFavoriteDiv img{
+		width:2em;
+	}
+	#likeFavoriteDiv{
+		padding-bottom: 1em;
+	}
+	#storeSummaryDiv img{
+		width:1.4em;
+	}
+	#storeAverageLevelDiv img{
+		width:15px;
+	}
+	#storeReviewCountDiv{
+		font-size:10pt;
+		padding-top: 1em;
+	}
+	#storeFavoriteCountDiv,#storeLikeCountDiv{
+		font-size:10pt;
+	}
+	
+	.storeReviewCount{
+		font-size:20pt;
+	}
+	
+	.editDeleteGroup {
+    	top: -15px !important;
+    	left: 90% !important;
+	}
+}
+
 
 /*리뷰 겹치는 부분 수정*/
 .review-info{
@@ -133,7 +164,7 @@
 .reviewCnt{
 	margin-bottom: 3em;
 	background-color:white;
-	padding:3em;
+	padding:2em 3em;
 	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
