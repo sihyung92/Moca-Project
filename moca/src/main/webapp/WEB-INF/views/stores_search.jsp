@@ -241,7 +241,7 @@
         	} else {
         	 	$('.score').before();
        	}
-        
+
     	 //키워드 검사
 		$('#searchBtn2').click(function(){
 			var keyword = $('#keyword2').val();
@@ -324,6 +324,9 @@
 		$(window).on('resize', mapResize);
 		mapResize();
 		paintGray($('.score'));
+        if($(document).height()<=$(window).height()){
+        	$('#footer').css({'position':'fixed','bottom':0,'left':0});
+        }
     };//onload 끝-
     
     //비활성 점수 회색 처리
@@ -624,7 +627,7 @@
     	 	$('#keyword2').attr('placeholder', '#을 입력하여 검색 가능한 태그를 확인해보세요!');
 			$('#map').css('height', '600px');
     	}
-    }
+    };
 
     //스크롤 위치에 따라 헤더 searchBar show / hide
     function showHeaderSearch(){
