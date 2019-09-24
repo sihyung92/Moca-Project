@@ -537,7 +537,8 @@
 						$('#profile-icon').attr({
                             src:changedImg
                         });
-                        $('#profile-icon').contents(""+${login.nickname});
+                        $('#changingNickName').text($('#nickName').text()+'님♡');
+                        
 					},
 					error: function(request,status,error) {
 						console.log('회원정보 수정 실패');
@@ -597,6 +598,7 @@
 		$('#userImage').find('img').attr('src', URL.createObjectURL(userImage));
 		$('#userImage').find('img').css('width','110px').css('height','110px');
 		changedImg = "" + URL.createObjectURL(userImage);
+        
 	};
 
 	var whenAccessDeny = function(whereAccessDeny){
@@ -621,10 +623,10 @@
 					</c:if>
 					<br>
 					<c:if test="${currentPageAccount.thumbnailImage ne '' && currentPageAccount.thumbnailImage ne null}">
-                  		<img alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width:110px; height:110px;"><br>
+                  		<img id="mypageBasicProfile" alt="basicProfile" src="${currentPageAccount.thumbnailImage}" class="img-circle" style="width:110px; height:110px;"><br>
 		            </c:if>
 	                <c:if test="${currentPageAccount.thumbnailImage eq '' || currentPageAccount.thumbnailImage eq null}">
-						<img alt="basicProfile" src="/moca/resources/imgs/nonProgileImage.png" class="img-circle" style="width:110px; height:110px;"><br>
+						<img id="mypageBasicProfile" alt="basicProfile" src="/moca/resources/imgs/nonProgileImage.png" class="img-circle" style="width:110px; height:110px;"><br>
                		</c:if>
 					<button id="followBtn" class="btn" style="display:none;">팔로우</button><br>
 					<span id="nickName">${currentPageAccount.nickname}</span><br>
@@ -876,7 +878,7 @@
 	</div>
 	<!--followDiv  -->
 	<div class="followInfo" id="followInfo">
-		<img alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle" style="width:10rem;"><br>
+		<img id="mypageBasicProfile" alt="basicProfile" src="<c:url value="/resources/imgs/basicProfile.png"/>" class="img-circle" style="width:10rem;"><br>
 		<b><span id="nickName">별명</span></b><br>
 		<small>Lv.<span id="accountLevel">3</span></small><br>
 	</div>

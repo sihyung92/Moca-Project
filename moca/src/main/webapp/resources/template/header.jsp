@@ -164,7 +164,7 @@
             if(thumbnailImg == ''){
                 thumbnailImg = '/moca/resources/imgs/nonProgileImage.png';
             }
-            $('#replace-to-userName').replaceWith('<li><a href="/moca/mypage"><img id="profile-icon" src="'+thumbnailImg+'"/> '+userName+'님♡'+'</a></li>');
+            $('#replace-to-userName').replaceWith('<li><a id="eei" href="/moca/mypage"><img id="profile-icon" src="'+thumbnailImg+'"/><span id="changingNickName"> '+userName+'님♡</span>'+'</a></li>');
             $('#replace-to-icon').replaceWith('<li></li>');
             $('#replace-to-logout').replaceWith('<li><a href="#" id="moca-logout">Log Out</a></li>');
 
