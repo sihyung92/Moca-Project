@@ -315,7 +315,7 @@
         var naverLogin = new naver.LoginWithNaverId(
             {
                 clientId: "Ku_XOqso7r1UgfC0sTeH",
-                callbackUrl: "http://ec2-15-164-229-193.ap-northeast-2.compute.amazonaws.com/moca/naverLogin",
+                callbackUrl: "http://ourmoca.ga/moca/naverLogin",
                 isPopup: false, /* 팝업을 통한 연동처리 여부 */
                 loginButton: {color: "green", type: 3, height: 60} /* 로그인 버튼의 타입을 지정 */
             }
