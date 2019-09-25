@@ -1,4 +1,4 @@
-//변수 선언부
+﻿//변수 선언부
 var likeHateButton;
 var btnGroup;
 var likeHateCount;
@@ -168,6 +168,7 @@ var saveReview = function(fileBuffer){
 		}).always(function(){
 			//로딩바를 숨겨준다.
 			$('#progress_loading').hide();
+			isEditable = true;
 		})
 	}
 }
@@ -451,6 +452,7 @@ var editReview = function(){
 		}).always(function(){
 			//로딩바를 숨겨준다.
 			$('#progress_loading').hide();
+			isEditable = true;
 		})
 	}
 
