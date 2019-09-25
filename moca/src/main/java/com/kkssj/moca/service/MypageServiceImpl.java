@@ -1,4 +1,4 @@
-package com.kkssj.moca.service;
+﻿package com.kkssj.moca.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -232,12 +232,13 @@ public class MypageServiceImpl implements MypageService{
 				//db에서 원래 있던 이미지 url select로 받아오기
 				AccountVo OldImgUrlVo = accountDao.selectProfileImageByaccountId(editAccountVo.getAccount_id());
 				if(OldImgUrlVo.getProfileImage()!=null) {
-					if(!OldImgUrlVo.getProfileImage().contains("kakaocdn")) {					
-						DelimageVo.setDelImageVo(OldImgUrlVo.getProfileImage());
-						
-						//s3에서 이미지 삭제 (카카오톡 url이 아닐때)
-						s3.fileDelete(DelimageVo.getPath()+"/"+DelimageVo.getFileName());
-						s3.fileDelete(DelimageVo.getPath()+"/"+DelimageVo.getThumbnailFileName());
+					if(!OldImgUrlVo.getProfileImage().contains("kakaocdn")) {	
+						if(OldImgUrlVo.getProfileImage().length() !=0) {
+							DelimageVo.setDelImageVo(OldImgUrlVo.getProfileImage());
+							//s3에서 이미지 삭제 (카카오톡 url이 아닐때)
+							s3.fileDelete(DelimageVo.getPath()+"/"+DelimageVo.getFileName());
+							s3.fileDelete(DelimageVo.getPath()+"/"+DelimageVo.getThumbnailFileName());		
+						}				
 					}
 				}
 				
