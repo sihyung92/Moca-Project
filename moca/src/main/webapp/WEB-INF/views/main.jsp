@@ -348,9 +348,7 @@
   //반응형 리뷰 이미지
     function changeReviewImgCnt(){
     	var imglistWidth = $('#bestReview-container .review-img-list').first().css('width').replace('px','');
-    	console.log("width: "+imglistWidth);
         var maxImgCnt = Math.floor(imglistWidth/136);
-        console.log("최대 이미지 갯수: "+maxImgCnt);
         $('.review-img-list .review-img').hide();
         $('.moreImg').hide();
         for(var i=1; i<maxImgCnt+1; i++){
@@ -471,7 +469,6 @@
         			}
     			});
             };
-            pre_position=position;
     };      
     //스크롤 위치에 따라 헤더 배경색 변경
     function changeHeaderColor(e){        

@@ -175,18 +175,4 @@ public class MainController {
 		logger.debug("추가 추천 데이터 로딩 걸린 시간은 :"+(afterTime-enterTime)/1000D);
 		return mocaPick;
 	}
-	
-	//boardController혹은bbsController 이동예정~!
-	@RequestMapping(value="/reviewboard/{type}", method = RequestMethod.GET)
-	public String reviewBoard(Model model, @PathVariable String type) throws SQLException {
-		//type이 "recent"면 최근리뷰, "best"면 주간 인기리뷰 
-		List<ReviewVo> alist = null;
-		if(type!=null)
-			alist = boardService.getReviewList(type);
-		
-		//view에서의 검색결과(recent, best)
-		model.addAttribute("type", type);
-		model.addAttribute("alist", alist);
-		return "reviewboard";
-	}
 }
