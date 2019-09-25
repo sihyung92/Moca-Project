@@ -231,7 +231,10 @@ var setReviewInfo = function(reviewRow, reviewVo){
 	
 	
 	var writeDate = new Date(reviewVo.writeDate);
-	reviewRow.find('.reviewInfo-write-date').text(date2Str(writeDate));
+	//수정일 때는 변화 없이
+	if(date2Str(writeDate).substring(0,4)!="1970"){
+		reviewRow.find('.reviewInfo-write-date').text(date2Str(writeDate));
+	}
 	reviewRow.find('.review-info .reviewInfo-review-content').text(reviewVo.reviewContent);
 	
 	

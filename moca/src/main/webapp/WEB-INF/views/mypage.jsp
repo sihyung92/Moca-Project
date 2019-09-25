@@ -316,7 +316,13 @@
 							$(followInfoTemplate).removeAttr('id');
 							onclick="location.href='address'"
 							$(followInfoTemplate).attr('onclick','location.href="'+followerList[i].account_id+'"');
-							$(followInfoTemplate).find('img').attr('src',followerList[i].thumbnailImage);
+							if(followerList[i].thumbnailImage==null){
+								$(followInfoTemplate).find('img').attr('src','/moca/resources/imgs/basicProfile.png');								
+							}else if(followerList[i].thumbnailImage.trim()==""){
+								$(followInfoTemplate).find('img').attr('src','/moca/resources/imgs/basicProfile.png');
+							}else{
+								$(followInfoTemplate).find('img').attr('src',followerList[i].thumbnailImage);
+							}
 							$(followInfoTemplate).find('#nickName').html(followerList[i].nickname);
 							$(followInfoTemplate).find('#accountLevel').html(followerList[i].accountLevel);
 							$(followInfoTemplate).css('display','inline-block');
@@ -348,7 +354,13 @@
 							followInfoTemplate = $('#followInfo').clone();
 							$(followInfoTemplate).removeAttr('id');
 							$(followInfoTemplate).attr('onclick','location.href="'+followingList[i].account_id+'"');
-							$(followInfoTemplate).find('img').attr('src',followingList[i].thumbnailImage);
+							if(followingList[i].thumbnailImage==null){
+								$(followInfoTemplate).find('img').attr('src','/moca/resources/imgs/basicProfile.png');
+							}else if(followingList[i].thumbnailImage.trim()==""){
+								$(followInfoTemplate).find('img').attr('src','/moca/resources/imgs/basicProfile.png');
+							}else{
+								$(followInfoTemplate).find('img').attr('src',followingList[i].thumbnailImage);
+							}
 							$(followInfoTemplate).find('#nickName').html(followingList[i].nickname);
 							$(followInfoTemplate).find('#accountLevel').html(followingList[i].accountLevel);
 							$(followInfoTemplate).css('display','inline-block');
