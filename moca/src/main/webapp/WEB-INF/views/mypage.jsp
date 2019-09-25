@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     pageEncoding="utf-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -240,6 +240,7 @@
 
 		//리뷰 삭제 버튼 클릭시
 		deleteBtn.click(function(){
+			storeId = $(this).parent().find('.store-id').val();
 			var reviewId = $(this).parent().find('.review-id').val();
 			var reviewTodelete = $(this).parent().parent();
 			$('#confirm').modal({ backdrop: 'static', keyboard: false })
